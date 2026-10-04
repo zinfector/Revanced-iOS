@@ -110,7 +110,7 @@ int main(void) { @autoreleasepool {
         assert(rows.count==[group[@"keys"] count]);
         for (NSDictionary *row in rows) { assert(![rowKeys containsObject:row[@"key"]]);[rowKeys addObject:row[@"key"]]; }
     }
-    assert(rowKeys.count==113);
+    assert(rowKeys.count==[catalog[@"settings"] count]);
     NSArray *mapRows=RVSettingsRows(nil,@"sponsor_behaviors",nil,nil)[0][@"rows"];
     assert(mapRows.count==[RVPreferenceDescriptor(@"sponsor_behaviors")[@"map_keys"] count]);
     for (NSDictionary *row in mapRows) assert([row[@"key"] isEqual:@"sponsor_behaviors"] && row[@"member"] && row[@"detail"]);

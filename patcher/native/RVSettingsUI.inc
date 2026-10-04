@@ -85,7 +85,13 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 - (void)viewWillAppear:(BOOL)animated { [super viewWillAppear:animated];[self applyAppearance];[self reloadRows]; }
 - (void)viewWillDisappear:(BOOL)animated { [super viewWillDisappear:animated];[self.view endEditing:YES]; }
 - (void)traitCollectionDidChange:(UITraitCollection *)previous {
-    [super traitCollectionDidChange:previous];if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previous]) { [self applyAppearance];[self reloadRows]; }
+    // Preserve the inherited UIKit callback with both the pinned iOS 16 SDK
+    // and newer Xcode SDKs. Suppression is confined to this compatibility call.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [super traitCollectionDidChange:previous];
+#pragma clang diagnostic pop
+    if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previous]) { [self applyAppearance];[self reloadRows]; }
     if (![self.traitCollection.preferredContentSizeCategory isEqual:previous.preferredContentSizeCategory]) [self.list.collection.collectionViewLayout invalidateLayout];
 }
 - (void)applyAppearance {
