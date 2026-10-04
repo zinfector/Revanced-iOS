@@ -1241,5 +1241,233 @@
         "imp": "0x100283764"
       }
     ]
+  },
+  {
+    "name": "YTIconResolverImpl",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "imageForIcon:color:",
+        "encoding": "@28@0:8i16@20",
+        "imp": "0x100336134"
+      }
+    ]
+  },
+  {
+    "name": "CompositeIconController",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "imageForIcon:",
+        "encoding": "@24@0:8r^v16",
+        "imp": "0x100ed594c"
+      }
+    ]
+  },
+  {
+    "name": "YTAppIconSupportProviderImpl",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "delhiResourceMap",
+        "encoding": "@16@0:8",
+        "imp": "0x100336384"
+      }
+    ]
+  },
+  {
+    "name": "ELMComponent",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "owningComponent",
+        "encoding": "@16@0:8",
+        "imp": "0x104669f74"
+      },
+      {
+        "kind": "-",
+        "selector": "key",
+        "encoding": "@16@0:8",
+        "imp": "0x10466a018"
+      },
+      {
+        "kind": "-",
+        "selector": "element",
+        "encoding": "@16@0:8",
+        "imp": "0x100528ea4"
+      }
+    ]
+  },
+  {
+    "name": "ELMNodeController",
+    "superclass": "ASNodeController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "key",
+        "encoding": "@16@0:8",
+        "imp": "0x1046739dc"
+      },
+      {
+        "kind": "-",
+        "selector": "owningComponent",
+        "encoding": "@16@0:8",
+        "imp": "0x100545d3c"
+      },
+      {
+        "kind": "-",
+        "selector": "element",
+        "encoding": "@16@0:8",
+        "imp": "0x100591754"
+      }
+    ]
+  },
+  {
+    "name": "ELMContainerNode",
+    "superclass": "ASDisplayNode",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutDidFinish",
+        "encoding": "v16@0:8",
+        "imp": "0x100595aa4"
+      },
+      {
+        "kind": "-",
+        "selector": "element",
+        "encoding": "@16@0:8",
+        "imp": "0x10055076c"
+      }
+    ]
+  },
+  {
+    "name": "ELMElement",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "protoText",
+        "encoding": "@16@0:8",
+        "imp": "0x1046e8e38"
+      }
+    ]
+  },
+  {
+    "name": "ASDisplayNode",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "nodeController",
+        "encoding": "@16@0:8",
+        "imp": "0x100558340"
+      },
+      {
+        "kind": "-",
+        "selector": "yogaChildren",
+        "encoding": "@16@0:8",
+        "imp": "0x100550fbc"
+      },
+      {
+        "kind": "-",
+        "selector": "removeYogaChild:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x104710d84"
+      },
+      {
+        "kind": "-",
+        "selector": "appendYogaChild:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x104710ec0"
+      },
+      {
+        "kind": "-",
+        "selector": "style",
+        "encoding": "@16@0:8",
+        "imp": "0x1003fcd1c"
+      },
+      {
+        "kind": "-",
+        "selector": "isNodeLoaded",
+        "encoding": "B16@0:8",
+        "imp": "0x10035484c"
+      },
+      {
+        "kind": "-",
+        "selector": "view",
+        "encoding": "@16@0:8",
+        "imp": "0x100355be0"
+      },
+      {
+        "kind": "-",
+        "selector": "isLayerBacked",
+        "encoding": "B16@0:8",
+        "imp": "0x10035a808"
+      },
+      {
+        "kind": "-",
+        "selector": "yoga",
+        "encoding": "B16@0:8",
+        "imp": "0x10055de8c"
+      },
+      {
+        "kind": "-",
+        "selector": "supernode",
+        "encoding": "@16@0:8",
+        "imp": "0x1004649a0"
+      },
+      {
+        "kind": "-",
+        "selector": "subnodes",
+        "encoding": "@16@0:8",
+        "imp": "0x100358290"
+      }
+    ]
+  },
+  {
+    "name": "ASImageNode",
+    "superclass": "ASControlNode",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setImage:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x104720754"
+      },
+      {
+        "kind": "-",
+        "selector": "image",
+        "encoding": "@16@0:8",
+        "imp": "0x10054b68c"
+      }
+    ]
+  },
+  {
+    "name": "ASTextNode",
+    "superclass": "ASControlNode",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutDidFinish",
+        "encoding": "v16@0:8",
+        "imp": "0x10059668c"
+      },
+      {
+        "kind": "-",
+        "selector": "attributedText",
+        "encoding": "@16@0:8",
+        "imp": "0x10055df84"
+      },
+      {
+        "kind": "-",
+        "selector": "setAttributedText:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10055db5c"
+      }
+    ]
   }
 ]

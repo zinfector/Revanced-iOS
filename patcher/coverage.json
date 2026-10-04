@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.9",
+  "patcher_version": "0.3.10",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -858,8 +858,8 @@
         "return_dislikes",
         "ryd_voting"
       ],
-      "implementation": "Cached RYD estimates in video-ID-scoped native slim dislike-button text, matching main-video entity counts/accessibility and an inline accessory on positively identified element-backed watch actions; manual RYD registration, puzzle solving and voting through Settings Video tools.",
-      "limits": "Native integration covers verified slim formatted labels, main-video entity paths and an accessory beside identified element-backed watch dislikes. Online Shorts text, automatic YouTube vote forwarding, Android preference translation and complete native styling remain unported. Native completion block signatures and video-only targets are traced for future vote forwarding; no vote is sent during development. Device rendering is unverified and tests are skipped at the user request.",
+      "implementation": "Cached RYD estimates in verified slim labels/main-video entities and an inline accessory on identified slim element actions; a guarded native Yoga text adapter for video-bound segmented element pairs; manual RYD registration and voting in Settings Video tools.",
+      "limits": "The user confirms 0.3.9 fetches a count but its modern segmented pill does not bind the slim adapters. The new element adapter requires exact semantic role and video-target proof and remains device-unverified. Online Shorts text, automatic vote forwarding, Android preference translation and complete styling remain unported. No tests or service votes are run during development.",
       "parent": null,
       "device_validated": false
     },

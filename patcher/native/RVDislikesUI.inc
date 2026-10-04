@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // An inline accessory owned by the native watch action, never the video overlay.
+static void RVRefreshElementDislikes(void);
 static const void *RVDislikeInlineKey=&RVDislikeInlineKey;
 static NSHashTable<UIView *> *RVDislikeActions;
 static NSString *RVNativeDislikeVideoForAction(id action);
@@ -93,6 +94,7 @@ static void RVRefreshDislikeUI(void) {
     NSString *revision=[NSString stringWithFormat:@"%@:%@:%d",RVObject(RVCurrentPlayback,"contentVideoID"),RVDislikeHasCount() ? RVDislikeCount : nil,RVEnabled(@"return_dislikes")];
     if ([revision isEqual:previous] && previousWatch==RVCurrentWatch) return;
     previous=revision;previousWatch=RVCurrentWatch;
+    RVRefreshElementDislikes();
     // Layout also discovers newly created/reused actions. Existing accessories
     // are refreshed immediately on video changes, toggle changes, and responses.
     for (UIView *view in RVDislikeActions.allObjects) {

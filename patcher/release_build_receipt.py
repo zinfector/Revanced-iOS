@@ -1,11 +1,11 @@
-"""Record 0.3.9 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.10 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.9'
+VERSION = '0.3.10'
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
              'native/RVSettingsNativeUI.inc', 'native/RVSettingsRows.inc', 'native/RVSettingsIcon.inc',
              'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
              'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
-             'profiles/ryd-native-vote-contracts.json']
+             'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}

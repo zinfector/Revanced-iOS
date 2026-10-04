@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.10",
+  "supported_youtube_version": "21.39.4",
+  "status": "experimental_adapter_device_unverified",
+  "device_failure_evidence": "device-0.3.9-ryd-display-failure.json",
+  "metadata": [
+    {
+      "name": "YTIconResolverImpl",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "imageForIcon:color:",
+          "encoding": "@28@0:8i16@20",
+          "imp": "0x100336134"
+        }
+      ]
+    },
+    {
+      "name": "CompositeIconController",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "imageForIcon:",
+          "encoding": "@24@0:8r^v16",
+          "imp": "0x100ed594c"
+        }
+      ]
+    },
+    {
+      "name": "YTAppIconSupportProviderImpl",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "delhiResourceMap",
+          "encoding": "@16@0:8",
+          "imp": "0x100336384"
+        }
+      ]
+    },
+    {
+      "name": "ELMComponent",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "owningComponent",
+          "encoding": "@16@0:8",
+          "imp": "0x104669f74"
+        },
+        {
+          "kind": "-",
+          "selector": "key",
+          "encoding": "@16@0:8",
+          "imp": "0x10466a018"
+        },
+        {
+          "kind": "-",
+          "selector": "element",
+          "encoding": "@16@0:8",
+          "imp": "0x100528ea4"
+        }
+      ]
+    },
+    {
+      "name": "ELMNodeController",
+      "superclass": "ASNodeController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "key",
+          "encoding": "@16@0:8",
+          "imp": "0x1046739dc"
+        },
+        {
+          "kind": "-",
+          "selector": "owningComponent",
+          "encoding": "@16@0:8",
+          "imp": "0x100545d3c"
+        },
+        {
+          "kind": "-",
+          "selector": "element",
+          "encoding": "@16@0:8",
+          "imp": "0x100591754"
+        }
+      ]
+    },
+    {
+      "name": "ELMContainerNode",
+      "superclass": "ASDisplayNode",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutDidFinish",
+          "encoding": "v16@0:8",
+          "imp": "0x100595aa4"
+        },
+        {
+          "kind": "-",
+          "selector": "element",
+          "encoding": "@16@0:8",
+          "imp": "0x10055076c"
+        }
+      ]
+    },
+    {
+      "name": "ELMElement",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "protoText",
+          "encoding": "@16@0:8",
+          "imp": "0x1046e8e38"
+        }
+      ]
+    },
+    {
+      "name": "ASDisplayNode",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "nodeController",
+          "encoding": "@16@0:8",
+          "imp": "0x100558340"
+        },
+        {
+          "kind": "-",
+          "selector": "yogaChildren",
+          "encoding": "@16@0:8",
+          "imp": "0x100550fbc"
+        },
+        {
+          "kind": "-",
+          "selector": "removeYogaChild:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x104710d84"
+        },
+        {
+          "kind": "-",
+          "selector": "appendYogaChild:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x104710ec0"
+        },
+        {
+          "kind": "-",
+          "selector": "style",
+          "encoding": "@16@0:8",
+          "imp": "0x1003fcd1c"
+        },
+        {
+          "kind": "-",
+          "selector": "isNodeLoaded",
+          "encoding": "B16@0:8",
+          "imp": "0x10035484c"
+        },
+        {
+          "kind": "-",
+          "selector": "view",
+          "encoding": "@16@0:8",
+          "imp": "0x100355be0"
+        },
+        {
+          "kind": "-",
+          "selector": "isLayerBacked",
+          "encoding": "B16@0:8",
+          "imp": "0x10035a808"
+        },
+        {
+          "kind": "-",
+          "selector": "yoga",
+          "encoding": "B16@0:8",
+          "imp": "0x10055de8c"
+        },
+        {
+          "kind": "-",
+          "selector": "supernode",
+          "encoding": "@16@0:8",
+          "imp": "0x1004649a0"
+        },
+        {
+          "kind": "-",
+          "selector": "subnodes",
+          "encoding": "@16@0:8",
+          "imp": "0x100358290"
+        }
+      ]
+    },
+    {
+      "name": "ASImageNode",
+      "superclass": "ASControlNode",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setImage:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x104720754"
+        },
+        {
+          "kind": "-",
+          "selector": "image",
+          "encoding": "@16@0:8",
+          "imp": "0x10054b68c"
+        }
+      ]
+    },
+    {
+      "name": "ASTextNode",
+      "superclass": "ASControlNode",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutDidFinish",
+          "encoding": "v16@0:8",
+          "imp": "0x10059668c"
+        },
+        {
+          "kind": "-",
+          "selector": "attributedText",
+          "encoding": "@16@0:8",
+          "imp": "0x10055df84"
+        },
+        {
+          "kind": "-",
+          "selector": "setAttributedText:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x10055db5c"
+        }
+      ]
+    }
+  ],
+  "evidence_sha256": {
+    "ryd-inline-layout-annotated.txt": "46a40809f0da76884da2d0214136a51e55f49dee2056924abff77c70ec154d8b",
+    "ryd-icon-path-annotated.txt": "81cc5778d1bff5cf2c9d96ca3b3c79d0fe06bc3420d462f5aa8ba5712562ad11",
+    "ryd-icon-fill-annotated.txt": "741f6788754f3561e579ab9f28275d18e9a26727e54669ec7d66818c5863031b",
+    "ryd-icon-up-fill-annotated.txt": "4df431a21051e7c561ab51f0143a93ebb1024cfb712379f0d048dfcc4abd7bc9",
+    "ryd-icon-resolver-assets-annotated.txt": "479dcf886eb85f269b3f6dc581cdcc7e010a5cef00d8c10d7f3f45d80cdcafd5",
+    "ryd-delhi-resource-catalog-annotated.txt": "a047f1a377cfd1be0014714ce8c612e613a714ee9cd804331c96771106faeae5",
+    "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
+    "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
+  },
+  "source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
+  "binding": "Native resolver identifies exact thumbs up/down assets. Only a paired control under the active watch hierarchy is considered. The owning component must identify video_action_bar or SegmentedLikeDislike and all explicit target video IDs must match the active fetched video.",
+  "layout": "Append one owned ASTextNode to the existing dislike Yoga branch; remove it on disabled feature, video change, or invalid binding; reattach only the owned child if native children are rebuilt.",
+  "no_native_commands_replaced": true,
+  "tests_run": false,
+  "device_verified": false,
+  "service_votes_sent": 0,
+  "remaining_scope": "The failed modern device hierarchy has not yet been observed with these new bindings. Missing role/video proofs leave controls unchanged and produce redacted counters. No full segmented-layout parity, Shorts count rendering or automatic RYD vote forwarding is claimed."
+}

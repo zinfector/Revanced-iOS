@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "patcher_version": "0.3.9",
+  "youtube_version": "21.39.4",
+  "ios_version": "27.0",
+  "source": "User-provided Hook diagnostics and screenshot, followed by explicit SponsorBlock success report.",
+  "return_youtube_dislike": {
+    "enabled": true,
+    "count_available": true,
+    "request_in_flight": false,
+    "inline_accessories": 0,
+    "bound_native_actions": 0,
+    "counts": {},
+    "display_visible": false,
+    "failure": "Fetched count is available, but the modern segmented watch action is outside both slim-view adapters."
+  },
+  "sponsorblock": {
+    "enabled": true,
+    "ordinary_content_gate": "ready",
+    "response_unwrapped": true,
+    "segment_count": 4,
+    "automatic_range_count": 2,
+    "fetch_state": "loaded",
+    "http_status": 200,
+    "marker_view_kind": "modular",
+    "marker_rectangles": 4,
+    "user_reports_working": true
+  },
+  "tests_run": false,
+  "ryd_fix_device_verified": false
+}

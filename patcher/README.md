@@ -1,4 +1,6 @@
-# YouTube iOS Patcher 0.3.9
+# YouTube iOS Patcher 0.3.10
+
+Version 0.3.10 addresses the fetched-but-invisible RYD count on modern segmented controls with a guarded native element/Yoga adapter. Its device binding remains unverified; see [ELEMENT_DISLIKES_SCHEME.md](ELEMENT_DISLIKES_SCHEME.md). The user confirms SponsorBlock works in 0.3.9, whose implementation is preserved. No tests run.
 
 A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 80 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
 
@@ -10,7 +12,7 @@ See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore
 
 The 0.3.1 auth artifact installed and its identity hook ran on the target device, but login failed and repeated keychain reads returned missing-entitlement errors. Version 0.3.2 uses the native private keychain, corrects the SSO request user-agent identity, and adds redacted auth-advice diagnostics; the user now reports login success on the target device.
 
-For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.9-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
+For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.10-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
 
 Version 0.3.3 adds miniplayer drag/horizontal-drag/double-tap switches, message/Premium badge hiding, square corners, minimum dimension, circular-background opacity, and a Shorts app-shortcut switch. These options are off/native in the default, expanded and SideStore-auth presets; configure them in the GUI or native settings. The 0.3.2 authentication adapter is preserved. See [MINIPLAYER_SCHEME.md](MINIPLAYER_SCHEME.md) for exact behavior and limits.
 
@@ -20,8 +22,8 @@ Version 0.3.5 connects SponsorBlock to the native player event-center clock, sha
 
 ## Deliverables
 
-- `output/YouTube-21.39.4-RVPort-0.3.9-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
-- `output/YouTube-21.39.4-RVPort-0.3.9-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.9-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
+- `output/YouTube-21.39.4-RVPort-0.3.10-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
+- `output/YouTube-21.39.4-RVPort-0.3.10-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.10-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.

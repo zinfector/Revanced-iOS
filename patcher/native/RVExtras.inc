@@ -298,6 +298,7 @@ static void RVExtraObserve(id controller) {
 }
 
 #include "RVDislikesUI.inc"
+#include "RVElementDislikes.inc"
 #include "RVNativeDislikes.inc"
 
 static NSURL *RVCurrentURL(BOOL timestamp) {
@@ -737,4 +738,4 @@ static void RVInstallLayout(void) {
     });
 }
 static void RVInstallExtras(void) {
-    RVInstallNativeDislikes();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
+    RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
