@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.1",
+  "patcher_version": "0.3.2",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -1307,8 +1307,8 @@
         "sideload_auth_identity",
         "sideload_auth_keychain"
       ],
-      "implementation": "Scoped native SSO application-identifier adaptation and signer-authorized keychain group, with redacted authentication diagnostics.",
-      "limits": "Android GmsCore/Binder/account services are not transplanted. Experimental 0.3.1 adapter; device login, refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements.",
+      "implementation": "Scoped native SSO application-identifier and request-user-agent adaptation, native private-keychain mode, and redacted authentication diagnostics.",
+      "limits": "Android GmsCore/Binder/account services are not transplanted. The 0.3.1 auth IPA installs and its hooks run, but device sign-in failed with repeated keychain entitlement errors. The revised 0.3.2 storage and user-agent adapters need device login, refresh and persistence testing. It cannot satisfy cryptographic signing-team/attestation requirements.",
       "parent": null,
       "device_validated": false
     },

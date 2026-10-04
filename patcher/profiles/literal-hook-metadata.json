@@ -521,6 +521,12 @@
         "selector": "continueAuthenticationForURL:externalAuthState:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x1045b292c"
+      },
+      {
+        "kind": "+",
+        "selector": "fetcherWithRequest:configuration:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x1045b4a44"
       }
     ]
   },
@@ -540,6 +546,12 @@
         "selector": "sharedAccessGroup",
         "encoding": "@16@0:8",
         "imp": "0x1002028d4"
+      },
+      {
+        "kind": "+",
+        "selector": "usePrivateKeychain",
+        "encoding": "B16@0:8",
+        "imp": "0x10020e624"
       }
     ]
   },
@@ -565,6 +577,12 @@
         "selector": "secItemUpdate:value:",
         "encoding": "i32@0:8@16@24",
         "imp": "0x1045cccd4"
+      },
+      {
+        "kind": "+",
+        "selector": "secItemDelete:",
+        "encoding": "i24@0:8@16",
+        "imp": "0x1045cccf0"
       }
     ]
   },
@@ -590,6 +608,23 @@
         "selector": "applicationIdentifier",
         "encoding": "@16@0:8",
         "imp": "0x1045cedfc"
+      }
+    ]
+  },
+  {
+    "name": "GTMSessionFetcher",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "request",
+        "encoding": "@16@0:8",
+        "imp": "0x10021f364"
+      },
+      {
+        "kind": "-",
+        "selector": "setRequestValue:forHTTPHeaderField:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x104fe0588"
       }
     ]
   }

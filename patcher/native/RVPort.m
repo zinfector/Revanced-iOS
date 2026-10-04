@@ -439,7 +439,7 @@ static void RVInstallPlayer(void) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSMutableDictionary *effective=[NSMutableDictionary dictionary];for (NSString *key in RVConfig) effective[key]=RVSetting(key) ?: NSNull.null;
             NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-            NSDictionary *report=@{@"patcher_version":@"0.3.1",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":effective,@"hooks":hooks,@"authentication":RVAuthenticationReport()};
+            NSDictionary *report=@{@"patcher_version":@"0.3.2",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":effective,@"hooks":hooks,@"authentication":RVAuthenticationReport()};
             NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
             if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         }]];

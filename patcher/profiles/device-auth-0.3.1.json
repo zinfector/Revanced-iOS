@@ -1,0 +1,48 @@
+{
+  "source": "User-provided redacted diagnostic report and screenshot; no direct device connection.",
+  "artifact": "YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa",
+  "patcher_version": "0.3.1",
+  "youtube_version": "21.39.4",
+  "ios_version": "27.0",
+  "profile_accepted": true,
+  "authentication_hooks_installed": 12,
+  "original_callback_scheme_registered": true,
+  "installed_bundle_matches_original": false,
+  "identity_enabled": true,
+  "keychain_enabled": true,
+  "identity_event": {
+    "tuple_matches": true,
+    "native_matches_original": false,
+    "adapter_applied": true
+  },
+  "keychain_probe_count": 28,
+  "probe_reported_status": -50,
+  "accessible_group_discovered": false,
+  "keychain_read_count": 27,
+  "keychain_read_statuses_observed": [
+    0,
+    -34018
+  ],
+  "system_browser_count": 1,
+  "system_browser_checks": {
+    "google_endpoint": true,
+    "client_id_present": true,
+    "client_matches": false,
+    "redirect_scheme_matches": true,
+    "challenge_method": "S256",
+    "fragment_present": true,
+    "package_name_present": false
+  },
+  "session_error": {
+    "domain_class": "system_auth_session",
+    "numeric_code": 1
+  },
+  "session_end": {
+    "domain_class": "google_sso",
+    "numeric_code": -204
+  },
+  "callback_url_present": false,
+  "login_result": "rejected_by_google",
+  "playback_result": "not_reported",
+  "limits": "Does not identify the probe failure stage, actual browser client ID, Google server error code, or signing entitlements. Hook installation does not prove feature behavior."
+}

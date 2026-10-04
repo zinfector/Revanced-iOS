@@ -1,4 +1,4 @@
-"""Audit already-built 0.3.1 artifacts and write their release metadata."""
+"""Audit already-built 0.3.2 artifacts and write their release metadata."""
 import json
 from pathlib import Path
 import zipfile
@@ -7,7 +7,7 @@ from features import CATALOG, FEATURES
 from patcher import file_sha, sha, validate_config
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 
 
 def read(name):
@@ -39,13 +39,13 @@ def main():
     require(sum(p['named_inventory'] for p in coverage['patches']) == 51, 'Incomplete named inventory')
     require(all(p['implementation'] and p['limits'] for p in coverage['patches']), 'Missing coverage detail')
     hooks = read('build/hook-check.json')
-    require(hooks['counts'] == {'match': 65, 'mismatch': 0, 'runtime_resolution_required': 0},
+    require(hooks['counts'] == {'match': 68, 'mismatch': 0, 'runtime_resolution_required': 0},
             'Unexpected direct-literal hook results')
-    ci = read('build/auth-ci-evidence.json')
+    ci = read('build/auth-ci-evidence-0.3.2.json')
     require(ci['conclusion']=='success' and ci['tests_passed']==33 and ci['native_auth_harness_passed'] and ci['windows_package_passed'], 'Missing passing authentication CI evidence')
     require(ci['payload_sha256']==payload_sha, 'CI payload mismatch')
-    reports = ['build/hook-check.json', 'build/auth-ci-evidence.json']
-    for name in ('gui-smoke-0.3.1', 'packaged-smoke-0.3.1'):
+    reports = ['build/hook-check.json', 'build/auth-ci-evidence-0.3.2.json']
+    for name in ('gui-smoke-0.3.2', 'packaged-smoke-0.3.2'):
         path = f'build/{name}.json'
         report = read(path)
         require(report['status'] == 'ok' and report['tk_interface_initialized']
@@ -54,8 +54,8 @@ def main():
         reports.append(path)
     outputs = []
     for suffix, config in (('', 'defaults'), ('-expanded', 'expanded'), ('-SideStore-auth', 'sideload-auth')):
-        name = f'output/YouTube-21.39.4-RVPort-0.3.1{suffix}-unsigned.ipa'
-        verification = f'build/verification-0.3.1-{config}.json'
+        name = f'output/YouTube-21.39.4-RVPort-0.3.2{suffix}-unsigned.ipa'
+        verification = f'build/verification-0.3.2-{config}.json'
         report = read(verification)
         require(report['status'] == 'verified' and report['retained_members_identical'] == (11760 if config=='sideload-auth' else 13462)
                 and report['removed_members'] == (1718 if config=='sideload-auth' else 16) and report['existing_load_commands_preserved']
@@ -100,8 +100,8 @@ def main():
         'original_ipa_sha256': source_sha, 'device_validated': False, 'signing_required': True,
         'device_test_target': target, 'live_contributions_tested': False,
         'remaining_scope': 'Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; '
-                           'runtime installation, playback and UI/service behavior require device evidence.'}
-    write('build/release-manifest-0.3.1.json', manifest)
+                           'The 0.3.1 auth IPA installs and its authentication hooks run but login failed; revised 0.3.2 login, playback and UI/service behavior require device evidence.'}
+    write('build/release-manifest-0.3.2.json', manifest)
     write('build/release-manifest.json', manifest)
     old_results = read('build/device-results-template.json')
     old_by_key = {test['key']: test for test in old_results['tests']}
@@ -124,7 +124,7 @@ def main():
     audit = {'objective': 'Port additional feasible local ReVanced equivalents and rebuild verified artifacts.',
              'host_artifact_stage_complete': True, 'full_revanced_parity': False,
              'evidence': {'native_switches': len(FEATURES), 'tests_passed': 33,
-                          'literal_and_getter_array_abi_matches': 65, 'covered_declarations': 113,
+                          'literal_and_getter_array_abi_matches': 68, 'covered_declarations': 113,
                           'named_inventory': 51, 'archive_reports': reports,
                           'source_original_preserved': True, 'payload_matches_sources_and_packages': True},
              'limitations': {'device_validated': False, 'signing_required': True,

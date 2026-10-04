@@ -12,7 +12,7 @@ The **Validate and build** workflow builds the native payload with Xcode, runs 3
 
 YouTube IPAs, SDKs, reverse-engineering tool installations, signing credentials and local build outputs are excluded from Git. Supply your own supported decrypted IPA through a direct HTTPS URL. GitHub provides the runner; you provide the Apple certificate and provisioning profile. Signing verification does not prove installation or feature behavior on iOS.
 
-The 0.3.1 authentication experiment adds scoped SSO identity and keychain adapters, a `sideload-auth` preset and redacted diagnostics. Successful Google login on the target device remains unverified. Older 0.3 IPAs are unchanged.
+The 0.3.2 authentication experiment uses scoped SSO request identity and native private-keychain adapters, a `sideload-auth` preset and redacted diagnostics. Successful Google login on the target device remains unverified. Older 0.3 and 0.3.1 IPAs are unchanged. The 0.3.1 auth IPA installed and its hooks ran, but login failed with repeated keychain entitlement errors; 0.3.2 device results remain pending.
 
 Run locally:
 
@@ -21,7 +21,7 @@ cd patcher
 python -m unittest discover -s tests -v
 python check_hooks.py
 python build.py
-python patcher.py patch original.ipa -o patched-unsigned.ipa --config configs/expanded.json
+python patcher.py patch original.ipa -o sideload-auth-unsigned.ipa --config configs/sideload-auth.json --strip-extensions
 ```
 
 `build.py` uses Xcode on macOS or the documented local Zig/SDK toolchain on Windows. The compact Objective-C evidence in `patcher/profiles` supports the directly named hook check. Coverage reports were generated from the local ReVanced source tree; place that tree alongside `patcher` to regenerate them. Real-IPA integration needs the original IPA, which is not included.

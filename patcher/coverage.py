@@ -69,7 +69,7 @@ MAPPING={
 'checkEnvironmentPatch':('adapted','schema','Exact source hash/profile checks in patcher and runtime UUID/version/config compatibility checks.','No Android installer/environment heuristics.'),
 'spoofVideoStreamsPatch':('blocked','','No iOS stream replacement implementation.','Requires a verified request/response protobuf adapter, account/token handling, stream URL and signature validation, expiry management and player format integration. Client-field overrides do not implement this.'),
 'userAgentClientSpoofPatch':('blocked','','No alternate-client transport/header spoofing.','No verified iOS Cronet/header request interception; changing headers alone can desynchronize client/auth/playback requests.'),
-'gmsCoreSupportPatch':('partial','sideload_auth_identity sideload_auth_keychain','Scoped native SSO application-identifier adaptation and signer-authorized keychain group, with redacted authentication diagnostics.','Android GmsCore/Binder/account services are not transplanted. Experimental 0.3.1 adapter; device login, refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements.'),
+'gmsCoreSupportPatch':('partial','sideload_auth_identity sideload_auth_keychain','Scoped native SSO application-identifier and request-user-agent adaptation, native private-keychain mode, and redacted authentication diagnostics.','Android GmsCore/Binder/account services are not transplanted. The 0.3.1 auth IPA installs and its hooks run, but device sign-in failed with repeated keychain entitlement errors. The revised 0.3.2 storage and user-agent adapters need device login, refresh and persistence testing. It cannot satisfy cryptographic signing-team/attestation requirements.'),
 'accountCredentialsInvalidTextPatch':('android_only','','No Android GmsCore error-text rewrite.','The Android account-credential screen does not apply to the iOS app.'),
 'fixContentProviderPatch':('android_only','','No Android ContentProvider manifest rewrite.','iOS has no Android ContentProvider authority.'),
 'fixBackToExitGesturePatch':('android_only','','No Android system-back gesture fix.','iOS navigation/back behavior differs.'),
@@ -126,7 +126,7 @@ def generate():
                 factory=match[2],status=status,config_keys=keys.split(),implementation=behavior,limits=limits,parent=parent,device_validated=False))
     if set(named)-{r['id'] for r in rows}:raise ValueError('Named inventory missing from coverage')
     counts=dict(collections.Counter(r['status'] for r in rows))
-    report={'patcher_version':'0.3.1','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
+    report={'patcher_version':'0.3.2','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
         'device_validated':False,'named_inventory_count':len(named),'declaration_count':len(rows),'status_counts':counts,'patches':rows}
     (ROOT/'coverage.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     lines=['# YouTube iOS port coverage — 0.3.1','',
