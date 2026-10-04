@@ -66,4 +66,8 @@ The GUI now removes extensions by default. Extension removal addresses this plac
 
 The user installed the extension-free 0.3.1 auth IPA and supplied diagnostics confirming its identity hook ran, but its keychain probe failed and repeated SSO reads returned missing-entitlement errors. The new 0.3.2 auth artifact uses native private-keychain storage and scoped SSO request-user-agent identity, with redacted auth-advice diagnostics. Select `sideload-auth` for a new source build. Successful login remains a device acceptance test; cloud signatures alone do not prove it.
 
-Current SideStore experiment: `YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa`, SHA-256 `f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0`. All six extensions are removed. See [the 0.3.2 receipt](patcher/profiles/release-0.3.2.json); old artifacts are preserved.
+Previous SideStore experiment: `YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa`, SHA-256 `f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0`. All six extensions are removed. See [the 0.3.2 receipt](patcher/profiles/release-0.3.2.json); old artifacts are preserved.
+
+## 0.3.3 miniplayer and shortcut release
+
+The latest extension-free SideStore artifact is `YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa`, SHA-256 `2728c87e903c310af89dd87866f768cd44d1c43096985d4fd0b0e7ab158e1dd4`. It preserves the 0.3.2 authentication implementation and adds optional miniplayer and app-shortcut controls; the new options retain native defaults in this preset. All six extensions are removed. [Release receipt](patcher/profiles/release-0.3.3.json) and [behavior/limits](patcher/MINIPLAYER_SCHEME.md). Google login and new UI behavior remain device-untested.

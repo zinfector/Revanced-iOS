@@ -1,0 +1,143 @@
+{
+  "version": "0.3.3",
+  "supported_version": "21.39.4",
+  "feature_switches": 79,
+  "expanded_enabled_switches": 30,
+  "auth_preset_enabled_switches": 32,
+  "tests_passed": 35,
+  "test_scope": {
+    "patcher_and_shared_helpers": 19,
+    "cloud_signing_and_download": 12,
+    "authentication_config_and_native_harness": 2,
+    "miniplayer_config_and_native_harness": 2
+  },
+  "ci": {
+    "run_id": 37184316117,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37184316117",
+    "commit": "66e2eb1779bf6011ded1e1d53c90e36378a0a62a",
+    "conclusion": "success",
+    "tests_passed": 35,
+    "tests_skipped": 0,
+    "native_auth_harness_passed": true,
+    "native_miniplayer_harness_passed": true,
+    "windows_package_passed": true,
+    "payload_sha256": "aecfdac1e09eadcb5d5dc0e10c9cf096c35f689e7c8848899d138faddc18c552",
+    "native_log_sha256": "d12fbf2412eb56de419397ad56021abab6e78d02a2fe4826c5e1f6dda00aec7d",
+    "device_login_verified": false
+  },
+  "native_compilation": "ARM64 iOS 17, warnings treated as errors",
+  "hook_check": {
+    "match": 77,
+    "mismatch": 0,
+    "runtime_resolution_required": 2
+  },
+  "hook_check_scope": "Literal RVHook/RVBoolGate calls and literal getter arrays. Other loops and runtime-resolved accessors require device diagnostics.",
+  "coverage": {
+    "declarations": 113,
+    "named_inventory": 51,
+    "statuses": {
+      "resource_adapter": 14,
+      "partial": 52,
+      "adapted": 24,
+      "native_existing": 1,
+      "infrastructure_adapter": 16,
+      "android_only": 4,
+      "blocked": 2
+    }
+  },
+  "original_ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "device_validated": false,
+  "signing_required": true,
+  "remaining_scope": "Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; The 0.3.1 auth IPA installs and its authentication hooks run but login failed; the 0.3.2 authentication adapter retained in 0.3.3 and new miniplayer/shortcut behavior require device evidence.",
+  "artifacts": {
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "2aa25c93903694f550ae4ae443b17e3d26e019f254b5889234088cd69104a099",
+      "size": 13744162
+    },
+    "build/RVPort.dylib": {
+      "sha256": "aecfdac1e09eadcb5d5dc0e10c9cf096c35f689e7c8848899d138faddc18c552",
+      "size": 311608
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.3-unsigned.ipa": {
+      "sha256": "84380a9a9b39d6a1c01a413ab78adb31ec30514513cfa52c3ff473f3278e9ab1",
+      "size": 151951115
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.3-expanded-unsigned.ipa": {
+      "sha256": "8c45ea436d3792ba8fad178809e7f84496aabdf58842b279dbad1f6e0b698d04",
+      "size": 151951421
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa": {
+      "sha256": "2728c87e903c310af89dd87866f768cd44d1c43096985d4fd0b0e7ab158e1dd4",
+      "size": 140338280
+    },
+    "coverage.json": {
+      "sha256": "94be514874980c734ec77429b23f17d9fbd046f21c621e3ffb7e8d13ea6e8bfc",
+      "size": 82555
+    },
+    "COVERAGE.md": {
+      "sha256": "91fccec44983362be1cd196e85a5bcdffa5e42c0807fe82f307171188a111b9e",
+      "size": 29835
+    },
+    "configs/defaults.json": {
+      "sha256": "3742bd02b50a713839e52538a0ced59d43fed16805e9f9992facbea7a0cec2a4",
+      "size": 3855
+    },
+    "configs/expanded.json": {
+      "sha256": "1a2654eef739c922a3cebe00ba6d21f3fc00538c1bedcc4abe7f4e39bf0ae877",
+      "size": 4383
+    },
+    "configs/all-candidates.json": {
+      "sha256": "d08eea4afa2513b2be62c510737f513ac17bb5a366b9853f7cf42de1270c8b05",
+      "size": 3778
+    },
+    "configs/sideload-auth.json": {
+      "sha256": "c45f77af8332398d47e9beebb2ce15ea916e2b9f58728cd5f8a8012587e31a87",
+      "size": 4381
+    },
+    "AUTHENTICATION_SCHEME.md": {
+      "sha256": "cbb00acda201d96092e674f16841f98b657ab95650726cde05ebfffeaac494d5",
+      "size": 19216
+    },
+    "MINIPLAYER_SCHEME.md": {
+      "sha256": "61c41994f1ccb538fb83135f9d5fbd1eba9fb9c8dbb77afff53f5150f77ef8a9",
+      "size": 6746
+    },
+    "profiles/miniplayer-evidence.json": {
+      "sha256": "eaa73a2b532bbc60845984a0ad8567bfafd7fa569a135130b6473667f26cada5",
+      "size": 4868
+    },
+    "README.md": {
+      "sha256": "5b7ce74227958610d7fa84246eba42e199f73f1e871cc4f5420bfd65aa7d575d",
+      "size": 17875
+    },
+    "DEVICE_TESTS.md": {
+      "sha256": "1a7bd9c26541798e1395c3e03eb06e937dbf855b1245135debb8bcb9053fefa4",
+      "size": 8362
+    }
+  },
+  "verification": {
+    "build/hook-check.json": "318e31f766c12a917d46c086c77770dca77c75eb36daf1037ddc6bb1f6805b9b",
+    "build/ci-evidence-0.3.3.json": "80190d46267537a27a791cf943a64670b2bf8c148c859527604db603d7bfb85c",
+    "build/gui-smoke-0.3.3.json": "97953c2f86e4b6be6470304bd87a296b0e3d128723aca9ce135b36d8badb5d81",
+    "build/packaged-smoke-0.3.3.json": "97953c2f86e4b6be6470304bd87a296b0e3d128723aca9ce135b36d8badb5d81",
+    "build/verification-0.3.3-defaults.json": "bb8326c744103d18bcc83f289ad2cf300b05b4fb245dbfd80f24f6b041a2f844",
+    "build/verification-0.3.3-expanded.json": "3fa88b2d07c7a71ba1fe7673a1c781e38c6e8ec5be6a6645823139897a8b0136",
+    "build/verification-0.3.3-sideload-auth.json": "542f454f5b66bcf258ce6c667971ab1c291b25ae94623ee2fb4b8af8f72b1e15"
+  },
+  "recommended_ipa": "output/YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa",
+  "device_evidence": "User supplied a 0.3.1 report showing applied identity adaptation, a failed keychain group probe and repeated missing-entitlement reads; login was rejected. The 0.3.2 authentication implementation is retained unchanged in 0.3.3. Successful login, playback, miniplayer and shortcut device behavior remain unverified.",
+  "native_source_files": {
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVExtras.inc": "fe51625f6b5324365126f7c42df7f0242fac41c79f6cf14bc0c9466a77aea427",
+    "RVFeatures.h": "cfe5bdef3bbf274bf2aee0521929d7dc1a74a070c452b6a8e1d1b9a0274faab3",
+    "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+    "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+    "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+    "RVMiniplayer.inc": "5f74fcd1514ced55c7a9a43f61a6b3dcf57cec36d48485d122991537c42b49ed",
+    "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+    "RVPort.m": "5609741838fd5c4a739f6d5ddde3ef7706bbe71d03ac4ad903682174b43d48f1",
+    "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+    "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee"
+  }
+}

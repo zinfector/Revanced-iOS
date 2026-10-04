@@ -29,3 +29,5 @@ python patcher.py patch original.ipa -o sideload-auth-unsigned.ipa --config conf
 See [LICENSE](LICENSE). The license covers the original patcher source, not YouTube, SDKs or third-party tools.
 
 Version 0.3.3 adds selected miniplayer gesture, badge, corner, size and background-opacity controls plus a Shorts app-shortcut switch. The 0.3.2 authentication implementation is preserved. See [miniplayer behavior and limits](patcher/MINIPLAYER_SCHEME.md). New options retain native defaults in the ordinary and authentication presets.
+
+[Verified 0.3.3 artifact receipt](patcher/profiles/release-0.3.3.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37184316117) passed all 35 host tests, built the ARM64 payload and packaged the 79-switch Windows GUI. Real-IPA verification preserves retained original files and executable sections/load commands. These checks do not establish successful device login or UI behavior.

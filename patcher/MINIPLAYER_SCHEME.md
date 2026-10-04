@@ -32,6 +32,8 @@ The input IPA SHA-256 is `37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715d
 
 The Android reference is the local `extensions/youtube/src/main/java/app/revanced/extension/youtube/patches/MiniplayerPatch.java` and `patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/shorts/HideShortsComponentsPatch.kt`. Android resource IDs, launcher/widget resources and miniplayer variants are not transplanted.
 
+[profiles/miniplayer-evidence.json](profiles/miniplayer-evidence.json) records the exact metadata methods and hashes of the local read-only decompilation and Android source inputs.
+
 Horizontal getter overrides are active only while the exact recognizer is inside a verified miniplayer pan handler. Nested scopes restore their predecessors, and exceptions clear the scope in `@finally`. Other recognizers and threads retain native getter results. Size reads the verified `YTUIUtils +appBounds` aggregate via NSInvocation, preserves the native result on incompatible/invalid inputs, and shares a tested finite-bound helper. Opacity uses class-local inherited setter overrides, retains an unmodified native-alpha baseline and guards inherited patched implementations against applying the factor twice. No global UIView alpha hook is installed.
 
 ## Verification scope

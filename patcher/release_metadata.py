@@ -79,7 +79,7 @@ def main():
             'Original source IPA changed')
     artifact_names = ['dist/YouTube-iOS-Patcher.exe', 'build/RVPort.dylib', *outputs,
                       'coverage.json', 'COVERAGE.md', 'configs/defaults.json',
-                      'configs/expanded.json', 'configs/all-candidates.json', 'configs/sideload-auth.json', 'AUTHENTICATION_SCHEME.md', 'MINIPLAYER_SCHEME.md', 'README.md', 'DEVICE_TESTS.md']
+                      'configs/expanded.json', 'configs/all-candidates.json', 'configs/sideload-auth.json', 'AUTHENTICATION_SCHEME.md', 'MINIPLAYER_SCHEME.md', 'profiles/miniplayer-evidence.json', 'README.md', 'DEVICE_TESTS.md']
     artifacts = {name: {'sha256': file_sha(ROOT / name), 'size': (ROOT / name).stat().st_size}
                  for name in artifact_names}
     target = read('build/device-test-target.json')
@@ -100,7 +100,7 @@ def main():
         'original_ipa_sha256': source_sha, 'device_validated': False, 'signing_required': True,
         'device_test_target': target, 'live_contributions_tested': False,
         'remaining_scope': 'Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; '
-                           'The 0.3.1 auth IPA installs and its authentication hooks run but login failed; revised 0.3.3 login, playback and UI/service behavior require device evidence.'}
+                           'The 0.3.1 auth IPA installs and its authentication hooks run but login failed; the 0.3.2 authentication adapter retained in 0.3.3 and new miniplayer/shortcut behavior require device evidence.'}
     write('build/release-manifest-0.3.3.json', manifest)
     write('build/release-manifest.json', manifest)
     old_results = read('build/device-results-template.json')

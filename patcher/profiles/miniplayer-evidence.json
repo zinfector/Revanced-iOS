@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.3",
+  "supported_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "original_ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "runtime_uses_fixed_addresses": false,
+  "device_validated": false,
+  "metadata_anchors": [
+    {
+      "name": "YTWatchFloatingMiniplayerViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "gestureRecognizerShouldBegin:",
+          "encoding": "B24@0:8@16",
+          "imp": "0x10158458c"
+        },
+        {
+          "kind": "-",
+          "selector": "didPan:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x1015869b0"
+        },
+        {
+          "kind": "-",
+          "selector": "didPanMiniBarWithRecognizer:state:delta:velocity:",
+          "encoding": "v64@0:8@16q24{CGPoint=dd}32{CGPoint=dd}48",
+          "imp": "0x101584ea8"
+        },
+        {
+          "kind": "-",
+          "selector": "didDoubleTap:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x101585214"
+        }
+      ]
+    },
+    {
+      "name": "YTMiniplayerLayerView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "didPanMiniplayer:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x1014ea254"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchFloatingMiniplayerBadgeView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setMessagingText:showingPremiumBadge:",
+          "encoding": "v28@0:8@16B24",
+          "imp": "0x10158a338"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchFloatingMiniplayerWithPersistentControlsView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "maskMiniplayerView",
+          "encoding": "v16@0:8",
+          "imp": "0x10158d62c"
+        },
+        {
+          "kind": "-",
+          "selector": "contentView",
+          "encoding": "@16@0:8",
+          "imp": "0x10158dea0"
+        },
+        {
+          "kind": "-",
+          "selector": "isCollapsingOrExpanding",
+          "encoding": "B16@0:8",
+          "imp": "0x10158dde8"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchMiniplayerConstants",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "minimumDefaultDimension",
+          "encoding": "d16@0:8",
+          "imp": "0x1034aa3e4"
+        }
+      ]
+    },
+    {
+      "name": "YTQuickActionsController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "shortcutItems",
+          "encoding": "@16@0:8",
+          "imp": "0x10066a308"
+        }
+      ]
+    },
+    {
+      "name": "YTUIUtils",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "appBounds",
+          "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+          "imp": "0x100310184"
+        }
+      ]
+    }
+  ],
+  "local_read_only_research_sha256": {
+    "build/miniplayer-details-decompiled.txt": "eb2913016c9b26e40a999014ed1e5bae417c1a30f60d4b7dd42c1037b34719a1",
+    "build/miniplayer-pan-decompiled.txt": "54bb412a9a981514849c91640eaf9384dae6ec8f5dd9758307f6b6797adbd731",
+    "build/miniplayer-actions-decompiled.txt": "0b0ceb82aa47d701ce8e9c92a62780e8eeb0def1c5a4f0b496aab8486edddee7",
+    "build/remaining-ui-decompiled.txt": "58da7bce762873a53a10d4281e27d24fb846a9a5503f69a25a81f270ff114ae3"
+  },
+  "local_android_source_sha256": {
+    "extensions/youtube/src/main/java/app/revanced/extension/youtube/patches/MiniplayerPatch.java": "a1d7a2d635172c411a610a9dfa36adedfc9f04187f1f844a4fe0b06bed43370f",
+    "patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/shorts/HideShortsComponentsPatch.kt": "30d92f239dcfdd4e7e33c088b4229a0a54df9e7d26af60675cc480b18fbe8a0f"
+  },
+  "external_runtime_guards": [
+    {
+      "class": "UIPanGestureRecognizer",
+      "selector": "translationInView:",
+      "expected_encoding": "{CGPoint=dd}@:@",
+      "scope": "Exact miniplayer recognizer and thread during verified pan-handler invocation"
+    },
+    {
+      "class": "UIPanGestureRecognizer",
+      "selector": "velocityInView:",
+      "expected_encoding": "{CGPoint=dd}@:@",
+      "scope": "Exact miniplayer recognizer and thread during verified pan-handler invocation"
+    }
+  ],
+  "inherited_class_local_guards": {
+    "classes": [
+      "YTWatchFloatingMiniplayerCircularBackgroundView",
+      "YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView"
+    ],
+    "selectors": {
+      "setAlpha:": "v@:d",
+      "layoutSubviews": "v@:"
+    },
+    "scope": "Each background class; preserves native-alpha baseline and avoids double factor on inherited patched methods"
+  },
+  "limits": "Selected miniplayer and app-shortcut equivalents. Host fixtures do not execute UIKit or real YouTube. Full variant/button/widget parity is not implemented."
+}
