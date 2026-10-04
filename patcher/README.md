@@ -1,4 +1,4 @@
-# YouTube iOS Patcher 0.3.8
+# YouTube iOS Patcher 0.3.9
 
 A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 80 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
 
@@ -10,7 +10,7 @@ See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore
 
 The 0.3.1 auth artifact installed and its identity hook ran on the target device, but login failed and repeated keychain reads returned missing-entitlement errors. Version 0.3.2 uses the native private keychain, corrects the SSO request user-agent identity, and adds redacted auth-advice diagnostics; the user now reports login success on the target device.
 
-For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.8-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
+For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.9-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
 
 Version 0.3.3 adds miniplayer drag/horizontal-drag/double-tap switches, message/Premium badge hiding, square corners, minimum dimension, circular-background opacity, and a Shorts app-shortcut switch. These options are off/native in the default, expanded and SideStore-auth presets; configure them in the GUI or native settings. The 0.3.2 authentication adapter is preserved. See [MINIPLAYER_SCHEME.md](MINIPLAYER_SCHEME.md) for exact behavior and limits.
 
@@ -20,13 +20,13 @@ Version 0.3.5 connects SponsorBlock to the native player event-center clock, sha
 
 ## Deliverables
 
-- `output/YouTube-21.39.4-RVPort-0.3.8-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
-- `output/YouTube-21.39.4-RVPort-0.3.8-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.8-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
+- `output/YouTube-21.39.4-RVPort-0.3.9-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
+- `output/YouTube-21.39.4-RVPort-0.3.9-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.9-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
 - [COVERAGE.md](COVERAGE.md) and [coverage.json](coverage.json): mapping and limitations for all 113 local YouTube patch declarations, including the 51 named patches and shared factories/dependencies.
-- `build/release-manifest.json` and `build/release-manifest-0.3.8.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.8.json](profiles/release-0.3.8.json).
+- `build/release-manifest.json` and `build/release-manifest-0.3.9.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.9.json](profiles/release-0.3.9.json).
 
 The old 0.1, 0.2, 0.3, 0.3.1 and 0.3.2 unsigned IPAs are retained separately. Supported source identity is in `profiles/youtube-21.39.4.json`; other binaries are refused. This targets iOS 17 or later, thin ARM64, with an unencrypted main executable. It does not add server authorization or credentials.
 
@@ -42,12 +42,12 @@ The original ad/background/SponsorBlock/feed/speed/quality hooks are extended wi
 - Video-frame and DeArrow thumbnails with bounded image availability probes, per-screen thumbnail modes, faster still variants, configurable HTTPS thumbnail proxying, public redirect unwrapping, external URL endpoint opening and sharing-parameter cleanup.
 - Native dark/light style and selected palette background colors, supplied header PNG and display-name/legacy-icon branding.
 - Verified request client-version, phone/tablet enum and screen/window dimension overrides on copied protobuf client-info.
-- RYD estimate badge and manual service votes; SponsorBlock per-category skip/skip-once/manual/marker-only/ignore policies, seekbar markers, highlight jumps, autoskip/manual skip/undo, minimum duration, manual segment/category votes and reviewed submissions; announcements reader; watch-history DNS diagnostic.
+- Native RYD dislike text and an inline element-backed watch-action estimate, plus manual service votes; SponsorBlock per-category skip/skip-once/manual/marker-only/ignore policies, seekbar markers, highlight jumps, autoskip/manual skip/undo, minimum duration, manual segment/category votes and reviewed submissions; announcements reader; watch-history DNS diagnostic.
 - SponsorBlock account lookup and manual username changes, local estimated seek statistics, and configuration/diagnostic report copying for device feedback.
 
 Read the per-patch limits in [COVERAGE.md](COVERAGE.md). Downloads are a share handoff requiring a compatible installed extension. RYD service votes are separate from your YouTube account's votes. Thumbnail proxying requires your own compatible endpoint. Age/login/rental verification remains native. Full stream replacement and alternate-client transport/header spoofing are **not implemented**; request-field overrides are not equivalents. Android GmsCore services are not transplanted; 0.3.2 instead adapts selected native SSO behavior. ContentProvider and system-back fixes have no corresponding mechanism in this IPA. Many UI patches implement a selected subset, not complete Android preference or resource parity.
 
-In the app, open **YouTube Settings → ReVanced**, or hold three fingers for one second as a fallback. The pane contains grouped switches and value editors, search, import/export and reset. **Copy configuration** is on the root screen; **Copy diagnostic report** is under Hook diagnostics. Reports include hook statuses and effective configuration without service identities. Video tools are available from the root screen or player overlay. SponsorBlock Tools exposes category behavior/color controls and manual contribution actions. Reopen the video or restart after changes affecting request construction/player models or network quality policy; not every feature updates an existing player immediately.
+In the app, open **YouTube Settings → ReVanced**, or hold three fingers for one second as a fallback. The pane contains grouped switches and value editors, search, import/export and reset. **Copy configuration** is on the root screen; **Copy diagnostic report** is under Hook diagnostics. Reports include hook statuses and effective configuration without service identities. Video tools are available from the root ReVanced settings screen. SponsorBlock Tools exposes category behavior/color controls and manual contribution actions. Reopen the video or restart after changes affecting request construction/player models or network quality policy; not every feature updates an existing player immediately.
 
 ## Windows GUI
 
@@ -151,3 +151,5 @@ The [0.3.7 build-only receipt](profiles/release-0.3.7.json) records the successf
 Version 0.3.8 integrates fetched dislike estimates into verified native slim dislike labels and matching main-video entity count/accessibility paths. It restores native text when disabled and rejects a mismatched video ID. The existing badge and manual service voting remain available; element-rendered buttons, online Shorts and automatic vote forwarding remain unported. Authentication and SponsorBlock behavior carry over unchanged. No tests ran. See [NATIVE_DISLIKES_SCHEME.md](NATIVE_DISLIKES_SCHEME.md).
 
 The [0.3.8 build-only receipt](profiles/release-0.3.8.json) records the successful [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37190989459), source commit and artifact hashes. Regression, static-hook and GUI-smoke steps were skipped. Native dislike rendering remains device-unverified.
+
+Version 0.3.9 merges a snapshot of the parallel settings UI and inline RYD work authorized by the user. Settings now use a checked YouTube-styled host, native rows/switches and content-level search with an embedded ReVanced icon. The player-overlay Tools/RYD boxes are removed; Video tools remain in settings, and identified element-backed watch actions gain inline estimates alongside the 0.3.8 native formatted-label adapter. The parallel UI work was still in progress at snapshot time; later shared edits are not claimed as included. No tests ran and device rendering remains unverified. [Merged snapshot](profiles/parallel-ui-snapshot-0.3.9.json).

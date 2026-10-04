@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "base_commit": "6dc40433401e33c08f3937f86eace267b12ad4f8",
+  "parallel_work_complete": false,
+  "source": "User authorized merging a snapshot of the still-edited settings UI and inline RYD work.",
+  "files": {
+    "build.py": {
+      "sha256": "bb41aeb6891c283715f9a1c68f80dadf6efa3063631cfd0a573aff9b70dc13c8",
+      "bytes": 4806,
+      "mtime_ns": 1791104870708669200
+    },
+    "check_hooks.py": {
+      "sha256": "7d48b3126559772ca10588dabafb1ee2781cb49aaac983a23567d2b5b6c861bd",
+      "bytes": 2781,
+      "mtime_ns": 1791103819891447400
+    },
+    "SETTINGS_UI_FIX_SCHEME.md": {
+      "sha256": "ebd28b8384c97d41e9cd7781982b73417b485b0fd83a5dbe16280709ac74f955",
+      "bytes": 25388,
+      "mtime_ns": 1791104977675835500
+    },
+    "profiles/literal-hook-metadata.json": {
+      "sha256": "f5dc8a41338b64b05ed018d624511c83cf144c37ee8816ab1fc59d54a00fe9ae",
+      "bytes": 29272,
+      "mtime_ns": 1791104871571001100
+    },
+    "profiles/settings-ui-evidence.json": {
+      "sha256": "545635e85a5b7428c2e3063fd6cf39dff35695a14fbacffa1476302a3708e8b3",
+      "bytes": 8051,
+      "mtime_ns": 1791103820608307900
+    },
+    "tests/settings.m": {
+      "sha256": "e35c4aaa05a3faa3ce4325de00f5e2123344fa236543e292dc4d0ec1eff7ce3c",
+      "bytes": 16159,
+      "mtime_ns": 1791103819891447400
+    },
+    "native/RVAuthentication.inc": {
+      "sha256": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "bytes": 8732,
+      "mtime_ns": 1791099188661610600
+    },
+    "native/RVAuthenticationSupport.h": {
+      "sha256": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "bytes": 8062,
+      "mtime_ns": 1791099188665469700
+    },
+    "native/RVDislikesUI.inc": {
+      "sha256": "4a01440a32c89380e069d663a0723da0d0721e846a3b077f0bea636a64c370a9",
+      "bytes": 10026,
+      "mtime_ns": 1791104870705577700
+    },
+    "native/RVExtras.inc": {
+      "sha256": "dbcbb86442c8e40fa7fb789afbfad148eed0978d2a8fb40f37006420f8af3092",
+      "bytes": 53884,
+      "mtime_ns": 1791104870706627500
+    },
+    "native/RVFeatures.h": {
+      "sha256": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+      "bytes": 4582,
+      "mtime_ns": 1791104871987251900
+    },
+    "native/RVImageHeader.h": {
+      "sha256": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+      "bytes": 617,
+      "mtime_ns": 1791099188676750100
+    },
+    "native/RVImages.inc": {
+      "sha256": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+      "bytes": 4042,
+      "mtime_ns": 1791099188689382800
+    },
+    "native/RVIntervals.h": {
+      "sha256": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+      "bytes": 1674,
+      "mtime_ns": 1791099188691419000
+    },
+    "native/RVMiniplayer.inc": {
+      "sha256": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "bytes": 13667,
+      "mtime_ns": 1791103736326940500
+    },
+    "native/RVMiniplayerSupport.h": {
+      "sha256": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+      "bytes": 647,
+      "mtime_ns": 1791099188701265200
+    },
+    "native/RVNativeDislikes.inc": {
+      "sha256": "340d19fbc9fb0bc1dceb805fc602d6fcef573c7e65e8fd587048174cbd35359b",
+      "bytes": 8173,
+      "mtime_ns": 1791104770993865400
+    },
+    "native/RVPort.m": {
+      "sha256": "d6156897f4be3fe7ea158dfadc0f836631db93ca3812f0c257ae3f4c6022cd76",
+      "bytes": 34796,
+      "mtime_ns": 1791103724437452400
+    },
+    "native/RVRuntime.inc": {
+      "sha256": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+      "bytes": 3026,
+      "mtime_ns": 1791099188712393100
+    },
+    "native/RVServices.inc": {
+      "sha256": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+      "bytes": 26422,
+      "mtime_ns": 1791099188720262300
+    },
+    "native/RVSettingsBridge.inc": {
+      "sha256": "fa55232db220f61f89807b8dbbeb51b6c3b37b2a92bc03e37e3789577aed36ac",
+      "bytes": 4558,
+      "mtime_ns": 1791103724436347200
+    },
+    "native/RVSettingsCatalog.h": {
+      "sha256": "293af9984447c5af8ca1649bf9e581427488e5dc63bc209d4728fa774e6c68f4",
+      "bytes": 26603,
+      "mtime_ns": 1791104872025614200
+    },
+    "native/RVSettingsIcon.inc": {
+      "sha256": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "bytes": 3213,
+      "mtime_ns": 1791103775508295700
+    },
+    "native/RVSettingsModel.inc": {
+      "sha256": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+      "bytes": 7271,
+      "mtime_ns": 1791099971506753100
+    },
+    "native/RVSettingsNativeUI.inc": {
+      "sha256": "00cda6e0899874d4bb4c3d749aed4d9e131c2b07afb5879f40df359d0c23f297",
+      "bytes": 24699,
+      "mtime_ns": 1791103315121829600
+    },
+    "native/RVSettingsRows.inc": {
+      "sha256": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+      "bytes": 5212,
+      "mtime_ns": 1791102726260291600
+    },
+    "native/RVSettingsUI.inc": {
+      "sha256": "9ab4e76052f8d0e3355bcf73cfd3b22ff23fa2a8f62a93a5a487f8728dd5bfc9",
+      "bytes": 19746,
+      "mtime_ns": 1791104814041157500
+    },
+    "native/assets/ReVancedSettings.png": {
+      "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "bytes": 302918,
+      "mtime_ns": 1791103110973101700
+    }
+  }
+}

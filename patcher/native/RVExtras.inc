@@ -7,9 +7,8 @@ static NSURLSessionDataTask *RVDislikeTask;
 static NSMutableDictionary *RVDislikeCache;
 static NSTimeInterval RVDislikeAttempt;
 static NSUInteger RVDislikeGeneration;
-static __weak UILabel *RVDislikeBadge;
+static void RVRefreshDislikeUI(void);
 static void RVNativeDislikeRefresh(void);
-static __weak UIView *RVCurrentOverlay;
 static __weak UIView *RVSegmentBar;
 static NSString *RVThumbnailContext=@"home";
 static NSString *RVThumbnailPivot=@"home";
@@ -46,7 +45,6 @@ static void RVSegmentsChanged(void) {
     RVSponsorValue(@"marker_bar_candidates",@(found));
 }
 static const void *RVHideKey=&RVHideKey, *RVSwipeKey=&RVSwipeKey, *RVLoopKey=&RVLoopKey;
-static const void *RVBadgeKey=&RVBadgeKey,*RVToolsKey=&RVToolsKey;
 static void RVShowTools(UIViewController *presenter);
 
 static BOOL RVVideoIDValid(id value) {
@@ -293,51 +291,14 @@ static void RVExtraObserve(id controller) {
             if (count) {
                 if (RVDislikeCache.count>=100) [RVDislikeCache removeAllObjects];
                 RVDislikeCache[requested]=@{@"count":count,@"time":@([NSDate timeIntervalSinceReferenceDate])};RVDislikeCount=count;
-                RVNativeDislikeRefresh();[RVCurrentOverlay setNeedsLayout];
+                RVNativeDislikeRefresh();
             }
         });
     }];[RVDislikeTask resume];
 }
 
+#include "RVDislikesUI.inc"
 #include "RVNativeDislikes.inc"
-
-@interface RVToolsRouter : NSObject
-- (void)open:(UIButton *)button;
-@end
-@implementation RVToolsRouter
-- (void)open:(UIButton *)button {
-    UIViewController *top=button.window.rootViewController;
-    while (top.presentedViewController) top=top.presentedViewController;
-    if (top) RVShowTools(top);
-}
-@end
-
-static void RVUpdateTools(UIView *view) {
-    BOOL owned=RVOwnedPlayerView(view);
-    if (owned) RVCurrentOverlay=view;
-    BOOL visible=owned && RVOrdinaryContent(RVCurrentPlayback);
-    UILabel *badge=objc_getAssociatedObject(view,RVBadgeKey);
-    if (!badge && RVEnabled(@"return_dislikes")) {
-        badge=[UILabel new];badge.font=[UIFont systemFontOfSize:12 weight:UIFontWeightMedium];badge.textColor=UIColor.whiteColor;
-        badge.backgroundColor=[UIColor colorWithWhite:0 alpha:.7];badge.layer.cornerRadius=6;badge.clipsToBounds=YES;badge.textAlignment=NSTextAlignmentCenter;
-        [view addSubview:badge];objc_setAssociatedObject(view,RVBadgeKey,badge,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    RVDislikeBadge=badge;badge.hidden=!visible || !RVEnabled(@"return_dislikes");
-    if (badge) {
-        badge.text=RVDislikeCount ? [NSString stringWithFormat:@"RYD estimate: %@",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]] : @"RYD: unavailable/loading";
-        badge.accessibilityLabel=badge.text;
-        badge.frame=CGRectMake(12,view.safeAreaInsets.top+48,185,28);
-    }
-    BOOL needsTools=RVEnabled(@"copy_video_url") || RVEnabled(@"external_downloads") || RVEnabled(@"picture_in_picture") || RVEnabled(@"custom_speed_menu") || RVEnabled(@"sponsorblock") || RVEnabled(@"sponsorblock_contribute") || RVEnabled(@"ryd_voting") || RVEnabled(@"announcements") || RVEnabled(@"watch_history_dns");
-    UIButton *tools=objc_getAssociatedObject(view,RVToolsKey);
-    if (!tools && needsTools) {
-        static RVToolsRouter *router; if (!router) router=[RVToolsRouter new];
-        tools=[UIButton buttonWithType:UIButtonTypeSystem];[tools setTitle:@"Tools" forState:UIControlStateNormal];[tools setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        tools.backgroundColor=[UIColor colorWithWhite:0 alpha:.7];tools.layer.cornerRadius=6;[tools addTarget:router action:@selector(open:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:tools];objc_setAssociatedObject(view,RVToolsKey,tools,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
-    tools.hidden=!visible || !needsTools;tools.frame=CGRectMake(fmax(12,view.bounds.size.width-80),view.safeAreaInsets.top+48,68,28);
-}
 
 static NSURL *RVCurrentURL(BOOL timestamp) {
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");
@@ -582,7 +543,7 @@ static void RVInstallPlayerExtras(void) {
         return ^(id watch,id player,id video) {
             ((void(*)(id,SEL,id,id))original)(watch,sel,player,video);
             __weak id weakWatch=watch;
-            dispatch_async(dispatch_get_main_queue(),^{ if (weakWatch) { RVCurrentWatch=weakWatch;if (RVEnabled(@"open_videos_fullscreen") && RVOrdinaryContent(RVCurrentPlayback)) RVSetBool(weakWatch,"setFullscreen:",YES); } });
+            dispatch_async(dispatch_get_main_queue(),^{ if (weakWatch) { RVCurrentWatch=weakWatch;RVRefreshDislikeUI();if (RVEnabled(@"open_videos_fullscreen") && RVOrdinaryContent(RVCurrentPlayback)) RVSetBool(weakWatch,"setFullscreen:",YES); } });
         };
     });
     RVHook(@"YTLocalPlaybackController",@"finishPlayback",@"v@:",NO,^id(IMP original,SEL sel) {
@@ -725,7 +686,7 @@ static void RVInstallLayout(void) {
             RVHideView(RVObject(controls,"closedCaptionsOrSubtitlesButton"),RVEnabled(@"hide_captions_button"));
             UIView *background=RVObject(object,"backgroundView");
             if ([background isKindOfClass:[UIView class]] && [RVSetting(@"overlay_opacity") doubleValue]<1) background.alpha=[RVSetting(@"overlay_opacity") doubleValue];
-            if ([object isKindOfClass:[UIView class]]) { RVAttachSwipes(object);RVUpdateTools(object); }
+            if ([object isKindOfClass:[UIView class]]) RVAttachSwipes(object);
         };
     });
     RVHook(@"YTMainAppVideoPlayerOverlayView",@"setClosedCaptionsOrSubtitlesButtonAvailable:",@"v@:B",NO,^id(IMP original,SEL sel) {
@@ -776,4 +737,4 @@ static void RVInstallLayout(void) {
     });
 }
 static void RVInstallExtras(void) {
-    RVInstallNativeDislikes(); RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
+    RVInstallNativeDislikes();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }

@@ -866,6 +866,30 @@
         "selector": "itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:",
         "encoding": "@56@0:8@16@24@32@?40@?48",
         "imp": "0x10186f214"
+      },
+      {
+        "kind": "-",
+        "selector": "setOn:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x101870030"
+      },
+      {
+        "kind": "-",
+        "selector": "setEnabled:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x101870040"
+      },
+      {
+        "kind": "-",
+        "selector": "setSettingIcon:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101870138"
+      },
+      {
+        "kind": "+",
+        "selector": "switchItemWithTitle:titleDescription:accessibilityIdentifier:switchOn:switchBlock:",
+        "encoding": "@52@0:8@16@24@32B40@?44",
+        "imp": "0x10186f53c"
       }
     ]
   },
@@ -1017,6 +1041,12 @@
         "selector": "actionViewWithSlimMetadataButtonSupportedRenderer:parentResponder:",
         "encoding": "@32@0:8@16@24",
         "imp": "0x101435348"
+      },
+      {
+        "kind": "-",
+        "selector": "sizeThatFits:",
+        "encoding": "{CGSize=dd}32@0:8{CGSize=dd}16",
+        "imp": "0x101435cec"
       }
     ]
   },
@@ -1095,6 +1125,120 @@
         "selector": "slimButton_isDislikeButton",
         "encoding": "B16@0:8",
         "imp": "0x1014386d8"
+      }
+    ]
+  },
+  {
+    "name": "YTSettingsSectionController",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithTitle:items:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x10186dfc8"
+      },
+      {
+        "kind": "-",
+        "selector": "updateCell:forIndex:",
+        "encoding": "v32@0:8@16q24",
+        "imp": "0x10186e374"
+      },
+      {
+        "kind": "-",
+        "selector": "sizeForItemAtIndex:withSize:",
+        "encoding": "{CGSize=dd}40@0:8q16{CGSize=dd}24",
+        "imp": "0x10186e8a8"
+      },
+      {
+        "kind": "-",
+        "selector": "classForHeader",
+        "encoding": "#16@0:8",
+        "imp": "0x10186e980"
+      },
+      {
+        "kind": "-",
+        "selector": "sizeForHeaderWithSize:",
+        "encoding": "{CGSize=dd}32@0:8{CGSize=dd}16",
+        "imp": "0x10186e98c"
+      },
+      {
+        "kind": "-",
+        "selector": "updateHeader:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10186e9f4"
+      },
+      {
+        "kind": "-",
+        "selector": "didSelectItemAtIndex:fromView:",
+        "encoding": "v32@0:8q16@24",
+        "imp": "0x10186eab8"
+      },
+      {
+        "kind": "-",
+        "selector": "setHeaderHidden:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x10186eef0"
+      },
+      {
+        "kind": "-",
+        "selector": "setUseUpdatedSettingsColors:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x10186ef98"
+      }
+    ]
+  },
+  {
+    "name": "YTSettingsCell",
+    "superclass": "YTCollectionViewCell",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "pageStyleDidChange:",
+        "encoding": "v24@0:8q16",
+        "imp": "0x10186bf28"
+      },
+      {
+        "kind": "-",
+        "selector": "setParentResponder:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10186ca0c"
+      }
+    ]
+  },
+  {
+    "name": "YTStyledViewController",
+    "superclass": "YTMultiSizeViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithParentResponder:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x10027a6b4"
+      },
+      {
+        "kind": "-",
+        "selector": "viewDidLoad",
+        "encoding": "v16@0:8",
+        "imp": "0x1003dafe8"
+      },
+      {
+        "kind": "-",
+        "selector": "viewWillAppear:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x1003dc854"
+      },
+      {
+        "kind": "-",
+        "selector": "setupNavigationBarAppearance",
+        "encoding": "v16@0:8",
+        "imp": "0x1043f0f68"
+      },
+      {
+        "kind": "-",
+        "selector": "setShouldSetupNavigationBarStyle:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x100283764"
       }
     ]
   }

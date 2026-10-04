@@ -1,32 +1,14 @@
 // SPDX-License-Identifier: MIT
-#include "RVSettingsModel.inc"
+#include "RVSettingsRows.inc"
+#include "RVSettingsNativeUI.inc"
 
-static const void *RVPreferenceToggleKey=&RVPreferenceToggleKey;
-static NSString *RVPreferenceValueTitle(id value,NSDictionary *rule) {
-    NSUInteger index=[rule[@"choices"] indexOfObject:value];
-    NSArray *labels=rule[@"choice_labels"];
-    if (labels && index<labels.count) return labels[index];
-    if ([value isKindOfClass:NSDictionary.class]) return [NSString stringWithFormat:@"%lu overrides",(unsigned long)[value count]];
-    if ([value isKindOfClass:NSArray.class]) return [NSString stringWithFormat:@"%lu choices",(unsigned long)[value count]];
-    if ([value isKindOfClass:NSNumber.class]) {
-        if ([value doubleValue]==0 && rule[@"zero_label"]) return rule[@"zero_label"];
-        return [NSString stringWithFormat:@"%@%@%@",value,rule[@"unit"] ? @" " : @"",rule[@"unit"] ?: @""];
-    }
-    return [value length] ? value : @"Native / default";
-}
-static NSString *RVPreferenceMemberTitle(NSString *key) {
-    NSDictionary *names=@{@"home":@"Home",@"subscriptions":@"Subscriptions",@"library":@"Library",@"player":@"Player",@"search":@"Search",
-        @"sponsor":@"Sponsor",@"selfpromo":@"Self-promotion",@"interaction":@"Interaction reminder",@"intro":@"Intro",@"outro":@"Outro",
-        @"preview":@"Preview",@"music_offtopic":@"Off-topic music",@"filler":@"Filler",@"hook":@"Hook",@"poi_highlight":@"Highlight"};
-    return names[key] ?: key.capitalizedString;
-}
 static NSNumber *RVPreferenceParseNumber(NSString *text) {
     NSScanner *scanner=[NSScanner scannerWithString:[text stringByReplacingOccurrencesOfString:@"," withString:@"."]];
     scanner.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     double value;
     return [scanner scanDouble:&value] && scanner.isAtEnd && isfinite(value) ? @(value) : nil;
 }
-static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(); }
+static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh(); }
 
 @interface RVPreferenceTextController : UIViewController
 @property(nonatomic,strong) UITextView *editor;
@@ -36,9 +18,10 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 @end
 @implementation RVPreferenceTextController
 - (void)viewDidLoad {
-    [super viewDidLoad];self.view.backgroundColor=UIColor.systemBackgroundColor;
-    UILabel *hint=[UILabel new];hint.text=self.hint;hint.numberOfLines=0;hint.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];hint.textColor=UIColor.secondaryLabelColor;
+    [super viewDidLoad];RVSettingsRefreshAppearance(self);
+    UILabel *hint=[UILabel new];hint.text=self.hint;hint.numberOfLines=0;hint.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];hint.textColor=RVSettingsColor(self,"textSecondary");
     self.editor=[UITextView new];self.editor.font=[UIFont preferredFontForTextStyle:UIFontTextStyleBody];self.editor.adjustsFontForContentSizeCategory=YES;
+    self.editor.backgroundColor=RVSettingsColor(self,"baseBackground");self.editor.textColor=RVSettingsColor(self,"textPrimary");
     self.editor.text=self.initialText ?: @"";self.editor.autocorrectionType=UITextAutocorrectionTypeNo;self.editor.autocapitalizationType=UITextAutocapitalizationTypeNone;
     hint.translatesAutoresizingMaskIntoConstraints=NO;self.editor.translatesAutoresizingMaskIntoConstraints=NO;
     [self.view addSubview:hint];[self.view addSubview:self.editor];
@@ -47,27 +30,25 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
         [hint.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor constant:16],[hint.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor constant:-16],
         [self.editor.topAnchor constraintEqualToAnchor:hint.bottomAnchor constant:8],[self.editor.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor constant:12],
         [self.editor.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor constant:-12],[self.editor.bottomAnchor constraintEqualToAnchor:self.view.keyboardLayoutGuide.topAnchor]]];
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
+    RVSettingsOwner(self).navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
 }
 - (void)save {
     if ([self.editor.text lengthOfBytesUsingEncoding:NSUTF8StringEncoding]>128*1024) { [self showError:@"The text is too large (maximum 128 KB)."];return; }
     NSString *error=self.saveText ? self.saveText(self.editor.text) : @"No setting selected.";
     if (error) { [self showError:error];return; }
-    RVPreferencesChanged();[self.navigationController popViewControllerAnimated:YES];
+    RVPreferencesChanged();RVSettingsPop(self);
 }
 - (void)showError:(NSString *)message {
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Unable to save" message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:alert animated:YES completion:nil];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];[RVSettingsOwner(self) presentViewController:alert animated:YES completion:nil];
 }
 @end
 
-@interface RVSettingsController : UITableViewController <UISearchResultsUpdating>
-@property(nonatomic,copy) NSString *groupID;
-@property(nonatomic,copy) NSString *mapKey;
-@property(nonatomic,copy) NSString *listKey;
-@property(nonatomic,strong) NSArray *keys;
-@property(nonatomic,strong) NSArray *searchKeys;
-@property(nonatomic,strong) UISearchController *search;
+@interface RVSettingsController : UIViewController <UISearchBarDelegate>
+@property(nonatomic,copy) NSString *groupID,*mapKey,*listKey;
+@property(nonatomic,strong) RVSettingsListController *list;
+@property(nonatomic,strong) UISearchBar *searchBar;
+@property(nonatomic) CGPoint rootScrollOffset;
 @property(nonatomic) BOOL modalEntry;
 @end
 @implementation RVSettingsController
@@ -76,82 +57,65 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
     return nil;
 }
 - (BOOL)isRoot { return !self.groupID && !self.mapKey && !self.listKey; }
-- (BOOL)isSearching { return self.search.isActive && [self.search.searchBar.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length>0; }
+- (BOOL)isSearching { return [self.searchBar.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length>0; }
 - (void)viewDidLoad {
-    [super viewDidLoad];self.tableView.rowHeight=UITableViewAutomaticDimension;self.tableView.estimatedRowHeight=64;
+    [super viewDidLoad];self.list=[RVSettingsListController new];__weak typeof(self) weakSelf=self;
+    self.list.selected=^(NSDictionary *row) { [weakSelf selectRow:row]; };
+    self.list.changed=^BOOL(NSDictionary *row,BOOL on) {
+        BOOL saved=RVSettingsSaveToggle(row,on);if (saved) RVPreferencesChanged();return saved;
+    };
+    [self addChildViewController:self.list];self.list.view.translatesAutoresizingMaskIntoConstraints=NO;[self.view addSubview:self.list.view];
+    [self.list didMoveToParentViewController:self];UILayoutGuide *safe=self.view.safeAreaLayoutGuide;
+    NSLayoutYAxisAnchor *top=safe.topAnchor;
     if (self.isRoot) {
-        self.title=@"ReVanced";self.definesPresentationContext=YES;
-        self.search=[[UISearchController alloc] initWithSearchResultsController:nil];self.search.searchResultsUpdater=self;
-        self.search.obscuresBackgroundDuringPresentation=NO;self.search.searchBar.placeholder=@"Search patch settings";
-        self.navigationItem.searchController=self.search;self.navigationItem.hidesSearchBarWhenScrolling=NO;
-        if (self.modalEntry) self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
-    } else if (self.mapKey) { self.title=RVPreferenceDescriptor(self.mapKey)[@"title"];self.keys=RVPreferenceDescriptor(self.mapKey)[@"map_keys"]; }
-    else if (self.listKey) { self.title=RVPreferenceDescriptor(self.listKey)[@"title"];self.keys=RVPreferenceDescriptor(self.listKey)[@"allowed"]; }
-    else { self.title=self.group[@"title"];self.keys=self.group[@"keys"]; }
-    [self applyAppearance];
+        self.searchBar=[UISearchBar new];self.searchBar.delegate=self;self.searchBar.placeholder=@"Search patch settings";
+        self.searchBar.searchBarStyle=UISearchBarStyleMinimal;self.searchBar.autocapitalizationType=UITextAutocapitalizationTypeNone;
+        self.searchBar.autocorrectionType=UITextAutocorrectionTypeNo;self.searchBar.translatesAutoresizingMaskIntoConstraints=NO;
+        [self.view addSubview:self.searchBar];
+        [NSLayoutConstraint activateConstraints:@[[self.searchBar.topAnchor constraintEqualToAnchor:safe.topAnchor],
+            [self.searchBar.leadingAnchor constraintEqualToAnchor:safe.leadingAnchor constant:8],
+            [self.searchBar.trailingAnchor constraintEqualToAnchor:safe.trailingAnchor constant:-8]]];
+        top=self.searchBar.bottomAnchor;
+    }
+    [NSLayoutConstraint activateConstraints:@[[self.list.view.topAnchor constraintEqualToAnchor:top],
+        [self.list.view.leadingAnchor constraintEqualToAnchor:safe.leadingAnchor],[self.list.view.trailingAnchor constraintEqualToAnchor:safe.trailingAnchor],
+        [self.list.view.bottomAnchor constraintEqualToAnchor:self.view.keyboardLayoutGuide.topAnchor]]];
+    [self applyAppearance];[self reloadRows];
 }
-- (void)viewWillAppear:(BOOL)animated { [super viewWillAppear:animated];[self applyAppearance];[self.tableView reloadData]; }
+- (void)viewWillAppear:(BOOL)animated { [super viewWillAppear:animated];[self applyAppearance];[self reloadRows]; }
+- (void)viewWillDisappear:(BOOL)animated { [super viewWillDisappear:animated];[self.view endEditing:YES]; }
+- (void)traitCollectionDidChange:(UITraitCollection *)previous {
+    [super traitCollectionDidChange:previous];if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previous]) { [self applyAppearance];[self reloadRows]; }
+    if (![self.traitCollection.preferredContentSizeCategory isEqual:previous.preferredContentSizeCategory]) [self.list.collection.collectionViewLayout invalidateLayout];
+}
 - (void)applyAppearance {
-    NSString *theme=RVSetting(@"theme");self.overrideUserInterfaceStyle=[theme isEqual:@"dark"] ? UIUserInterfaceStyleDark : [theme isEqual:@"light"] ? UIUserInterfaceStyleLight : UIUserInterfaceStyleUnspecified;
+    RVSettingsRefreshAppearance(self);self.searchBar.searchTextField.textColor=RVSettingsColor(self,"textPrimary");
+    self.searchBar.tintColor=[UIColor colorWithRed:.24 green:.61 blue:.98 alpha:1];
+    self.searchBar.searchTextField.backgroundColor=RVSettingsPageStyle(self)==1 ? [UIColor colorWithWhite:.15 alpha:1] : [UIColor colorWithWhite:.94 alpha:1];
 }
-- (void)done { [self dismissViewControllerAnimated:YES completion:nil]; }
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController { self.searchKeys=RVSearchPreferences(searchController.searchBar.text ?: @"");[self.tableView reloadData]; }
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return self.isRoot && !self.isSearching ? 2 : 1; }
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.isSearching) return self.searchKeys.count;
-    if (self.isRoot) return section==0 ? [RVPreferencesCatalog()[@"groups"] count] : 6;
-    return self.keys.count;
+- (void)done { [RVSettingsOwner(self) dismissViewControllerAnimated:YES completion:nil]; }
+- (void)reloadRows { [self.list reloadSections:RVSettingsRows(self.groupID,self.mapKey,self.listKey,self.searchBar.text ?: @"")]; }
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)bar {
+    if (!self.isSearching) self.rootScrollOffset=self.list.collection.contentOffset;
+    [bar setShowsCancelButton:YES animated:YES];
 }
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { return self.isRoot && !self.isSearching ? (section==0 ? @"Patch settings" : @"Tools and configuration") : nil; }
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (self.isRoot && !self.isSearching) return section==0 ? @"Changes are saved on this device. Reopen the affected video or screen to apply them. Restart after changing authentication settings." : @"Reset restores the configuration bundled in this IPA and leaves accounts and service identities intact.";
-    if (self.mapKey) return @"Default removes this per-item override. Global settings then apply.";
-    if (self.listKey) return @"Enabled categories are requested when the next video is opened.";
-    return self.group[@"hint"];
+- (void)searchBar:(UISearchBar *)bar textDidChange:(NSString *)text {
+    (void)bar;(void)text;[self reloadRows];
+    if (!self.isSearching) [self.list.collection setContentOffset:self.rootScrollOffset animated:NO];
+    else [self.list.collection setContentOffset:CGPointMake(0,-self.list.collection.adjustedContentInset.top) animated:NO];
 }
-- (NSString *)keyAtIndex:(NSIndexPath *)index { return self.isSearching ? self.searchKeys[index.row] : self.keys[index.row]; }
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)index {
-    UITableViewCell *cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
-    cell.textLabel.numberOfLines=0;cell.detailTextLabel.numberOfLines=0;cell.textLabel.font=[UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    cell.detailTextLabel.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];cell.detailTextLabel.textColor=UIColor.secondaryLabelColor;
-    if (self.isRoot && !self.isSearching) {
-        if (index.section==0) { NSDictionary *group=RVPreferencesCatalog()[@"groups"][index.row];cell.textLabel.text=group[@"title"];cell.detailTextLabel.text=[NSString stringWithFormat:@"%lu settings",(unsigned long)[group[@"keys"] count]]; }
-        else cell.textLabel.text=@[@"Video tools",@"Import configuration",@"Copy configuration",@"Reset patch settings",@"Hook diagnostics",@"About"] [index.row];
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;return cell;
-    }
-    NSString *key=[self keyAtIndex:index];
-    if (self.mapKey) { id value=RVSetting(self.mapKey)[key];cell.textLabel.text=RVPreferenceMemberTitle(key);cell.detailTextLabel.text=value ? RVPreferenceValueTitle(value,RVPreferenceDescriptor(self.mapKey)) : @"Default";cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;return cell; }
-    NSDictionary *rule=RVPreferenceDescriptor(self.listKey ?: key);
-    cell.textLabel.text=self.listKey ? RVPreferenceMemberTitle(key) : rule[@"title"];cell.accessibilityIdentifier=[@"rvport.pref." stringByAppendingString:self.listKey ?: key];
-    if (self.listKey || [rule[@"kind"] isEqual:@"bool"]) {
-        UISwitch *toggle=[UISwitch new];toggle.on=self.listKey ? [RVSetting(self.listKey) containsObject:key] : [RVSetting(key) boolValue];toggle.enabled=RVCompatible;
-        objc_setAssociatedObject(toggle,RVPreferenceToggleKey,@{@"key":self.listKey ?: key,@"entry":self.listKey ? key : @""},OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        toggle.accessibilityLabel=cell.textLabel.text;[toggle addTarget:self action:@selector(toggled:) forControlEvents:UIControlEventValueChanged];cell.accessoryView=toggle;cell.selectionStyle=UITableViewCellSelectionStyleNone;
-        cell.detailTextLabel.text=rule[@"hint"];
-    } else {
-        NSString *value=RVPreferenceValueTitle(RVSetting(key) ?: rule[@"default"],rule);
-        cell.detailTextLabel.text=[rule[@"hint"] length] ? [NSString stringWithFormat:@"%@\n%@",value,rule[@"hint"]] : value;
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-    }
-    cell.userInteractionEnabled=RVCompatible;return cell;
+- (void)searchBarSearchButtonClicked:(UISearchBar *)bar { [bar resignFirstResponder]; }
+- (void)searchBarCancelButtonClicked:(UISearchBar *)bar {
+    bar.text=@"";[bar resignFirstResponder];[bar setShowsCancelButton:NO animated:YES];[self reloadRows];
+    [self.list.collection setContentOffset:self.rootScrollOffset animated:NO];
 }
-- (void)toggled:(UISwitch *)toggle {
-    NSDictionary *target=objc_getAssociatedObject(toggle,RVPreferenceToggleKey);NSString *key=target[@"key"],*entry=target[@"entry"];
-    id value=@(toggle.on);
-    if (entry.length) {
-        NSMutableArray *items=[(RVSetting(key) ?: @[]) mutableCopy];
-        [items removeObject:entry];if (toggle.on) [items addObject:entry];value=items;
-    }
-    if (!RVSavePreference(key,value)) toggle.on=!toggle.on;
-    RVPreferencesChanged();
-}
+- (void)searchBarTextDidEndEditing:(UISearchBar *)bar { if (!self.isSearching) [bar setShowsCancelButton:NO animated:YES]; }
 - (void)message:(NSString *)title text:(NSString *)text {
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
 }
 - (void)presentPreferenceAlert:(UIAlertController *)alert {
-    // An active UISearchController owns presentation while editing a search result.
-    UIViewController *presenter=self.search.isActive && self.search.isViewLoaded && self.search.view.window ? self.search : self;
+    [self.view endEditing:YES];UIViewController *presenter=RVSettingsOwner(self);
     UIViewController *previous=presenter.presentedViewController;
     if ([previous isKindOfClass:UIAlertController.class]) {
         // Picker actions can open an editor or validation message while the picker is closing.
@@ -162,7 +126,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 }
 - (void)write:(NSString *)key value:(id)value {
     if (!RVSavePreference(key,value)) { [self message:@"Invalid setting" text:@"The value is outside the supported range or format."];return; }
-    RVPreferencesChanged();[self applyAppearance];[self.tableView reloadData];
+    RVPreferencesChanged();[self applyAppearance];[self reloadRows];
 }
 - (void)choose:(NSString *)key member:(NSString *)member {
     NSDictionary *rule=RVPreferenceDescriptor(key);NSArray *values=rule[@"choices"] ?: rule[@"options"];
@@ -211,47 +175,48 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
         }
         return RVSavePreference(key,values) ? nil : @"The list has unsupported values or too many entries.";
     };
-    [self.navigationController pushViewController:editor animated:YES];
+    RVSettingsPush(self,editor);
 }
 - (void)diagnostics {
     NSString *text;@synchronized(RVStatus) { text=[RVStatus componentsJoinedByString:@"\n"]; }
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":@"0.3.8",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport()};
+        NSDictionary *report=@{@"patcher_version":@"0.3.9",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
 }
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)index {
-    [tableView deselectRowAtIndexPath:index animated:YES];
-    if (self.isRoot && !self.isSearching) {
-        if (index.section==0) { RVSettingsController *page=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];page.groupID=RVPreferencesCatalog()[@"groups"][index.row][@"id"];[self.navigationController pushViewController:page animated:YES];return; }
-        if (index.row==0) { RVShowTools(self);return; }
-        if (index.row==1) {
+- (void)selectRow:(NSDictionary *)row {
+    [self.view endEditing:YES];
+    if (row[@"group"] || row[@"tool"]) {
+        if (row[@"group"]) { RVSettingsController *page=[RVSettingsController new];page.groupID=row[@"group"];page.title=page.group[@"title"];RVSettingsPush(self,page);return; }
+        NSUInteger tool=[row[@"tool"] unsignedIntegerValue];
+        if (tool==0) { RVShowTools(RVSettingsOwner(self));return; }
+        if (tool==1) {
             RVPreferenceTextController *editor=[RVPreferenceTextController new];editor.title=@"Import configuration";editor.hint=@"Paste a configuration exported by this iOS patcher. Only supplied settings change; all values are checked before saving. Android preference files use a different format.";
             editor.initialText=@"";editor.saveText=^NSString *(NSString *text) { NSData *data=[text dataUsingEncoding:NSUTF8StringEncoding];id values=data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;return RVApplyPreferenceImport(values); };
-            [self.navigationController pushViewController:editor animated:YES];return;
+            RVSettingsPush(self,editor);return;
         }
-        if (index.row==2) { NSData *data=[NSJSONSerialization dataWithJSONObject:RVEffectivePreferences() options:NSJSONWritingPrettyPrinted error:nil];if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];[self message:@"Configuration copied" text:@"You can paste it into another installation or the Windows patcher."];return; }
-        if (index.row==3) {
+        if (tool==2) { NSData *data=[NSJSONSerialization dataWithJSONObject:RVEffectivePreferences() options:NSJSONWritingPrettyPrinted error:nil];if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];[self message:@"Configuration copied" text:@"You can paste it into another installation or the Windows patcher."];return; }
+        if (tool==3) {
             UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Reset patch settings?" message:@"Restore the configuration bundled in this IPA. Accounts, credentials and service identities are retained." preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Reset settings" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { RVResetPreferences();RVPreferencesChanged();[self applyAppearance];[self.tableView reloadData]; }]];
+            [alert addAction:[UIAlertAction actionWithTitle:@"Reset settings" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { RVResetPreferences();RVPreferencesChanged();[self applyAppearance];[self reloadRows]; }]];
             [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
-        if (index.row==4) { [self diagnostics];return; }
-        [self message:@"ReVanced iOS 0.3.8" text:[NSString stringWithFormat:@"YouTube %@\n80 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
+        if (tool==4) { [self diagnostics];return; }
+        [self message:@"ReVanced iOS 0.3.6" text:[NSString stringWithFormat:@"YouTube %@\n79 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
     }
-    if (!RVCompatible || self.listKey) return;
-    NSString *key=[self keyAtIndex:index];
-    if (self.mapKey) { [self choose:self.mapKey member:key];return; }
+    if (!RVCompatible || [row[@"disabled"] boolValue] || [row[@"toggle"] boolValue]) return;
+    NSString *key=row[@"key"];if (!key) return;
+    if (self.mapKey) { [self choose:self.mapKey member:row[@"member"]];return; }
     NSDictionary *rule=RVPreferenceDescriptor(key);NSString *kind=rule[@"kind"];
     if ([kind isEqual:@"bool"]) return;
     if ([kind isEqual:@"map"] || rule[@"allowed"]) {
-        RVSettingsController *page=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];
+        RVSettingsController *page=[RVSettingsController new];
         if ([kind isEqual:@"map"]) page.mapKey=key;else page.listKey=key;
-        [self.navigationController pushViewController:page animated:YES];
+        page.title=rule[@"title"];RVSettingsPush(self,page);
     } else if ([kind hasSuffix:@"_list"]) [self editList:key];
     else if ([kind isEqual:@"string"]) [self editScalar:key member:nil];
     else [self choose:key member:nil];
@@ -262,9 +227,10 @@ static BOOL RVPresentSettings(id presenter) {
     if (!RVCompatible || !NSThread.isMainThread || ![presenter isKindOfClass:UIViewController.class]) return NO;
     UIViewController *source=presenter;
     if (!source.isViewLoaded || !source.view.window || source.presentedViewController) return NO;
-    RVSettingsController *page=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];
+    RVSettingsController *content=[RVSettingsController new];content.title=@"ReVanced";
+    UIViewController *page=RVSettingsWrap(content,source);
     if (RVCan(source,"showOrPushViewController:",@"v@:@")) ((void(*)(id,SEL,id))objc_msgSend)(source,sel_registerName("showOrPushViewController:"),page);
     else if (source.navigationController) [source.navigationController pushViewController:page animated:YES];
-    else { page.modalEntry=YES;[source presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil]; }
+    else { content.modalEntry=YES;page.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"xmark"] style:UIBarButtonItemStylePlain target:content action:@selector(done)];[source presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil]; }
     return YES;
 }

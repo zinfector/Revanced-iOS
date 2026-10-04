@@ -19,8 +19,11 @@ static BOOL RVEnsureNativeSettings(id controller) {
     };
     id item=((id(*)(id,SEL,id,id,id,id,id))objc_msgSend)(itemClass,sel_registerName(factory),@"ReVanced",@"Customize patches and playback",@"rvport.settings",nil,selection);
     if (![item isKindOfClass:itemClass]) return NO;
+    id icon=RVSettingsEntryIcon();
+    if (icon && RVCan(item,"setSettingIcon:",@"v@:@"))
+        ((void(*)(id,SEL,id))objc_msgSend)(item,sel_registerName("setSettingIcon:"),icon);
     ((void(*)(id,SEL,id,NSUInteger,id,id,id,BOOL))objc_msgSend)(controller,
-        sel_registerName("setSectionItems:forCategory:title:icon:titleDescription:headerHidden:"),@[item],RVSettingsCategory,nil,nil,nil,YES);
+        sel_registerName("setSectionItems:forCategory:title:icon:titleDescription:headerHidden:"),@[item],RVSettingsCategory,nil,icon,nil,YES);
     id section=RVObject(controller,"settingsSectionControllers")[@(RVSettingsCategory)];
     if (section) objc_setAssociatedObject(section,RVSettingsOwnedSectionKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return section!=nil;

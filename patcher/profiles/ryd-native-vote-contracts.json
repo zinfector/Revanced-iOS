@@ -1,0 +1,164 @@
+{
+  "native_service_success": {
+    "0": {
+      "raw": "0x0",
+      "text": null
+    },
+    "1": {
+      "raw": "0x3c",
+      "text": ""
+    },
+    "2": {
+      "raw": "0x10000000221e2c",
+      "text": null
+    },
+    "3": {
+      "raw": "0x10000000224754",
+      "text": null
+    },
+    "4": {
+      "raw": "0x20000009ad9347",
+      "text": "v24@?0@8@\"YTInnerTubeResponseCacheContext\"16"
+    },
+    "5": {
+      "raw": "0x300",
+      "text": null
+    }
+  },
+  "handler_service_success": {
+    "0": {
+      "raw": "0x0",
+      "text": null
+    },
+    "1": {
+      "raw": "0x38",
+      "text": ""
+    },
+    "2": {
+      "raw": "0x10000000209404",
+      "text": null
+    },
+    "3": {
+      "raw": "0x10000000230b5c",
+      "text": null
+    },
+    "4": {
+      "raw": "0x30000009ba09aa",
+      "text": "v20@?0@\"YTILikeResponse\"8B16"
+    },
+    "5": {
+      "raw": "0x201",
+      "text": "_TEXT"
+    }
+  },
+  "handler_service_error": {
+    "0": {
+      "raw": "0x0",
+      "text": null
+    },
+    "1": {
+      "raw": "0x38",
+      "text": ""
+    },
+    "2": {
+      "raw": "0x10000000221e2c",
+      "text": null
+    },
+    "3": {
+      "raw": "0x10000000224754",
+      "text": null
+    },
+    "4": {
+      "raw": "0x40000009aa3496",
+      "text": "v16@?0@\"NSError\"8"
+    },
+    "5": {
+      "raw": "0x300",
+      "text": null
+    }
+  },
+  "YTILikeTarget": [
+    {
+      "name": "videoId",
+      "number": 1,
+      "has_index": 0,
+      "data_type": 14,
+      "message_class": null
+    },
+    {
+      "name": "playlistId",
+      "number": 2,
+      "has_index": 1,
+      "data_type": 14,
+      "message_class": null
+    }
+  ],
+  "YTILikeEndpoint": [
+    {
+      "name": "status",
+      "number": 1,
+      "has_index": 0,
+      "data_type": 17,
+      "message_class": null
+    },
+    {
+      "name": "target",
+      "number": 2,
+      "has_index": 1,
+      "data_type": 15,
+      "message_class": "YTILikeTarget"
+    },
+    {
+      "name": "actionsArray",
+      "number": 3,
+      "has_index": 2147483647,
+      "data_type": 15,
+      "message_class": "YTICommand"
+    },
+    {
+      "name": "hack",
+      "number": 4,
+      "has_index": 2,
+      "data_type": 0,
+      "message_class": null
+    },
+    {
+      "name": "isImplicitLike",
+      "number": 5,
+      "has_index": 4,
+      "data_type": 0,
+      "message_class": null
+    },
+    {
+      "name": "likeParams",
+      "number": 6,
+      "has_index": -1,
+      "data_type": 14,
+      "message_class": null
+    },
+    {
+      "name": "dislikeParams",
+      "number": 7,
+      "has_index": -1,
+      "data_type": 14,
+      "message_class": null
+    },
+    {
+      "name": "removeLikeParams",
+      "number": 8,
+      "has_index": -1,
+      "data_type": 14,
+      "message_class": null
+    }
+  ],
+  "schema": 1,
+  "implementation_version": "0.3.9",
+  "implemented": false,
+  "tests_run": false,
+  "service_votes_sent": 0,
+  "source_decompilation": {
+    "name": "ryd-vote-completion-annotated.txt",
+    "sha256": "975b3f111da1697d7cee028e13631b9886381e57bfdaad7cd9df5942a3f7806a"
+  },
+  "blocker": "Automatic forwarding needs callback-preserving success-only dispatch, user-command provenance/implicit-vote exclusion, duplicate ordering and bounded service scheduling. Immediate handler completion and model initialization do not prove native vote success."
+}

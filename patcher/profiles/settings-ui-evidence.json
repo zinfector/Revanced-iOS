@@ -1,0 +1,271 @@
+{
+  "target": "YouTube 21.39.4 arm64",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "research_mode": "Ghidra -readOnly -noanalysis",
+  "runtime_validated": false,
+  "metadata": [
+    {
+      "name": "YTSettingsViewController",
+      "address": "0x10c9b44a8",
+      "superclass": "YTStyledViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "loadView",
+          "encoding": "v16@0:8",
+          "imp": "0x101455054"
+        },
+        {
+          "kind": "-",
+          "selector": "viewWillAppear:",
+          "encoding": "v20@0:8B16",
+          "imp": "0x101455454"
+        },
+        {
+          "kind": "-",
+          "selector": "updateSettingsNavigationBarPageStyle",
+          "encoding": "v16@0:8",
+          "imp": "0x1014559f0"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutForCollectionViewController",
+          "encoding": "@16@0:8",
+          "imp": "0x101456894"
+        }
+      ]
+    },
+    {
+      "name": "YTStyledViewController",
+      "address": "0x10cabee68",
+      "superclass": "YTMultiSizeViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithParentResponder:",
+          "encoding": "@24@0:8@16",
+          "imp": "0x10027a6b4"
+        },
+        {
+          "kind": "-",
+          "selector": "viewDidLoad",
+          "encoding": "v16@0:8",
+          "imp": "0x1003dafe8"
+        },
+        {
+          "kind": "-",
+          "selector": "viewWillAppear:",
+          "encoding": "v20@0:8B16",
+          "imp": "0x1003dc854"
+        },
+        {
+          "kind": "-",
+          "selector": "updateBackButtonStyle",
+          "encoding": "v16@0:8",
+          "imp": "0x1003dce38"
+        },
+        {
+          "kind": "-",
+          "selector": "setupTitleButton",
+          "encoding": "v16@0:8",
+          "imp": "0x1003db030"
+        },
+        {
+          "kind": "-",
+          "selector": "setupNavigationBarAppearance",
+          "encoding": "v16@0:8",
+          "imp": "0x1043f0f68"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsCell",
+      "address": "0x10c9cf0e0",
+      "superclass": "YTCollectionViewCell",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithFrame:",
+          "encoding": "@48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16",
+          "imp": "0x10186a468"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10186a6a4"
+        },
+        {
+          "kind": "-",
+          "selector": "setSwitchVisible:",
+          "encoding": "v20@0:8B16",
+          "imp": "0x10186af94"
+        },
+        {
+          "kind": "-",
+          "selector": "updateColors",
+          "encoding": "v16@0:8",
+          "imp": "0x10186c014"
+        },
+        {
+          "kind": "-",
+          "selector": "didToggleSwitch",
+          "encoding": "v16@0:8",
+          "imp": "0x10186c4a4"
+        },
+        {
+          "kind": "+",
+          "selector": "preferredSizeForEntry:size:withPadding:",
+          "encoding": "{CGSize=dd}44@0:8@16{CGSize=dd}24B40",
+          "imp": "0x10186b300"
+        },
+        {
+          "kind": "+",
+          "selector": "customCellPadding",
+          "encoding": "d16@0:8",
+          "imp": "0x10186bb54"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsSectionController",
+      "address": "0x10c9cf180",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "updateSettingsCell:withItem:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x10186e428"
+        },
+        {
+          "kind": "-",
+          "selector": "sizeForItemAtIndex:withSize:",
+          "encoding": "{CGSize=dd}40@0:8q16{CGSize=dd}24",
+          "imp": "0x10186e8a8"
+        },
+        {
+          "kind": "-",
+          "selector": "switchItemAtIndex:isSwitched:",
+          "encoding": "v28@0:8Q16B24",
+          "imp": "0x10186ede4"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsSectionItem",
+      "address": "0x10c9cf1d0",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "switchItemWithTitle:titleDescription:accessibilityIdentifier:switchOn:switchBlock:",
+          "encoding": "@52@0:8@16@24@32B40@?44",
+          "imp": "0x10186f53c"
+        },
+        {
+          "kind": "+",
+          "selector": "switchItemWithTitle:titleDescription:accessibilityIdentifier:switchOn:confirmationRequiredToEnable:confirmationRequiredToDisable:switchBlock:settingItemId:parentResponder:",
+          "encoding": "@72@0:8@16@24@32B40B44B48@?52i60@64",
+          "imp": "0x10186f5a4"
+        }
+      ]
+    },
+    {
+      "name": "YTNavigationBar",
+      "address": "0x10cabf440",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "sizeThatFits:",
+          "encoding": "{CGSize=dd}32@0:8{CGSize=dd}16",
+          "imp": "0x1043fddd4"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10031c1d8"
+        },
+        {
+          "kind": "-",
+          "selector": "foregroundSubviews",
+          "encoding": "@16@0:8",
+          "imp": "0x10031c6b4"
+        }
+      ]
+    },
+    {
+      "name": "YTSearchableSettingsViewController",
+      "address": "0x10c9b44f8",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithCollectionViewController:parentResponder:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x101458614"
+        },
+        {
+          "kind": "-",
+          "selector": "searchBoxView:didSearchText:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x1014589e0"
+        }
+      ]
+    },
+    {
+      "name": "YTSearchBoxView",
+      "address": "0x10c9b4638",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10145985c"
+        },
+        {
+          "kind": "-",
+          "selector": "didTapCancelButton",
+          "encoding": "v16@0:8",
+          "imp": "0x10145a270"
+        }
+      ]
+    },
+    {
+      "name": "YTSearchableCollectionWrapperView",
+      "address": "0x10c9b4688",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithSearchBoxView:collectionView:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x10145a8f4"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10145a9a8"
+        }
+      ]
+    }
+  ],
+  "evidence_sha256": {
+    "identity.txt": "4a82ce363ce9e0a846ccb599acb65ba81352f7ed344edc762a2b380cf17d0b8e",
+    "annotated.txt": "dbda41ed57a431fbb579bade3c318a611b30fb7006e1096cc41c2696c37665b0",
+    "cell-extra-annotated.txt": "54754567904cc4ebc27c69e4b81579c9f0acf4116ee1405d9edbc03e58a514f9",
+    "icon-annotated.txt": "f0eda2384aaaceb2737d28cb50d6be6423618d9ba0b9ffce2b58cc5ea4836f9d",
+    "icon-policy.txt": "3fbe3b11c4a16319f81e9098b6b57afd650bacbd880eb12b5e708392fb433a33"
+  },
+  "icon_contract": {
+    "section": "YTSettingsViewController createItemFromSectionController:categoryId: copies section.icon",
+    "item": "YTSettingsSectionItem setSettingIcon:",
+    "image": "YTSettingsCell setThumbnailWithIcon: calls iconImageWithColor: and reserves 24x24 points",
+    "refresh": "YTSettingsCell updateColors calls hasIconType/iconType; native predicate at 0x10033f1bc accepts 0x415 for multicolor image refresh",
+    "source_sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165"
+  }
+}

@@ -499,6 +499,7 @@ static NSDictionary *RVSponsorReport(void) {
         @"counts":RVSponsorCounts.copy ?: @{},@"state":RVSponsorState.copy ?: @{},@"device_playback_verified":@NO};
 }
 
+#include "RVSettingsIcon.inc"
 #include "RVSettingsBridge.inc"
 #include "RVSettingsUI.inc"
 
@@ -524,9 +525,11 @@ static NSDictionary *RVSponsorReport(void) {
     UIViewController *top=((UIWindow *)gesture.view).rootViewController;
     while (top.presentedViewController) top=top.presentedViewController;
     UIViewController *visible=[top isKindOfClass:UINavigationController.class] ? ((UINavigationController *)top).visibleViewController : top;
-    if (!top || [visible isKindOfClass:RVSettingsController.class] || [visible isKindOfClass:RVPreferenceTextController.class]) return;
-    RVSettingsController *settings=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];settings.modalEntry=YES;
-    [top presentViewController:[[UINavigationController alloc] initWithRootViewController:settings] animated:YES completion:nil];
+    if (!top || objc_getAssociatedObject(visible,RVSettingsHostKey) || [visible isKindOfClass:RVSettingsController.class] || [visible isKindOfClass:RVPreferenceTextController.class]) return;
+    RVSettingsController *settings=[RVSettingsController new];settings.modalEntry=YES;settings.title=@"ReVanced";
+    UIViewController *page=RVSettingsWrap(settings,visible);
+    page.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"xmark"] style:UIBarButtonItemStylePlain target:settings action:@selector(done)];
+    [top presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil];
 }
 @end
 

@@ -15,7 +15,9 @@ static id RVSetting(NSString *key) { return [TestDefaults objectForKey:[RVPrefer
 static void RVLog(NSString *value) { [RVStatus addObject:value]; }
 static NSUserDefaults *FixtureDefaults(id object,SEL selector) { (void)object;(void)selector;return TestDefaults; }
 #include "../native/RVRuntime.inc"
-#include "../native/RVSettingsModel.inc"
+#include "../native/RVSettingsRows.inc"
+static id FixtureIcon;
+static id RVSettingsEntryIcon(void) { return FixtureIcon; }
 static id PresentedController;
 static BOOL CanPresent=YES;
 static BOOL RVPresentSettings(id controller) { if (!controller || !CanPresent || !RVCompatible) return NO;PresentedController=controller;return YES; }
@@ -27,6 +29,7 @@ static id NestedController;
 @interface YTSettingsSectionItem : NSObject
 @property(nonatomic,copy) NSString *title,*summary,*identifier;
 @property(nonatomic,copy) BOOL (^selectBlock)(id,NSUInteger);
+@property(nonatomic,strong) id settingIcon;
 + (id)itemWithTitle:(id)title titleDescription:(id)description accessibilityIdentifier:(id)identifier detailTextBlock:(id(^)(void))detail selectBlock:(BOOL(^)(id,NSUInteger))select;
 @end
 @implementation YTSettingsSectionItem
@@ -38,6 +41,7 @@ static id NestedController;
 @end
 @interface FixtureSection : NSObject
 @property(nonatomic,strong) NSArray *items;
+@property(nonatomic,strong) id icon;
 @end
 @implementation FixtureSection @end
 @interface YTAppSettingsPresentationData : NSObject
@@ -63,8 +67,9 @@ static id NestedController;
 @implementation YTSettingsViewController
 - (instancetype)init { if ((self=[super init])) _settingsSectionControllers=[NSMutableDictionary dictionary];return self; }
 - (void)setSectionItems:(id)items forCategory:(NSUInteger)category title:(id)title icon:(id)icon titleDescription:(id)description headerHidden:(bool)hidden {
-    assert(category==RVSettingsCategory && !title && !icon && !description && hidden);
-    self.sectionWrites++;FixtureSection *section=[FixtureSection new];section.items=items;self.settingsSectionControllers[@(category)]=section;
+    assert(category==RVSettingsCategory && !title && icon==FixtureIcon && !description && hidden);
+    assert([items[0] settingIcon]==FixtureIcon);
+    self.sectionWrites++;FixtureSection *section=[FixtureSection new];section.items=items;section.icon=icon;self.settingsSectionControllers[@(category)]=section;
 }
 - (void)setSectionControllers {
     self.setCalls++;
@@ -95,6 +100,33 @@ int main(void) { @autoreleasepool {
     NSDictionary *catalog=RVPreferencesCatalog();assert([catalog[@"groups"] count]==13 && [catalog[@"settings"] count]==114);
     for (NSString *key in catalog[@"settings"]) { NSDictionary *rule=RVPreferenceDescriptor(key);assert(RVPreferenceValid(rule[@"default"],rule));config[key]=rule[@"default"]; }
     config[@"schema"]=@1;config[@"app_name"]=@"Original app";RVConfig=config;
+    FixtureIcon=[NSObject new];
+    NSArray *rootRows=RVSettingsRows(nil,nil,nil,nil);
+    assert([rootRows[0][@"rows"] count]==13 && [rootRows[1][@"rows"] count]==6);
+    assert([rootRows isEqual:RVSettingsRows(nil,nil,nil,@" \n ")]);
+    NSMutableSet *rowKeys=[NSMutableSet set];
+    for (NSDictionary *group in catalog[@"groups"]) {
+        NSArray *rows=RVSettingsRows(group[@"id"],nil,nil,nil)[0][@"rows"];
+        assert(rows.count==[group[@"keys"] count]);
+        for (NSDictionary *row in rows) { assert(![rowKeys containsObject:row[@"key"]]);[rowKeys addObject:row[@"key"]]; }
+    }
+    assert(rowKeys.count==113);
+    NSArray *mapRows=RVSettingsRows(nil,@"sponsor_behaviors",nil,nil)[0][@"rows"];
+    assert(mapRows.count==[RVPreferenceDescriptor(@"sponsor_behaviors")[@"map_keys"] count]);
+    for (NSDictionary *row in mapRows) assert([row[@"key"] isEqual:@"sponsor_behaviors"] && row[@"member"] && row[@"detail"]);
+    NSArray *listRows=RVSettingsRows(nil,nil,@"sponsor_categories",nil)[0][@"rows"];
+    NSDictionary *toggleRow=listRows[0];assert([toggleRow[@"toggle"] boolValue]);
+    assert(RVSettingsSaveToggle(toggleRow,NO));assert(![RVSetting(@"sponsor_categories") containsObject:toggleRow[@"member"]]);
+    assert(RVSettingsSaveToggle(toggleRow,YES));assert([RVSetting(@"sponsor_categories") containsObject:toggleRow[@"member"]]);
+    RVCompatible=NO;assert(!RVSettingsSaveToggle(toggleRow,NO));RVCompatible=YES;
+    assert([RVSetting(@"sponsor_categories") containsObject:toggleRow[@"member"]]);
+    assert(!RVSettingsSaveToggle(rootRows[0][@"rows"][0],YES));
+    NSArray *matches=RVSettingsRows(nil,nil,nil,@"default speed")[0][@"rows"];
+    assert(matches.count && [matches[0][@"hint"] length] && matches[0][@"key"]);
+    assert([RVSettingsRows(nil,nil,nil,@"no_such_preference_xyz")[0][@"rows"][0][@"disabled"] boolValue]);
+    [TestDefaults setObject:@"invalid" forKey:@"RVPort.default_speed"];
+    assert([RVSettingsEffectiveValue(@"default_speed") isEqual:RVPreferenceDescriptor(@"default_speed")[@"default"]]);
+    RVResetPreferences();
     assert(RVPreferenceValid(@YES,RVPreferenceDescriptor(@"video_ads")));
     assert(!RVPreferenceValid(@1,RVPreferenceDescriptor(@"video_ads")));
     assert(!RVPreferenceValid(@YES,RVPreferenceDescriptor(@"default_speed")));

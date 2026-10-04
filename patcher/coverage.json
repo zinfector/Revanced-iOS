@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.8",
+  "patcher_version": "0.3.9",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -858,8 +858,8 @@
         "return_dislikes",
         "ryd_voting"
       ],
-      "implementation": "Cached RYD estimate badge plus video-ID-scoped native slim dislike-button text, matching main-video entity counts and accessibility estimates; manual RYD registration, puzzle solving and voting through Tools.",
-      "limits": "Native text integration covers the verified slim formatted action label and main-video entity paths only. Element-backed/segmented modern buttons, online Shorts text, automatic YouTube vote forwarding, native layout styling and Android UI preferences remain unported. The active video fetch is retained; no request or service vote is made during development. Device rendering is unverified and tests are skipped at the user request.",
+      "implementation": "Cached RYD estimates in video-ID-scoped native slim dislike-button text, matching main-video entity counts/accessibility and an inline accessory on positively identified element-backed watch actions; manual RYD registration, puzzle solving and voting through Settings Video tools.",
+      "limits": "Native integration covers verified slim formatted labels, main-video entity paths and an accessory beside identified element-backed watch dislikes. Online Shorts text, automatic YouTube vote forwarding, Android preference translation and complete native styling remain unported. Native completion block signatures and video-only targets are traced for future vote forwarding; no vote is sent during development. Device rendering is unverified and tests are skipped at the user request.",
       "parent": null,
       "device_validated": false
     },
@@ -1563,7 +1563,7 @@
       "factory": "resourcePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
+      "implementation": "Dedicated ReVanced entry and YouTube-styled host/native settings cells, embedded ReVanced icon, content-level search, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": "settingsPatch",
       "device_validated": false
@@ -1577,7 +1577,7 @@
       "factory": "bytecodePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
+      "implementation": "Dedicated ReVanced entry and YouTube-styled host/native settings cells, embedded ReVanced icon, content-level search, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": null,
       "device_validated": false

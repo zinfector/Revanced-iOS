@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.8",
+  "implementation_version": "0.3.9",
   "supported_youtube_version": "21.39.4",
   "source_profile": "youtube-21.39.4",
   "metadata": [
@@ -181,5 +181,16 @@
   "hooks_added": 7,
   "tests_run": false,
   "device_verified": false,
-  "remaining_scope": "Native text integration covers the verified slim formatted action label and main-video entity paths only. Element-backed/segmented modern buttons, online Shorts text, automatic YouTube vote forwarding, native layout styling and Android UI preferences remain unported. The active video fetch is retained; no request or service vote is made during development. Device rendering is unverified and tests are skipped at the user request."
+  "remaining_scope": "Verified legacy formatted labels and an inline accessory on identified element-backed watch actions are implemented. Other element hierarchies, online Shorts text, automatic vote forwarding, Android preferences and device layout confirmation remain outstanding.",
+  "inline_accessory": {
+    "scope": "YTSlimVideoDetailsActionView elementView, exact native id.video.dislike.button, native delegate.videoId matches active video, owned current watch hierarchy",
+    "native_size_method": "sizeThatFits: {CGSize=dd}@:{CGSize=dd}",
+    "native_layout_method": "layoutSubviews v@:",
+    "runtime_verified": false,
+    "research_files_sha256": {
+      "player-actions-annotated.txt": "7f874882a4357c03dbdcf2bafd223fc431b0aa18dca181d4b9c9bd56a4ff1ac2",
+      "ryd-yoga.txt": "218ff69140f46ed603e4a99541bc7a228dc0a5563c6205f20a7688a1ca1e47ed"
+    },
+    "source_sha256": "4a01440a32c89380e069d663a0723da0d0721e846a3b077f0bea636a64c370a9"
+  }
 }
