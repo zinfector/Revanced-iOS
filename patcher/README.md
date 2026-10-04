@@ -167,3 +167,5 @@ The [0.3.9 build-only receipt](profiles/release-0.3.9.json) records the successf
 Read the [RYD capture/checkpoint guide](RYD_CHECKPOINTS.md).
 
 [0.3.14 build receipt](profiles/release-0.3.14.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37238785537) succeeded; regression, hook and GUI smoke checks were skipped. RYD checkpoint revision 2 preserves visible watch-page state and observes layout/mounting/loading/drawing without forcing it. Rendering repair remains unverified.
+
+[0.3.15 build receipt](profiles/release-0.3.15.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37239941953) succeeded; regression, hook and GUI smoke checks were skipped. Use `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. Report 615 confirms the foreground text mounting failure. This release adds context-guarded native mounting, an owned label fallback inside the native dislike button, and checkpoint revision 3. Authentication, SponsorBlock and the packaged settings snapshot carry over. Device rendering remains unverified.

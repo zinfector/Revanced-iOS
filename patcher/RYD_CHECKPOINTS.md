@@ -1,8 +1,10 @@
 # Return YouTube Dislike checkpoints
 
+Report 615 confirms the foreground failure: the count was available and measured, and four native root layout passes completed, but the text had no render parent or loaded layer. Version 0.3.15 adds guarded native mounting and a label fallback inside the native dislike button. Display, sizing and reuse still require device confirmation.
+
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-3`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. It is diagnostic instrumentation, not a claim that the missing counter has been repaired.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-3`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
@@ -51,3 +53,5 @@ The report version in Report 541 is stale because the older Settings snapshot ha
 
 
 In 0.3.15, inspect geometry.mount_mode and mount_gate. `native_text_node` uses native AS mounting. `owned_label_in_native_button` renders a UILabel inside the verified native button; the AS text child remains a sizing proxy. For that mode, native_text_supernode_present and native_text_node_loaded may remain false, and AS text drawing callbacks may stay zero. Effective mount/load/window/clip checkpoints inspect the owned label instead. `label_fits_button_bounds` and clipping_ancestors identify any remaining size constraint. Diagnostics do not force mounting; the production renderer performs its own guarded mount.
+
+Delivered build: `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `f0d8f6f0dfaaf72ac3a1b13299d83698ebb7c6fddfbb820792c20c869712f0a8`. Cloud source commit: `6dbaa6077a6c11c6749a8077fe032a8e13dca66a`.

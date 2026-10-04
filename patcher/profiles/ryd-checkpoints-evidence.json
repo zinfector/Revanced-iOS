@@ -50,5 +50,14 @@
     "RVDislikesDiagnostics.inc": "490a3eb7924d6134157e36fb468817a2a87bdceb5501352746eb311fd61d323f"
   },
   "mounting_attempt_added": true,
-  "diagnostic_inspection_remains_passive": true
+  "diagnostic_inspection_remains_passive": true,
+  "latest_report": "RYD Report 615.txt",
+  "latest_report_sha256": "a773104f3bcbd3bd14f79322d80f7828babe080403b1ea59bbcf7b5ea87175ee",
+  "latest_report_finding": "While watch page is foreground, count and measurement succeed, four native root layout passes complete, but text has no render parent, loaded layer or drawing callbacks.",
+  "native_build_source_sha256": "f0d8f6f0dfaaf72ac3a1b13299d83698ebb7c6fddfbb820792c20c869712f0a8",
+  "payload_sha256": "65872495e713d491623d167eb4dc4191984e7e03ccc422494794fda408b3f951",
+  "cloud_run": 37239941953,
+  "source_commit": "6dbaa6077a6c11c6749a8077fe032a8e13dca66a",
+  "ipa_sha256": "5e96a00bc3fab355114f28f5e05bc6550b1ac6d2d3e8264ec3e60e3cf78c534e",
+  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa"
 }
