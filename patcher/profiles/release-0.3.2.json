@@ -1,0 +1,131 @@
+{
+  "version": "0.3.2",
+  "supported_version": "21.39.4",
+  "feature_switches": 73,
+  "expanded_enabled_switches": 30,
+  "auth_preset_enabled_switches": 32,
+  "tests_passed": 33,
+  "test_scope": {
+    "patcher_and_shared_helpers": 19,
+    "cloud_signing_and_download": 12,
+    "authentication_config_and_native_harness": 2
+  },
+  "ci": {
+    "run_id": 37183327384,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37183327384",
+    "commit": "bcace6682d39fb52f673c1d311ebb947e638947a",
+    "conclusion": "success",
+    "tests_passed": 33,
+    "tests_skipped": 0,
+    "native_auth_harness_passed": true,
+    "windows_package_passed": true,
+    "payload_sha256": "cedabfde799c4a6c56192143b6d990dbddc732d812f1c71ca051bab890e0d7ef",
+    "native_log_sha256": "61f6037b1fdcfc64ece2e59f63f2ec14ace404364392d33da07f3533e91275e3",
+    "device_login_verified": false
+  },
+  "native_compilation": "ARM64 iOS 17, warnings treated as errors",
+  "hook_check": {
+    "match": 68,
+    "mismatch": 0,
+    "runtime_resolution_required": 0
+  },
+  "hook_check_scope": "Literal RVHook/RVBoolGate calls and literal getter arrays. Other loops and runtime-resolved accessors require device diagnostics.",
+  "coverage": {
+    "declarations": 113,
+    "named_inventory": 51,
+    "statuses": {
+      "resource_adapter": 14,
+      "partial": 52,
+      "adapted": 24,
+      "native_existing": 1,
+      "infrastructure_adapter": 16,
+      "android_only": 4,
+      "blocked": 2
+    }
+  },
+  "original_ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "device_validated": false,
+  "signing_required": true,
+  "remaining_scope": "Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; The 0.3.1 auth IPA installs and its authentication hooks run but login failed; revised 0.3.2 login, playback and UI/service behavior require device evidence.",
+  "artifacts": {
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "0afa0346983d3fed779288aebb4c447776e71690084987d61d509647fb608ad6",
+      "size": 13735171
+    },
+    "build/RVPort.dylib": {
+      "sha256": "cedabfde799c4a6c56192143b6d990dbddc732d812f1c71ca051bab890e0d7ef",
+      "size": 307280
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.2-unsigned.ipa": {
+      "sha256": "6761410d1603e503794c23af464b0eec6ce201ade583f63664e2f1686f97681d",
+      "size": 151945555
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.2-expanded-unsigned.ipa": {
+      "sha256": "ef8b0b3f458c0a0a17ad6ce5964d46937aab5e9dcea9582e945dde1a7e93c70b",
+      "size": 151945856
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa": {
+      "sha256": "f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0",
+      "size": 140332714
+    },
+    "coverage.json": {
+      "sha256": "d27fe4194691034efd568612d7bb6b8a968934f7c0a2cd104ee78c175698892e",
+      "size": 82646
+    },
+    "COVERAGE.md": {
+      "sha256": "0e14a0df142c8260427fbf8e73cf8f83dcc317a2c092756048e6a911891748ad",
+      "size": 28540
+    },
+    "configs/defaults.json": {
+      "sha256": "05bb7a4c35ef44c65a786c0d0b89cb4c2ebcfd62c3bfecae6a11c8449808fe81",
+      "size": 3686
+    },
+    "configs/expanded.json": {
+      "sha256": "af4de3966668556ed07d44ceac2c19617f05a244276d61b90f29d8617eed1ea1",
+      "size": 4238
+    },
+    "configs/all-candidates.json": {
+      "sha256": "808b6e0eba321ec9ce7fd9f9fa4777c8dfeafa2352c1ef3b45bba5958024c908",
+      "size": 3615
+    },
+    "configs/sideload-auth.json": {
+      "sha256": "1ef3df0c6ccc58e149d8417c670a1c203a46dd53b92e5b9c733fcd7378786525",
+      "size": 4236
+    },
+    "AUTHENTICATION_SCHEME.md": {
+      "sha256": "cbb00acda201d96092e674f16841f98b657ab95650726cde05ebfffeaac494d5",
+      "size": 19216
+    },
+    "README.md": {
+      "sha256": "2cc5fe97c0fee1bdfd8fbe0bc7db1d8f3010e3e53451a539a144a5dbaffa7f6a",
+      "size": 17285
+    },
+    "DEVICE_TESTS.md": {
+      "sha256": "dfffa49552333643390bb129fc72d4014e28e760e3d59174c02a9742c1fc3b08",
+      "size": 7471
+    }
+  },
+  "verification": {
+    "build/hook-check.json": "15eae988603df0072ab8381b9d7bf1a352c3d0651057bf9393275eaeb6b6fbe2",
+    "build/auth-ci-evidence-0.3.2.json": "a9abf1e88fbf9b273ef9339708aec6d0814fd1b61996ebff8cdacec04f6efee5",
+    "build/gui-smoke-0.3.2.json": "f0f69f94c5c357982314006f8138ba3ab6d0eae52c5b1f7a74138efbc84e1348",
+    "build/packaged-smoke-0.3.2.json": "f0f69f94c5c357982314006f8138ba3ab6d0eae52c5b1f7a74138efbc84e1348",
+    "build/verification-0.3.2-defaults.json": "424d4c40a126e8462624d2e10b583a5584f38bdaefb0a869dcf9b0b417b19e67",
+    "build/verification-0.3.2-expanded.json": "4796f641258d03f78d3b79842769831753ad784ba880c130b136c15da2c5c97a",
+    "build/verification-0.3.2-sideload-auth.json": "e9adcf8d1f76a5604fb62a187814bcf6e0cacd37c898963d20a9950d4433d55e"
+  },
+  "recommended_ipa": "output/YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa",
+  "device_evidence": "User confirmed 0.3.1 SideStore-auth IPA installed and provided redacted report showing all 12 auth hooks installed, identity adaptation, system browser, failed group probe and repeated missing-entitlement reads. Login rejected. New 0.3.2 device login/playback unverified.",
+  "native_source_files": {
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVExtras.inc": "fe51625f6b5324365126f7c42df7f0242fac41c79f6cf14bc0c9466a77aea427",
+    "RVFeatures.h": "cef2c82eb881bee611ef0530f04c4f7358e84aa78b49edcec7611b42bde14d62",
+    "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+    "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+    "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+    "RVPort.m": "5883cfea159cd562311016bb22e0bef570f2475e87bac16270fb56d51bae307b",
+    "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+    "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee"
+  }
+}

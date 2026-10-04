@@ -1,15 +1,17 @@
 {
-  "schema": 1,
-  "status": "experimental_adapter_implemented_device_login_unverified",
+  "schema": 2,
+  "status": "revised_adapter_implemented_after_device_storage_failure_login_unverified",
   "observed_at": "2026-10-04",
   "device_report": {
     "model": "iPhone 17 Pro Max",
     "os": "iOS 27.0",
-    "evidence": "user supplied screenshot: Google rejects account sign-in; no server code available",
+    "evidence": "User supplied screenshot and redacted 0.3.1 SideStore-auth report: profile accepted, all 12 auth hooks installed, identity adapter applied, system browser used, probe -50 and repeated keychain -34018, login rejected.",
     "launch_reaches_authentication": true,
     "authentication_success": false,
     "playback_verified": false,
-    "installed_signature_inspected": false
+    "installed_signature_inspected": false,
+    "diagnostic_summary": "profiles/device-auth-0.3.1.json",
+    "installed_authentication_hooks_observed": true
   },
   "binary": {
     "version": "21.39.4",
@@ -115,6 +117,69 @@
       "selector": "applicationIdentifier",
       "encoding": "@16@0:8",
       "imp": "0x1045cedfc"
+    },
+    {
+      "class": "SSOService",
+      "kind": "+",
+      "selector": "fetcherWithRequest:configuration:",
+      "encoding": "@32@0:8@16@24",
+      "imp": "0x1045b4a44"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "usePrivateKeychain",
+      "encoding": "B16@0:8",
+      "imp": "0x10020e624"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "deleteQueryMatchingID:serviceName:",
+      "encoding": "@32@0:8@16@24",
+      "imp": "0x1045cc578"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "queryForUpdatingKeychainItem:",
+      "encoding": "@24@0:8@16",
+      "imp": "0x1045cca90"
+    },
+    {
+      "class": "SSOKeychainCore",
+      "kind": "+",
+      "selector": "secItemDelete:",
+      "encoding": "i24@0:8@16",
+      "imp": "0x1045cccf0"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "+",
+      "selector": "libraryClientID",
+      "encoding": "@16@0:8",
+      "imp": "0x1045ceacc"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "+",
+      "selector": "libraryUserAgentForRequest:",
+      "encoding": "@24@0:8@16",
+      "imp": "0x1045cebe0"
+    },
+    {
+      "class": "GTMSessionFetcher",
+      "kind": "-",
+      "selector": "request",
+      "encoding": "@16@0:8",
+      "imp": "0x10021f364"
+    },
+    {
+      "class": "GTMSessionFetcher",
+      "kind": "-",
+      "selector": "setRequestValue:forHTTPHeaderField:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x104fe0588"
     }
   ],
   "auth_advice_builder": {
@@ -154,6 +219,22 @@
     {
       "path": "build/auth-research-decompiled-annotated.txt",
       "sha256": "d590f1ddd1192a085e8a087440ea28330e513c2adee80dacd17992bf3dec175a"
+    },
+    {
+      "path": "build/auth-next-decompiled-annotated.txt",
+      "sha256": "ae1bf01bba31f168e82a084959a943732a3807a72e6a369d515ded298aafaa9b"
+    },
+    {
+      "path": "build/auth-useragent-decompiled-annotated.txt",
+      "sha256": "8e6dc75668599b0a8dc5da2e5974e0f689839e63d47e6d4fddb774ad0b49fe75"
+    },
+    {
+      "path": "build/auth-useragent-constants-decompiled.txt",
+      "sha256": "be46161a2133263310032020eb363e469be1d308af0943f56efe8e88f920cf98"
+    },
+    {
+      "path": "build/auth-keychain-next-decompiled-annotated.txt",
+      "sha256": "22d18b21886802c5da612b226b80b5de494f0130851209b7d3dbbbe6ca58aaba"
     }
   ],
   "local_android_sources": [
@@ -169,11 +250,19 @@
   "original_client_id": "755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd.apps.googleusercontent.com",
   "original_callback_uri_format": "%@:/authCallback",
   "implementation": {
-    "version": "0.3.1",
+    "version": "0.3.2",
     "identity_feature": "sideload_auth_identity",
     "keychain_feature": "sideload_auth_keychain",
     "preset": "configs/sideload-auth.json",
     "diagnostics": "bounded fixed-key booleans/enums/numeric statuses; no raw auth material",
-    "device_login_verified": false
+    "device_login_verified": false,
+    "keychain_strategy": "Native usePrivateKeychain YES and nil shared-group getters; no discovery probe or account access by diagnostics.",
+    "request_identity": "Only the native SSO request user-agent leading installed-bundle token, scoped to the verified configuration and production HTTPS account hosts."
+  },
+  "sso_library_client_id": "936475272427.apps.googleusercontent.com",
+  "request_user_agent_formatter": {
+    "imp": "0x10076e330",
+    "format": "%@ iSL/%@ %@ (gzip)",
+    "identity_source": "GTMUserAgentID or installed NSBundle.bundleIdentifier; GTMUserAgentID absent from source Info.plist."
   }
 }

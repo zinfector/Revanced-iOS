@@ -65,3 +65,5 @@ The GUI now removes extensions by default. Extension removal addresses this plac
 ## 0.3.2 authentication revision
 
 The user installed the extension-free 0.3.1 auth IPA and supplied diagnostics confirming its identity hook ran, but its keychain probe failed and repeated SSO reads returned missing-entitlement errors. The new 0.3.2 auth artifact uses native private-keychain storage and scoped SSO request-user-agent identity, with redacted auth-advice diagnostics. Select `sideload-auth` for a new source build. Successful login remains a device acceptance test; cloud signatures alone do not prove it.
+
+Current SideStore experiment: `YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa`, SHA-256 `f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0`. All six extensions are removed. See [the 0.3.2 receipt](patcher/profiles/release-0.3.2.json); old artifacts are preserved.
