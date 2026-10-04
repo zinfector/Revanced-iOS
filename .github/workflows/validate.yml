@@ -26,8 +26,10 @@ jobs:
       - name: Build ARM64 iOS payload using Xcode
         run: python build.py
       - name: Run patcher and signing regression tests
+        if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip tests]')
         run: python -m unittest discover -s tests -v
       - name: Check directly named Objective-C hook ABIs
+        if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip tests]')
         run: python check_hooks.py
       - name: Upload native payload and host evidence
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -64,6 +66,7 @@ jobs:
       - name: Package standalone GUI
         run: python package_windows.py
       - name: Check packaged GUI initialization
+        if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip tests]')
         run: |
           $smoke = Start-Process -FilePath '.\dist\YouTube-iOS-Patcher.exe' -ArgumentList @('--self-test','build\ci-packaged-smoke.json') -WindowStyle Hidden -Wait -PassThru
           if ($smoke.ExitCode -ne 0) { throw 'Packaged GUI smoke test failed' }

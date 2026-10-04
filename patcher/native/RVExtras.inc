@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 // Additional version-specific adapters. Included in RVPort.m so all hooks share ABI guards.
-static __weak id RVCurrentPlayer;
-static __weak id RVCurrentPlayback;
 static __weak id RVCurrentWatch;
 static NSString *RVDislikeVideo;
 static NSNumber *RVDislikeCount;
@@ -21,7 +19,28 @@ static void RVRefreshThumbnailContext(void) {
     dispatch_once(&once,^{ RVThumbnailContextLock=[NSObject new];RVVisibleWatchControllers=[NSHashTable weakObjectsHashTable];RVVisibleSearchControllers=[NSHashTable weakObjectsHashTable]; });
     @synchronized(RVThumbnailContextLock) { RVThumbnailContext=RVVisibleWatchControllers.count ? @"player" : RVVisibleSearchControllers.count ? @"search" : RVThumbnailPivot; }
 }
-static void RVSegmentsChanged(void) { [RVSegmentBar setNeedsLayout]; }
+static UIView *RVPlayerOverlay(void) {
+    id view=RVObject(RVObject(RVCurrentPlayer,"playerView"),"overlayView");
+    return [view isKindOfClass:UIView.class] ? view : nil;
+}
+static BOOL RVOwnedPlayerView(UIView *view) {
+    UIView *overlay=RVPlayerOverlay();
+    return overlay && (view==overlay || [view isDescendantOfView:overlay]);
+}
+static void RVSegmentsChanged(void) {
+    if (!NSThread.isMainThread) { dispatch_async(dispatch_get_main_queue(),^{ RVSegmentsChanged(); });return; }
+    // Native layout can skip its child bars. Invalidate those bars directly,
+    // including ones laid out before data-load established playback ownership.
+    UIView *root=RVPlayerOverlay();
+    if (!root) { [RVSegmentBar setNeedsLayout];return; }
+    NSMutableArray<UIView *> *pending=[NSMutableArray arrayWithObject:root];
+    Class barClass=NSClassFromString(@"YTInlinePlayerBarView");
+    for (NSUInteger index=0;index<pending.count && index<512;index++) {
+        UIView *view=pending[index];
+        if (barClass && [view isKindOfClass:barClass]) [view setNeedsLayout];
+        for (UIView *child in view.subviews) if (pending.count<512) [pending addObject:child];
+    }
+}
 static const void *RVHideKey=&RVHideKey, *RVSwipeKey=&RVSwipeKey, *RVLoopKey=&RVLoopKey;
 static const void *RVBadgeKey=&RVBadgeKey,*RVToolsKey=&RVToolsKey;
 static void RVShowTools(UIViewController *presenter);
@@ -220,8 +239,14 @@ static void RVExtraSetPlayer(id player,id controller) {
     if (![NSThread isMainThread]) {
         __weak id p=player,c=controller;dispatch_async(dispatch_get_main_queue(),^{ if (p && c) RVExtraSetPlayer(p,c); });return;
     }
-    RVCurrentPlayer=player;RVCurrentPlayback=controller;
-    RVSegmentsChanged();
+    id nativeController=RVPlaybackForPlayer(player);
+    BOOL changed=RVCurrentPlayer!=player || RVCurrentPlayback!=nativeController;
+    RVCurrentPlayer=player;RVCurrentPlayback=nativeController;
+    if (changed) {
+        RVSponsorCount(@"player_bound");
+        RVSponsorValue(@"controller_resolved",@(nativeController!=nil));
+        RVSegmentsChanged();
+    }
 }
 static void RVExtraObserve(id controller) {
     if (![NSThread isMainThread]) return;
@@ -276,8 +301,9 @@ static void RVExtraObserve(id controller) {
 @end
 
 static void RVUpdateTools(UIView *view) {
-    RVCurrentOverlay=view;
-    BOOL visible=RVOrdinaryContent(RVCurrentPlayback);
+    BOOL owned=RVOwnedPlayerView(view);
+    if (owned) RVCurrentOverlay=view;
+    BOOL visible=owned && RVOrdinaryContent(RVCurrentPlayback);
     UILabel *badge=objc_getAssociatedObject(view,RVBadgeKey);
     if (!badge && RVEnabled(@"return_dislikes")) {
         badge=[UILabel new];badge.font=[UIFont systemFontOfSize:12 weight:UIFontWeightMedium];badge.textColor=UIColor.whiteColor;
@@ -355,17 +381,28 @@ static UIColor *RVSponsorColor(NSString *category) {
 static void RVLayoutSponsorMarkers(UIView *bar) {
     static const void *key=&key;
     UIView *surface=objc_getAssociatedObject(bar,key);
-    BOOL owned=RVCurrentOverlay && [bar isDescendantOfView:RVCurrentOverlay] && RVOrdinaryContent(RVCurrentPlayback);
+    BOOL owned=RVOwnedPlayerView(bar);
     RVPlaybackSession *session=RVSession(RVCurrentPlayback);
-    BOOL active=owned && RVEnabled(@"sponsorblock") && RVEnabled(@"sponsorblock_markers") && [session.videoID isEqual:RVObject(RVCurrentPlayback,"contentVideoID")];
-    if (owned) RVSegmentBar=bar;
+    BOOL active=owned && RVOrdinaryContent(RVCurrentPlayback) && RVEnabled(@"sponsorblock") && RVEnabled(@"sponsorblock_markers") && [session.videoID isEqual:RVObject(RVCurrentPlayback,"contentVideoID")];
+    RVSponsorCount(@"marker_layout");
+    if (owned) {
+        RVSegmentBar=bar;RVSponsorCount(@"owned_marker_layout");
+        RVSponsorValue(@"marker_active",@(active));RVSponsorValue(@"marker_rectangles",@0);
+    }
     if (!surface && active) { surface=[UIView new];surface.userInteractionEnabled=NO;surface.clipsToBounds=YES;[bar addSubview:surface];objc_setAssociatedObject(bar,key,surface,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     surface.hidden=!active;if (!active) return;
     double duration=RVDouble(bar,"totalTime");
+    RVSponsorValue(@"marker_duration_valid",@(isfinite(duration) && duration>0));
     if (!isfinite(duration) || duration<=0) { surface.hidden=YES;return; }
-    surface.frame=CGRectMake(0,fmax(0,bar.bounds.size.height-5),bar.bounds.size.width,4);
+    CGRect track=bar.bounds;
+    if (RVCan(bar,"barFrame",@"{CGRect={CGPoint=dd}{CGSize=dd}}@:"))
+        track=((CGRect(*)(id,SEL))objc_msgSend)(bar,sel_registerName("barFrame"));
+    if (!isfinite(track.origin.x) || !isfinite(track.origin.y) || !isfinite(track.size.width) || track.size.width<=0) { surface.hidden=YES;return; }
+    surface.frame=CGRectMake(track.origin.x,fmax(CGRectGetMinY(bar.bounds),track.origin.y-1),track.size.width,4);
+    [bar bringSubviewToFront:surface];
     surface.layer.sublayers=nil;
     NSMutableDictionary<NSString *,UIBezierPath *> *paths=[NSMutableDictionary dictionary];
+    NSUInteger rectangles=0;
     for (NSDictionary *segment in session.rawSegments) {
         NSString *category=segment[@"category"];
         if ([RVSponsorBehavior(category) isEqual:@"ignore"]) continue;
@@ -373,8 +410,10 @@ static void RVLayoutSponsorMarkers(UIView *bar) {
         if (!RVMarkerBounds((RVInterval){[segment[@"start"] doubleValue],[segment[@"end"] doubleValue]},duration,surface.bounds.size.width,&left,&width)) continue;
         UIBezierPath *path=paths[category];if (!path) { path=[UIBezierPath bezierPath];paths[category]=path; }
         [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(left,0,width,4)]];
+        rectangles++;
     }
     for (NSString *category in paths) { CAShapeLayer *layer=[CAShapeLayer layer];layer.frame=surface.bounds;layer.path=paths[category].CGPath;layer.fillColor=RVSponsorColor(category).CGColor;[surface.layer addSublayer:layer]; }
+    RVSponsorValue(@"marker_rectangles",@(rectangles));
 }
 @implementation RVSeekbarTap
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gesture {

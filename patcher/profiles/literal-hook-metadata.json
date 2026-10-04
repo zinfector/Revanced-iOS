@@ -384,6 +384,12 @@
         "selector": "playbackController:didLoadContentPlaybackData:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x1041b0cec"
+      },
+      {
+        "kind": "-",
+        "selector": "potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x1041b211c"
       }
     ]
   },

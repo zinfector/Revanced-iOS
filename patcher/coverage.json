@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.4",
+  "patcher_version": "0.3.5",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -929,8 +929,8 @@
         "sponsor_colors",
         "sponsor_min_duration"
       ],
-      "implementation": "Filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
-      "limits": "Marker ownership/geometry and transitions need device checks. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
+      "implementation": "Player event-center clock and canonical local-controller session; filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
+      "limits": "The user reported missing skips/markers on 0.3.4 for Ke_iFvL0A1c. Version 0.3.5 reconnects the player clock, uses the native overlay/track geometry and adds redacted pipeline diagnostics; device behavior remains unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
       "parent": "sponsorBlockPatch",
       "device_validated": false
     },
@@ -951,8 +951,8 @@
         "sponsor_colors",
         "sponsor_min_duration"
       ],
-      "implementation": "Filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
-      "limits": "Marker ownership/geometry and transitions need device checks. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
+      "implementation": "Player event-center clock and canonical local-controller session; filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
+      "limits": "The user reported missing skips/markers on 0.3.4 for Ke_iFvL0A1c. Version 0.3.5 reconnects the player clock, uses the native overlay/track geometry and adds redacted pipeline diagnostics; device behavior remains unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
       "parent": null,
       "device_validated": false
     },
@@ -1324,7 +1324,7 @@
         "sideload_auth_keychain"
       ],
       "implementation": "Scoped native SSO application-identifier and request-user-agent adaptation, native private-keychain mode, and redacted authentication diagnostics.",
-      "limits": "Android GmsCore/Binder/account services are not transplanted. The 0.3.1 auth IPA installs and its hooks run, but device sign-in failed with repeated keychain entitlement errors. The revised 0.3.2 storage and user-agent adapters need device login, refresh and persistence testing. It cannot satisfy cryptographic signing-team/attestation requirements.",
+      "limits": "Android GmsCore/Binder/account services are not transplanted. The 0.3.1 auth IPA installs and its hooks run, but device sign-in failed with repeated keychain entitlement errors. The user reports successful login with the revised 0.3.2 storage/user-agent adapters retained in later builds. Token refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements.",
       "parent": null,
       "device_validated": false
     },

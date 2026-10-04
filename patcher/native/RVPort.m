@@ -23,6 +23,22 @@ static void RVExtraObserve(id controller);
 static void RVExtraSetPlayer(id player,id controller);
 static BOOL RVExtraReject(NSData *data);
 static void RVSegmentsChanged(void);
+static BOOL RVOrdinaryContent(id controller);
+static BOOL RVEnabled(NSString *key);
+static __weak id RVCurrentPlayer;
+static __weak id RVCurrentPlayback;
+static NSMutableDictionary<NSString *,NSNumber *> *RVSponsorCounts;
+static NSMutableDictionary<NSString *,id> *RVSponsorState;
+static void RVSponsorCount(NSString *key) {
+    if (!RVEnabled(@"diagnostics")) return;
+    if (!RVSponsorCounts) RVSponsorCounts=[NSMutableDictionary dictionary];
+    RVSponsorCounts[key]=@([RVSponsorCounts[key] unsignedLongLongValue]+1);
+}
+static void RVSponsorValue(NSString *key,id value) {
+    if (!RVEnabled(@"diagnostics")) return;
+    if (!RVSponsorState) RVSponsorState=[NSMutableDictionary dictionary];
+    RVSponsorState[key]=value;
+}
 
 static NSDictionary *RVConfig;
 static NSMutableArray<NSString *> *RVStatus;
@@ -57,6 +73,19 @@ static id RVSetting(NSString *key) {
 }
 static BOOL RVEnabled(NSString *key) { return RVCompatible && [RVSetting(key) boolValue]; }
 #include "RVRuntime.inc"
+// The player's native clock observes its active video's event center directly.
+// Resolve the same core controller rather than associating a second session with
+// the player facade (whose seek method takes a double, not YTSingleVideoTime).
+static id RVPlaybackForPlayer(id player) {
+    Class playerClass=NSClassFromString(@"YTPlayerViewController");
+    Class localClass=NSClassFromString(@"YTLocalPlaybackController");
+    if (!playerClass || !localClass || ![player isKindOfClass:playerClass]) return nil;
+    Ivar field=class_getInstanceVariable(playerClass,"_playbackController");
+    const char *type=field ? ivar_getTypeEncoding(field) : NULL;
+    if (!type || strcmp(type,"@\"<YTCorePlaybackController>\"")!=0) return nil;
+    id controller=object_getIvar(player,field);
+    return [controller isKindOfClass:localClass] ? controller : nil;
+}
 #include "RVAuthentication.inc"
 #include "RVMiniplayer.inc"
 
@@ -97,6 +126,7 @@ static void RVInstallAds(void) {
 @property(nonatomic) NSUInteger generation;
 @property(nonatomic,strong) NSArray<NSDictionary *> *segments;
 @property(nonatomic,strong) NSArray<NSDictionary *> *rawSegments;
+@property(nonatomic) BOOL segmentsFetched;
 @property(nonatomic,strong) NSMutableSet<NSString *> *skippedOnce;
 @property(nonatomic) BOOL highlightApplied;
 @property(nonatomic,copy) NSString *categoryKey;
@@ -167,12 +197,15 @@ static void RVFetchSegments(RVPlaybackSession *session) {
     NSMutableArray *categories=[NSMutableArray array];
     for (NSString *category in RVSetting(@"sponsor_categories")) if (![RVSponsorBehavior(category) isEqual:@"ignore"]) [categories addObject:category];
     NSData *categoryData=[NSJSONSerialization dataWithJSONObject:categories options:0 error:nil];
-    NSString *key=[[NSString alloc] initWithData:categoryData encoding:NSUTF8StringEncoding];
+    NSString *key=[NSString stringWithFormat:@"%@/%@",[[NSString alloc] initWithData:categoryData encoding:NSUTF8StringEncoding],RVSetting(@"sponsor_min_duration")];
     if (![session.categoryKey isEqual:key]) {
-        [session.task cancel];session.task=nil;session.rawSegments=@[];session.segments=@[];session.categoryKey=key;session.generation++;session.lastRequest=0;
+        [session.task cancel];session.task=nil;session.rawSegments=@[];session.segments=@[];session.segmentsFetched=NO;session.categoryKey=key;session.generation++;session.lastRequest=0;
+        RVSegmentsChanged();
     }
-    if (!categories.count || session.task || session.rawSegments.count || now-session.lastRequest<30) return;
+    if (!categories.count || session.task || session.segmentsFetched || now-session.lastRequest<30) return;
     session.lastRequest=now;
+    RVSponsorCount(@"fetch_started");
+    RVSponsorValue(@"fetch_state",@"requesting");
     NSURLComponents *components=[NSURLComponents componentsWithString:@"https://sponsor.ajay.app/api/skipSegments"];
     components.queryItems=@[[NSURLQueryItem queryItemWithName:@"videoID" value:session.videoID],
         [NSURLQueryItem queryItemWithName:@"categories" value:[[NSString alloc] initWithData:categoryData encoding:NSUTF8StringEncoding]],
@@ -182,7 +215,8 @@ static void RVFetchSegments(RVPlaybackSession *session) {
     NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:components.URL];request.timeoutInterval=10;
     session.task=[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data,NSURLResponse *response,NSError *error) {
         id json=nil;
-        if (!error && [(NSHTTPURLResponse *)response statusCode]==200 && data.length<1024*1024)
+        NSInteger status=[response isKindOfClass:NSHTTPURLResponse.class] ? [(NSHTTPURLResponse *)response statusCode] : 0;
+        if (!error && status==200 && data.length<1024*1024)
             json=[NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         NSMutableArray *accepted=[NSMutableArray array];
         if ([json isKindOfClass:[NSArray class]]) {
@@ -204,7 +238,13 @@ static void RVFetchSegments(RVPlaybackSession *session) {
         [accepted sortUsingComparator:^NSComparisonResult(NSDictionary *a,NSDictionary *b) { return [a[@"start"] compare:b[@"start"]]; }];
         dispatch_async(dispatch_get_main_queue(),^{
             RVPlaybackSession *live=weakSession;
-            if (!live || live.generation!=generation) return;
+            if (!live || live.generation!=generation) { RVSponsorCount(@"stale_response");return; }
+            RVSponsorCount(@"fetch_completed");
+            RVSponsorValue(@"http_status",@(status));
+            RVSponsorValue(@"network_error_code",@(error.code));
+            RVSponsorValue(@"fetch_state",error ? @"network_error" : status==404 ? @"no_segments" : [json isKindOfClass:NSArray.class] ? @"loaded" : @"invalid_response");
+            RVSponsorValue(@"accepted_segments",@(accepted.count));
+            live.segmentsFetched=!error && (status==404 || [json isKindOfClass:NSArray.class]);
             live.task=nil;live.rawSegments=accepted;live.segments=RVSponsorRanges(live,NO);
             RVSegmentsChanged();
         });
@@ -212,31 +252,40 @@ static void RVFetchSegments(RVPlaybackSession *session) {
     [session.task resume];
 }
 
-static void RVObservePlayback(id controller,id timeObject) {
+static void RVObservePlayback(id controller,id timeObject,NSString *source) {
     if (![NSThread isMainThread]) {
         __weak id weakController=controller;
-        dispatch_async(dispatch_get_main_queue(),^{ id current=weakController;if (current) RVObservePlayback(current,timeObject); });
+        dispatch_async(dispatch_get_main_queue(),^{ id current=weakController;if (current) RVObservePlayback(current,timeObject,source); });
         return;
+    }
+    RVSponsorCount(source);
+    if (!controller || controller!=RVCurrentPlayback || RVPlaybackForPlayer(RVCurrentPlayer)!=controller) {
+        RVSponsorCount(@"unowned_clock");return;
     }
     RVExtraObserve(controller);
     NSString *videoID=RVObject(controller,"contentVideoID");
-    if (![videoID isKindOfClass:[NSString class]] || !videoID.length || !RVBool(controller,"isPlayingContentVideo") || RVBool(controller,"isPlayingAd")) return;
+    if (!RVOrdinaryContent(controller)) { RVSponsorValue(@"playback_gate",@"ad_live_or_unknown");return; }
     RVPlaybackSession *session=RVSession(controller);
     id contentTime=RVObject(controller,"contentVideoCurrentTime");
-    NSString *cpn=RVObject(contentTime,"CPN");
+    NSString *cpn=RVObject(contentTime,"CPN") ?: RVObject(controller,"contentVideoCPN");
     if (![session.videoID isEqual:videoID] || (cpn && ![session.cpn isEqual:cpn])) {
         [session.task cancel];session.task=nil;session.videoID=videoID;session.cpn=cpn;session.generation++;
         session.segments=@[];session.lastRequest=0;session.lastSeekWallTime=0;session.speedApplied=NO;
-        session.rawSegments=@[];session.lastSkippedEnd=0;session.hasLastSkip=NO;session.ignoreSegmentEnd=0;
+        session.rawSegments=@[];session.segmentsFetched=NO;session.lastSkippedEnd=0;session.hasLastSkip=NO;session.ignoreSegmentEnd=0;
         session.skippedOnce=[NSMutableSet set];session.highlightApplied=NO;
+        RVSponsorCount(@"video_changed");RVSponsorValue(@"fetch_state",@"not_requested");
+        RVSponsorValue(@"accepted_segments",@0);RVSegmentsChanged();
     }
-    double seconds=RVDouble(contentTime ?: timeObject,"time");
-    if (!isfinite(seconds) || seconds<0) return;
-    id playbackData=RVObject(controller,"contentPlaybackData");
-    id response=RVObject(playbackData,"playerResponse");
-    // Fail closed for live/unknown response ownership.
-    if (!response || !RVCan(response,"isLivePlayback",@"B@:") || RVBool(response,"isLivePlayback")) return;
     RVFetchSegments(session);
+    NSString *eventCPN=RVObject(timeObject,"CPN");
+    if (eventCPN && cpn && ![eventCPN isEqual:cpn]) { RVSponsorValue(@"playback_gate",@"stale_clock");return; }
+    double seconds=RVDouble(timeObject,"time");
+    if (!isfinite(seconds) || seconds<0) seconds=RVDouble(contentTime,"time");
+    if (!isfinite(seconds) || seconds<0) { RVSponsorValue(@"playback_gate",@"invalid_time");return; }
+    RVSponsorValue(@"content_time_seconds",@(seconds));
+    RVSponsorValue(@"playback_gate",RVBool(controller,"isPlayingContentVideo") ? @"ready" : @"not_playing");
+    // Fetch/paint while paused or buffering; only an active content clock seeks.
+    if (!RVBool(controller,"isPlayingContentVideo")) return;
     if (RVEnabled(@"sponsorblock") && !RVEnabled(@"sponsorblock_manual") && !session.seeking) {
         if (!session.highlightApplied) for (NSDictionary *point in session.rawSegments) {
             if (![point[@"action"] isEqual:@"poi"] || ![@[@"skip",@"skip-once"] containsObject:RVSponsorBehavior(point[@"category"])]) continue;
@@ -247,6 +296,7 @@ static void RVObservePlayback(id controller,id timeObject) {
             id target=((id(*)(id,SEL,double,id))objc_msgSend)(times,sel_registerName("timeWithTime:CPN:"),targetSeconds,session.cpn);
             if (!target) break;
             session.highlightApplied=YES;session.lastSkippedStart=seconds;session.lastSkippedEnd=targetSeconds;session.hasLastSkip=YES;
+            RVSponsorCount(@"seek_requested");RVSponsorValue(@"seek_target_seconds",@(targetSeconds));
             ((void(*)(id,SEL,id,double,double,int))objc_msgSend)(controller,sel_registerName("seekToTime:toleranceBefore:toleranceAfter:seekSource:"),target,0,0,0);return;
         }
         for (NSDictionary *segment in RVSponsorRanges(session,YES)) {
@@ -263,10 +313,22 @@ static void RVObservePlayback(id controller,id timeObject) {
             session.lastSkippedStart=start;session.lastSkippedEnd=end;
             session.hasLastSkip=YES;
             RVRecordSponsorSkip(session,start,end);
+            RVSponsorCount(@"seek_requested");RVSponsorValue(@"seek_target_seconds",@(end));
             ((void(*)(id,SEL,id,double,double,int))objc_msgSend)(controller,sel_registerName("seekToTime:toleranceBefore:toleranceAfter:seekSource:"),target,0,0,0);
             session.seeking=NO;break;
         }
     }
+}
+
+static void RVObservePlayerClock(id player,id time) {
+    if (!NSThread.isMainThread) {
+        __weak id weakPlayer=player;
+        dispatch_async(dispatch_get_main_queue(),^{ if (weakPlayer) RVObservePlayerClock(weakPlayer,time); });return;
+    }
+    if (player!=RVCurrentPlayer) { RVSponsorCount(@"unowned_player_clock");return; }
+    id controller=RVPlaybackForPlayer(player);
+    RVExtraSetPlayer(player,controller);
+    RVObservePlayback(controller,time,@"player_clock");
 }
 
 static BOOL RVDataMatches(NSData *data,NSArray<NSString *> *patterns) {
@@ -358,13 +420,22 @@ static void RVInstallPlayer(void) {
     RVHook(@"YTLocalPlaybackController",@"singleVideo:currentVideoTimeDidChange:",@"v@:@@",NO,^id(IMP original,SEL sel) {
         return ^(id controller,id video,id time) {
             ((void(*)(id,SEL,id,id))original)(controller,sel,video,time);
-            RVObservePlayback(controller,time);
+            if (video==RVObject(controller,"activeVideo")) RVObservePlayback(controller,time,@"local_clock");
+        };
+    });
+    RVHook(@"YTPlayerViewController",@"potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",@"v@:@@",NO,^id(IMP original,SEL sel) {
+        return ^(id player,id video,id time) {
+            ((void(*)(id,SEL,id,id))original)(player,sel,video,time);
+            // Data-load binds the player; clock updates never take ownership of
+            // a different preview/preloaded player.
+            RVObservePlayerClock(player,time);
         };
     });
     RVHook(@"YTPlayerViewController",@"playbackController:didLoadContentPlaybackData:",@"v@:@@",NO,^id(IMP original,SEL sel) {
         return ^(id object,id controller,id data) {
             ((void(*)(id,SEL,id,id))original)(object,sel,controller,data);
             RVExtraSetPlayer(object,controller);
+            RVObservePlayback(RVPlaybackForPlayer(object),nil,@"data_load");
             dispatch_async(dispatch_get_main_queue(),^{
                 RVPlaybackSession *session=RVSession(object);
                 double value=[RVSetting(@"default_speed") doubleValue];
@@ -394,6 +465,23 @@ static void RVInstallPlayer(void) {
 }
 
 #include "RVExtras.inc"
+
+static NSDictionary *RVSponsorReport(void) {
+    id controller=RVCurrentPlayback;
+    RVPlaybackSession *session=RVSession(controller);
+    id response=RVObject(RVObject(controller,"contentPlaybackData"),"playerResponse");
+    return @{@"schema":@1,@"enabled":@(RVEnabled(@"sponsorblock")),@"markers_enabled":@(RVEnabled(@"sponsorblock_markers")),
+        @"automatic_skipping_enabled":@(RVEnabled(@"sponsorblock") && !RVEnabled(@"sponsorblock_manual")),
+        @"controller_bound":@(controller && controller==RVPlaybackForPlayer(RVCurrentPlayer)),
+        @"video_id_valid":@(RVVideoIDValid(RVObject(controller,"contentVideoID"))),
+        @"ordinary_content":@(RVOrdinaryContent(controller)),@"playing_content":@(RVBool(controller,"isPlayingContentVideo")),
+        @"playing_ad":@(RVBool(controller,"isPlayingAd")),@"overlay_bound":@(RVPlayerOverlay()!=nil),
+        @"response_present":@(response!=nil),@"live_flag_known":@(RVCan(response,"isLivePlayback",@"B@:")),
+        @"seek_abi_matches":@(RVCan(controller,"seekToTime:toleranceBefore:toleranceAfter:seekSource:",@"v@:@ddi")),
+        @"request_in_flight":@(session.task!=nil),@"response_cached":@(session.segmentsFetched),
+        @"segment_count":@(session.rawSegments.count),@"automatic_range_count":@(RVSponsorRanges(session,YES).count),
+        @"counts":RVSponsorCounts.copy ?: @{},@"state":RVSponsorState.copy ?: @{},@"device_playback_verified":@NO};
+}
 
 #include "RVSettingsBridge.inc"
 #include "RVSettingsUI.inc"

@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.5",
+  "supported_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "metadata_anchors": [
+    {
+      "name": "YTInlinePlayerBarView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x103647de4"
+        },
+        {
+          "kind": "-",
+          "selector": "barFrame",
+          "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+          "imp": "0x10364948c"
+        },
+        {
+          "kind": "-",
+          "selector": "totalTime",
+          "encoding": "d16@0:8",
+          "imp": "0x10364952c"
+        }
+      ]
+    },
+    {
+      "name": "YTLocalPlaybackController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "seekToTime:toleranceBefore:toleranceAfter:seekSource:",
+          "encoding": "v44@0:8@16d24d32i40",
+          "imp": "0x1080be6f8"
+        },
+        {
+          "kind": "-",
+          "selector": "contentVideoCurrentTime",
+          "encoding": "@16@0:8",
+          "imp": "0x1041814f4"
+        },
+        {
+          "kind": "-",
+          "selector": "isPlayingContentVideo",
+          "encoding": "B16@0:8",
+          "imp": "0x104181734"
+        },
+        {
+          "kind": "-",
+          "selector": "isPlayingAd",
+          "encoding": "B16@0:8",
+          "imp": "0x104181744"
+        },
+        {
+          "kind": "-",
+          "selector": "singleVideo:currentVideoTimeDidChange:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x1080bf0b0"
+        },
+        {
+          "kind": "-",
+          "selector": "contentPlaybackData",
+          "encoding": "@16@0:8",
+          "imp": "0x104187138"
+        }
+      ]
+    },
+    {
+      "name": "YTPlayerView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "overlayView",
+          "encoding": "@16@0:8",
+          "imp": "0x1041a65c4"
+        }
+      ]
+    },
+    {
+      "name": "YTPlayerViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "contentVideoCurrentTime",
+          "encoding": "@16@0:8",
+          "imp": "0x1041ae6fc"
+        },
+        {
+          "kind": "-",
+          "selector": "seekToTime:toleranceBefore:toleranceAfter:seekSource:",
+          "encoding": "v44@0:8d16d24d32i40",
+          "imp": "0x1041af240"
+        },
+        {
+          "kind": "-",
+          "selector": "playerView",
+          "encoding": "@16@0:8",
+          "imp": "0x1004c85d8"
+        },
+        {
+          "kind": "-",
+          "selector": "playbackController:didLoadContentPlaybackData:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x1041b0cec"
+        },
+        {
+          "kind": "-",
+          "selector": "potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x1041b211c"
+        },
+        {
+          "kind": "-",
+          "selector": "startObservingStateChangesOnActiveVideo",
+          "encoding": "v16@0:8",
+          "imp": "0x1041b3c2c"
+        }
+      ]
+    }
+  ],
+  "typed_runtime_ivar": {
+    "class": "YTPlayerViewController",
+    "name": "_playbackController",
+    "type": "@\"<YTCorePlaybackController>\"",
+    "lookup": "class_getInstanceVariable and object_getIvar; no fixed offset; resolved value must be a YTLocalPlaybackController"
+  },
+  "decompilations": {
+    "sponsor-player-clock-annotated.txt": {
+      "sha256": "b898691a2839fdb94043f359e5aa2831f40e27c8fe56584d1bf2cfeaf0521850"
+    },
+    "sponsor-playback-observation-annotated.txt": {
+      "sha256": "fde7a1d4b405817515a9d07dcd41df8b2cf2820368c3c2481bc6c7ec8282c7a0"
+    }
+  },
+  "native_observations": [
+    "startObservingStateChangesOnActiveVideo subscribes the player to activeVideo.eventCenter current-time updates.",
+    "potentiallyMutatedSingleVideo:currentVideoTimeDidChange: forwards time.time to its events delegate.",
+    "contentVideoCurrentTime delegates to the native _playbackController.",
+    "The player facade has scalar-seconds seek ABI v@:dddi; the local controller has YTSingleVideoTime ABI v@:@ddi.",
+    "Native inline seekbar layout uses barFrame; the marker overlay reads this CGRect through an ABI guard."
+  ],
+  "reported_failure": {
+    "patcher_version": "0.3.4",
+    "profile_accepted": true,
+    "sponsorblock_enabled": true,
+    "markers_enabled": true,
+    "manual_mode": false,
+    "symptoms": "No highlighted regions or automatic skips",
+    "video_url": "https://www.youtube.com/watch?v=Ke_iFvL0A1c",
+    "runtime_pipeline_diagnostics_present": false
+  },
+  "prior_read_only_service_observation": {
+    "http_status": 200,
+    "response_bytes": 827,
+    "video_duration_seconds": 481.021,
+    "segments": [
+      {
+        "category": "intro",
+        "range": [
+          49.312,
+          56.312
+        ]
+      },
+      {
+        "category": "selfpromo",
+        "range": [
+          56.179,
+          73.447
+        ]
+      },
+      {
+        "category": "sponsor",
+        "range": [
+          382.982,
+          464.851
+        ]
+      },
+      {
+        "category": "outro",
+        "range": [
+          464.707,
+          481.021
+        ]
+      }
+    ],
+    "response_sha256": "9c27e5b69a91e3b3cfa52c8678c13886c92c32417b6751650c6d198d1ad28562",
+    "scope": "Read-only service observation before the instruction not to run tests; no submissions or votes."
+  },
+  "tests_run_for_0_3_5": false,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "device_playback_verified": false,
+  "authentication_source_changed": false
+}

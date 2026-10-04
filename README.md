@@ -8,7 +8,9 @@ Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decr
 - [Device test checklist](patcher/DEVICE_TESTS.md)
 - [Sign-in failure analysis and experimental SSO adapter](patcher/AUTHENTICATION_SCHEME.md)
 
-The **Validate and build** workflow builds the native payload with Xcode, runs 37 host tests/static hook checks, packages the Windows GUI and uploads `native-build` and `windows-patcher` artifacts. The **Sign IPA** workflow runs manually, prepares or verifies an unsigned IPA, imports your Apple signing credentials into a temporary keychain, signs its nested code, verifies signatures and uploads the signed IPA. Credentials are supplied as encrypted GitHub Actions secrets.
+Commits whose message contains `[skip tests]` skip regression tests, static hook checks and the GUI smoke test; compilation and packaging still run. This is used for 0.3.5 because the user explicitly requested no tests.
+
+The **Validate and build** workflow normally builds the native payload with Xcode, runs 37 host tests/static hook checks, packages the Windows GUI and uploads `native-build` and `windows-patcher` artifacts. The **Sign IPA** workflow runs manually, prepares or verifies an unsigned IPA, imports your Apple signing credentials into a temporary keychain, signs its nested code, verifies signatures and uploads the signed IPA. Credentials are supplied as encrypted GitHub Actions secrets.
 
 YouTube IPAs, SDKs, reverse-engineering tool installations, signing credentials and local build outputs are excluded from Git. Supply your own supported decrypted IPA through a direct HTTPS URL. GitHub provides the runner; you provide the Apple certificate and provisioning profile. Signing verification does not prove installation or feature behavior on iOS.
 
@@ -35,3 +37,5 @@ Version 0.3.3 adds selected miniplayer gesture, badge, corner, size and backgrou
 Version 0.3.4 adds **YouTube Settings → ReVanced**, with 13 groups, search, 113 runtime preferences, import/export, reset and diagnostics. The working sign-in implementation and existing preferences carry over. [Settings scheme](patcher/SETTINGS_SCHEME.md).
 
 [Verified 0.3.4 artifact receipt](patcher/profiles/release-0.3.4.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37186801341) passed all 37 host tests, including the production preference/menu bridge harness and CLI export round trip, built the native payload and packaged the Windows GUI. Install the local `YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa` with SideStore. The new settings UI remains device-untested.
+
+Version 0.3.5 repairs the SponsorBlock playback connection: the native player event-center clock feeds the canonical local-controller session, markers follow the owned native overlay/seekbar track, and diagnostics expose fetch/skip/render stages. See [SponsorBlock scheme](patcher/SPONSORBLOCK_SCHEME.md). No tests were run for this release at the user request; device behavior remains unverified. Use `YouTube-21.39.4-RVPort-0.3.5-SideStore-auth-unsigned.ipa` with SideStore.
