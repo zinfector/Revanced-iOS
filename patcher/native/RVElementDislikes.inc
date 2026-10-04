@@ -17,6 +17,7 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic,weak) id component;
 @property(nonatomic,copy) NSString *video;
 @property(nonatomic,copy) NSString *text;
+@property(nonatomic,copy) NSString *colorSource;
 @property(nonatomic) BOOL updating;
 @end
 @implementation RVElementDislikeState @end
@@ -186,34 +187,57 @@ static void RVElementDislikeApply(id parent,id pair) {
     }
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     state.component=bound;state.element=element;state.video=video;
-    NSDictionary *attributes=nil;
-    for (id node in RVElementSubtree(pair)) {
+    // The independently discovered dislike branch has no native text. Search
+    // its nearest ancestors for the neighboring native like typography.
+    NSDictionary *attributes=nil;id typography=pair;
+    for (NSUInteger level=0;typography && !attributes && level<4;level++,typography=RVElementParent(typography)) {
+    for (id node in RVElementSubtree(typography)) {
         if (node==state.textNode) continue;
         id native=RVObject(node,"attributedText");
         if ([native isKindOfClass:NSAttributedString.class] && [native length]) { attributes=[native attributesAtIndex:0 effectiveRange:NULL];break; }
     }
+    }
     UIFont *font=[attributes[NSFontAttributeName] isKindOfClass:UIFont.class] ? attributes[NSFontAttributeName] :
         [[UIFontMetrics metricsForTextStyle:UIFontTextStyleBody] scaledFontForFont:[UIFont systemFontOfSize:14 weight:UIFontWeightMedium]];
-    UIColor *color=[attributes[NSForegroundColorAttributeName] isKindOfClass:UIColor.class] ? attributes[NSForegroundColorAttributeName] : UIColor.labelColor;
+    UIColor *color=[attributes[NSForegroundColorAttributeName] isKindOfClass:UIColor.class] ? attributes[NSForegroundColorAttributeName] : nil;
+    state.colorSource=color ? @"native_neighbor" : @"native_palette";
+    if (!color) {
+        NSInteger pageStyle=view.traitCollection.userInterfaceStyle==UIUserInterfaceStyleDark ? 1 : 0;
+        if (RVCan(RVCurrentWatch,"pageStyle",@"q@:")) pageStyle=((NSInteger(*)(id,SEL))objc_msgSend)(RVCurrentWatch,sel_registerName("pageStyle"));
+        id palette=RVObject(NSClassFromString(@"YTCommonColorPalette"),pageStyle==1 ? "darkPalette" : "lightPalette");
+        id native=RVObject(palette,"textPrimary");
+        color=[native isKindOfClass:UIColor.class] ? native : (pageStyle==1 ? UIColor.whiteColor : UIColor.blackColor);
+    }
     NSString *text=RVDislikeCompactCount(RVDislikeCount);
     NSAttributedString *display=[[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:color}];
     state.updating=YES;
     if (!state.textNode) {
         Class textClass=NSClassFromString(@"ASTextNode");id node=[textClass new];
         if (!RVCan(node,"setAttributedText:",@"v@:@")) { state.updating=NO;return; }
+        if (!RVCan(node,"enableYoga",@"v@:") || !RVCan(node,"enableViewFlattening",@"v@:")) { state.updating=NO;return; }
         RVVoid(node,"enableYoga");
+        // Native +yogaNode enables both. The renderer sums skipped ancestor
+        // offsets only for flattening-enabled nodes; otherwise a text frame
+        // relative to the button is applied relative to the flattened host.
+        // Yoga's renderer manages render subnodes itself: do not addSubnode.
+        RVVoid(node,"enableViewFlattening");
         RVSetObject(node,"setAttributedText:",display);
         RVSetObject(node,"setAccessibilityIdentifier:",@"rvport.dislike.count.element");
         id style=RVObject(node,"style");
         if (RVCan(style,"setSpacingBefore:",@"v@:d")) ((void(*)(id,SEL,double))objc_msgSend)(style,sel_registerName("setSpacingBefore:"),8);
+        if (RVCan(node,"setUserInteractionEnabled:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(node,sel_registerName("setUserInteractionEnabled:"),NO);
         state.textNode=node;RVSetObject(parent,"appendYogaChild:",node);
+        RVVoid(node,"setNeedsDisplay");
         RVVoid(parent,"setNeedsLayout");RVVoid(RVObject(parent,"yogaRoot"),"setNeedsLayout");
         if (!RVElementDislikeParents) RVElementDislikeParents=[NSHashTable weakObjectsHashTable];[RVElementDislikeParents addObject:parent];
         RVElementDislikeEvent(@"owned_node_attached");
     } else {
         id existing=RVObject(state.textNode,"attributedText");
         if (![existing isKindOfClass:NSAttributedString.class] || ![existing isEqualToAttributedString:display]) RVSetObject(state.textNode,"setAttributedText:",display);
-        if (![RVElementChildren(parent) containsObject:state.textNode]) RVSetObject(parent,"appendYogaChild:",state.textNode);
+        if (![RVElementChildren(parent) containsObject:state.textNode]) {
+            RVSetObject(parent,"appendYogaChild:",state.textNode);
+            RVVoid(parent,"setNeedsLayout");RVVoid(RVObject(parent,"yogaRoot"),"setNeedsLayout");
+        }
     }
     RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike estimate: %@ dislikes",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]]);
     state.text=text;state.updating=NO;RVElementLastGate=@"owned_count_attached";
@@ -300,24 +324,55 @@ static void RVElementQueueRefresh(void) {
     });
 }
 static NSDictionary *RVElementDislikeReport(void) {
-    NSUInteger attached=0,laidOut=0;
+    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0;
+    NSMutableArray *geometry=[NSMutableArray array];
     for (id node in RVElementDislikeParents.allObjects) {
-        id text=((RVElementDislikeState *)objc_getAssociatedObject(node,RVElementDislikeKey)).textNode;
+        RVElementDislikeState *state=objc_getAssociatedObject(node,RVElementDislikeKey);id text=state.textNode;
         if (!text) continue;attached++;
-        if (RVCan(text,"frame",@"{CGRect={CGPoint=dd}{CGSize=dd}}@:")) {
-            CGRect frame=((CGRect(*)(id,SEL))objc_msgSend)(text,sel_registerName("frame"));
-            if (isfinite(frame.size.width) && isfinite(frame.size.height) && frame.size.width>0 && frame.size.height>0) laidOut++;
+        CGRect frame=CGRectZero;
+        if (RVCan(text,"frame",@"{CGRect={CGPoint=dd}{CGSize=dd}}@:")) frame=((CGRect(*)(id,SEL))objc_msgSend)(text,sel_registerName("frame"));
+        BOOL positive=isfinite(frame.origin.x) && isfinite(frame.origin.y) && isfinite(frame.size.width) && isfinite(frame.size.height) && frame.size.width>0 && frame.size.height>0;
+        laidOut+=positive;id renderParent=RVObject(text,"supernode");mounted+=renderParent!=nil;
+        BOOL isLoaded=RVBool(text,"isNodeLoaded");loaded+=isLoaded;
+        UIView *host=renderParent ? RVElementLoadedView(renderParent) : nil;
+        CALayer *layer=isLoaded ? RVObject(text,"layer") : nil;
+        BOOL onWindow=host.window && [layer isKindOfClass:CALayer.class] && layer.superlayer;
+        inWindow+=onWindow;
+        BOOL visible=NO;NSUInteger clipping=0;
+        if (onWindow && positive) {
+            CGRect rect=layer.bounds;CALayer *ancestor=layer;
+            visible=!layer.hidden && layer.opacity>0;
+            for (NSUInteger i=0;ancestor && i<32;i++) {
+                if (ancestor.hidden || ancestor.opacity<=0) visible=NO;
+                if (ancestor.masksToBounds) {
+                    CGRect overlap=CGRectIntersection(rect,ancestor.bounds);
+                    if (CGRectIsNull(overlap) || CGRectIsEmpty(overlap)) visible=NO;
+                    if (!CGRectContainsRect(ancestor.bounds,rect)) clipping++;
+                }
+                CALayer *next=ancestor.superlayer;
+                if (!next) break;
+                rect=[ancestor convertRect:rect toLayer:next];ancestor=next;
+            }
+            CGRect windowRect=[layer convertRect:layer.bounds toLayer:host.window.layer];
+            if (!CGRectIntersectsRect(windowRect,host.window.bounds)) visible=NO;
         }
+        unclipped+=visible && clipping==0;
+        if (geometry.count<8) [geometry addObject:@{
+            @"frame_x":@(positive ? frame.origin.x : 0),@"frame_y":@(positive ? frame.origin.y : 0),
+            @"frame_width":@(positive ? frame.size.width : 0),@"frame_height":@(positive ? frame.size.height : 0),
+            @"render_parent_present":@(renderParent!=nil),@"node_loaded":@(isLoaded),@"render_layer_in_window":@(onWindow),
+            @"clipping_ancestors":@(clipping),@"geometrically_visible":@(visible),@"color_source":state.colorSource ?: @"unknown"}];
     }
     NSDictionary *counts;NSUInteger images;
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@3,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@4,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+        @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
         @"last_gate":RVElementLastGate ?: @"not_observed",@"native_like_arguments_preserved":@YES,
-        @"strategy":@"independent_dislike_yoga_button_with_active_watch_player",@"like_icon_required":@NO,@"device_verified":@NO};
+        @"strategy":@"flattening_aware_native_dislike_text_with_watch_binding",@"like_icon_required":@NO,@"device_verified":@NO};
 }
 static void RVInstallElementDislikes(void) {
     RVHook(@"YTELMResourceLoaderImpl",@"imageWithName:color:bundleId:",@"@@:@@@",NO,^id(IMP original,SEL sel) {

@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Version 0.3.12 removes the like-icon requirement that prevented the 0.3.11 device report from binding the dislike button. It appends a count to a positively identified native horizontal dislike branch, with semantic-role and active-watch/video guards. Native like rendering is preserved; both count displays remain device-unverified. The authorized parallel settings snapshot includes current header/card-formatting edits. No tests run.
+Version 0.3.13 corrects owned dislike-text setup for YouTube's flattened native renderer and inherits native typography. Report 511 shows a fetched count and a positive text layout frame, but the screenshot still lacks dislike text; native likes are visible. The rendering revision remains device-unverified. Authentication, working SponsorBlock and the 0.3.12 parallel settings snapshot are retained. No tests run.
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 

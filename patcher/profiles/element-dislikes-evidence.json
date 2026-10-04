@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.12",
+  "implementation_version": "0.3.13",
   "supported_youtube_version": "21.39.4",
-  "status": "independent_dislike_button_adapter_device_unverified",
-  "device_failure_evidence": "device-0.3.11-vote-display-failure.json",
+  "status": "flattening_aware_text_render_adapter_device_unverified",
+  "device_failure_evidence": "device-0.3.12-ryd-render-failure.json",
   "metadata": [
     {
       "name": "YTIconResolverImpl",
@@ -353,14 +353,14 @@
     "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
-  "source_sha256": "93debacdd1f4eb3436f0b00d297fd54551be7b1e230adfe0c18f94819fcb2a1e",
+  "source_sha256": "74091bfabb4237f32f3ca73b2f229a0b9ae1ffd265c74ca901320a6b820ceaa0",
   "binding": "One down icon and exactly one populated native image in a horizontal Yoga branch; semantic action component and matching active watch player/video. No up-icon requirement. Explicit element video IDs must match if present.",
-  "layout": "Append one owned ASTextNode to the existing dislike Yoga branch; remove it on disabled feature, video change, or invalid binding; reattach only the owned child if native children are rebuilt.",
+  "layout": "Append one owned Yoga and view-flattening-enabled ASTextNode to the verified dislike branch; native renderer reconciles render subnodes and computes flattened ancestor offsets; retain native hit targets; remove owned text on invalid binding.",
   "no_native_commands_replaced": true,
   "tests_run": false,
   "device_verified": false,
   "service_votes_sent": 0,
-  "remaining_scope": "This adapter revision has not been observed on device. Parent width constraints and component-role matching may still need device evidence; diagnostics distinguish attached from laid-out text nodes. No online Shorts or automatic vote forwarding.",
+  "remaining_scope": "New rendering revision remains device-unverified; inspect actual mounted layer/window/clipping diagnostics for fixed-width constraints. No online Shorts or automatic vote forwarding.",
   "named_resource_path": {
     "caller": "ELMImageNode maybeUpdateImageWithLocalImage",
     "helper": "0x1005c342c",
@@ -371,7 +371,12 @@
   "read_only_evidence": {
     "ryd-image-watch-gates-annotated.txt": "00ebb30eb6d33411b243cb25f90dba3c22a7c155822b4b436035d749c74c2633",
     "ryd-local-image-dispatch-annotated.txt": "f14d652a4165443e88905c917361238ea6c02ee4ceb7a89292b34bbe5e2349a4",
-    "ryd-resource-loader-annotated.txt": "a641e725d1fa6ffbb879405cc9a711f5eea3754f9dc77d8ab209976fb7badf30"
+    "ryd-resource-loader-annotated.txt": "a641e725d1fa6ffbb879405cc9a711f5eea3754f9dc77d8ab209976fb7badf30",
+    "ryd-flatten-render-annotated.txt": "b4a689a87533075990be674160d67fe3ab02936fc32e252077f73d8d8b954179",
+    "ryd-yoga-render-tree-annotated.txt": "c481be1c07797ee593a1eb7ccf755df11178e176d708a17a7438376a25615592",
+    "ryd-yoga-render-callbacks-annotated.txt": "6b700087ddcb9f454def7d2d9cdd9fc89ab339e597d178e684562a170d429ac4",
+    "ryd-native-text-construction-annotated.txt": "e41e97ab9156b2183bc2cd5a56b6a0bc665b06b8bd587d0f1707bc3d16c90cf8",
+    "ryd-node-mount-annotated.txt": "1a98211e6e879c183d5120c408a69ba617ca439ad38c90c2671de3388e509e9b"
   },
   "previous_adapter_source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
   "horizontal_layout_contract": {
@@ -380,5 +385,20 @@
     "flexDirection": 1,
     "encoding": "C16@0:8",
     "evidence_sha256": "c890942f0320aa539e5f01fc53cd4936281496df0ad2c75d960d4976b1b3d235"
+  },
+  "render_contract": {
+    "native_yoga_factory": {
+      "imp": "0x104757bec",
+      "calls": [
+        "enableYoga",
+        "enableViewFlattening"
+      ]
+    },
+    "native_render_pass": "0x10058c2a4",
+    "render_callback": "0x104712a64",
+    "observed_behavior": "Flattening-enabled nodes accumulate skipped Yoga ancestor offsets before setFrame; render callback reconciles Yoga children into render subnodes using insertSubnode:atIndex:. A manually added subnode is not required.",
+    "implementation": "Enable native flattening on owned ASTextNode before appending; use native neighboring text attributes or YouTube page-style palette; report actual render ancestry, loaded layer, window and ancestor clipping.",
+    "device_verified": false,
+    "tests_run": false
   }
 }

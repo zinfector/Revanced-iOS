@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.12",
+  "patcher_version": "0.3.13",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -859,7 +859,7 @@
         "ryd_voting"
       ],
       "implementation": "Cached RYD estimates in verified slim labels/main-video entities and an inline accessory on identified slim element actions; a guarded native Yoga text adapter for video-bound segmented element pairs; manual RYD registration and voting in Settings Video tools.",
-      "limits": "The 0.3.11 device report recognizes down icons but never binds the required up/down pair. 0.3.12 identifies the native horizontal dislike branch independently with semantic/video guards; attachment and positive-size text layout are reported separately. Native like rendering is preserved. This revision remains device-unverified. Online Shorts text, automatic vote forwarding, Android preference translation and complete styling remain unported. No tests or service votes are run during development.",
+      "limits": "The 0.3.12 report binds and lays out count text but it remains invisible. 0.3.13 enables native view flattening and inherits native typography; actual render layer and clipping diagnostics distinguish layout from rendering. Device confirmation remains outstanding. Native vote confirmation, horizontal scroll/clipping, reuse and online Shorts remain unverified; automatic service voting stays disabled.",
       "parent": null,
       "device_validated": false
     },
