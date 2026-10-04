@@ -1,11 +1,11 @@
-"""Record 0.3.11 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.12 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.11'
+VERSION = '0.3.12'
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
              'native/RVSettingsNativeUI.inc', 'native/RVSettingsRows.inc', 'native/RVSettingsIcon.inc',
              'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
              'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
-             'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json']
+             'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}
@@ -56,7 +56,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.10 failed to display dislikes and the user subsequently reported missing likes. 0.3.11 revises named-resource discovery, Yoga ancestry and watch ownership; native like-rendering arguments remain unchanged. This candidate has not been observed on a device. Authentication source and SponsorBlock behavior are retained. No tests were run.'}
+        'remaining_scope': 'The 0.3.11 device report sees the dislike icon but never recognizes an up icon or binds a native pair. 0.3.12 removes the up-icon requirement and recognizes a guarded native horizontal dislike branch. New display and parallel settings snapshot remain device-unverified. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

@@ -827,6 +827,12 @@
         "selector": "setSectionControllers",
         "encoding": "v16@0:8",
         "imp": "0x1014578f4"
+      },
+      {
+        "kind": "-",
+        "selector": "viewDidAppear:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x10145565c"
       }
     ]
   },

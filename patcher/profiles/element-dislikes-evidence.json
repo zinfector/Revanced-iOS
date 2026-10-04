@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.11",
+  "implementation_version": "0.3.12",
   "supported_youtube_version": "21.39.4",
-  "status": "revised_adapter_device_unverified",
-  "device_failure_evidence": "device-0.3.10-vote-display-failure.json",
+  "status": "independent_dislike_button_adapter_device_unverified",
+  "device_failure_evidence": "device-0.3.11-vote-display-failure.json",
   "metadata": [
     {
       "name": "YTIconResolverImpl",
@@ -290,6 +290,57 @@
           "imp": "0x1005463f0"
         }
       ]
+    },
+    {
+      "name": "YTAppIconSupportProviderImpl",
+      "address": "0x10c9dab38",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "resourceMap",
+          "encoding": "@16@0:8",
+          "imp": "0x1019cb0a8"
+        }
+      ]
+    },
+    {
+      "name": "ASDisplayNode",
+      "address": "0x10cacea98",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "frame",
+          "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+          "imp": "0x100595260"
+        },
+        {
+          "kind": "-",
+          "selector": "yogaRoot",
+          "encoding": "@16@0:8",
+          "imp": "0x1005a1f20"
+        },
+        {
+          "kind": "+",
+          "selector": "yogaHorizontalStack",
+          "encoding": "@16@0:8",
+          "imp": "0x104757d14"
+        }
+      ]
+    },
+    {
+      "name": "ASLayoutElementStyle",
+      "address": "0x10cad0118",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "flexDirection",
+          "encoding": "C16@0:8",
+          "imp": "0x1047522a0"
+        }
+      ]
     }
   ],
   "evidence_sha256": {
@@ -302,14 +353,14 @@
     "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
-  "source_sha256": "7edaf53856e66eeb1ee1793dd68ae394ba234e9bc207109afa69b361ea3f86b3",
-  "binding": "Native one-up/one-down Yoga branches in the active watch outside the player overlay; semantic action component plus matching watch.playerViewController and contentVideoID. Explicit element video IDs, if present, must also match.",
+  "source_sha256": "93debacdd1f4eb3436f0b00d297fd54551be7b1e230adfe0c18f94819fcb2a1e",
+  "binding": "One down icon and exactly one populated native image in a horizontal Yoga branch; semantic action component and matching active watch player/video. No up-icon requirement. Explicit element video IDs must match if present.",
   "layout": "Append one owned ASTextNode to the existing dislike Yoga branch; remove it on disabled feature, video change, or invalid binding; reattach only the owned child if native children are rebuilt.",
   "no_native_commands_replaced": true,
   "tests_run": false,
   "device_verified": false,
   "service_votes_sent": 0,
-  "remaining_scope": "The failed modern device hierarchy has not yet been observed with these new bindings. Missing role/video proofs leave controls unchanged and produce redacted counters. No full segmented-layout parity, Shorts count rendering or automatic RYD vote forwarding is claimed.",
+  "remaining_scope": "This adapter revision has not been observed on device. Parent width constraints and component-role matching may still need device evidence; diagnostics distinguish attached from laid-out text nodes. No online Shorts or automatic vote forwarding.",
   "named_resource_path": {
     "caller": "ELMImageNode maybeUpdateImageWithLocalImage",
     "helper": "0x1005c342c",
@@ -322,5 +373,12 @@
     "ryd-local-image-dispatch-annotated.txt": "f14d652a4165443e88905c917361238ea6c02ee4ceb7a89292b34bbe5e2349a4",
     "ryd-resource-loader-annotated.txt": "a641e725d1fa6ffbb879405cc9a711f5eea3754f9dc77d8ab209976fb7badf30"
   },
-  "previous_adapter_source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b"
+  "previous_adapter_source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
+  "horizontal_layout_contract": {
+    "native_factory": "ASDisplayNode yogaHorizontalStack",
+    "imp": "0x104757d14",
+    "flexDirection": 1,
+    "encoding": "C16@0:8",
+    "evidence_sha256": "c890942f0320aa539e5f01fc53cd4936281496df0ad2c75d960d4976b1b3d235"
+  }
 }

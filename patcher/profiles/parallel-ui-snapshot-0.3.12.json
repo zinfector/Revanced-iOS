@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "base_commit": "57892f146d0567fdea79ebe5ca5f82997548e31d",
+  "included": true,
+  "authorization": "User previously instructed to merge the still-edited parallel UI/RYD work.",
+  "files": {
+    "RVSettingsBridge.inc": "c266befe171e9789f4309ca54d8cf68eca75ce99501b8cfa6d69b1a3e0496515",
+    "RVSettingsNativeUI.inc": "c2fffb184ddb0a7c9beb84798c99d0de194f248cf421519276d98103757f9bfd"
+  },
+  "scope": "Native settings header recalculation after appearance, scoped bar appearance, native card formatter and separators. Snapshot only; later shared edits preserved.",
+  "tests_run": false,
+  "device_verified": false
+}

@@ -30,6 +30,11 @@ static BOOL RVSettingsNativeRowsAvailable(void) {
         available &= RVUIRequire(@"YTSettingsSectionController",@"didSelectItemAtIndex:fromView:",@"v@:q@",NO);
         available &= RVUIRequire(@"YTSettingsSectionController",@"setHeaderHidden:",@"v@:B",NO);
         available &= RVUIRequire(@"YTSettingsSectionController",@"setUseUpdatedSettingsColors:",@"v@:B",NO);
+        available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"setCellPositioningStyle:",@"v@:i",NO);
+        available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"updateCell:atIndexPath:sectionController:numberofSections:",@"v@:@@@Q",NO);
+        available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:",@"v@:@@Q@Q",NO);
+        available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"insetForSectionAtIndex:sectionController:numberOfSections:",@"{UIEdgeInsets=dddd}@:Q@Q",NO);
+        available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:",@"{CGSize=dd}@:{CGSize=dd}Q@Q",NO);
         available &= RVUIRequire(@"YTSettingsCell",@"pageStyleDidChange:",@"v@:q",NO);
         available &= RVUIRequire(@"YTSettingsCell",@"setParentResponder:",@"v@:@",NO);
         available &= [NSClassFromString(@"YTSettingsCell") isSubclassOfClass:UICollectionViewCell.class];
@@ -69,6 +74,7 @@ static UIColor *RVSettingsColor(UIViewController *content,const char *token) {
     BOOL dark=RVSettingsPageStyle(content)==1;
     if (!strcmp(token,"textSecondary")) return dark ? [UIColor colorWithWhite:.65 alpha:1] : [UIColor colorWithWhite:.4 alpha:1];
     if (!strcmp(token,"textPrimary")) return dark ? UIColor.whiteColor : UIColor.blackColor;
+    if (!strcmp(token,"outline")) return [UIColor colorWithWhite:dark ? .25 : .85 alpha:1];
     return dark ? [UIColor colorWithWhite:15.0/255 alpha:1] : UIColor.whiteColor;
 }
 static void RVSettingsRefreshAppearance(UIViewController *content) {
@@ -77,7 +83,22 @@ static void RVSettingsRefreshAppearance(UIViewController *content) {
     owner.overrideUserInterfaceStyle=style;content.overrideUserInterfaceStyle=style;
     content.view.backgroundColor=RVSettingsColor(content,"baseBackground");
     owner.view.backgroundColor=content.view.backgroundColor;
-    if (RVCan(owner,"setupNavigationBarAppearance",@"v@:")) ((void(*)(id,SEL))objc_msgSend)(owner,sel_registerName("setupNavigationBarAppearance"));
+    // A child loads before its host is presented. Styling the shared native bar
+    // then changes the screen underneath it; native viewWillAppear owns entry.
+    if (owner.viewIfLoaded.window && (!owner.navigationController || owner.navigationController.visibleViewController==owner) &&
+        RVCan(owner,"setupNavigationBarAppearance",@"v@:"))
+        ((void(*)(id,SEL))objc_msgSend)(owner,sel_registerName("setupNavigationBarAppearance"));
+}
+static void RVSettingsRefreshNativeHeader(UIViewController *controller) {
+    // YTHeaderView caches statusBarHeight/layoutHeight at construction. Once
+    // attached, let its native status-area calculation refresh both together.
+    // Do not shift title frames or add a device-specific top constant.
+    UIView *header=RVObject(controller,"yt_headerView");
+    if (![header isKindOfClass:NSClassFromString(@"YTHeaderView")] || !header.window ||
+        !RVCan(header,"resetHeaderParamsForStatusBarUpdate",@"v@:")) return;
+    ((void(*)(id,SEL))objc_msgSend)(header,sel_registerName("resetHeaderParamsForStatusBarUpdate"));
+    [header invalidateIntrinsicContentSize];[header setNeedsLayout];[header.superview setNeedsLayout];
+    [controller.parentViewController.viewIfLoaded setNeedsLayout];
 }
 static void RVSettingsHostLoad(id object,SEL selector) {
     (void)selector;((UIViewController *)object).view=[UIView new];
@@ -100,11 +121,17 @@ static NSInteger RVSettingsHostPageStyle(id object,SEL selector) {
     // Before state is attached, use the host's traits (native initialization may ask).
     return RVSettingsPageStyle(state.content ?: object);
 }
+static void RVSettingsHostDidAppear(id object,SEL selector,BOOL animated) {
+    IMP original=class_getMethodImplementation(class_getSuperclass(RVSettingsHostClass),selector);
+    ((void(*)(id,SEL,BOOL))original)(object,selector,animated);
+    RVSettingsRefreshNativeHeader(object);
+}
 static Class RVSettingsNativeHostClass(void) {
     static dispatch_once_t once;dispatch_once(&once,^{
         BOOL valid=RVUIRequire(@"YTStyledViewController",@"initWithParentResponder:",@"@@:@",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"viewDidLoad",@"v@:",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"viewWillAppear:",@"v@:B",NO);
+        valid &= RVUIRequire(@"YTStyledViewController",@"viewDidAppear:",@"v@:B",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"setShouldSetupNavigationBarStyle:",@"v@:B",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"setupNavigationBarAppearance",@"v@:",NO);
         Class base=NSClassFromString(@"YTStyledViewController");
@@ -112,6 +139,7 @@ static Class RVSettingsNativeHostClass(void) {
         Class cls=objc_allocateClassPair(base,"RVPortNativeSettingsHost",0);if (!cls) return;
         BOOL added=class_addMethod(cls,@selector(loadView),(IMP)RVSettingsHostLoad,"v@:");
         added &= class_addMethod(cls,@selector(viewDidLoad),(IMP)RVSettingsHostDidLoad,"v@:");
+        added &= class_addMethod(cls,@selector(viewDidAppear:),(IMP)RVSettingsHostDidAppear,"v@:B");
         added &= class_addMethod(cls,sel_registerName("pageStyle"),(IMP)RVSettingsHostPageStyle,"q@:");
         if (!added) { objc_disposeClassPair(cls);return; }
         RVSettingsHostClass=cls;objc_registerClassPair(cls);RVLog(@"Settings UI: native YouTube header");
@@ -142,6 +170,7 @@ static void RVSettingsPop(UIViewController *content) {
 
 @interface RVSettingsSupplement : UICollectionReusableView
 @property(nonatomic,strong) UILabel *label;
+@property(nonatomic,strong) UIView *separator;
 @end
 @implementation RVSettingsSupplement
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -151,6 +180,10 @@ static void RVSettingsPop(UIViewController *content) {
         [NSLayoutConstraint activateConstraints:@[[self.label.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:16],
             [self.label.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-16],[self.label.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
             [self.label.bottomAnchor constraintLessThanOrEqualToAnchor:self.bottomAnchor constant:-8]]];
+        self.separator=[UIView new];self.separator.translatesAutoresizingMaskIntoConstraints=NO;self.separator.hidden=YES;[self addSubview:self.separator];
+        [NSLayoutConstraint activateConstraints:@[[self.separator.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
+            [self.separator.trailingAnchor constraintEqualToAnchor:self.trailingAnchor],[self.separator.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
+            [self.separator.heightAnchor constraintEqualToConstant:1]]];
     }return self;
 }
 @end
@@ -185,6 +218,7 @@ static void RVSettingsPop(UIViewController *content) {
 @interface RVSettingsListController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 @property(nonatomic,strong) UICollectionView *collection;
 @property(nonatomic,strong) NSArray *sections,*nativeSections;
+@property(nonatomic,strong) id formatter;
 @property(nonatomic) BOOL nativeRows;
 @property(nonatomic) CGFloat layoutWidth;
 @property(nonatomic,copy) void (^selected)(NSDictionary *);
@@ -197,7 +231,10 @@ static void RVSettingsPop(UIViewController *content) {
     self.collection=[[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];self.view=self.collection;
     self.nativeRows=RVSettingsNativeRowsAvailable();self.collection.dataSource=self;self.collection.delegate=self;
     self.collection.keyboardDismissMode=UIScrollViewKeyboardDismissModeInteractive;
+    self.collection.contentInset=UIEdgeInsetsMake(8,0,0,0); // Native Settings loadView.
     if (self.nativeRows) {
+        self.formatter=[NSClassFromString(@"YTCardCollectionViewUIFormatter") new];
+        ((void(*)(id,SEL,int))objc_msgSend)(self.formatter,sel_registerName("setCellPositioningStyle:"),2);
         [self.collection registerClass:NSClassFromString(@"YTSettingsCell") forCellWithReuseIdentifier:@"native.preference"];
         [self.collection registerClass:NSClassFromString(@"YTFeedHeaderView") forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"native.heading"];
     }
@@ -243,6 +280,7 @@ static void RVSettingsPop(UIViewController *content) {
         ((void(*)(id,SEL,id,NSInteger))objc_msgSend)(self.nativeSections[index.section],sel_registerName("updateCell:forIndex:"),cell,index.item);
         RVSetObject(cell,"setParentResponder:",RVSettingsOwner(self.parentViewController ?: self));
         ((void(*)(id,SEL,NSInteger))objc_msgSend)(cell,sel_registerName("pageStyleDidChange:"),self.pageStyle);
+        ((void(*)(id,SEL,id,id,id,NSUInteger))objc_msgSend)(self.formatter,sel_registerName("updateCell:atIndexPath:sectionController:numberofSections:"),cell,index,self.nativeSections[index.section],self.sections.count);
     } else {
         RVSettingsFallbackCell *fallback=(id)cell;fallback.titleLabel.text=row[@"title"];fallback.hintLabel.text=row[@"hint"];fallback.hintLabel.hidden=![row[@"hint"] length];
         fallback.valueLabel.text=row[@"detail"];fallback.valueLabel.hidden=![row[@"detail"] length];fallback.toggle.hidden=![row[@"toggle"] boolValue];
@@ -271,23 +309,41 @@ static void RVSettingsPop(UIViewController *content) {
 }
 - (CGSize)collectionView:(UICollectionView *)view layout:(UICollectionViewLayout *)layout referenceSizeForHeaderInSection:(NSInteger)section {
     (void)layout;CGFloat width=CGRectGetWidth(view.bounds);if (![self.sections[section][@"title"] length]) return CGSizeZero;
-    if (self.nativeRows) return ((CGSize(*)(id,SEL,CGSize))objc_msgSend)(self.nativeSections[section],sel_registerName("sizeForHeaderWithSize:"),CGSizeMake(width,CGFLOAT_MAX));
+    if (self.nativeRows) {
+        id nativeSection=self.nativeSections[section];
+        CGSize size=((CGSize(*)(id,SEL,CGSize))objc_msgSend)(nativeSection,sel_registerName("sizeForHeaderWithSize:"),CGSizeMake(width,CGFLOAT_MAX));
+        return ((CGSize(*)(id,SEL,CGSize,NSUInteger,id,NSUInteger))objc_msgSend)(self.formatter,
+            sel_registerName("referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:"),size,section,nativeSection,self.sections.count);
+    }
     CGFloat height=[self.sections[section][@"title"] boundingRectWithSize:CGSizeMake(MAX(1,width-32),CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleHeadline]} context:nil].size.height;
     return CGSizeMake(width,ceil(height)+24);
 }
+- (UIEdgeInsets)collectionView:(UICollectionView *)view layout:(UICollectionViewLayout *)layout insetForSectionAtIndex:(NSInteger)section {
+    (void)view;(void)layout;
+    if (self.nativeRows) return ((UIEdgeInsets(*)(id,SEL,NSUInteger,id,NSUInteger))objc_msgSend)(self.formatter,
+        sel_registerName("insetForSectionAtIndex:sectionController:numberOfSections:"),section,self.nativeSections[section],self.sections.count);
+    return UIEdgeInsetsMake(0,0,24,0);
+}
 - (CGSize)collectionView:(UICollectionView *)view layout:(UICollectionViewLayout *)layout referenceSizeForFooterInSection:(NSInteger)section {
-    (void)layout;NSString *text=self.sections[section][@"footer"];if (!text.length) return CGSizeZero;CGFloat width=CGRectGetWidth(view.bounds);
+    (void)layout;NSString *text=self.sections[section][@"footer"];CGFloat width=CGRectGetWidth(view.bounds);
+    CGFloat separator=section+1<(NSInteger)self.sections.count ? 1 : 0;
+    if (!text.length) return CGSizeMake(width,separator);
     CGFloat height=[text boundingRectWithSize:CGSizeMake(MAX(1,width-32),CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote]} context:nil].size.height;
-    return CGSizeMake(width,ceil(height)+24);
+    return CGSizeMake(width,ceil(height)+24+separator);
 }
 - (UICollectionReusableView *)collectionView:(UICollectionView *)view viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)index {
     BOOL header=[kind isEqual:UICollectionElementKindSectionHeader];UICollectionReusableView *supplement=[view dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:header ? self.nativeRows ? @"native.heading" : @"fallback.heading" : @"footer" forIndexPath:index];
     supplement.backgroundColor=view.backgroundColor;
     if (header && self.nativeRows) {
         ((void(*)(id,SEL,id))objc_msgSend)(self.nativeSections[index.section],sel_registerName("updateHeader:"),supplement);
+        ((void(*)(id,SEL,id,id,NSUInteger,id,NSUInteger))objc_msgSend)(self.formatter,
+            sel_registerName("updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:"),supplement,kind,index.section,self.nativeSections[index.section],self.sections.count);
         if (RVCan(supplement,"pageStyleDidChange:",@"v@:q")) ((void(*)(id,SEL,NSInteger))objc_msgSend)(supplement,sel_registerName("pageStyleDidChange:"),self.pageStyle);
     } else {
         RVSettingsSupplement *label=(id)supplement;label.label.text=self.sections[index.section][header ? @"title" : @"footer"];
+        label.label.hidden=!label.label.text.length;
+        label.separator.hidden=header || index.section+1>=(NSInteger)self.sections.count;
+        label.separator.backgroundColor=RVSettingsColor(self.parentViewController ?: self,"outline");
         label.label.font=[UIFont preferredFontForTextStyle:header ? UIFontTextStyleHeadline : UIFontTextStyleFootnote];
         label.label.textColor=RVSettingsColor(self.parentViewController ?: self,header ? "textPrimary" : "textSecondary");
     }return supplement;

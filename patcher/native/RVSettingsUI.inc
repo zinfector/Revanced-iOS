@@ -188,7 +188,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":@"0.3.11",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport()};
+        NSDictionary *report=@{@"patcher_version":@"0.3.12",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];

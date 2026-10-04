@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Version 0.3.11 revises the failed 0.3.10 RYD adapter: named local resource loading, Yoga parent traversal and active watch ownership. Native like-rendering arguments are preserved; animation suppression uses a scoped transaction. Both counts still require device confirmation. Tests remain disabled. See [the display scheme](patcher/ELEMENT_DISLIKES_SCHEME.md).
+Version 0.3.12 removes the like-icon requirement that prevented the 0.3.11 device report from binding the dislike button. It appends a count to a positively identified native horizontal dislike branch, with semantic-role and active-watch/video guards. Native like rendering is preserved; both count displays remain device-unverified. The authorized parallel settings snapshot includes current header/card-formatting edits. No tests run.
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 
@@ -60,4 +60,4 @@ Version 0.3.9 merges the user-authorized snapshot of the still-edited parallel n
 
 [0.3.9 build-only receipt](patcher/profiles/release-0.3.9.json): the [merged cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37191721554) succeeded and all test/check steps were skipped. It includes the parallel native settings UI and inline RYD snapshot. Later in-progress edits are not claimed as part of this artifact; device behavior remains unverified.
 
-[0.3.11 build-only receipt](patcher/profiles/release-0.3.11.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37233522778) succeeded. Regression, hook-check and GUI smoke steps were skipped. Use the 0.3.11 SideStore-auth IPA; revised like/dislike rendering remains device-unverified.
+[0.3.11 build-only receipt](patcher/profiles/release-0.3.11.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37233522778) succeeded. Regression, hook-check and GUI smoke steps were skipped. Use the 0.3.12 SideStore-auth IPA; revised like/dislike rendering remains device-unverified.
