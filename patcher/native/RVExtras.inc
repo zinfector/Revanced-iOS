@@ -192,6 +192,11 @@ static void RVInstallLinks(void) {
                 id current=weakObject;if (!current) return;
                 NSHashTable *visible=[cls isEqual:@"YTWatchViewController"] ? RVVisibleWatchControllers : RVVisibleSearchControllers;
                 if ([selector isEqual:@"viewDidAppear:"]) [visible addObject:current];else [visible removeObject:current];RVRefreshThumbnailContext();
+                if ([cls isEqual:@"YTWatchViewController"]) {
+                    if ([selector isEqual:@"viewDidAppear:"]) RVCurrentWatch=current;
+                    else if (RVCurrentWatch==current) RVCurrentWatch=nil;
+                    RVRefreshDislikeUI();
+                }
             });
         };
     });
@@ -728,12 +733,21 @@ static void RVInstallLayout(void) {
     });
     RVHook(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@B",NO,^id(IMP original,SEL sel) {
         return ^(id object,id count,id number,id font,id attributes,id color,BOOL skip) {
-            ((void(*)(id,SEL,id,id,id,id,id,BOOL))original)(object,sel,count,number,font,attributes,color,skip || RVEnabled(@"disable_rolling_numbers"));
+            RVElementDislikeEvent(@"native_number_update");
+            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,BOOL))original)(object,sel,count,number,font,attributes,color,skip); };
+            // Preserve native initialization/rendering flags and every text argument.
+            if (NSThread.isMainThread && RVEnabled(@"disable_rolling_numbers")) {
+                [CATransaction begin];[CATransaction setDisableActions:YES];[UIView performWithoutAnimation:update];[CATransaction commit];
+            } else update();
         };
     });
     RVHook(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:rollFromCount:rollFromCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@@@B",NO,^id(IMP original,SEL sel) {
         return ^(id object,id count,id number,id from,id fromNumber,id font,id attributes,id color,BOOL skip) {
-            ((void(*)(id,SEL,id,id,id,id,id,id,id,BOOL))original)(object,sel,count,number,from,fromNumber,font,attributes,color,skip || RVEnabled(@"disable_rolling_numbers"));
+            RVElementDislikeEvent(@"native_number_transition");
+            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,id,id,BOOL))original)(object,sel,count,number,from,fromNumber,font,attributes,color,skip); };
+            if (NSThread.isMainThread && RVEnabled(@"disable_rolling_numbers")) {
+                [CATransaction begin];[CATransaction setDisableActions:YES];[UIView performWithoutAnimation:update];[CATransaction commit];
+            } else update();
         };
     });
 }

@@ -8,6 +8,8 @@ static NSHashTable *RVElementDislikeParents;
 static NSMutableArray<NSDictionary *> *RVElementVoteImages;
 static _Thread_local int RVElementResolvedIcon;
 static BOOL RVElementRefreshQueued;
+static const void *RVElementImageKindKey=&RVElementImageKindKey;
+static NSString *RVElementLastGate=@"not_observed";
 
 @interface RVElementDislikeState : NSObject
 @property(nonatomic,strong) id textNode;
@@ -20,9 +22,30 @@ static BOOL RVElementRefreshQueued;
 @implementation RVElementDislikeState @end
 
 static void RVElementDislikeEvent(NSString *name) {
-    if (!NSThread.isMainThread || !RVEnabled(@"diagnostics")) return;
-    if (!RVElementDislikeCounts) RVElementDislikeCounts=[NSMutableDictionary dictionary];
-    RVElementDislikeCounts[name]=@([RVElementDislikeCounts[name] unsignedLongLongValue]+1);
+    if (!RVEnabled(@"diagnostics")) return;
+    @synchronized(UIImage.class) {
+        if (!RVElementDislikeCounts) RVElementDislikeCounts=[NSMutableDictionary dictionary];
+        RVElementDislikeCounts[name]=@([RVElementDislikeCounts[name] unsignedLongLongValue]+1);
+    }
+}
+static int RVElementNamedIconKind(id value) {
+    if (![value isKindOfClass:NSString.class] || [value length]>128) return 0;
+    NSString *name=value;
+    if ([name hasPrefix:@"YticonOutlineThumbDownS"] || [name hasPrefix:@"YticonFillThumbDownS"]) return 1;
+    if ([name hasPrefix:@"YticonOutlineThumbUpS"] || [name hasPrefix:@"YticonFillThumbUpS"]) return 2;
+    // Names are native assets, not localized accessibility labels. No Shorts assets.
+    static NSDictionary *names;static dispatch_once_t once;
+    dispatch_once(&once,^{ names=@{
+        @"ic_thumb_down":@1,@"ic_thumb_down_outline":@1,@"ic_thumb_up":@2,@"ic_thumb_up_outline":@2,
+        @"google_symbols/thumb_down_symbol":@1,@"google_symbols/thumb_up_symbol":@2,
+        @"youtube_fill/thumb_down_24pt":@1,@"youtube_outline/thumb_down_24pt":@1,
+        @"youtube_fill/thumb_up_24pt":@2,@"youtube_outline/thumb_up_24pt":@2}; });
+    int exact=[names[name] intValue];if (exact) return exact;
+    static NSRegularExpression *assets;static dispatch_once_t assetOnce;
+    dispatch_once(&assetOnce,^{ assets=[NSRegularExpression regularExpressionWithPattern:
+        @"^(?:yt_(?:fill|outline)(?:_experimental)?_thumb_(down|up)_(?:(?:12|16|18|24|36)pt|(?:black|vd_theme)_(?:12|16|18|24|36))|youtube_(?:fill|outline)_experimental/thumb_(down|up)_(?:12|18|24|36)pt)$" options:0 error:nil]; });
+    if (![assets firstMatchInString:name options:0 range:NSMakeRange(0,name.length)]) return 0;
+    return [name containsString:@"thumb_down"] ? 1 : 2;
 }
 static int RVElementIconKind(int icon) {
     static NSDictionary *kinds;static dispatch_once_t once;
@@ -32,9 +55,7 @@ static int RVElementIconKind(int icon) {
         NSMutableDictionary *known=[NSMutableDictionary dictionary];
         if ([map isKindOfClass:NSDictionary.class] && [map count]<=4096) for (id key in map) {
             id name=map[key];if (![key isKindOfClass:NSNumber.class] || ![name isKindOfClass:NSString.class]) continue;
-            BOOL down=[name hasPrefix:@"YticonOutlineThumbDownS"] || [name hasPrefix:@"YticonFillThumbDownS"];
-            BOOL up=[name hasPrefix:@"YticonOutlineThumbUpS"] || [name hasPrefix:@"YticonFillThumbUpS"];
-            if (down || up) known[key]=down ? @1 : @2;
+            int kind=RVElementNamedIconKind(name);if (kind) known[key]=@(kind);
         }
         // Toolbar resource calls independently prove these four native IDs.
         known[@0x250]=@1;known[@0x238]=@1;known[@0x251]=@2;known[@0x239]=@2;
@@ -43,6 +64,8 @@ static int RVElementIconKind(int icon) {
 }
 static void RVElementRememberImage(id value,int kind) {
     if (!kind || ![value isKindOfClass:UIImage.class]) return;
+    objc_setAssociatedObject(value,RVElementImageKindKey,@(kind),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    RVElementDislikeEvent(kind==1 ? @"down_image_tagged" : @"up_image_tagged");
     @synchronized(UIImage.class) {
         if (!RVElementVoteImages) RVElementVoteImages=[NSMutableArray array];
         for (NSDictionary *entry in RVElementVoteImages) if (entry[@"image"]==value) return;
@@ -54,12 +77,17 @@ static int RVElementImageKind(id node) {
     Class cls=NSClassFromString(@"ASImageNode");
     if (!cls || ![node isKindOfClass:cls]) return 0;
     id image=RVObject(node,"image");if (![image isKindOfClass:UIImage.class]) return 0;
+    NSNumber *tag=objc_getAssociatedObject(image,RVElementImageKindKey);if (tag) return tag.intValue;
     @synchronized(UIImage.class) {
         for (NSDictionary *entry in RVElementVoteImages.reverseObjectEnumerator) {
             UIImage *known=entry[@"image"];
             if (image==known || (known.CGImage && known.CGImage==[image CGImage])) return [entry[@"kind"] intValue];
         }
     }return 0;
+}
+static id RVElementParent(id node) {
+    // Flattened render subnodes share a supernode; Yoga retains the button branches.
+    return RVObject(node,"yogaParent") ?: RVObject(node,"supernode");
 }
 static NSArray *RVElementChildren(id node) {
     id children=RVObject(node,"yogaChildren");
@@ -78,7 +106,7 @@ static NSArray *RVElementSubtree(id root) {
     return nodes;
 }
 static UIView *RVElementLoadedView(id node) {
-    for (NSUInteger i=0;node && i<12;i++,node=RVObject(node,"supernode")) {
+    for (NSUInteger i=0;node && i<12;i++,node=RVElementParent(node)) {
         if (RVBool(node,"isNodeLoaded") && !RVBool(node,"isLayerBacked")) {
             id view=RVObject(node,"view");if ([view isKindOfClass:UIView.class]) return view;
         }
@@ -90,6 +118,7 @@ static const void *RVElementBindingKey=&RVElementBindingKey;
 @property(nonatomic,copy) NSString *video;
 @property(nonatomic) BOOL role;
 @property(nonatomic) BOOL videoMatches;
+@property(nonatomic) BOOL explicitVideo;
 @end
 @implementation RVElementBindingState @end
 static RVElementBindingState *RVElementBinding(id component,NSString *video) {
@@ -110,6 +139,7 @@ static RVElementBindingState *RVElementBinding(id component,NSString *video) {
         static NSRegularExpression *ids;static dispatch_once_t once;
         dispatch_once(&once,^{ ids=[NSRegularExpression regularExpressionWithPattern:@"(?:video_id|videoId|videoID)\\s*:\\s*\"([A-Za-z0-9_-]{11})\"" options:0 error:nil]; });
         NSArray *matches=[ids matchesInString:text options:0 range:NSMakeRange(0,[text length])];
+        state.explicitVideo=matches.count>0;
         state.videoMatches=matches.count>0 && matches.count<=32;
         for (NSTextCheckingResult *match in matches) if (![[text substringWithRange:[match rangeAtIndex:1]] isEqual:video]) { state.videoMatches=NO;break; }
     }
@@ -127,17 +157,25 @@ static void RVElementDislikeApply(id parent,id pair) {
     if (state.updating) return;
     UIView *view=RVElementLoadedView(parent);
     if (!RVDislikeHasCount() || !RVOrdinaryContent(RVCurrentPlayback) || !RVDislikeWatchAction(view)) { RVElementDislikeRemove(parent,state);return; }
-    id controller=RVObject(pair,"nodeController"),component=RVObject(controller,"owningComponent"),bound=nil;
-    for (NSUInteger i=0;component && i<6;i++,component=RVObject(component,"owningComponent")) {
-        if (RVElementBinding(component,RVDislikeVideo).role) { bound=component;break; }
+    id bound=nil,ancestor=pair;
+    for (NSUInteger level=0;ancestor && !bound && level<12;level++,ancestor=RVElementParent(ancestor)) {
+        id component=RVObject(RVObject(ancestor,"nodeController"),"owningComponent");
+        for (NSUInteger i=0;component && i<6;i++,component=RVObject(component,"owningComponent")) {
+            if (RVElementBinding(component,RVDislikeVideo).role) { bound=component;break; }
+        }
     }
     if (!bound) { RVElementDislikeEvent(@"semantic_role_missing");RVElementDislikeRemove(parent,state);return; }
     RVElementDislikeEvent(@"semantic_role_matched");
     id element=RVObject(bound,"element");NSString *video=RVDislikeVideo;
     BOOL boundAlready=state && state.component==bound && state.element==element && [state.video isEqual:video];
-    if (!boundAlready && !RVElementBinding(bound,video).videoMatches) {
+    RVElementBindingState *binding=RVElementBinding(bound,video);
+    id watchPlayer=RVObject(RVCurrentWatch,"playerViewController");
+    BOOL watchMatches=watchPlayer==RVCurrentPlayer && [RVObject(watchPlayer,"contentVideoID") isEqual:video];
+    BOOL videoMatches=binding.explicitVideo ? binding.videoMatches : watchMatches;
+    if (!watchMatches || (!boundAlready && !videoMatches)) {
         RVElementDislikeEvent(@"video_binding_missing");RVElementDislikeRemove(parent,state);return;
     }
+    RVElementDislikeEvent(binding.explicitVideo ? @"element_video_bound" : @"watch_player_video_bound");
     if (!RVCan(parent,"appendYogaChild:",@"v@:@") || !RVCan(parent,"removeYogaChild:",@"v@:@") || !RVBool(parent,"yoga")) return;
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     state.component=bound;state.element=element;state.video=video;
@@ -156,6 +194,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     if (!state.textNode) {
         Class textClass=NSClassFromString(@"ASTextNode");id node=[textClass new];
         if (!RVCan(node,"setAttributedText:",@"v@:@")) { state.updating=NO;return; }
+        RVVoid(node,"enableYoga");
         RVSetObject(node,"setAttributedText:",display);
         RVSetObject(node,"setAccessibilityIdentifier:",@"rvport.dislike.count.element");
         id style=RVObject(node,"style");
@@ -172,29 +211,39 @@ static void RVElementDislikeApply(id parent,id pair) {
     state.text=text;state.updating=NO;
 }
 static void RVElementDislikeObserve(id root) {
-    if (!NSThread.isMainThread || !RVDislikeHasCount()) return;
-    UIView *view=RVElementLoadedView(root);if (!RVDislikeWatchAction(view)) return;
+    RVElementDislikeEvent(@"observe_entered");
+    if (!NSThread.isMainThread) { RVElementDislikeEvent(@"observe_background");return; }
+    if (!RVDislikeHasCount()) { RVElementLastGate=@"count_or_video_unavailable";return; }
+    UIView *view=RVElementLoadedView(root);
+    if (!RVDislikeWatchAction(view)) { RVElementLastGate=@"outside_active_watch";return; }
+    RVElementLastGate=@"scanning_watch";RVElementDislikeEvent(@"watch_node_scanned");
     for (id image in RVElementSubtree(root)) {
+        if ([image isKindOfClass:NSClassFromString(@"ASImageNode")]) RVElementDislikeEvent(@"image_node_scanned");
         if (RVElementImageKind(image)!=1) continue;
         RVElementDislikeEvent(@"dislike_icon_seen");
         id branch=image;
-        for (NSUInteger level=0;branch && level<8;level++,branch=RVObject(branch,"supernode")) {
-            id pair=RVObject(branch,"supernode");if (!pair) break;
+        for (NSUInteger level=0;branch && level<12;level++,branch=RVElementParent(branch)) {
+            id pair=RVElementParent(branch);if (!pair) break;
             NSUInteger up=0,down=0;
             for (id child in RVElementSubtree(pair)) { int kind=RVElementImageKind(child);up+=kind==2;down+=kind==1; }
             if (!up) continue;
-            if (up==1 && down==1 && branch!=image) { RVElementDislikeEvent(@"native_pair_seen");RVElementDislikeApply(branch,pair); }
+            NSUInteger branchUp=0,branchDown=0;
+            for (id child in RVElementSubtree(branch)) { int kind=RVElementImageKind(child);branchUp+=kind==2;branchDown+=kind==1; }
+            if (up==1 && down==1 && branch!=image && !branchUp && branchDown==1) { RVElementDislikeEvent(@"native_pair_seen");RVElementDislikeApply(branch,pair); }
             break;
         }
     }
 }
 static void RVRefreshElementDislikes(void) {
     if (!NSThread.isMainThread) return;
+    RVElementDislikeEvent(@"refresh_entered");
     for (id parent in RVElementDislikeParents.allObjects) {
         RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
-        if (!RVDislikeHasCount() || ![state.video isEqual:RVDislikeVideo]) RVElementDislikeRemove(parent,state);
+        if (!RVDislikeHasCount() || ![state.video isEqual:RVDislikeVideo] || !RVDislikeWatchAction(RVElementLoadedView(parent))) RVElementDislikeRemove(parent,state);
     }
-    UIViewController *watch=RVCurrentWatch;if (![watch isKindOfClass:UIViewController.class] || !watch.isViewLoaded) return;
+    UIViewController *watch=RVCurrentWatch;
+    if (![watch isKindOfClass:UIViewController.class] || !watch.isViewLoaded) { RVElementLastGate=@"watch_unavailable";return; }
+    RVElementDislikeEvent(@"watch_refresh");
     NSMutableArray *views=[NSMutableArray arrayWithObject:watch.view];NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     for (NSUInteger i=0;i<views.count && i<2048;i++) {
         UIView *view=views[i];id node=RVObject(view,"asyncdisplaykit_node");
@@ -205,15 +254,41 @@ static void RVRefreshElementDislikes(void) {
         for (UIView *child in view.subviews) if (views.count<2048) [views addObject:child];
     }
 }
+static void RVElementQueueRefresh(void) {
+    @synchronized(UIImage.class) {
+        if (RVElementRefreshQueued) return;RVElementRefreshQueued=YES;
+    }
+    // Coalesce background element/image work to at most four whole-watch scans/s.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,250*NSEC_PER_MSEC),dispatch_get_main_queue(),^{
+        RVRefreshElementDislikes();
+        @synchronized(UIImage.class) { RVElementRefreshQueued=NO; }
+    });
+}
 static NSDictionary *RVElementDislikeReport(void) {
     NSUInteger attached=0;for (id node in RVElementDislikeParents.allObjects) if (((RVElementDislikeState *)objc_getAssociatedObject(node,RVElementDislikeKey)).textNode) attached++;
-    return @{@"schema":@1,@"counts":RVElementDislikeCounts.copy ?: @{},@"owned_text_nodes":@(attached),
-        @"strategy":@"video_bound_native_element_pair_yoga_child",@"device_verified":@NO};
+    NSDictionary *counts;NSUInteger images;
+    @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
+    UIViewController *watch=RVCurrentWatch;
+    BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
+    return @{@"schema":@2,@"counts":counts,@"owned_text_nodes":@(attached),@"tagged_images":@(images),
+        @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
+        @"watch_player_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
+        @"last_gate":RVElementLastGate ?: @"not_observed",@"native_like_arguments_preserved":@YES,
+        @"strategy":@"named_resource_and_yoga_pair_with_active_watch_player",@"device_verified":@NO};
 }
 static void RVInstallElementDislikes(void) {
+    RVHook(@"YTELMResourceLoaderImpl",@"imageWithName:color:bundleId:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
+        return ^id(id loader,id name,id color,id bundle) {
+            id image=((id(*)(id,SEL,id,id,id))original)(loader,sel,name,color,bundle);
+            RVElementDislikeEvent(@"named_resource_requested");
+            int kind=RVElementNamedIconKind(name);if (kind) { RVElementRememberImage(image,kind);RVElementQueueRefresh(); }
+            return image;
+        };
+    });
     RVHook(@"YTIconResolverImpl",@"imageForIcon:color:",@"@@:i@",NO,^id(IMP original,SEL sel) {
         return ^id(id resolver,int icon,id color) {
             id image=((id(*)(id,SEL,int,id))original)(resolver,sel,icon,color);
+            RVElementDislikeEvent(@"resolver_requested");
             // Native toolbar resources prove Delhi outline/fill vote icon IDs.
             int kind=RVElementIconKind(icon);
             if (kind) { RVElementResolvedIcon=kind;RVElementRememberImage(image,kind); }return image;
@@ -224,18 +299,21 @@ static void RVInstallElementDislikes(void) {
             // The compositor may tint into a new UIImage. Carry only the proven
             // resolver identity through this synchronous call, not C++ memory.
             int previous=RVElementResolvedIcon;RVElementResolvedIcon=0;
+            RVElementDislikeEvent(@"compositor_requested");
             id image=((id(*)(id,SEL,const void *))original)(controller,sel,icon);
             int kind=RVElementResolvedIcon;RVElementResolvedIcon=previous;RVElementRememberImage(image,kind);return image;
         };
     });
     RVHook(@"ELMContainerNode",@"layoutDidFinish",@"v@:",NO,^id(IMP original,SEL sel) {
-        return ^(id node) { ((void(*)(id,SEL))original)(node,sel);RVElementDislikeObserve(node); };
+        return ^(id node) { ((void(*)(id,SEL))original)(node,sel);RVElementDislikeEvent(@"container_layout");
+            if (NSThread.isMainThread) RVElementDislikeObserve(node);else RVElementQueueRefresh(); };
     });
-    RVHook(@"ASImageNode",@"setImage:",@"v@:@",NO,^id(IMP original,SEL sel) {
+    // ASNetworkImageNode has its own setter path. Hook the concrete ELM override too.
+    for (NSString *cls in @[@"ASImageNode",@"ELMImageNode"]) RVHook(cls,@"setImage:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id node,id image) {
             ((void(*)(id,SEL,id))original)(node,sel,image);
-            if (!NSThread.isMainThread || !RVElementImageKind(node) || RVElementRefreshQueued) return;
-            RVElementRefreshQueued=YES;dispatch_async(dispatch_get_main_queue(),^{ RVElementRefreshQueued=NO;RVRefreshElementDislikes(); });
+            RVElementDislikeEvent(@"image_assigned");
+            if (image && objc_getAssociatedObject(image,RVElementImageKindKey)) RVElementQueueRefresh();
         };
     });
 }

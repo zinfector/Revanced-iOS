@@ -1,13 +1,13 @@
 {
-  "patcher_version": "0.3.10",
+  "patcher_version": "0.3.11",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
   "declaration_count": 113,
   "status_counts": {
     "resource_adapter": 14,
-    "partial": 52,
-    "adapted": 24,
+    "partial": 53,
+    "adapted": 23,
     "native_existing": 1,
     "infrastructure_adapter": 16,
     "android_only": 4,
@@ -655,12 +655,12 @@
       "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/rollingnumber/DisableRollingNumberAnimationPatch.kt",
       "line": 21,
       "factory": "bytecodePatch",
-      "status": "adapted",
+      "status": "partial",
       "config_keys": [
         "disable_rolling_numbers"
       ],
-      "implementation": "Forces skipAnimation on both native rolling-number update methods.",
-      "limits": "Applies to those native count views.",
+      "implementation": "Preserves native number-rendering arguments and suppresses UIKit/Core Animation effects in a scoped transaction.",
+      "limits": "Custom asynchronous digit animations may still run; native like text is not replaced. Device confirmation is outstanding.",
       "parent": null,
       "device_validated": false
     },
@@ -859,7 +859,7 @@
         "ryd_voting"
       ],
       "implementation": "Cached RYD estimates in verified slim labels/main-video entities and an inline accessory on identified slim element actions; a guarded native Yoga text adapter for video-bound segmented element pairs; manual RYD registration and voting in Settings Video tools.",
-      "limits": "The user confirms 0.3.9 fetches a count but its modern segmented pill does not bind the slim adapters. The new element adapter requires exact semantic role and video-target proof and remains device-unverified. Online Shorts text, automatic vote forwarding, Android preference translation and complete styling remain unported. No tests or service votes are run during development.",
+      "limits": "0.3.10 device reports fetched counts with no rendered labels and later missing native likes. 0.3.11 adds named-resource discovery, Yoga ancestry and matching active watch-player identity while preserving native like-rendering arguments. This revision remains device-unverified. Online Shorts text, automatic vote forwarding, Android preference translation and complete styling remain unported. No tests or service votes are run during development.",
       "parent": null,
       "device_validated": false
     },

@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-0.3.10 adds an experimental native element adapter for fetched RYD counts missing from segmented watch controls. It preserves the merged settings UI and user-confirmed working authentication/SponsorBlock. Device binding remains unverified; tests are disabled. See [the element adapter scheme](patcher/ELEMENT_DISLIKES_SCHEME.md).
+Version 0.3.11 revises the failed 0.3.10 RYD adapter: named local resource loading, Yoga parent traversal and active watch ownership. Native like-rendering arguments are preserved; animation suppression uses a scoped transaction. Both counts still require device confirmation. Tests remain disabled. See [the display scheme](patcher/ELEMENT_DISLIKES_SCHEME.md).
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 

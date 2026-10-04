@@ -73,10 +73,10 @@ static void RVNativeDislikeRefresh(void) {
     }
 }
 static NSDictionary *RVNativeDislikeReport(void) {
-    return @{@"schema":@2,@"enabled":@(RVEnabled(@"return_dislikes")),
+    return @{@"schema":@3,@"enabled":@(RVEnabled(@"return_dislikes")),
         @"request_in_flight":@(RVDislikeTask!=nil),@"count_available":@(RVDislikeCount!=nil),
         @"bound_native_actions":@(RVNativeDislikeViews.count),@"counts":RVNativeDislikeCounts.copy ?: @{},
-        @"native_surface":@"slim_formatted_action_main_video_entity_and_element_accessory",
+        @"native_surface":@"slim_and_named_resource_yoga_watch_actions",
         @"element_backed_buttons_supported":@YES,@"inline_accessories":@(RVDislikeActions.count),@"element_layout":RVElementDislikeReport(),@"automatic_service_votes":@NO,@"device_verified":@NO};
 }
 static void RVInstallNativeDislikes(void) {

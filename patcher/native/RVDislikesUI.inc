@@ -12,7 +12,20 @@ static NSString *RVNativeDislikeVideoForAction(id action);
 @implementation RVDislikeInlineState @end
 
 static BOOL RVDislikeWatchAction(UIView *view) {
-    if (!NSThread.isMainThread || ![RVCurrentWatch isKindOfClass:UIViewController.class]) return NO;
+    if (!NSThread.isMainThread || !view.window) return NO;
+    // Discover the owning controller from the existing responder chain too;
+    // no key-window scan and no creation of unloaded views.
+    Class watchClass=NSClassFromString(@"YTWatchViewController");
+    if (![RVCurrentWatch isKindOfClass:UIViewController.class] ||
+        ![((UIViewController *)RVCurrentWatch) isViewLoaded] ||
+        ![view isDescendantOfView:((UIViewController *)RVCurrentWatch).view]) {
+        UIResponder *responder=view;
+        for (NSUInteger i=0;responder && i<64;i++,responder=responder.nextResponder) {
+            if (watchClass && [responder isKindOfClass:watchClass] && RVCurrentPlayer &&
+                RVObject(responder,"playerViewController")==RVCurrentPlayer) { RVCurrentWatch=responder;break; }
+        }
+    }
+    if (![RVCurrentWatch isKindOfClass:UIViewController.class]) return NO;
     UIViewController *watch=RVCurrentWatch;
     if (!watch.isViewLoaded || !view.window || ![view isDescendantOfView:watch.view]) return NO;
     UIView *overlay=RVPlayerOverlay();

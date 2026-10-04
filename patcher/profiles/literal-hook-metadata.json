@@ -1469,5 +1469,29 @@
         "imp": "0x10055db5c"
       }
     ]
+  },
+  {
+    "name": "YTELMResourceLoaderImpl",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "imageWithName:color:bundleId:",
+        "encoding": "@40@0:8@16@24@32",
+        "imp": "0x1005c38dc"
+      }
+    ]
+  },
+  {
+    "name": "ELMImageNode",
+    "superclass": "ASNetworkImageNode",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setImage:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1005c2640"
+      }
+    ]
   }
 ]

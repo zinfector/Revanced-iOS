@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.10",
+  "implementation_version": "0.3.11",
   "supported_youtube_version": "21.39.4",
-  "status": "experimental_adapter_device_unverified",
-  "device_failure_evidence": "device-0.3.9-ryd-display-failure.json",
+  "status": "revised_adapter_device_unverified",
+  "device_failure_evidence": "device-0.3.10-vote-display-failure.json",
   "metadata": [
     {
       "name": "YTIconResolverImpl",
@@ -232,6 +232,64 @@
           "imp": "0x10055db5c"
         }
       ]
+    },
+    {
+      "name": "YTELMResourceLoaderImpl",
+      "address": "0x10c984648",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "imageWithName:color:bundleId:",
+          "encoding": "@40@0:8@16@24@32",
+          "imp": "0x1005c38dc"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchViewController",
+      "address": "0x10c9bbd20",
+      "superclass": "YTMultiSizeViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "playerViewController",
+          "encoding": "@16@0:8",
+          "imp": "0x10157ae74"
+        }
+      ]
+    },
+    {
+      "name": "ELMImageNode",
+      "address": "0x10cacc080",
+      "superclass": "ASNetworkImageNode",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setImage:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x1005c2640"
+        }
+      ]
+    },
+    {
+      "name": "ASDisplayNode",
+      "address": "0x10cacea98",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "yogaParent",
+          "encoding": "@16@0:8",
+          "imp": "0x1005a1fa8"
+        },
+        {
+          "kind": "-",
+          "selector": "enableYoga",
+          "encoding": "v16@0:8",
+          "imp": "0x1005463f0"
+        }
+      ]
     }
   ],
   "evidence_sha256": {
@@ -245,11 +303,23 @@
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
   "source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
-  "binding": "Native resolver identifies exact thumbs up/down assets. Only a paired control under the active watch hierarchy is considered. The owning component must identify video_action_bar or SegmentedLikeDislike and all explicit target video IDs must match the active fetched video.",
+  "binding": "Native one-up/one-down Yoga branches in the active watch outside the player overlay; semantic action component plus matching watch.playerViewController and contentVideoID. Explicit element video IDs, if present, must also match.",
   "layout": "Append one owned ASTextNode to the existing dislike Yoga branch; remove it on disabled feature, video change, or invalid binding; reattach only the owned child if native children are rebuilt.",
   "no_native_commands_replaced": true,
   "tests_run": false,
   "device_verified": false,
   "service_votes_sent": 0,
-  "remaining_scope": "The failed modern device hierarchy has not yet been observed with these new bindings. Missing role/video proofs leave controls unchanged and produce redacted counters. No full segmented-layout parity, Shorts count rendering or automatic RYD vote forwarding is claimed."
+  "remaining_scope": "The failed modern device hierarchy has not yet been observed with these new bindings. Missing role/video proofs leave controls unchanged and produce redacted counters. No full segmented-layout parity, Shorts count rendering or automatic RYD vote forwarding is claimed.",
+  "named_resource_path": {
+    "caller": "ELMImageNode maybeUpdateImageWithLocalImage",
+    "helper": "0x1005c342c",
+    "selector": "YTELMResourceLoaderImpl imageWithName:color:bundleId:",
+    "reason": "Native local image loading bypasses the numeric resolver/compositor hooks used in 0.3.10."
+  },
+  "like_display": "Native rolling-number arguments, including skipAnimation, passed unchanged. Animation suppression confined to UIKit/Core Animation transaction.",
+  "read_only_evidence": {
+    "ryd-image-watch-gates-annotated.txt": "00ebb30eb6d33411b243cb25f90dba3c22a7c155822b4b436035d749c74c2633",
+    "ryd-local-image-dispatch-annotated.txt": "f14d652a4165443e88905c917361238ea6c02ee4ceb7a89292b34bbe5e2349a4",
+    "ryd-resource-loader-annotated.txt": "a641e725d1fa6ffbb879405cc9a711f5eea3754f9dc77d8ab209976fb7badf30"
+  }
 }

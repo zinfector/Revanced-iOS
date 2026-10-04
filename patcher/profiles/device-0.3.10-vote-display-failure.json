@@ -1,0 +1,23 @@
+{
+  "patcher_version": "0.3.10",
+  "youtube_version": "21.39.4",
+  "ios_version": "27.0",
+  "source": "User reports both dislikes and, subsequently, likes are not visible. No device access by agent.",
+  "ryd": {
+    "count_available": true,
+    "bound_native_actions": 0,
+    "inline_accessories": 0,
+    "owned_text_nodes": 0,
+    "native_counts": {},
+    "element_counts": {},
+    "hooks_installed": [
+      "YTIconResolverImpl imageForIcon:color:",
+      "CompositeIconController imageForIcon:",
+      "ELMContainerNode layoutDidFinish",
+      "ASImageNode setImage:"
+    ]
+  },
+  "sponsorblock": "User confirmed working; latest report records two seek_requested events.",
+  "authentication": "Previously user-confirmed working; preserved.",
+  "tests_run": false
+}

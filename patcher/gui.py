@@ -16,7 +16,7 @@ from features import CATALOG as LABELS
 class App:
     def __init__(self, root):
         self.root = root
-        root.title('YouTube iOS Patcher 0.3.10 - 21.39.4')
+        root.title('YouTube iOS Patcher 0.3.11 - 21.39.4')
         root.geometry('740x720')
         root.minsize(660, 680)
         self.events = queue.Queue()
