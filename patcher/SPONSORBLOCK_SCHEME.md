@@ -1,4 +1,18 @@
-# SponsorBlock playback repair: 0.3.5
+# SponsorBlock playback repairs: 0.3.5 and 0.3.6
+
+## Confirmed 0.3.5 failure and 0.3.6 correction
+
+The supplied 0.3.5 report records 202 local-clock and 202 player-clock callbacks, a bound controller and overlay, content playing, a valid video ID, and a matching seek ABI. However, `live_flag_known` and `ordinary_content` are false, the gate is `ad_live_or_unknown`, and no fetch was started. This identifies a rejection before the network stage.
+
+The old guard reads `contentPlaybackData.playerResponse`, which is a `YTPlayerResponse` wrapper. Extracted ivar types and native getters show its `playerData` is the underlying `YTIPlayerResponse`; that is the class implementing `isLivePlayback`. Version 0.3.6 adds this typed unwrapping step and retains the existing ad/live/unknown rejection rules. The shared ordinary-content guard also serves Video tools, RYD, tap/swipe controls and playback completion features, so those paths receive the same correction.
+
+The native `YTInlinePlayerBarContainerView` owns a `YTModularPlayerBarView`. Its layout computes `barFrame` and places native decoration collections on that track. Version 0.3.6 adds a modular-bar layout hook alongside the legacy inline-bar hook, invalidates both classes on segment changes, and reads duration from the modular `playingState.totalTimeSec` with the bound player's total-media-time getter as fallback. Marker overlays stay noninteractive and scoped to the bound player's overlay.
+
+Diagnostics schema 2 adds `response_unwrapped`, the exact response path, an explicit ordinary-content rejection reason, marker-bar candidates, marker view kind and duration source. The raw wrapper remains reflected in `response_present`; `live_flag_known` refers to the unwrapped response.
+
+The selected user report is preserved in [device-sponsorblock-0.3.5-failure.json](profiles/device-sponsorblock-0.3.5-failure.json); native evidence is in [sponsorblock-response-evidence.json](profiles/sponsorblock-response-evidence.json). This is a confirmed implementation defect, while successful device behavior after correction remains unverified. No tests were run for 0.3.6 at the user's request.
+
+## Earlier 0.3.5 repair
 
 The user reported no highlighted regions or skips on YouTube 21.39.4 with the 0.3.4 SideStore-auth IPA. The supplied diagnostic report shows SponsorBlock and markers enabled, manual mode disabled, the supported profile accepted, and the existing hooks installed. Hook installation alone does not show that the playback callback fires or that a request succeeds. The old report contains no SponsorBlock pipeline state.
 

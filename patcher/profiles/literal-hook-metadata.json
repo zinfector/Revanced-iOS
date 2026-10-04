@@ -322,6 +322,18 @@
         "selector": "shouldShowCurrentTitleLabel",
         "encoding": "B16@0:8",
         "imp": "0x10049c4c0"
+      },
+      {
+        "kind": "-",
+        "selector": "init",
+        "encoding": "@16@0:8",
+        "imp": "0x10049109c"
+      },
+      {
+        "kind": "-",
+        "selector": "setTotalTime:",
+        "encoding": "v24@0:8d16",
+        "imp": "0x1035fb3f0"
       }
     ]
   },
@@ -390,6 +402,12 @@
         "selector": "potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x1041b211c"
+      },
+      {
+        "kind": "-",
+        "selector": "currentVideoTotalMediaTime",
+        "encoding": "d16@0:8",
+        "imp": "0x1041ae574"
       }
     ]
   },
@@ -812,6 +830,74 @@
         "selector": "itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:",
         "encoding": "@56@0:8@16@24@32@?40@?48",
         "imp": "0x10186f214"
+      }
+    ]
+  },
+  {
+    "name": "YTModularPlayerBarView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x10049c8e0"
+      },
+      {
+        "kind": "-",
+        "selector": "barFrame",
+        "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+        "imp": "0x10049ba08"
+      },
+      {
+        "kind": "-",
+        "selector": "playingState",
+        "encoding": "@16@0:8",
+        "imp": "0x103621678"
+      }
+    ]
+  },
+  {
+    "name": "YTPlaybackData",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithPlayerResponse:CPN:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x104476794"
+      },
+      {
+        "kind": "-",
+        "selector": "playerResponse",
+        "encoding": "@16@0:8",
+        "imp": "0x104476c74"
+      }
+    ]
+  },
+  {
+    "name": "YTPlayerResponse",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "videoID",
+        "encoding": "@16@0:8",
+        "imp": "0x10464c698"
+      },
+      {
+        "kind": "-",
+        "selector": "playerData",
+        "encoding": "@16@0:8",
+        "imp": "0x10464c9ec"
+      }
+    ]
+  },
+  {
+    "name": "YTIPlayerResponse",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "isLivePlayback",
+        "encoding": "B16@0:8",
+        "imp": "0x10464cbec"
       }
     ]
   }

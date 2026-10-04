@@ -35,11 +35,14 @@ static void RVSegmentsChanged(void) {
     if (!root) { [RVSegmentBar setNeedsLayout];return; }
     NSMutableArray<UIView *> *pending=[NSMutableArray arrayWithObject:root];
     Class barClass=NSClassFromString(@"YTInlinePlayerBarView");
+    Class modularClass=NSClassFromString(@"YTModularPlayerBarView");
+    NSUInteger found=0;
     for (NSUInteger index=0;index<pending.count && index<512;index++) {
         UIView *view=pending[index];
-        if (barClass && [view isKindOfClass:barClass]) [view setNeedsLayout];
+        if ((barClass && [view isKindOfClass:barClass]) || (modularClass && [view isKindOfClass:modularClass])) { found++;[view setNeedsLayout]; }
         for (UIView *child in view.subviews) if (pending.count<512) [pending addObject:child];
     }
+    RVSponsorValue(@"marker_bar_candidates",@(found));
 }
 static const void *RVHideKey=&RVHideKey, *RVSwipeKey=&RVSwipeKey, *RVLoopKey=&RVLoopKey;
 static const void *RVBadgeKey=&RVBadgeKey,*RVToolsKey=&RVToolsKey;
@@ -56,11 +59,17 @@ static void RVVoid(id object,const char *selector) {
 static void RVSetBool(id object,const char *selector,BOOL value) {
     if (RVCan(object,selector,@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(object,sel_registerName(selector),value);
 }
-static BOOL RVOrdinaryContent(id controller) {
-    if (!RVCan(controller,"isPlayingAd",@"B@:") || RVBool(controller,"isPlayingAd")) return NO;
-    id response=RVObject(RVObject(controller,"contentPlaybackData"),"playerResponse");
-    return response && RVCan(response,"isLivePlayback",@"B@:") && !RVBool(response,"isLivePlayback") && RVVideoIDValid(RVObject(controller,"contentVideoID"));
+static NSString *RVContentGate(id controller) {
+    if (!RVVideoIDValid(RVObject(controller,"contentVideoID"))) return @"video_id_invalid";
+    if (!RVCan(controller,"isPlayingAd",@"B@:")) return @"ad_status_unknown";
+    if (RVBool(controller,"isPlayingAd")) return @"playing_ad";
+    id response=RVContentResponse(controller);
+    if (!response) return @"response_unavailable";
+    if (!RVCan(response,"isLivePlayback",@"B@:")) return @"live_status_unknown";
+    if (RVBool(response,"isLivePlayback")) return @"playing_live";
+    return nil;
 }
+static BOOL RVOrdinaryContent(id controller) { return RVContentGate(controller)==nil; }
 static void RVBoolGate(NSString *cls,NSString *selector,NSString *feature,BOOL value) {
     RVHook(cls,selector,@"B@:",NO,^id(IMP original,SEL sel) {
         return ^BOOL(id object) { return RVEnabled(feature) ? value : ((BOOL(*)(id,SEL))original)(object,sel); };
@@ -388,10 +397,15 @@ static void RVLayoutSponsorMarkers(UIView *bar) {
     if (owned) {
         RVSegmentBar=bar;RVSponsorCount(@"owned_marker_layout");
         RVSponsorValue(@"marker_active",@(active));RVSponsorValue(@"marker_rectangles",@0);
+        RVSponsorValue(@"marker_view_kind",[bar isKindOfClass:NSClassFromString(@"YTModularPlayerBarView")] ? @"modular" : @"inline");
     }
     if (!surface && active) { surface=[UIView new];surface.userInteractionEnabled=NO;surface.clipsToBounds=YES;[bar addSubview:surface];objc_setAssociatedObject(bar,key,surface,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     surface.hidden=!active;if (!active) return;
     double duration=RVDouble(bar,"totalTime");
+    NSString *durationSource=@"bar";
+    if (!isfinite(duration) || duration<=0) { duration=RVDouble(RVObject(bar,"playingState"),"totalTimeSec");durationSource=@"playing_state"; }
+    if (!isfinite(duration) || duration<=0) { duration=RVDouble(RVCurrentPlayer,"currentVideoTotalMediaTime");durationSource=@"player"; }
+    RVSponsorValue(@"marker_duration_source",durationSource);
     RVSponsorValue(@"marker_duration_valid",@(isfinite(duration) && duration>0));
     if (!isfinite(duration) || duration<=0) { surface.hidden=YES;return; }
     CGRect track=bar.bounds;
@@ -638,6 +652,12 @@ static void RVInstallPlayerExtras(void) {
 }
 
 static void RVInstallLayout(void) {
+    RVHook(@"YTModularPlayerBarView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
+        return ^(id object) {
+            ((void(*)(id,SEL))original)(object,sel);
+            if ([object isKindOfClass:UIView.class]) RVLayoutSponsorMarkers(object);
+        };
+    });
     for (NSString *cls in @[@"YTCommonColorPalette",@"YTTokensColorPalette"]) for (NSString *selector in @[@"baseBackground",@"solidBackground",@"generalBackgroundA",@"background1"]) RVHook(cls,selector,@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id object) {
             id color=((id(*)(id,SEL))original)(object,sel);

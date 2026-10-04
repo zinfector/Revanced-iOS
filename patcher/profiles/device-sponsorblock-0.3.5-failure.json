@@ -1,0 +1,38 @@
+{
+  "source": "User-pasted diagnostic report, received 2026-10-04",
+  "patcher_version": "0.3.5",
+  "profile_accepted": true,
+  "youtube_version": "21.39.4",
+  "ios_version": "27.0",
+  "sponsorblock": {
+    "live_flag_known": false,
+    "automatic_skipping_enabled": 1,
+    "seek_abi_matches": true,
+    "request_in_flight": 0,
+    "playing_ad": false,
+    "counts": {
+      "local_clock": 202,
+      "data_load": 10,
+      "player_bound": 4,
+      "player_clock": 202
+    },
+    "markers_enabled": true,
+    "state": {
+      "playback_gate": "ad_live_or_unknown",
+      "controller_resolved": 1
+    },
+    "playing_content": true,
+    "overlay_bound": 1,
+    "schema": 1,
+    "enabled": true,
+    "controller_bound": 1,
+    "response_present": 1,
+    "device_playback_verified": false,
+    "video_id_valid": true,
+    "segment_count": 0,
+    "response_cached": false,
+    "ordinary_content": false,
+    "automatic_range_count": 0
+  },
+  "reported_behavior": "No highlighted timeline regions and no automatic skips."
+}

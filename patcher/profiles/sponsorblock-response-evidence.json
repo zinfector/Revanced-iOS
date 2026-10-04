@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.6",
+  "supported_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "metadata_anchors": [
+    {
+      "name": "YTInlinePlayerBarContainerView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "init",
+          "encoding": "@16@0:8",
+          "imp": "0x10049109c"
+        },
+        {
+          "kind": "-",
+          "selector": "setTotalTime:",
+          "encoding": "v24@0:8d16",
+          "imp": "0x1035fb3f0"
+        }
+      ]
+    },
+    {
+      "name": "YTModularPlayerBarView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10049c8e0"
+        },
+        {
+          "kind": "-",
+          "selector": "barFrame",
+          "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+          "imp": "0x10049ba08"
+        },
+        {
+          "kind": "-",
+          "selector": "playingState",
+          "encoding": "@16@0:8",
+          "imp": "0x103621678"
+        }
+      ]
+    },
+    {
+      "name": "YTPlayerViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "currentVideoTotalMediaTime",
+          "encoding": "d16@0:8",
+          "imp": "0x1041ae574"
+        }
+      ]
+    },
+    {
+      "name": "YTPlaybackData",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithPlayerResponse:CPN:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x104476794"
+        },
+        {
+          "kind": "-",
+          "selector": "playerResponse",
+          "encoding": "@16@0:8",
+          "imp": "0x104476c74"
+        }
+      ]
+    },
+    {
+      "name": "YTPlayerResponse",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "videoID",
+          "encoding": "@16@0:8",
+          "imp": "0x10464c698"
+        },
+        {
+          "kind": "-",
+          "selector": "playerData",
+          "encoding": "@16@0:8",
+          "imp": "0x10464c9ec"
+        }
+      ]
+    },
+    {
+      "name": "YTIPlayerResponse",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "isLivePlayback",
+          "encoding": "B16@0:8",
+          "imp": "0x10464cbec"
+        }
+      ]
+    }
+  ],
+  "typed_response_chain": [
+    {
+      "class": "YTPlaybackData",
+      "ivar": "_playerResponse",
+      "type": "@\"YTPlayerResponse\"",
+      "getter": "playerResponse"
+    },
+    {
+      "class": "YTPlayerResponse",
+      "ivar": "_playerData",
+      "type": "@\"YTIPlayerResponse\"",
+      "getter": "playerData"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "selector": "isLivePlayback",
+      "normalized_encoding": "B@:"
+    }
+  ],
+  "native_timeline": {
+    "container": "YTInlinePlayerBarContainerView",
+    "ivar": "_playerBarView",
+    "type": "@\"YTModularPlayerBarView\"",
+    "layout_selector": "layoutSubviews",
+    "geometry_getter": "barFrame",
+    "state_getter": "playingState",
+    "state_ivar_type": "@\"YTIPlayerBarPlayingState\"",
+    "duration_getter": "totalTimeSec",
+    "duration_encoding": "d@: checked at runtime for dynamic GPB accessor",
+    "duration_fallback": "Bound YTPlayerViewController.currentVideoTotalMediaTime d@:"
+  },
+  "decompilations": {
+    "sponsor-response-wrapper-annotated.txt": "05c31c004290fe794a9b04bacdc923697a61f98f8df0d157afe0166f75e4180c",
+    "sponsor-modular-timeline-annotated.txt": "3e9a9d48993374210b9d85007b272b626f00abc7ff9eb58533cbaf2ab1b89786"
+  },
+  "runtime_uses_fixed_addresses": false,
+  "diagnostic_evidence": "device-sponsorblock-0.3.5-failure.json",
+  "diagnosis": "Both clocks and controller/overlay bindings work, but the old live guard calls isLivePlayback on YTPlayerResponse, which does not implement it. This rejects ordinary content before any segment fetch. The current container also constructs a modular bar not covered by the legacy inline drawing hook.",
+  "tests_run": false,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "device_verified_after_fix": false
+}

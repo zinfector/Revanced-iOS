@@ -24,6 +24,7 @@ static void RVExtraSetPlayer(id player,id controller);
 static BOOL RVExtraReject(NSData *data);
 static void RVSegmentsChanged(void);
 static BOOL RVOrdinaryContent(id controller);
+static NSString *RVContentGate(id controller);
 static BOOL RVEnabled(NSString *key);
 static __weak id RVCurrentPlayer;
 static __weak id RVCurrentPlayback;
@@ -85,6 +86,16 @@ static id RVPlaybackForPlayer(id player) {
     if (!type || strcmp(type,"@\"<YTCorePlaybackController>\"")!=0) return nil;
     id controller=object_getIvar(player,field);
     return [controller isKindOfClass:localClass] ? controller : nil;
+}
+static id RVContentResponse(id controller) {
+    // YTPlaybackData.playerResponse is a YTPlayerResponse wrapper. Its
+    // playerData is the YTIPlayerResponse that implements isLivePlayback.
+    id wrapper=RVObject(RVObject(controller,"contentPlaybackData"),"playerResponse");
+    Class wrapperClass=NSClassFromString(@"YTPlayerResponse");
+    Class responseClass=NSClassFromString(@"YTIPlayerResponse");
+    if (!wrapperClass || !responseClass || ![wrapper isKindOfClass:wrapperClass]) return nil;
+    id response=RVObject(wrapper,"playerData");
+    return [response isKindOfClass:responseClass] ? response : nil;
 }
 #include "RVAuthentication.inc"
 #include "RVMiniplayer.inc"
@@ -264,7 +275,8 @@ static void RVObservePlayback(id controller,id timeObject,NSString *source) {
     }
     RVExtraObserve(controller);
     NSString *videoID=RVObject(controller,"contentVideoID");
-    if (!RVOrdinaryContent(controller)) { RVSponsorValue(@"playback_gate",@"ad_live_or_unknown");return; }
+    NSString *gate=RVContentGate(controller);
+    if (gate) { RVSponsorValue(@"playback_gate",gate);return; }
     RVPlaybackSession *session=RVSession(controller);
     id contentTime=RVObject(controller,"contentVideoCurrentTime");
     NSString *cpn=RVObject(contentTime,"CPN") ?: RVObject(controller,"contentVideoCPN");
@@ -469,14 +481,18 @@ static void RVInstallPlayer(void) {
 static NSDictionary *RVSponsorReport(void) {
     id controller=RVCurrentPlayback;
     RVPlaybackSession *session=RVSession(controller);
-    id response=RVObject(RVObject(controller,"contentPlaybackData"),"playerResponse");
-    return @{@"schema":@1,@"enabled":@(RVEnabled(@"sponsorblock")),@"markers_enabled":@(RVEnabled(@"sponsorblock_markers")),
+    id wrapper=RVObject(RVObject(controller,"contentPlaybackData"),"playerResponse");
+    id response=RVContentResponse(controller);
+    return @{@"schema":@2,@"enabled":@(RVEnabled(@"sponsorblock")),@"markers_enabled":@(RVEnabled(@"sponsorblock_markers")),
         @"automatic_skipping_enabled":@(RVEnabled(@"sponsorblock") && !RVEnabled(@"sponsorblock_manual")),
         @"controller_bound":@(controller && controller==RVPlaybackForPlayer(RVCurrentPlayer)),
         @"video_id_valid":@(RVVideoIDValid(RVObject(controller,"contentVideoID"))),
         @"ordinary_content":@(RVOrdinaryContent(controller)),@"playing_content":@(RVBool(controller,"isPlayingContentVideo")),
         @"playing_ad":@(RVBool(controller,"isPlayingAd")),@"overlay_bound":@(RVPlayerOverlay()!=nil),
-        @"response_present":@(response!=nil),@"live_flag_known":@(RVCan(response,"isLivePlayback",@"B@:")),
+        @"response_present":@(wrapper!=nil),@"response_unwrapped":@(response!=nil),
+        @"ordinary_content_gate":RVContentGate(controller) ?: @"ready",
+        @"response_path":@"contentPlaybackData.playerResponse.playerData",
+        @"live_flag_known":@(RVCan(response,"isLivePlayback",@"B@:")),
         @"seek_abi_matches":@(RVCan(controller,"seekToTime:toleranceBefore:toleranceAfter:seekSource:",@"v@:@ddi")),
         @"request_in_flight":@(session.task!=nil),@"response_cached":@(session.segmentsFetched),
         @"segment_count":@(session.rawSegments.count),@"automatic_range_count":@(RVSponsorRanges(session,YES).count),

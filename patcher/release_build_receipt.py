@@ -1,11 +1,11 @@
-"""Record 0.3.5 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.6 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.5'
+VERSION = '0.3.6'
 
 
 def main():
@@ -21,6 +21,7 @@ def main():
              'native/RVPort.m', 'native/RVExtras.inc', 'native/RVSettingsUI.inc',
              'native/RVAuthentication.inc', 'native/RVAuthenticationSupport.h',
              'SPONSORBLOCK_SCHEME.md', 'profiles/sponsorblock-evidence.json',
+             'profiles/sponsorblock-response-evidence.json', 'profiles/device-sponsorblock-0.3.5-failure.json',
              'coverage.json', 'COVERAGE.md']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
