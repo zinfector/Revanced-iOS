@@ -61,3 +61,5 @@ Version 0.3.9 merges the user-authorized snapshot of the still-edited parallel n
 [0.3.9 build-only receipt](patcher/profiles/release-0.3.9.json): the [merged cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37191721554) succeeded and all test/check steps were skipped. It includes the parallel native settings UI and inline RYD snapshot. Later in-progress edits are not claimed as part of this artifact; device behavior remains unverified.
 
 [0.3.11 build-only receipt](patcher/profiles/release-0.3.11.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37233522778) succeeded. Regression, hook-check and GUI smoke steps were skipped. Use the 0.3.12 SideStore-auth IPA; revised like/dislike rendering remains device-unverified.
+
+[0.3.12 build-only receipt](patcher/profiles/release-0.3.12.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316) succeeded with regression, hook and GUI smoke checks skipped. Use the 0.3.12 SideStore-auth IPA. Independent dislike rendering and the settings snapshot remain device-unverified.

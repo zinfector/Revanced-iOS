@@ -1,0 +1,410 @@
+{
+  "version": "0.3.12",
+  "supported_youtube_version": "21.39.4",
+  "feature_switches": 80,
+  "runtime_preferences": 114,
+  "build_only": true,
+  "tests_run": false,
+  "tests_passed": null,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "gui_smoke_test_run": false,
+  "static_hook_check_run": false,
+  "standalone_archive_test_run": false,
+  "packaging": "IPAs created by the production patcher with its normal source/config/payload validation; no regression or integration test suite executed.",
+  "device_playback_verified": false,
+  "signing_required": true,
+  "authentication_login": "Previously user-reported working; authentication implementation unchanged.",
+  "source_commit": "a5475e8e54cdcc80509f85816b4e67b587d8124a",
+  "ci": {
+    "run_id": 37234483316,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "native",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build ARM64 iOS payload using Xcode",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run patcher and signing regression tests",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Check directly named Objective-C hook ABIs",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Upload native payload and host evidence",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "windows",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install pinned Windows packager",
+            "conclusion": "success"
+          },
+          {
+            "name": "Package standalone GUI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Check packaged GUI initialization",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Upload Windows patcher",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  },
+  "native_build": {
+    "payload_sha256": "26d2b97cc1acb70649ad2f3ba9828be59953330fb3ea9bb15d9043e10e01c200",
+    "source_sha256": "d6156897f4be3fe7ea158dfadc0f836631db93ca3812f0c257ae3f4c6022cd76",
+    "source_files": {
+      "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "RVDislikesUI.inc": "9bc063d73a73a376b8467135e52d2b23cb16fb3fe1f629b0b271d5d64e8dd0e9",
+      "RVElementDislikes.inc": "93debacdd1f4eb3436f0b00d297fd54551be7b1e230adfe0c18f94819fcb2a1e",
+      "RVExtras.inc": "80a581142f7c7a9c269e3da5fd0a807e5b5180ded6ebdc698326b243b2c2a760",
+      "RVFeatures.h": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+      "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+      "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+      "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+      "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+      "RVNativeDislikes.inc": "b398e42f585c66449d5e0cfecc0500e97b09568aff43194c183471aef7c5f114",
+      "RVPort.m": "d6156897f4be3fe7ea158dfadc0f836631db93ca3812f0c257ae3f4c6022cd76",
+      "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+      "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+      "RVSettingsBridge.inc": "c266befe171e9789f4309ca54d8cf68eca75ce99501b8cfa6d69b1a3e0496515",
+      "RVSettingsCatalog.h": "293af9984447c5af8ca1649bf9e581427488e5dc63bc209d4728fa774e6c68f4",
+      "RVSettingsIcon.inc": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+      "RVSettingsNativeUI.inc": "c2fffb184ddb0a7c9beb84798c99d0de194f248cf421519276d98103757f9bfd",
+      "RVSettingsRows.inc": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+      "RVSettingsUI.inc": "e1a551b4357fe0504edd6eb37695f24a4f28300f0138bd69d2da5e53271ba295",
+      "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165"
+    },
+    "compiler_command": [
+      "xcrun",
+      "--sdk",
+      "iphoneos",
+      "clang",
+      "-target",
+      "arm64-apple-ios17.0",
+      "-isysroot",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+      "-isystem",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/include",
+      "-L/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/lib",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/PrivateFrameworks",
+      "-fobjc-arc",
+      "-fblocks",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-unused-parameter",
+      "-fvisibility=hidden",
+      "-dynamiclib",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/native/RVPort.m",
+      "-o",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/build/RVPort.dylib",
+      "-framework",
+      "Foundation",
+      "-framework",
+      "UIKit",
+      "-framework",
+      "AVFoundation",
+      "-framework",
+      "MediaPlayer",
+      "-framework",
+      "CoreGraphics",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "Network",
+      "-framework",
+      "Security",
+      "-lobjc",
+      "-Wl,-install_name,@executable_path/Frameworks/RVPort.dylib",
+      "-Wl,-headerpad,0x4000"
+    ],
+    "sdk": "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+    "signing_header_padding_bytes": 28424,
+    "runtime_validated": false
+  },
+  "artifacts": {
+    "build.py": {
+      "sha256": "bb41aeb6891c283715f9a1c68f80dadf6efa3063631cfd0a573aff9b70dc13c8",
+      "size": 4806
+    },
+    "build/RVPort.dylib": {
+      "sha256": "26d2b97cc1acb70649ad2f3ba9828be59953330fb3ea9bb15d9043e10e01c200",
+      "size": 946496
+    },
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "48fcd920687f5f35e4cbd212af6f5bab6f857da36963a46e43aba9349a2ccf94",
+      "size": 14168481
+    },
+    "build/build-manifest.json": {
+      "sha256": "a0f88da6b90503c3a43ca74de8c7860ab33545f7797bb622b766b36412c87d5f",
+      "size": 4075
+    },
+    "build/build.log": {
+      "sha256": "180e5613a4988a3438a9a149b3611c65b6ed55beed673255fabc90b9583b192d",
+      "size": 230
+    },
+    "native/RVPort.m": {
+      "sha256": "d6156897f4be3fe7ea158dfadc0f836631db93ca3812f0c257ae3f4c6022cd76",
+      "size": 34796
+    },
+    "native/RVExtras.inc": {
+      "sha256": "80a581142f7c7a9c269e3da5fd0a807e5b5180ded6ebdc698326b243b2c2a760",
+      "size": 54172
+    },
+    "native/RVSettingsUI.inc": {
+      "sha256": "e1a551b4357fe0504edd6eb37695f24a4f28300f0138bd69d2da5e53271ba295",
+      "size": 20030
+    },
+    "native/RVAuthentication.inc": {
+      "sha256": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "size": 8732
+    },
+    "native/RVAuthenticationSupport.h": {
+      "sha256": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "size": 8062
+    },
+    "SPONSORBLOCK_SCHEME.md": {
+      "sha256": "d9e8e23d00e07ffc30e5023f9185a35b1f45d44659d68f426e2b91aeb5a26d03",
+      "size": 6619
+    },
+    "profiles/sponsorblock-evidence.json": {
+      "sha256": "b7bc15a89588da846f3e10bd1c3dfd088b62660802ffdce8edb41814965a903a",
+      "size": 5670
+    },
+    "profiles/sponsorblock-response-evidence.json": {
+      "sha256": "7885360e2fc4a4d886b8295a2cbfda74f5e7db47348fa5b4d5486f234cb321a0",
+      "size": 4123
+    },
+    "profiles/device-sponsorblock-0.3.5-failure.json": {
+      "sha256": "fc8a89a4959a0aa170af7d1b876bfa12a851075053a400a52eb525bbf860b236",
+      "size": 1019
+    },
+    "coverage.json": {
+      "sha256": "b3c17bbc1109a37c9f83f422d30060fff61ba554e6cf2db6af6c09a270269d98",
+      "size": 85408
+    },
+    "COVERAGE.md": {
+      "sha256": "744f507dccd0346dfdb0838c190dff736d5e826372bcf79e1ffd877f336443a2",
+      "size": 32636
+    },
+    "native/RVMiniplayer.inc": {
+      "sha256": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "size": 13667
+    },
+    "native/RVFeatures.h": {
+      "sha256": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+      "size": 4582
+    },
+    "native/RVSettingsCatalog.h": {
+      "sha256": "293af9984447c5af8ca1649bf9e581427488e5dc63bc209d4728fa774e6c68f4",
+      "size": 26603
+    },
+    "MINIPLAYER_SCHEME.md": {
+      "sha256": "97b53652d10ff8a3b02bfa7c722c2a9ee3d3e605630b14ead7f17491b511d122",
+      "size": 8963
+    },
+    "profiles/miniplayer-controls-evidence.json": {
+      "sha256": "f7eb30f17ea0e8117cc0e49461735009094e9703b691d9781854be19520a875d",
+      "size": 4980
+    },
+    "features.py": {
+      "sha256": "2b580372281a14172b97fec82d7b52bc91f1a89150519f00207c1942a83b927a",
+      "size": 5141
+    },
+    "settings_catalog.py": {
+      "sha256": "c4d379e905a5c50dc3a43e61b640c039605f8b2ac023892ae3574242d11c9dcf",
+      "size": 11056
+    },
+    "native/RVNativeDislikes.inc": {
+      "sha256": "b398e42f585c66449d5e0cfecc0500e97b09568aff43194c183471aef7c5f114",
+      "size": 8197
+    },
+    "NATIVE_DISLIKES_SCHEME.md": {
+      "sha256": "209c6828748d0494358a0df35489574ea102f449cfeb888ce1c85b6d284d54a9",
+      "size": 5648
+    },
+    "profiles/native-dislikes-evidence.json": {
+      "sha256": "584389a4f159e73087fa214c4570996ab44f635fd35bddde4ae5ee1fd71534e9",
+      "size": 6577
+    },
+    "native/RVSettingsNativeUI.inc": {
+      "sha256": "c2fffb184ddb0a7c9beb84798c99d0de194f248cf421519276d98103757f9bfd",
+      "size": 29657
+    },
+    "native/RVSettingsRows.inc": {
+      "sha256": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+      "size": 5212
+    },
+    "native/RVSettingsIcon.inc": {
+      "sha256": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "size": 3213
+    },
+    "native/assets/ReVancedSettings.png": {
+      "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "size": 302918
+    },
+    "native/RVDislikesUI.inc": {
+      "sha256": "9bc063d73a73a376b8467135e52d2b23cb16fb3fe1f629b0b271d5d64e8dd0e9",
+      "size": 10891
+    },
+    "SETTINGS_UI_FIX_SCHEME.md": {
+      "sha256": "5ffceee1933842b0b86c6de34383be3dd7def2afe03a4da5ce4518ccdde4f9a8",
+      "size": 25206
+    },
+    "profiles/settings-ui-evidence.json": {
+      "sha256": "c7d1e6aa00b4d5e862c56bbccbfb4c86901d13bb25d82ff6087255e3af601e3c",
+      "size": 7780
+    },
+    "profiles/parallel-ui-snapshot-0.3.9.json": {
+      "sha256": "98d8179fa17a973a856c8e0af9833b127e7ac18ed1dba23b640048ce28ea6158",
+      "size": 5387
+    },
+    "profiles/ryd-native-vote-contracts.json": {
+      "sha256": "9375d47bd4a994ece956ea24201c082e0581cba4cb932de5b5dd5f3605540e3b",
+      "size": 3314
+    },
+    "native/RVElementDislikes.inc": {
+      "sha256": "93debacdd1f4eb3436f0b00d297fd54551be7b1e230adfe0c18f94819fcb2a1e",
+      "size": 23210
+    },
+    "ELEMENT_DISLIKES_SCHEME.md": {
+      "sha256": "b2ff94046274600cd9ba97b22378522e54bc4e37722baff6c0bf00587e3290a6",
+      "size": 2652
+    },
+    "profiles/element-dislikes-evidence.json": {
+      "sha256": "3e97087003a6fa80e4fbb5b61e09afe32079b9b9307e2e1aca78632c425ce5ab",
+      "size": 10881
+    },
+    "profiles/device-0.3.9-ryd-display-failure.json": {
+      "sha256": "d9a11b5b67055b7b1d694f5266f03cbdf78040ebeef00b139105193904df6a4b",
+      "size": 940
+    },
+    "profiles/device-0.3.10-vote-display-failure.json": {
+      "sha256": "c6b78f14c9b119da809648eaa0610c21cb533f4e156f723154ae6d835168ccc8",
+      "size": 768
+    },
+    "profiles/device-0.3.11-vote-display-failure.json": {
+      "sha256": "ae195e9f6eaba9600e67218d42ac7ad329b1e2d67b8898f70b9e2cce41a6aee2",
+      "size": 2980
+    },
+    "profiles/parallel-ui-snapshot-0.3.12.json": {
+      "sha256": "50e5f18faf12dd9966f07d2baf975ef8d8d048201931bb35def0cf27a33b9a03",
+      "size": 632
+    },
+    "native/RVSettingsBridge.inc": {
+      "sha256": "c266befe171e9789f4309ca54d8cf68eca75ce99501b8cfa6d69b1a3e0496515",
+      "size": 4945
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.12-unsigned.ipa": {
+      "sha256": "2887acc037eaa3f6d0f2d56f74d2041c724777ccd2758f0eddcb9a2a9dc1579a",
+      "size": 152307839
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.12-expanded-unsigned.ipa": {
+      "sha256": "193756ac11b081afeee1abc2d8dcd194d564f53477352ba062c57be9ed995f94",
+      "size": 152308146
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.12-SideStore-auth-unsigned.ipa": {
+      "sha256": "1d0c1b1c55d875d134d84613155810dc709537e926884bd71a1b999d8dca1233",
+      "size": 140695004
+    }
+  },
+  "remaining_scope": "The 0.3.11 device report sees the dislike icon but never recognizes an up icon or binds a native pair. 0.3.12 removes the up-icon requirement and recognizes a guarded native horizontal dislike branch. New display and parallel settings snapshot remain device-unverified. No tests run.",
+  "local_release_source_directory": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-button-release-0.3.12\\patcher",
+  "parallel_ui_merge": {
+    "included": true,
+    "snapshot": "profiles/parallel-ui-snapshot-0.3.12.json",
+    "scope": "Snapshot of native header appearance/recalculation and card formatter/separators; later shared edits remain separate."
+  },
+  "sponsorblock_device_evidence": {
+    "previous_user_reports_working": true,
+    "implementation_preserved": true,
+    "new_build_device_verified": false
+  },
+  "return_youtube_dislike_device_evidence": {
+    "version": "0.3.11",
+    "count_fetched": true,
+    "down_icons_seen": 19,
+    "owned_text_nodes": 0,
+    "user_reports_missing_count": true,
+    "new_adapter_device_verified": false,
+    "evidence": "profiles/device-0.3.11-vote-display-failure.json"
+  },
+  "build_artifact_ids": {
+    "windows-patcher": 11315331399,
+    "native-build": 11314049674
+  }
+}

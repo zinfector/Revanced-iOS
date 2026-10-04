@@ -159,3 +159,5 @@ Version 0.3.9 merges a snapshot of the parallel settings UI and inline RYD work 
 The [0.3.9 build-only receipt](profiles/release-0.3.9.json) records the successful [merged cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37191721554), exact sources and artifact hashes. The initial Xcode deprecation error in run 37191638164 was corrected with a scoped compatibility call; regression, hook and GUI-smoke steps remained skipped. Device UI, inline RYD and SponsorBlock behavior remain unverified.
 
 [0.3.11 build-only receipt](profiles/release-0.3.11.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37233522778) succeeded. Regression, hook-check and GUI smoke steps were skipped. Use the 0.3.12 SideStore-auth IPA; revised like/dislike rendering remains device-unverified.
+
+[0.3.12 build-only receipt](profiles/release-0.3.12.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316) succeeded with regression, hook and GUI smoke checks skipped. Use the 0.3.12 SideStore-auth IPA. Independent dislike rendering and the settings snapshot remain device-unverified.
