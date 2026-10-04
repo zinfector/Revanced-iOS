@@ -2,6 +2,8 @@
 
 Open **Actions → Sign IPA → Run workflow**. This uses a GitHub-hosted macOS runner, not an Apple certificate issued by GitHub. The workflow needs your code-signing certificate/private key and provisioning profile; none are configured automatically. It follows GitHub's [Apple certificate installation guidance](https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/sign-xcode-applications).
 
+For SideStore, use **`YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa`** and let SideStore sign it. Version 0.3.4 adds the dedicated ReVanced settings pane and retains the authentication implementation that now permits login according to the user. All six extensions are removed.
+
 ## Configure repository secrets
 
 Open **Settings → Secrets and variables → Actions → New repository secret**:
@@ -48,7 +50,7 @@ Install using your existing sideloading workflow, then follow [DEVICE_TESTS.md](
 
 This repository's signing workflow has been implemented and its host-side checks tested. End-to-end signing requires the secrets and source IPA URL above; it cannot be verified without them.
 
-The user reports Google rejecting sign-in in the sideloaded app. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and the experimental adapter introduced in 0.3.1. Select `sideload-auth` when patching an original IPA to enable both authentication switches. Successful device login remains unverified; older 0.3 payloads are unchanged.
+The user previously reported Google rejecting sign-in, and now reports login success after the authentication revision. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and the experimental adapter introduced in 0.3.1. Select `sideload-auth` when patching an original IPA to enable both authentication switches. Refresh and persistence remain device checks; older payloads are unchanged.
 
 ## Extension-prefix installation failure
 
@@ -70,4 +72,8 @@ Previous SideStore experiment: `YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsi
 
 ## 0.3.3 miniplayer and shortcut release
 
-The latest extension-free SideStore artifact is `YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa`, SHA-256 `2728c87e903c310af89dd87866f768cd44d1c43096985d4fd0b0e7ab158e1dd4`. It preserves the 0.3.2 authentication implementation and adds optional miniplayer and app-shortcut controls; the new options retain native defaults in this preset. All six extensions are removed. [Release receipt](patcher/profiles/release-0.3.3.json) and [behavior/limits](patcher/MINIPLAYER_SCHEME.md). Google login and new UI behavior remain device-untested.
+The previous extension-free SideStore artifact is `YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa`, SHA-256 `2728c87e903c310af89dd87866f768cd44d1c43096985d4fd0b0e7ab158e1dd4`. It preserves the 0.3.2 authentication implementation and adds optional miniplayer and app-shortcut controls; the new options retain native defaults in this preset. All six extensions are removed. [Release receipt](patcher/profiles/release-0.3.3.json) and [behavior/limits](patcher/MINIPLAYER_SCHEME.md). At publication, login and the new UI behavior were unverified; the user subsequently reported login success.
+
+## 0.3.4 dedicated ReVanced settings
+
+The latest SideStore IPA is `YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa`, SHA-256 `ea90a0543758404ce9bfe993a523f76f4902275880e67d04ea10dc7f257d45ab`. It includes the expanded preset and both authentication adapters. Existing `RVPort` preferences carry over. Open **YouTube Settings → ReVanced** for grouped controls, search, import/export, reset, Video tools and diagnostics. The three-finger hold remains a fallback. [Release receipt](patcher/profiles/release-0.3.4.json) and [settings integration](patcher/SETTINGS_SCHEME.md). User-reported login success is recorded separately from host tests; the new settings UI still requires device checks.

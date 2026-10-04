@@ -94,5 +94,13 @@
   "preference_groups": 13,
   "runtime_preferences": 113,
   "boolean_patch_switches": 79,
-  "limits": "Host fixtures exercise the production model and native menu bridge; real YouTube entry visibility, navigation and UIKit interactions require device checks."
+  "limits": "Host fixtures exercise the production model and native menu bridge; real YouTube entry visibility, navigation and UIKit interactions require device checks.",
+  "host_verification": {
+    "ci_url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37186801341",
+    "ci_commit": "ee9cb8ef7754f3b5431513c8251070500b2dc4df",
+    "tests_passed": 37,
+    "native_model_and_menu_bridge_passed": true,
+    "configuration_export_accepted_by_cli": true,
+    "uikit_rendered": false
+  }
 }

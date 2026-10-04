@@ -12,7 +12,7 @@ The **Validate and build** workflow builds the native payload with Xcode, runs 3
 
 YouTube IPAs, SDKs, reverse-engineering tool installations, signing credentials and local build outputs are excluded from Git. Supply your own supported decrypted IPA through a direct HTTPS URL. GitHub provides the runner; you provide the Apple certificate and provisioning profile. Signing verification does not prove installation or feature behavior on iOS.
 
-The 0.3.2 authentication experiment uses scoped SSO request identity and native private-keychain adapters, a `sideload-auth` preset and redacted diagnostics. Successful Google login on the target device remains unverified. Older 0.3 and 0.3.1 IPAs are unchanged. The 0.3.1 auth IPA installed and its hooks ran, but login failed with repeated keychain entitlement errors; 0.3.2 device results remain pending.
+The 0.3.2 authentication experiment uses scoped SSO request identity and native private-keychain adapters, a `sideload-auth` preset and redacted diagnostics. The user now reports successful login after receiving the revised authentication IPA. Older IPAs are preserved. The earlier 0.3.1 failure and diagnostics are retained as historical evidence; refresh and cold-relaunch persistence remain unverified.
 
 Run locally:
 
@@ -33,3 +33,5 @@ Version 0.3.3 adds selected miniplayer gesture, badge, corner, size and backgrou
 [Verified 0.3.3 artifact receipt](patcher/profiles/release-0.3.3.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37184316117) passed all 35 host tests, built the ARM64 payload and packaged the 79-switch Windows GUI. Real-IPA verification preserves retained original files and executable sections/load commands. These checks do not establish successful device login or UI behavior.
 
 Version 0.3.4 adds **YouTube Settings → ReVanced**, with 13 groups, search, 113 runtime preferences, import/export, reset and diagnostics. The working sign-in implementation and existing preferences carry over. [Settings scheme](patcher/SETTINGS_SCHEME.md).
+
+[Verified 0.3.4 artifact receipt](patcher/profiles/release-0.3.4.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37186801341) passed all 37 host tests, including the production preference/menu bridge harness and CLI export round trip, built the native payload and packaged the Windows GUI. Install the local `YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa` with SideStore. The new settings UI remains device-untested.

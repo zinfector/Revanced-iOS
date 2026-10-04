@@ -1,0 +1,166 @@
+{
+  "version": "0.3.4",
+  "supported_version": "21.39.4",
+  "feature_switches": 79,
+  "runtime_preferences": 113,
+  "preference_groups": 13,
+  "expanded_enabled_switches": 30,
+  "auth_preset_enabled_switches": 32,
+  "tests_passed": 37,
+  "test_scope": {
+    "patcher_and_shared_helpers": 19,
+    "cloud_signing_and_download": 12,
+    "authentication_config_and_native_harness": 2,
+    "miniplayer_config_and_native_harness": 2,
+    "settings_catalog_and_native_harness": 2
+  },
+  "ci": {
+    "run_id": 37186801341,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37186801341",
+    "commit": "ee9cb8ef7754f3b5431513c8251070500b2dc4df",
+    "conclusion": "success",
+    "tests_passed": 37,
+    "tests_skipped": 0,
+    "native_auth_harness_passed": true,
+    "native_miniplayer_harness_passed": true,
+    "native_settings_harness_passed": true,
+    "windows_package_passed": true,
+    "payload_sha256": "44619ba9c0147d726dcd2d6f278cf85ac88627f09f6e370cf8883971b9096048",
+    "native_log_sha256": "1a7e7d848b37b80cf45868eafb6c4dfd4b6c488bcc05ffec651ddc8a8987d051",
+    "device_settings_verified": false,
+    "device_login_success_user_reported": true
+  },
+  "native_compilation": "ARM64 iOS 17, warnings treated as errors",
+  "hook_check": {
+    "match": 81,
+    "mismatch": 0,
+    "runtime_resolution_required": 2
+  },
+  "hook_check_scope": "Literal RVHook/RVBoolGate calls and literal getter arrays. Other loops and runtime-resolved accessors require device diagnostics.",
+  "coverage": {
+    "declarations": 113,
+    "named_inventory": 51,
+    "statuses": {
+      "resource_adapter": 14,
+      "partial": 52,
+      "adapted": 24,
+      "native_existing": 1,
+      "infrastructure_adapter": 16,
+      "android_only": 4,
+      "blocked": 2
+    }
+  },
+  "original_ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "device_validated": false,
+  "device_login_success_user_reported": true,
+  "device_settings_verified": false,
+  "signing_required": true,
+  "remaining_scope": "Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; The 0.3.1 auth IPA installs and its authentication hooks run but login failed; the 0.3.2 authentication adapter retained in 0.3.4 is user-reported to permit login; refresh, playback and new settings/UI behavior require device evidence.",
+  "artifacts": {
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "f9d745b62c5b4dfca5406bc45a326d15c9307971ea30728ea1abf3f0a9395a57",
+      "size": 13771849
+    },
+    "build/RVPort.dylib": {
+      "sha256": "44619ba9c0147d726dcd2d6f278cf85ac88627f09f6e370cf8883971b9096048",
+      "size": 372224
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.4-unsigned.ipa": {
+      "sha256": "d262878daf0edc4f1a855ef4a2f77a8a830b2f45592bb67e21953c2464867858",
+      "size": 151970185
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.4-expanded-unsigned.ipa": {
+      "sha256": "dc98a3e4b94e9f27565803afbbc93310c48cd9f6aa5e37ab746991289d6a4f56",
+      "size": 151970493
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa": {
+      "sha256": "ea90a0543758404ce9bfe993a523f76f4902275880e67d04ea10dc7f257d45ab",
+      "size": 140357350
+    },
+    "coverage.json": {
+      "sha256": "fc30badd2d6203ed878fd5dfbdd6c47510e157f522f7976ad7cd7dca95b55309",
+      "size": 82825
+    },
+    "COVERAGE.md": {
+      "sha256": "81d5fda31508384fb683e1af0cf6bc8dd2193f5e5dba0bc9185a4fc1d5bc9aea",
+      "size": 30105
+    },
+    "configs/defaults.json": {
+      "sha256": "3742bd02b50a713839e52538a0ced59d43fed16805e9f9992facbea7a0cec2a4",
+      "size": 3855
+    },
+    "configs/expanded.json": {
+      "sha256": "1a2654eef739c922a3cebe00ba6d21f3fc00538c1bedcc4abe7f4e39bf0ae877",
+      "size": 4383
+    },
+    "configs/all-candidates.json": {
+      "sha256": "d08eea4afa2513b2be62c510737f513ac17bb5a366b9853f7cf42de1270c8b05",
+      "size": 3778
+    },
+    "configs/sideload-auth.json": {
+      "sha256": "c45f77af8332398d47e9beebb2ce15ea916e2b9f58728cd5f8a8012587e31a87",
+      "size": 4381
+    },
+    "AUTHENTICATION_SCHEME.md": {
+      "sha256": "9b7f5f8e01da954ff236f9bd60a5a45d14b9864394f868210a90a418dd643bd6",
+      "size": 19688
+    },
+    "MINIPLAYER_SCHEME.md": {
+      "sha256": "61c41994f1ccb538fb83135f9d5fbd1eba9fb9c8dbb77afff53f5150f77ef8a9",
+      "size": 6746
+    },
+    "profiles/miniplayer-evidence.json": {
+      "sha256": "eaa73a2b532bbc60845984a0ad8567bfafd7fa569a135130b6473667f26cada5",
+      "size": 4868
+    },
+    "SETTINGS_SCHEME.md": {
+      "sha256": "f390f7dab1f92bbc40cce2c47aac348a45d95ce40ea9d17d33cc1d0a93e3223a",
+      "size": 6861
+    },
+    "profiles/settings-evidence.json": {
+      "sha256": "95a2a423239c1f5f5ca8c4db5ed4ea9642a23de9104779fce8880636e47da449",
+      "size": 3677
+    },
+    "profiles/device-auth-login-success.json": {
+      "sha256": "b5b72c1dbc309c1277841c362a34fb663343bbd3df60e1b8dec1400983587ff1",
+      "size": 453
+    },
+    "README.md": {
+      "sha256": "3e3182afa1d93e5b31063be56af8d299339c601704f67b454cbc82215c6be6ad",
+      "size": 18490
+    },
+    "DEVICE_TESTS.md": {
+      "sha256": "6830a63b45646077e6913c098d2d550808c4928250ca20fa766e57238025dab1",
+      "size": 9235
+    }
+  },
+  "verification": {
+    "build/hook-check.json": "8c86f214c621a0bc514b61734f9ef698050bbafebccabb4970d8dd93598e03b0",
+    "build/ci-evidence-0.3.4.json": "edc94ac1e12e1bd70e66f188b274ca1933d2e8688df01d05241f1eb2ec3ddcc8",
+    "build/gui-smoke-0.3.4.json": "61d0c05cdd8a3f9c13118571a99a0273eb92df0282cf11f6f10ffbfead554ee3",
+    "build/packaged-smoke-0.3.4.json": "61d0c05cdd8a3f9c13118571a99a0273eb92df0282cf11f6f10ffbfead554ee3",
+    "build/verification-0.3.4-defaults.json": "d7c03ccd55bddcc0a243749ca1c2371550fa20455647b0567afe8574f0a5cb7c",
+    "build/verification-0.3.4-expanded.json": "024b619d876d96b88330addf19c52c87830194547ced97bfb3823107f33d5fbf",
+    "build/verification-0.3.4-sideload-auth.json": "9d95393edf52b08ab0d6a239d5c39f967f5c0ae2d0761417c6c14785b7ee28ee"
+  },
+  "recommended_ipa": "output/YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa",
+  "device_evidence": "The user reports that login now works after the revised authentication IPA was supplied; its exact filename was not restated. The working authentication sources are unchanged. The new settings UI, playback, refresh and cold-relaunch persistence still require device verification.",
+  "native_source_files": {
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVExtras.inc": "fe51625f6b5324365126f7c42df7f0242fac41c79f6cf14bc0c9466a77aea427",
+    "RVFeatures.h": "cfe5bdef3bbf274bf2aee0521929d7dc1a74a070c452b6a8e1d1b9a0274faab3",
+    "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+    "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+    "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+    "RVMiniplayer.inc": "5f74fcd1514ced55c7a9a43f61a6b3dcf57cec36d48485d122991537c42b49ed",
+    "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+    "RVPort.m": "0844cad3da3907d3e863336f7acebb732ee455f1a95983faa1caea0686ebb6a7",
+    "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+    "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+    "RVSettingsBridge.inc": "a277fb2856c339430237bb5b45267d927a9dd461282d89edee1281670b9d0546",
+    "RVSettingsCatalog.h": "fce91a9d69c4b042d343665964ad82a11770987fd2e5fdf7465f67791c7bb975",
+    "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+    "RVSettingsUI.inc": "57adac5a06550446ebf50295effd268ad4fd831ad4bfa470b43c08c9a6ff185f"
+  }
+}
