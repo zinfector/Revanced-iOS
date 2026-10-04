@@ -1,4 +1,4 @@
-# Miniplayer and Shorts app shortcut adapters — 0.3.3
+# Miniplayer and Shorts app shortcut adapters (updated in 0.3.7) — 0.3.3
 
 These are selected equivalents of the local Android miniplayer and Hide Shorts components patches, implemented against the decrypted YouTube 21.39.4 binary. The options are off/native in defaults, expanded and SideStore-auth. The all-candidates preset enables the six new boolean options but retains native numeric defaults. Reopen the miniplayer after changing size or layout preferences. Device behavior remains unverified.
 
@@ -13,7 +13,7 @@ These are selected equivalents of the local Android miniplayer and Hide Shorts c
 | `miniplayer_overlay_opacity` | Multiplies native alpha for the two circular control-background classes | 0–1, default 1; preserves native fade alpha and does not change video, text or button alpha |
 | `hide_shorts_shortcut` | Removes actual shortcut items whose exact type is `com.google.ios.youtube.shorts` | Preserves Search, Subscriptions, Create and unknown types. Cached SpringBoard items can require relaunch |
 
-The prior `classic_miniplayer` experiment toggle remains available. Complete Android miniplayer type variants, expand/close and rewind/forward button preferences, title/channel label suppression and individual widget buttons remain unported. Removing app extensions for SideStore removes entire widgets and other extension integrations.
+The prior `classic_miniplayer` experiment toggle remains available. Complete Android miniplayer type variants, separate expand/close and rewind/forward button preferences, title/channel label suppression and individual widget buttons remain unported. Removing app extensions for SideStore removes entire widgets and other extension integrations.
 
 ## Evidence and hook contracts
 
@@ -43,3 +43,13 @@ The ARM64 iOS payload builds with warnings treated as errors. The static hook ch
 `tests/miniplayer.m` compiles the production runtime and miniplayer include against UIKit-shaped macOS fixtures. It exercises 15 installed hooks, argument/state forwarding, native/profile-disabled fallbacks, nested/exception/cross-thread scope cleanup, independent ad badges, transition masks, finite/window dimension bounds, opacity restoration/inheritance, and exact shortcut filtering/refresh. It verifies production adapter contracts, not Apple's UIKit or the installed YouTube UI. The C geometry/opacity helper also runs on Windows. Actual iPhone layout, gestures, animation and SpringBoard cache behavior require the checks in [DEVICE_TESTS.md](DEVICE_TESTS.md).
 
 The 0.3.2 authentication implementation is retained unchanged. A successful build or miniplayer test does not establish Google sign-in success.
+
+## Floating overlay controls in 0.3.7
+
+`miniplayer_hide_overlay_buttons` is an additional native equivalent of Android hide-overlay behavior. It hides the persistent floating miniplayer close button and playback action group, plus their circular backgrounds. Video taps still expand, and the independent progress, badge and ad-skip views remain native. It is off in defaults, expanded and SideStore-auth, and on only in all-candidates. Enable it in ReVanced settings > Miniplayer or the Windows patcher. Reopen the miniplayer after changing it.
+
+The parent layout hook binds only typed native controls attached directly to `contentView`. Named ivars are resolved by the Objective-C runtime with exact object types; fixed offsets are not used. Class-local `setHidden:` overrides capture native visibility, force hidden only for owned controls while enabled, and guard nested inherited setters with `@finally`. The owner is weak. On later parent layout, disabling the preference restores the latest native visibility; circular-background alpha follows the earlier opacity preference and preserves native fades.
+
+The native initializer creates one close button, the action group, separate progress/badge views and an independent ad-skip control; expansion uses a video-tap gesture rather than a distinct expand button. Android modern type variants and a standalone rewind/forward pair have no mapped equivalent in this hierarchy. `activateMiniBar:shouldFetchPlayer:` also participates in native fetching and ownership teardown, so an Android disabled-on-collapse equivalent requires a verified collapse boundary. See [profiles/miniplayer-controls-evidence.json](profiles/miniplayer-controls-evidence.json) for binary and Android anchors.
+
+The payload is compiled with warnings treated as errors. The saved harness source has been extended for visibility restoration, weak ownership and inherited setters, but it was not compiled or executed for this release. No regression, static hook, GUI smoke or device tests ran, as requested by the user. The earlier verification section applies only to the earlier 0.3.3 adapter. Device control visibility, gestures and transitions remain unverified.

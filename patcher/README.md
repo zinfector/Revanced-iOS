@@ -1,6 +1,6 @@
-# YouTube iOS Patcher 0.3.6
+# YouTube iOS Patcher 0.3.7
 
-A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 79 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
+A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 80 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
 
 **Experimental: the user now reports successful Google login on the target iPhone. Playback, token refresh and the new settings UI still require device checks.** The output is unsigned and must be re-signed, including RVPort.dylib and retained extensions, before installation. Compilation, hook metadata matches and archive checks establish the patch artifact's structure; they do not establish playback behavior.
 
@@ -10,7 +10,7 @@ See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore
 
 The 0.3.1 auth artifact installed and its identity hook ran on the target device, but login failed and repeated keychain reads returned missing-entitlement errors. Version 0.3.2 uses the native private keychain, corrects the SSO request user-agent identity, and adds redacted auth-advice diagnostics; the user now reports login success on the target device.
 
-For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.6-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
+For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.7-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
 
 Version 0.3.3 adds miniplayer drag/horizontal-drag/double-tap switches, message/Premium badge hiding, square corners, minimum dimension, circular-background opacity, and a Shorts app-shortcut switch. These options are off/native in the default, expanded and SideStore-auth presets; configure them in the GUI or native settings. The 0.3.2 authentication adapter is preserved. See [MINIPLAYER_SCHEME.md](MINIPLAYER_SCHEME.md) for exact behavior and limits.
 
@@ -20,13 +20,13 @@ Version 0.3.5 connects SponsorBlock to the native player event-center clock, sha
 
 ## Deliverables
 
-- `output/YouTube-21.39.4-RVPort-0.3.6-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
-- `output/YouTube-21.39.4-RVPort-0.3.6-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.6-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
+- `output/YouTube-21.39.4-RVPort-0.3.7-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
+- `output/YouTube-21.39.4-RVPort-0.3.7-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.7-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
 - [COVERAGE.md](COVERAGE.md) and [coverage.json](coverage.json): mapping and limitations for all 113 local YouTube patch declarations, including the 51 named patches and shared factories/dependencies.
-- `build/release-manifest.json` and `build/release-manifest-0.3.6.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.5.json](profiles/release-0.3.5.json).
+- `build/release-manifest.json` and `build/release-manifest-0.3.7.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.5.json](profiles/release-0.3.5.json).
 
 The old 0.1, 0.2, 0.3, 0.3.1 and 0.3.2 unsigned IPAs are retained separately. Supported source identity is in `profiles/youtube-21.39.4.json`; other binaries are refused. This targets iOS 17 or later, thin ARM64, with an unencrypted main executable. It does not add server authorization or credentials.
 
@@ -143,3 +143,5 @@ Device target supplied by the user: iPhone 17 Pro Max on iOS 27.0. See [DEVICE_T
 For 0.3.5, [profiles/release-0.3.5.json](profiles/release-0.3.5.json) records the successful [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37188729062), artifact hashes and skipped test steps. `release_build_receipt.py` generates this build-only receipt. `release_metadata.py` remains the historical 0.3.4 audit entry point. No 0.3.5 GUI/host/device test result is claimed.
 
 Version 0.3.6 corrects the shared ordinary-video check to read `contentPlaybackData.playerResponse.playerData.isLivePlayback`. The supplied 0.3.5 device report confirmed both clocks worked but this check rejected the response wrapper before any segment fetch. The update also draws markers on the native modular timeline. Authentication and the released 0.3.5 settings UI are retained. Tests remain skipped at the user request, and device skip/marker behavior after this correction remains unverified. [Build-only receipt](profiles/release-0.3.6.json).
+
+Version 0.3.7 adds `miniplayer_hide_overlay_buttons`, exposed in ReVanced settings > Miniplayer and the Windows feature list. It hides the owned close/playback controls and circular backgrounds, retaining native tap expansion, progress and ad-skip. This raises the catalog to 80 switches and 114 runtime preferences. The flag is off in the defaults, expanded and SideStore-auth presets. Authentication and the 0.3.6 SponsorBlock fix carry over unchanged. No tests ran at the user request; device behavior remains unverified.

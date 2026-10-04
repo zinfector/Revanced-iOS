@@ -1,11 +1,11 @@
-"""Record 0.3.6 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.7 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.6'
+VERSION = '0.3.7'
 
 
 def main():
@@ -22,7 +22,9 @@ def main():
              'native/RVAuthentication.inc', 'native/RVAuthenticationSupport.h',
              'SPONSORBLOCK_SCHEME.md', 'profiles/sponsorblock-evidence.json',
              'profiles/sponsorblock-response-evidence.json', 'profiles/device-sponsorblock-0.3.5-failure.json',
-             'coverage.json', 'COVERAGE.md']
+             'coverage.json', 'COVERAGE.md', 'native/RVMiniplayer.inc',
+             'native/RVFeatures.h', 'native/RVSettingsCatalog.h', 'MINIPLAYER_SCHEME.md',
+             'profiles/miniplayer-controls-evidence.json', 'features.py', 'settings_catalog.py']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}
@@ -33,7 +35,7 @@ def main():
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 79, 'runtime_preferences': 113,
+        'feature_switches': 80, 'runtime_preferences': 114,
         'build_only': True, 'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
@@ -49,7 +51,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'SponsorBlock skip/marker behavior on the device has not been observed on this build. Earlier passing test receipts apply only to earlier versions.'}
+        'remaining_scope': 'Miniplayer control visibility and SponsorBlock skip/marker behavior have not been observed on this build. Earlier passing test receipts apply only to earlier versions.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

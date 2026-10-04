@@ -678,6 +678,24 @@
         "selector": "didDoubleTap:",
         "encoding": "v24@0:8@16",
         "imp": "0x101585214"
+      },
+      {
+        "kind": "-",
+        "selector": "activateMiniBar:shouldFetchPlayer:",
+        "encoding": "v24@0:8B16B20",
+        "imp": "0x1015830fc"
+      },
+      {
+        "kind": "-",
+        "selector": "didTapClose",
+        "encoding": "v16@0:8",
+        "imp": "0x101584ba0"
+      },
+      {
+        "kind": "-",
+        "selector": "didDismissMiniplayer",
+        "encoding": "v16@0:8",
+        "imp": "0x101587e64"
       }
     ]
   },
@@ -723,6 +741,24 @@
         "selector": "isCollapsingOrExpanding",
         "encoding": "B16@0:8",
         "imp": "0x10158dde8"
+      },
+      {
+        "kind": "-",
+        "selector": "initWithFrame:skipAdButton:",
+        "encoding": "@56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48",
+        "imp": "0x10158c424"
+      },
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x10158cba8"
+      },
+      {
+        "kind": "-",
+        "selector": "controlsView",
+        "encoding": "@16@0:8",
+        "imp": "0x10158dd98"
       }
     ]
   },
@@ -898,6 +934,23 @@
         "selector": "isLivePlayback",
         "encoding": "B16@0:8",
         "imp": "0x10464cbec"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchFloatingMiniplayerActionButtonView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x101589154"
+      },
+      {
+        "kind": "-",
+        "selector": "maybeCreateDismissMDXAutoplayButtonWithImage:accessibilityId:accessibilityLabel:",
+        "encoding": "v40@0:8@16@24@32",
+        "imp": "0x101589624"
       }
     ]
   }

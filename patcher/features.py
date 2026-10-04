@@ -36,6 +36,7 @@ CATALOG = {
     'miniplayer_disable_double_tap': 'Disable miniplayer double-tap expansion',
     'miniplayer_hide_subtext': 'Hide miniplayer message and Premium badges',
     'miniplayer_square_corners': 'Square miniplayer corners',
+    'miniplayer_hide_overlay_buttons': 'Hide floating miniplayer close and playback buttons',
     'hide_shorts_shortcut': 'Hide Shorts app-icon shortcut',
     'classic_miniplayer': 'Use classic native miniplayer', 'disable_rolling_numbers': 'Disable rolling-number animations',
     'disable_tv_popup': 'Disable automatic TV sign-in prompt',

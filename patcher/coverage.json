@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.6",
+  "patcher_version": "0.3.7",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -749,11 +749,12 @@
         "miniplayer_disable_double_tap",
         "miniplayer_hide_subtext",
         "miniplayer_square_corners",
+        "miniplayer_hide_overlay_buttons",
         "miniplayer_min_dimension_points",
         "miniplayer_overlay_opacity"
       ],
-      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension and circular control-background opacity.",
-      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, expand/close/rewind/forward button preferences and all server UI surfaces remain unported. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
+      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension, circular control-background opacity, and owned floating close/playback button hiding with native visibility restoration.",
+      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, separate expand/close/rewind/forward preferences and all server UI surfaces remain unported. This binary expands by video tap and has no separate rewind/forward control pair; the overlay toggle hides close and the playback action group. Disabled-on-collapse requires a verified collapse boundary, since activateMiniBar is also called during player fetching. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
       "parent": "miniplayerPatch",
       "device_validated": false
     },
@@ -772,11 +773,12 @@
         "miniplayer_disable_double_tap",
         "miniplayer_hide_subtext",
         "miniplayer_square_corners",
+        "miniplayer_hide_overlay_buttons",
         "miniplayer_min_dimension_points",
         "miniplayer_overlay_opacity"
       ],
-      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension and circular control-background opacity.",
-      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, expand/close/rewind/forward button preferences and all server UI surfaces remain unported. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
+      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension, circular control-background opacity, and owned floating close/playback button hiding with native visibility restoration.",
+      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, separate expand/close/rewind/forward preferences and all server UI surfaces remain unported. This binary expands by video tap and has no separate rewind/forward control pair; the overlay toggle hides close and the playback action group. Disabled-on-collapse requires a verified collapse boundary, since activateMiniBar is also called during player fetching. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
       "parent": null,
       "device_validated": false
     },
@@ -930,7 +932,7 @@
         "sponsor_min_duration"
       ],
       "implementation": "Player event-center clock and canonical local-controller session; typed response unwrapping and inline/modular native timeline rendering; filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
-      "limits": "The supplied 0.3.5 device report confirms both clocks fire but the shared live check rejects the response wrapper before fetching. Version 0.3.6 unwraps playerResponse.playerData for the live check and renders the native modular timeline as well as the legacy inline bar. Corrected skip/marker behavior remains device-unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
+      "limits": "The supplied 0.3.5 device report confirms both clocks fire but the shared live check rejects the response wrapper before fetching. Version 0.3.7 unwraps playerResponse.playerData for the live check and renders the native modular timeline as well as the legacy inline bar. Corrected skip/marker behavior remains device-unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
       "parent": "sponsorBlockPatch",
       "device_validated": false
     },
@@ -952,7 +954,7 @@
         "sponsor_min_duration"
       ],
       "implementation": "Player event-center clock and canonical local-controller session; typed response unwrapping and inline/modular native timeline rendering; filtered category fetch, overlap merging, per-category skip/skip-once/manual/seekbar-only/ignore, highlight jump and undo, native markers/colors, quality/category votes, reviewed range/point submissions, local request counters, service statistics/VIP display and public username control.",
-      "limits": "The supplied 0.3.5 device report confirms both clocks fire but the shared live check rejects the response wrapper before fetching. Version 0.3.6 unwraps playerResponse.playerData for the live check and renders the native modular timeline as well as the legacy inline bar. Corrected skip/marker behavior remains device-unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
+      "limits": "The supplied 0.3.5 device report confirms both clocks fire but the shared live check rejects the response wrapper before fetching. Version 0.3.7 unwraps playerResponse.playerData for the live check and renders the native modular timeline as well as the legacy inline bar. Corrected skip/marker behavior remains device-unverified. Tests were not run for this release at the user request. Own patch configuration can be copied; Android/desktop preference translation, service-identity migration, privileged moderation actions and complete native overlay styling are not reproduced. The local Android client does not implement API chapter/mute/full-video actions either.",
       "parent": null,
       "device_validated": false
     },
@@ -1561,7 +1563,7 @@
       "factory": "resourcePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
+      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": "settingsPatch",
       "device_validated": false
@@ -1575,7 +1577,7 @@
       "factory": "bytecodePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
+      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 80 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": null,
       "device_validated": false

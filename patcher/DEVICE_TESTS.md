@@ -4,7 +4,7 @@ This is the user-reported target. A supplied device screenshot shows the app rea
 
 ## Install and collect evidence
 
-1. For SideStore, use the separately generated `output/YouTube-21.39.4-RVPort-0.3.6-SideStore-auth-unsigned.ipa`, which uses the cloud-built native payload and removes extensions. Other signing workflows can use `output/YouTube-21.39.4-RVPort-0.3.6-expanded-unsigned.ipa`. Re-sign with your installation/signing workflow. It must sign the main app, `Frameworks/RVPort.dylib` and retained extensions. If that workflow cannot retain extensions, make a separate output with `--strip-extensions`. Signing can rename the bundle ID; preserve the YouTube executable name, app version and Mach-O UUID used by the runtime profile.
+1. For SideStore, use the separately generated `output/YouTube-21.39.4-RVPort-0.3.7-SideStore-auth-unsigned.ipa`, which uses the cloud-built native payload and removes extensions. Other signing workflows can use `output/YouTube-21.39.4-RVPort-0.3.7-expanded-unsigned.ipa`. Re-sign with your installation/signing workflow. It must sign the main app, `Frameworks/RVPort.dylib` and retained extensions. If that workflow cannot retain extensions, make a separate output with `--strip-extensions`. Signing can rename the bundle ID; preserve the YouTube executable name, app version and Mach-O UUID used by the runtime profile.
 2. Launch the app and record whether it reaches the feed and plays an ordinary video. A launch failure requires the iOS crash log, including exception, termination reason and loaded-image list, before diagnosing any feature.
 3. Hold three fingers for one second. Open **Show hook diagnostics**, then **Copy diagnostic report**. Save the report with profile acceptance, effective configuration and installed/skipped/missing hooks. A static metadata match is not evidence that installation succeeded on the device. **Copy patch configuration** exports settings that the Windows GUI can load.
 4. Use the switches to test individual features. A changed response/request feature may need a reopened video or app restart. Existing saved in-app preferences override the shipped JSON defaults.
@@ -51,3 +51,7 @@ The update adds the native player event-center clock and canonical controller/ov
 ## SponsorBlock response/timeline correction in 0.3.6
 
 The supplied 0.3.5 device report confirms both clocks firing, controller/overlay ownership and active content, but the response-wrapper live check blocks fetching (`live_flag_known=false`, no fetch count). Version 0.3.6 checks the underlying `playerResponse.playerData` and supports the native modular timeline. Its schema-2 diagnostic section reports `response_unwrapped`, `ordinary_content_gate`, `marker_bar_candidates`, `marker_view_kind` and `marker_duration_source`. No tests were executed for this release. Actual markers/skips after installation remain unverified.
+
+## Overlay control hiding in 0.3.7
+
+No device checks were executed for this release. The new off-by-default `miniplayer_hide_overlay_buttons` switch hides close/playback controls and circular backgrounds in the native floating miniplayer. Independent video-tap expansion, progress, badge and ad-skip are retained by the source. Actual appearance, native visibility restoration after toggling, and transitions remain unverified.

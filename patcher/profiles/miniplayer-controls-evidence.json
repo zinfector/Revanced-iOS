@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.7",
+  "supported_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "feature": "miniplayer_hide_overlay_buttons",
+  "default_enabled": false,
+  "android_reference": {
+    "file": "revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\MiniplayerPatch.java",
+    "sha256": "a1d7a2d635172c411a610a9dfa36adedfc9f04187f1f844a4fe0b06bed43370f",
+    "methods": [
+      "hideMiniplayerExpandClose",
+      "hideMiniplayerActionButton"
+    ],
+    "semantics": "Hides expand/close overlay views and the modern-4 action group when the overlay setting is available."
+  },
+  "metadata_anchors": [
+    {
+      "name": "YTWatchFloatingMiniplayerViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "activateMiniBar:shouldFetchPlayer:",
+          "encoding": "v24@0:8B16B20",
+          "imp": "0x1015830fc"
+        },
+        {
+          "kind": "-",
+          "selector": "didTapClose",
+          "encoding": "v16@0:8",
+          "imp": "0x101584ba0"
+        },
+        {
+          "kind": "-",
+          "selector": "didDismissMiniplayer",
+          "encoding": "v16@0:8",
+          "imp": "0x101587e64"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchFloatingMiniplayerActionButtonView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x101589154"
+        },
+        {
+          "kind": "-",
+          "selector": "maybeCreateDismissMDXAutoplayButtonWithImage:accessibilityId:accessibilityLabel:",
+          "encoding": "v40@0:8@16@24@32",
+          "imp": "0x101589624"
+        }
+      ]
+    },
+    {
+      "name": "YTWatchFloatingMiniplayerWithPersistentControlsView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithFrame:skipAdButton:",
+          "encoding": "@56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48",
+          "imp": "0x10158c424"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x10158cba8"
+        },
+        {
+          "kind": "-",
+          "selector": "controlsView",
+          "encoding": "@16@0:8",
+          "imp": "0x10158dd98"
+        },
+        {
+          "kind": "-",
+          "selector": "contentView",
+          "encoding": "@16@0:8",
+          "imp": "0x10158dea0"
+        }
+      ]
+    }
+  ],
+  "typed_runtime_ivars": [
+    {
+      "name": "_closeButton",
+      "type": "@\"YTWatchMiniBarButtonView\""
+    },
+    {
+      "name": "_closeButtonCircularBackgroundView",
+      "type": "@\"UIView\""
+    },
+    {
+      "name": "_actionButtonCircularBackgroundView",
+      "type": "@\"UIView\""
+    }
+  ],
+  "class_local_inherited_hooks": {
+    "classes": [
+      "YTWatchMiniBarButtonView",
+      "YTWatchFloatingMiniplayerActionButtonView"
+    ],
+    "selector": "setHidden:",
+    "expected_encoding": "v@:B",
+    "scope": "Only controls associated with a verified persistent miniplayer owner and attached to that owner.contentView. Global UIView implementation is unchanged."
+  },
+  "decompilations": {
+    "miniplayer-controls-annotated.txt": "558ddcccb41235b8a27114676c2745cf97eeedf69cb76bef047fde72a9031b1c",
+    "miniplayer-disable-route-annotated.txt": "20617a57cad2068b80023f0afde8fdb6a39ac24f1155355c9a9eb2b3387c2394"
+  },
+  "preserved": [
+    "Native video-tap expansion",
+    "Independent progress view",
+    "Native badges",
+    "Separate ad-skip button"
+  ],
+  "native_visibility": "Capture native hidden state on binding; update it on native setters; retain weak owner and prevent nested patched setters from overwriting the baseline. Disabling the feature restores the native state on layout. Backgrounds restore native alpha times the existing opacity preference.",
+  "remaining_miniplayer_scope": {
+    "type_variants": "Android legacy phone/tablet/modern1-5 types do not map to the single verified iOS persistent-controls hierarchy; the existing classic experiment toggle does not reproduce these variants.",
+    "hide_rewind_forward": "The verified iOS action group creates play/pause, replay/next and MDX autoplay-dismiss controls; no distinct rewind/forward pair was identified in this hierarchy.",
+    "disable_on_collapse": "Native activateMiniBar also handles fetch/activation lifecycle and can clear its player; collapse-only termination needs a verified user-collapse boundary and ordinary/ad/Cast ownership. Hooking all activations would implement different behavior.",
+    "title_channel_suppression": "The mapped iOS badge API is for messages/Premium, not title/channel labels; no verified title/channel target exists in this hierarchy."
+  },
+  "runtime_uses_fixed_addresses": false,
+  "tests_run": false,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "device_validated": false
+}

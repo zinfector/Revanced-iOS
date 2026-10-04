@@ -4,6 +4,50 @@ static NSString *const RVMiniplayerPanScope=@"RVPort.MiniplayerPanScope";
 static const void *RVMiniplayerAlphaKey=&RVMiniplayerAlphaKey;
 static const void *RVMiniplayerAlphaApplyingKey=&RVMiniplayerAlphaApplyingKey;
 static __weak id RVQuickActions;
+static const void *RVMiniplayerControlsKey=&RVMiniplayerControlsKey;
+@interface RVMiniplayerControlsState : NSObject
+@property(nonatomic,weak) id owner;
+@property(nonatomic) BOOL nativeHidden;
+@property(nonatomic) BOOL applying;
+@end
+@implementation RVMiniplayerControlsState @end
+
+static BOOL RVMiniplayerOwnsControl(id object,RVMiniplayerControlsState *state) {
+    if (![object isKindOfClass:UIView.class] || !state.owner) return NO;
+    id content=RVObject(state.owner,"contentView");
+    return [content isKindOfClass:UIView.class] && [(UIView *)object superview]==content;
+}
+static id RVMiniplayerIvar(id object,const char *name,const char *encoding) {
+    Ivar field=class_getInstanceVariable(object_getClass(object),name);
+    if (!field || !ivar_getTypeEncoding(field) || strcmp(ivar_getTypeEncoding(field),encoding)) return nil;
+    return object_getIvar(object,field);
+}
+static void RVMiniplayerBindControl(id owner,id object,BOOL background) {
+    if (![object isKindOfClass:UIView.class]) return;
+    Class known=background ? NSClassFromString(@"YTWatchFloatingMiniplayerCircularBackgroundView") : NSClassFromString(@"YTWatchMiniBarButtonView");
+    Class other=NSClassFromString(background ? @"YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView" : @"YTWatchFloatingMiniplayerActionButtonView");
+    if ((!known || ![object isKindOfClass:known]) && (!other || ![object isKindOfClass:other])) return;
+    id content=RVObject(owner,"contentView");
+    if (![content isKindOfClass:UIView.class] || [(UIView *)object superview]!=content) return;
+    RVMiniplayerControlsState *state=objc_getAssociatedObject(object,RVMiniplayerControlsKey);
+    if (!state && !RVEnabled(@"miniplayer_hide_overlay_buttons")) return;
+    if (!state) {
+        state=[RVMiniplayerControlsState new];state.nativeHidden=[(UIView *)object isHidden];
+        objc_setAssociatedObject(object,RVMiniplayerControlsKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    state.owner=owner;
+    if (background) {
+        id baseline=objc_getAssociatedObject(object,RVMiniplayerAlphaKey);
+        [(UIView *)object setAlpha:baseline ? [baseline doubleValue] : [(UIView *)object alpha]];
+    } else [(UIView *)object setHidden:state.nativeHidden];
+}
+static void RVMiniplayerApplyControls(id owner) {
+    // Read named object ivars using the runtime's realized offsets, never file offsets.
+    RVMiniplayerBindControl(owner,RVMiniplayerIvar(owner,"_closeButton","@\"YTWatchMiniBarButtonView\""),NO);
+    RVMiniplayerBindControl(owner,RVObject(owner,"controlsView"),NO);
+    for (NSString *name in @[@"_closeButtonCircularBackgroundView",@"_actionButtonCircularBackgroundView"])
+        RVMiniplayerBindControl(owner,RVMiniplayerIvar(owner,name.UTF8String,"@\"UIView\""),YES);
+}
 
 static BOOL RVMiniplayerHorizontalPan(id recognizer) {
     return RVEnabled(@"miniplayer_disable_horizontal_drag") &&
@@ -36,6 +80,21 @@ static void RVRefreshShortcuts(void) {
     }]].count) UIApplication.sharedApplication.shortcutItems=items;
 }
 static void RVInstallMiniplayer(void) {
+    RVHook(@"YTWatchFloatingMiniplayerWithPersistentControlsView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL selector) {
+        return ^(id object) { ((void(*)(id,SEL))original)(object,selector);RVMiniplayerApplyControls(object); };
+    });
+    for (NSString *className in @[@"YTWatchMiniBarButtonView",@"YTWatchFloatingMiniplayerActionButtonView"]) {
+        RVHook(className,@"setHidden:",@"v@:B",NO,^id(IMP original,SEL selector) {
+            return ^(id object,BOOL hidden) {
+                RVMiniplayerControlsState *state=objc_getAssociatedObject(object,RVMiniplayerControlsKey);
+                if (!state || state.applying) { ((void(*)(id,SEL,BOOL))original)(object,selector,hidden);return; }
+                state.nativeHidden=hidden;state.applying=YES;
+                @try { ((void(*)(id,SEL,BOOL))original)(object,selector,hidden ||
+                    (RVEnabled(@"miniplayer_hide_overlay_buttons") && RVMiniplayerOwnsControl(object,state))); }
+                @finally { state.applying=NO; }
+            };
+        });
+    }
     RVHook(@"YTWatchFloatingMiniplayerViewController",@"gestureRecognizerShouldBegin:",@"B@:@",NO,^id(IMP original,SEL selector) {
         return ^BOOL(id object,id recognizer) {
             if (RVEnabled(@"miniplayer_disable_drag") && [recognizer isKindOfClass:UIPanGestureRecognizer.class]) return NO;
@@ -123,6 +182,8 @@ static void RVInstallMiniplayer(void) {
                 objc_setAssociatedObject(object,RVMiniplayerAlphaKey,@(alpha),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 id setting=RVSetting(@"miniplayer_overlay_opacity");
                 double factor=RVCompatible && [setting isKindOfClass:NSNumber.class] ? [setting doubleValue] : 1;
+                RVMiniplayerControlsState *controls=objc_getAssociatedObject(object,RVMiniplayerControlsKey);
+                if (RVEnabled(@"miniplayer_hide_overlay_buttons") && RVMiniplayerOwnsControl(object,controls)) factor=0;
                 objc_setAssociatedObject(object,RVMiniplayerAlphaApplyingKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 @try { ((void(*)(id,SEL,CGFloat))original)(object,selector,RVMiniplayerAlpha(alpha,factor)); }
                 @finally { objc_setAssociatedObject(object,RVMiniplayerAlphaApplyingKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }

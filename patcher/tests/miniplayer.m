@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-static BOOL RVCompatible=YES,ThrowAlpha,ThrowPan;
+static BOOL RVCompatible=YES,ThrowAlpha,ThrowPan,ThrowHidden;
 static NSMutableDictionary *Settings;
 static NSMutableArray *RVStatus;
 static id RVSetting(NSString *key) { return Settings[key]; }
@@ -20,11 +20,14 @@ static void RVLog(NSString *message) { [RVStatus addObject:message]; }
 @property(nonatomic) CGRect bounds;
 @property(nonatomic) CGFloat alpha;
 @property(nonatomic,strong) CALayer *layer;
+@property(nonatomic,weak) UIView *superview;
+@property(nonatomic,getter=isHidden) bool hidden;
 - (void)layoutSubviews;
 @end
 @implementation UIView
 - (instancetype)init { if ((self=[super init])) { _alpha=1;_bounds=CGRectMake(0,0,192,108);_layer=[CALayer layer]; }return self; }
 - (void)setAlpha:(CGFloat)alpha { if (ThrowAlpha) @throw [NSException exceptionWithName:@"AlphaTest" reason:nil userInfo:nil];_alpha=alpha; }
+- (void)setHidden:(bool)hidden { if (ThrowHidden) @throw [NSException exceptionWithName:@"HiddenTest" reason:nil userInfo:nil];_hidden=hidden; }
 - (void)layoutSubviews {}
 @end
 @interface UIPanGestureRecognizer : NSObject
@@ -101,8 +104,19 @@ static YTMiniplayerLayerView *NestedLayer;
 @end
 static NSInteger MaskCalls;
 static BOOL OtherMask;
+@interface YTWatchMiniBarButtonView : UIView @end
+@implementation YTWatchMiniBarButtonView @end
+// Deliberately inherit a patched setter to test its reentrancy guard.
+@interface YTWatchFloatingMiniplayerActionButtonView : YTWatchMiniBarButtonView @end
+@implementation YTWatchFloatingMiniplayerActionButtonView @end
 @interface YTWatchFloatingMiniplayerWithPersistentControlsView : UIView
+{
+@public
+    YTWatchMiniBarButtonView *_closeButton;
+    UIView *_closeButtonCircularBackgroundView,*_actionButtonCircularBackgroundView;
+}
 @property(nonatomic,strong) UIView *contentView;
+@property(nonatomic,strong) UIView *controlsView,*skipAdButton;
 @property(nonatomic) bool isCollapsingOrExpanding;
 - (void)maskMiniplayerView;
 @end
@@ -155,7 +169,7 @@ static BOOL RectMask(UIView *view) {
 int main(void) { @autoreleasepool {
     Settings=[@{@"miniplayer_min_dimension_points":@0,@"miniplayer_overlay_opacity":@1} mutableCopy];RVStatus=[NSMutableArray array];
     AppBounds=CGRectMake(0,0,430,932);RVInstallMiniplayer();
-    assert(RVStatus.count==15);
+    assert(RVStatus.count==18);
     for (NSString *status in RVStatus) assert([status hasPrefix:@"Installed "]);
     YTWatchFloatingMiniplayerViewController *controller=[YTWatchFloatingMiniplayerViewController new];
     UIPanGestureRecognizer *pan=[UIPanGestureRecognizer new];pan.translation=CGPointMake(25,40);pan.velocity=CGPointMake(100,200);pan.state=3;
@@ -205,6 +219,41 @@ int main(void) { @autoreleasepool {
     persistent.isCollapsingOrExpanding=false;RVCompatible=NO;[persistent maskMiniplayerView];assert(!RectMask(persistent.contentView));RVCompatible=YES;
     OtherMask=YES;[persistent maskMiniplayerView];assert(![persistent.contentView.layer.mask isKindOfClass:CAShapeLayer.class]);OtherMask=NO;
     assert(MaskCalls==5);
+    persistent.contentView.superview=persistent;
+    persistent->_closeButton=[YTWatchMiniBarButtonView new];persistent->_closeButton.superview=persistent.contentView;
+    persistent.controlsView=[YTWatchFloatingMiniplayerActionButtonView new];persistent.controlsView.superview=persistent.contentView;
+    persistent->_closeButtonCircularBackgroundView=[YTWatchFloatingMiniplayerCircularBackgroundView new];persistent->_closeButtonCircularBackgroundView.superview=persistent.contentView;
+    persistent->_actionButtonCircularBackgroundView=[YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView new];persistent->_actionButtonCircularBackgroundView.superview=persistent.contentView;
+    persistent.skipAdButton=[UIView new];persistent.skipAdButton.superview=persistent.contentView;
+    UIView *close=persistent->_closeButton,*controls=persistent.controlsView,*closeBG=persistent->_closeButtonCircularBackgroundView,*actionBG=persistent->_actionButtonCircularBackgroundView;
+    [persistent layoutSubviews];assert(!objc_getAssociatedObject(close,RVMiniplayerControlsKey));
+    assert(!close.isHidden && !controls.isHidden && !persistent.skipAdButton.isHidden);
+    Settings[@"miniplayer_hide_overlay_buttons"]=@YES;[persistent layoutSubviews];
+    assert(close.isHidden && controls.isHidden && !persistent.skipAdButton.isHidden);
+    assert(!persistent.contentView.isHidden && Near(closeBG.alpha,0) && Near(actionBG.alpha,0));
+    close.hidden=false;controls.hidden=false;assert(close.isHidden && controls.isHidden);
+    controls.hidden=true;[closeBG setAlpha:.6];[actionBG setAlpha:.4];
+    assert(Near(closeBG.alpha,0) && Near(actionBG.alpha,0));
+    Settings[@"miniplayer_hide_overlay_buttons"]=@NO;[persistent layoutSubviews];
+    assert(!close.isHidden && controls.isHidden && Near(closeBG.alpha,.6) && Near(actionBG.alpha,.4));
+    controls.hidden=false;Settings[@"miniplayer_hide_overlay_buttons"]=@YES;[persistent layoutSubviews];
+    Settings[@"miniplayer_overlay_opacity"]=@.5;RVCompatible=NO;[persistent layoutSubviews];
+    assert(!close.isHidden && !controls.isHidden && Near(closeBG.alpha,.6));RVCompatible=YES;
+    [persistent layoutSubviews];assert(close.isHidden && Near(closeBG.alpha,0));
+    UIView *detachedParent=[UIView new];close.superview=detachedParent;close.hidden=false;assert(!close.isHidden);
+    close.superview=persistent.contentView;[persistent layoutSubviews];assert(close.isHidden);
+    ThrowHidden=YES;@try { close.hidden=false;assert(false); } @catch (NSException *exception) { assert([exception.name isEqual:@"HiddenTest"]); }
+    ThrowHidden=NO;assert(![(RVMiniplayerControlsState *)objc_getAssociatedObject(close,RVMiniplayerControlsKey) applying]);
+    close.hidden=false;assert(close.isHidden);
+    assert(!RVMiniplayerIvar(persistent,"_missing","@\"UIView\"") && !RVMiniplayerIvar(persistent,"_closeButton","@\"UIView\""));
+    UIView *unknownControl=[UIView new];unknownControl.superview=persistent.contentView;RVMiniplayerBindControl(persistent,unknownControl,NO);assert(!unknownControl.isHidden);
+    YTWatchMiniBarButtonView *unowned=[YTWatchMiniBarButtonView new];unowned.hidden=false;assert(!unowned.isHidden);
+    persistent.controlsView=[UIView new];persistent.controlsView.superview=persistent.contentView;[persistent layoutSubviews];assert(!persistent.controlsView.isHidden);
+    __weak id weakMini;
+    YTWatchMiniBarButtonView *orphan;
+    @autoreleasepool { YTWatchFloatingMiniplayerWithPersistentControlsView *temp=[YTWatchFloatingMiniplayerWithPersistentControlsView new];weakMini=temp;temp.contentView=[UIView new];temp->_closeButton=[YTWatchMiniBarButtonView new];orphan=temp->_closeButton;orphan.superview=temp.contentView;[temp layoutSubviews];assert(orphan.isHidden); }
+    assert(!weakMini);orphan.hidden=false;assert(!orphan.isHidden);
+    Settings[@"miniplayer_hide_overlay_buttons"]=@NO;Settings[@"miniplayer_overlay_opacity"]=@1;
     assert([YTWatchMiniplayerConstants minimumDefaultDimension]==192);
     Settings[@"miniplayer_min_dimension_points"]=@300;assert([YTWatchMiniplayerConstants minimumDefaultDimension]==300);
     AppBounds=CGRectMake(0,0,932,430);assert([YTWatchMiniplayerConstants minimumDefaultDimension]==300);

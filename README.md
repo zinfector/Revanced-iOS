@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 79 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
+Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 
 - [Patcher usage and build instructions](patcher/README.md)
 - [Every local Android patch and its iOS coverage/limits](patcher/COVERAGE.md)
@@ -45,3 +45,5 @@ Version 0.3.5 repairs the SponsorBlock playback connection: the native player ev
 Version 0.3.6 corrects the confirmed SponsorBlock response-wrapper rejection and adds native modular-timeline markers. The 0.3.5 device report showed both clocks working but no segment request because the live check targeted the wrong response object. See [the repair evidence](patcher/profiles/sponsorblock-response-evidence.json). Use `YouTube-21.39.4-RVPort-0.3.6-SideStore-auth-unsigned.ipa`; tests remain skipped and corrected device behavior is unverified.
 
 [0.3.6 build-only receipt](patcher/profiles/release-0.3.6.json): the [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37189790284) compiled the native payload and packaged the Windows patcher. Tests, static hook checks and GUI smoke tests were skipped. The three unsigned IPA hashes and exact build source commit are recorded; corrected device skip/marker behavior is unverified.
+
+Version 0.3.7 adds a floating-miniplayer overlay control switch for the owned close/playback buttons and circular backgrounds, with native visibility restoration. Video-tap expansion, progress, badge and ad-skip controls are retained. It is off by default and available in ReVanced settings > Miniplayer and the Windows GUI. The catalog now has 80 switches and 114 runtime preferences. No tests ran at the user request; device behavior remains unverified. [Native evidence and concrete remaining miniplayer scope](patcher/profiles/miniplayer-controls-evidence.json).
