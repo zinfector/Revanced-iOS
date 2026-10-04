@@ -1,0 +1,308 @@
+{
+  "version": "0.3.8",
+  "supported_youtube_version": "21.39.4",
+  "feature_switches": 80,
+  "runtime_preferences": 114,
+  "build_only": true,
+  "tests_run": false,
+  "tests_passed": null,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "gui_smoke_test_run": false,
+  "static_hook_check_run": false,
+  "standalone_archive_test_run": false,
+  "packaging": "IPAs created by the production patcher with its normal source/config/payload validation; no regression or integration test suite executed.",
+  "device_playback_verified": false,
+  "signing_required": true,
+  "authentication_login": "Previously user-reported working; authentication implementation unchanged.",
+  "source_commit": "0f580659ef6c31a5af36bf2df76c41979ddd3612",
+  "ci": {
+    "run_id": 37190989459,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37190989459",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "native",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build ARM64 iOS payload using Xcode",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run patcher and signing regression tests",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Check directly named Objective-C hook ABIs",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Upload native payload and host evidence",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "windows",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install pinned Windows packager",
+            "conclusion": "success"
+          },
+          {
+            "name": "Package standalone GUI",
+            "conclusion": "success"
+          },
+          {
+            "name": "Check packaged GUI initialization",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Upload Windows patcher",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  },
+  "native_build": {
+    "payload_sha256": "2f0d680092be315a56416d4d6eba0528d71a16102235314facc54078650b37d4",
+    "source_sha256": "1aaed0e61c66acd7e47a73faea0cf1dd9c696f81bc5f46bb4bf059e6b43b53ec",
+    "source_files": {
+      "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "RVExtras.inc": "f79fbcc5b6b78624fd55b9d7ff6d44ca7145c4d0b735e14e71d4b26e53199f96",
+      "RVFeatures.h": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+      "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+      "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+      "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+      "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+      "RVNativeDislikes.inc": "fc3a845bbc47eedba9a33e7e0be0f7034d804433c0589f53c213414179959a8e",
+      "RVPort.m": "1aaed0e61c66acd7e47a73faea0cf1dd9c696f81bc5f46bb4bf059e6b43b53ec",
+      "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+      "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+      "RVSettingsBridge.inc": "a277fb2856c339430237bb5b45267d927a9dd461282d89edee1281670b9d0546",
+      "RVSettingsCatalog.h": "293af9984447c5af8ca1649bf9e581427488e5dc63bc209d4728fa774e6c68f4",
+      "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+      "RVSettingsUI.inc": "8bde305c8ab9344aaa07b0d669ebb800b78035f392497e5d81540655aff7cbb4"
+    },
+    "compiler_command": [
+      "xcrun",
+      "--sdk",
+      "iphoneos",
+      "clang",
+      "-target",
+      "arm64-apple-ios17.0",
+      "-isysroot",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+      "-isystem",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/include",
+      "-L/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/lib",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/PrivateFrameworks",
+      "-fobjc-arc",
+      "-fblocks",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-unused-parameter",
+      "-fvisibility=hidden",
+      "-dynamiclib",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/native/RVPort.m",
+      "-o",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/build/RVPort.dylib",
+      "-framework",
+      "Foundation",
+      "-framework",
+      "UIKit",
+      "-framework",
+      "AVFoundation",
+      "-framework",
+      "MediaPlayer",
+      "-framework",
+      "CoreGraphics",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "Network",
+      "-framework",
+      "Security",
+      "-lobjc",
+      "-Wl,-install_name,@executable_path/Frameworks/RVPort.dylib"
+    ],
+    "sdk": "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+    "runtime_validated": false
+  },
+  "artifacts": {
+    "build/RVPort.dylib": {
+      "sha256": "2f0d680092be315a56416d4d6eba0528d71a16102235314facc54078650b37d4",
+      "size": 394928
+    },
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "40b77acda9634132488d7d780150a44b6b531445f631fe9afd7174b97ea1a88b",
+      "size": 13805813
+    },
+    "build/build-manifest.json": {
+      "sha256": "7670e79a41ea3a7860f46d484d8de7e95e893525d6b3c04c653bc55172a3a6e1",
+      "size": 3427
+    },
+    "build/build.log": {
+      "sha256": "180e5613a4988a3438a9a149b3611c65b6ed55beed673255fabc90b9583b192d",
+      "size": 230
+    },
+    "native/RVPort.m": {
+      "sha256": "1aaed0e61c66acd7e47a73faea0cf1dd9c696f81bc5f46bb4bf059e6b43b53ec",
+      "size": 34484
+    },
+    "native/RVExtras.inc": {
+      "sha256": "b60a046029786eed9a34ba43dce1654dc8946ca305409395b5b8afac1df47678",
+      "size": 56608
+    },
+    "native/RVSettingsUI.inc": {
+      "sha256": "8bde305c8ab9344aaa07b0d669ebb800b78035f392497e5d81540655aff7cbb4",
+      "size": 23362
+    },
+    "native/RVAuthentication.inc": {
+      "sha256": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "size": 8732
+    },
+    "native/RVAuthenticationSupport.h": {
+      "sha256": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "size": 8062
+    },
+    "SPONSORBLOCK_SCHEME.md": {
+      "sha256": "d9e8e23d00e07ffc30e5023f9185a35b1f45d44659d68f426e2b91aeb5a26d03",
+      "size": 6619
+    },
+    "profiles/sponsorblock-evidence.json": {
+      "sha256": "b7bc15a89588da846f3e10bd1c3dfd088b62660802ffdce8edb41814965a903a",
+      "size": 5670
+    },
+    "profiles/sponsorblock-response-evidence.json": {
+      "sha256": "7885360e2fc4a4d886b8295a2cbfda74f5e7db47348fa5b4d5486f234cb321a0",
+      "size": 4123
+    },
+    "profiles/device-sponsorblock-0.3.5-failure.json": {
+      "sha256": "fc8a89a4959a0aa170af7d1b876bfa12a851075053a400a52eb525bbf860b236",
+      "size": 1019
+    },
+    "coverage.json": {
+      "sha256": "547e9f5c6d426b12f84ce131d002a2a98264e0a6dab255868dd6dfc2e169c07d",
+      "size": 86935
+    },
+    "COVERAGE.md": {
+      "sha256": "7623f1c14f22a299a890ec10368101b6482c28f6c7a559ae56fa8c9da0ce3564",
+      "size": 32389
+    },
+    "native/RVMiniplayer.inc": {
+      "sha256": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "size": 13667
+    },
+    "native/RVFeatures.h": {
+      "sha256": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+      "size": 4582
+    },
+    "native/RVSettingsCatalog.h": {
+      "sha256": "293af9984447c5af8ca1649bf9e581427488e5dc63bc209d4728fa774e6c68f4",
+      "size": 26603
+    },
+    "MINIPLAYER_SCHEME.md": {
+      "sha256": "97b53652d10ff8a3b02bfa7c722c2a9ee3d3e605630b14ead7f17491b511d122",
+      "size": 8963
+    },
+    "profiles/miniplayer-controls-evidence.json": {
+      "sha256": "f7eb30f17ea0e8117cc0e49461735009094e9703b691d9781854be19520a875d",
+      "size": 4980
+    },
+    "features.py": {
+      "sha256": "2b580372281a14172b97fec82d7b52bc91f1a89150519f00207c1942a83b927a",
+      "size": 5141
+    },
+    "settings_catalog.py": {
+      "sha256": "c4d379e905a5c50dc3a43e61b640c039605f8b2ac023892ae3574242d11c9dcf",
+      "size": 11056
+    },
+    "native/RVNativeDislikes.inc": {
+      "sha256": "fc3a845bbc47eedba9a33e7e0be0f7034d804433c0589f53c213414179959a8e",
+      "size": 8080
+    },
+    "NATIVE_DISLIKES_SCHEME.md": {
+      "sha256": "0b2e8a26734b15277678490a34273486c9747b28dc34855028240c5f270db555",
+      "size": 3358
+    },
+    "profiles/native-dislikes-evidence.json": {
+      "sha256": "3005d37a1ac3ff372afa975df096fb76d5a9cfb82231d7742ac4f837bf5bf658",
+      "size": 6262
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.8-unsigned.ipa": {
+      "sha256": "fea256b092220bae598dd8e1e182bd4b755eeaf38eaaf9213dbc8740736eadb9",
+      "size": 151982827
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.8-expanded-unsigned.ipa": {
+      "sha256": "777cce3d085830c97f421fff500529d67f50bddbb192316120045a65fcb8e50d",
+      "size": 151983135
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.8-SideStore-auth-unsigned.ipa": {
+      "sha256": "75abf49b0f359151c0ab446c03eeb1173729c96dd0f5e5ebde89f2d3b3b871b1",
+      "size": 140369992
+    }
+  },
+  "remaining_scope": "Native dislike labels, miniplayer control visibility and SponsorBlock skip/marker behavior have not been observed on this build. Earlier passing test receipts apply only to earlier versions.",
+  "local_release_source_directory": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-release-0.3.8\\patcher",
+  "shared_workspace_note": "Release compiled and packaged from isolated committed 0.3.8 sources; concurrent shared-worktree settings UI changes are excluded."
+}
