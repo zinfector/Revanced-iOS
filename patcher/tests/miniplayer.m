@@ -146,7 +146,7 @@ static CGRect AppBounds;
 #include "../native/RVMiniplayer.inc"
 
 static BOOL Near(double a,double b) { return fabs(a-b)<1e-8; }
-static void Point(CGPoint p,double x,double y) { assert(Near(p.x,x) && Near(p.y,y)); }
+static void RVCheckPoint(CGPoint p,double x,double y) { assert(Near(p.x,x) && Near(p.y,y)); }
 static UIApplicationShortcutItem *Shortcut(NSString *type) { UIApplicationShortcutItem *item=[UIApplicationShortcutItem new];item.type=type;return item; }
 static BOOL RectMask(UIView *view) {
     CGPathRef rect=CGPathCreateWithRect(view.bounds,NULL);
@@ -162,26 +162,26 @@ int main(void) { @autoreleasepool {
     UITapGestureRecognizer *tap=[UITapGestureRecognizer new];id view=[UIView new];
     assert([controller gestureRecognizerShouldBegin:pan]);assert(LastRecognizer==pan);
     NativeBegin=NO;assert(![controller gestureRecognizerShouldBegin:pan]);NativeBegin=YES;
-    [controller didPan:pan];Point(LastDelta,25,40);Point(LastVelocity,100,200);assert(LastState==3 && LastRecognizer==pan);
+    [controller didPan:pan];RVCheckPoint(LastDelta,25,40);RVCheckPoint(LastVelocity,100,200);assert(LastState==3 && LastRecognizer==pan);
     [pan translationInView:view];assert(TranslationView==view);[pan velocityInView:view];assert(VelocityView==view);
     Settings[@"miniplayer_disable_horizontal_drag"]=@YES;
-    [controller didPan:pan];Point(LastDelta,0,40);Point(LastVelocity,0,200);
-    Point([pan translationInView:view],25,40);Point([pan velocityInView:view],100,200);
+    [controller didPan:pan];RVCheckPoint(LastDelta,0,40);RVCheckPoint(LastVelocity,0,200);
+    RVCheckPoint([pan translationInView:view],25,40);RVCheckPoint([pan velocityInView:view],100,200);
     [controller didPanMiniBarWithRecognizer:pan state:4 delta:CGPointMake(12,13) velocity:CGPointMake(14,15)];
-    assert(LastState==4);Point(LastDelta,0,13);Point(LastVelocity,0,15);
+    assert(LastState==4);RVCheckPoint(LastDelta,0,13);RVCheckPoint(LastVelocity,0,15);
     [controller didPanMiniBarWithRecognizer:tap state:5 delta:CGPointMake(12,13) velocity:CGPointMake(14,15)];
-    Point(LastDelta,12,13);Point(LastVelocity,14,15);
-    YTMiniplayerLayerView *layer=[YTMiniplayerLayerView new];[layer didPanMiniplayer:pan];Point(layer.observedTranslation,0,40);Point(layer.observedVelocity,0,200);
+    RVCheckPoint(LastDelta,12,13);RVCheckPoint(LastVelocity,14,15);
+    YTMiniplayerLayerView *layer=[YTMiniplayerLayerView new];[layer didPanMiniplayer:pan];RVCheckPoint(layer.observedTranslation,0,40);RVCheckPoint(layer.observedVelocity,0,200);
     assert(TranslationView==layer && VelocityView==layer);
     NestedRecognizer=[UIPanGestureRecognizer new];NestedRecognizer.translation=CGPointMake(50,60);NestedRecognizer.velocity=CGPointMake(70,80);NestedLayer=layer;
-    [controller didPan:pan];Point(layer.observedTranslation,0,60);Point(AfterNested,0,40);NestedRecognizer=nil;
+    [controller didPan:pan];RVCheckPoint(layer.observedTranslation,0,60);RVCheckPoint(AfterNested,0,40);NestedRecognizer=nil;
     ThrowPan=YES;@try { [controller didPan:pan];assert(false); } @catch (NSException *exception) { assert([exception.name isEqual:@"PanTest"]); }
-    ThrowPan=NO;assert(!NSThread.currentThread.threadDictionary[RVMiniplayerPanScope]);Point([pan translationInView:nil],25,40);
+    ThrowPan=NO;assert(!NSThread.currentThread.threadDictionary[RVMiniplayerPanScope]);RVCheckPoint([pan translationInView:nil],25,40);
     UIPanGestureRecognizer *other=[UIPanGestureRecognizer new];other.translation=CGPointMake(80,90);
     RVMiniplayerWithPan(pan,^{
-        Point([other translationInView:nil],80,90);
+        RVCheckPoint([other translationInView:nil],80,90);
         dispatch_semaphore_t done=dispatch_semaphore_create(0);
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{ @autoreleasepool { Point([pan translationInView:nil],25,40);dispatch_semaphore_signal(done); } });
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{ @autoreleasepool { RVCheckPoint([pan translationInView:nil],25,40);dispatch_semaphore_signal(done); } });
         assert(!dispatch_semaphore_wait(done,dispatch_time(DISPATCH_TIME_NOW,5*NSEC_PER_SEC)));
     });
     Settings[@"miniplayer_disable_drag"]=@YES;NSInteger begin=BeginCalls,pans=PanCalls,complex=ComplexCalls,layerPans=layer.panCalls;
@@ -190,7 +190,7 @@ int main(void) { @autoreleasepool {
     [controller didPan:pan];[layer didPanMiniplayer:pan];[controller didPanMiniBarWithRecognizer:pan state:3 delta:CGPointZero velocity:CGPointZero];
     assert(PanCalls==pans && ComplexCalls==complex && layer.panCalls==layerPans);
     [controller didPan:tap];assert(PanCalls==pans+1);
-    RVCompatible=NO;[controller didPan:pan];Point(LastDelta,25,40);assert([controller gestureRecognizerShouldBegin:pan]);RVCompatible=YES;
+    RVCompatible=NO;[controller didPan:pan];RVCheckPoint(LastDelta,25,40);assert([controller gestureRecognizerShouldBegin:pan]);RVCompatible=YES;
     Settings[@"miniplayer_disable_double_tap"]=@YES;[controller didDoubleTap:tap];assert(!DoubleCalls);
     Settings[@"miniplayer_disable_double_tap"]=@NO;[controller didDoubleTap:tap];assert(DoubleCalls==1 && LastRecognizer==tap);
     YTWatchFloatingMiniplayerBadgeView *badge=[YTWatchFloatingMiniplayerBadgeView new];id text=@"native message";

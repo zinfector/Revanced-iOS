@@ -31,6 +31,7 @@ static void RVRefreshShortcuts(void) {
     if (!RVCan(controller,"shortcutItems",@"@@:")) return;
     id items=RVObject(controller,"shortcutItems");
     if ([items isKindOfClass:NSArray.class] && ![items filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id item,NSDictionary *bindings) {
+        (void)bindings;
         return ![item isKindOfClass:UIApplicationShortcutItem.class];
     }]].count) UIApplication.sharedApplication.shortcutItems=items;
 }
