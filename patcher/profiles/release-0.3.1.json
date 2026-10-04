@@ -49,8 +49,8 @@
   "remaining_scope": "Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; runtime installation, playback and UI/service behavior require device evidence.",
   "artifacts": {
     "dist/YouTube-iOS-Patcher.exe": {
-      "sha256": "58414fba2833a485ecb448c8c46c1e9e0bcffc217809bb69166bddcb1ec787bd",
-      "size": 13730500
+      "sha256": "677622efc0478e97c1f25820d416bd41f251dd5ceb2c127fc0227a54cf2494ac",
+      "size": 13731764
     },
     "build/RVPort.dylib": {
       "sha256": "01a2d6140442c1707f09079124d1a58cec61a529bd11c667e803f25df7fbf1c9",
@@ -97,8 +97,8 @@
       "size": 15620
     },
     "README.md": {
-      "sha256": "f9da0c2a13770b2d4b90aa36778eadb2fa21e784349c14d2e21e6dcf7a7d72d8",
-      "size": 16219
+      "sha256": "6c918eca9140893cebf0add6c5aa88fe6e61bc4e4c4815a144b140e3f7327734",
+      "size": 16953
     },
     "DEVICE_TESTS.md": {
       "sha256": "c47b60a8ece2117a38e70d862e262e5f921740c7944912df22a8bb91d0c7b371",
@@ -108,12 +108,28 @@
   "verification": {
     "build/hook-check.json": "441de8ae0d652da5b5a67866dd177142441a3e2e7a4ed644ee6f7ff46cdaf5e5",
     "build/auth-ci-evidence.json": "d77b87ee10b21fad8b087fee00f5ebc5e6bad1372bfdff57c52306302adeec00",
-    "build/gui-smoke-0.3.1.json": "db17210a08fef0ff0352c00f764bd9addbd9a5505b1d56f6fd8d4b971304389d",
-    "build/packaged-smoke-0.3.1.json": "db17210a08fef0ff0352c00f764bd9addbd9a5505b1d56f6fd8d4b971304389d",
+    "build/gui-smoke-0.3.1.json": "d183d6eb8a16051d423c6e2dea688a5aca90cc28ba8fa28100b7e91eb139d379",
+    "build/packaged-smoke-0.3.1.json": "d183d6eb8a16051d423c6e2dea688a5aca90cc28ba8fa28100b7e91eb139d379",
     "build/verification-0.3.1-defaults.json": "b03e4e55694185dc6dbbcba85a884628a33c0515c507babe7233f50157da3f81",
     "build/verification-0.3.1-expanded.json": "670df731c578d08bf999bdebc1d7d38416f9f5363e1d6d9c1b33783a231099ff",
     "build/verification-0.3.1-sideload-auth.json": "8fc8aeb8fe666835ad5834743f7aa3fc87e6c23f09dbe7b1b974ab8ad58fc6f9"
   },
   "recommended_ipa": "output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa",
-  "device_evidence": "User supplied screenshot proves reaching Google authentication, with login rejected in older 0.3 artifact. No successful login/playback test of 0.3.1."
+  "device_evidence": "User reported extension-prefix installation rejection for the retained-extension 0.3.1 expanded IPA. The recommended SideStore-auth IPA has zero extensions; successful installation and login remain unverified.",
+  "gui_revision": {
+    "reason": "Prevent extension placeholder failures after sideloaders rename the main bundle ID.",
+    "gui_strip_extensions_default": true,
+    "windows_tests_passed": 32,
+    "macos_only_tests_skipped_on_windows": 1,
+    "native_payload_unchanged": true,
+    "ipas_unchanged": true,
+    "device_installation_confirmed": false,
+    "packaged_smoke_sha256": "d183d6eb8a16051d423c6e2dea688a5aca90cc28ba8fa28100b7e91eb139d379",
+    "source_gui_sha256": "920992e34fe9016baa39ff79735c4a20edd4c50bc9ca72508ff7dfed52354818",
+    "reported_failed_input": "YouTube-21.39.4-RVPort-0.3.1-expanded-unsigned.ipa",
+    "recommended_input": "YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa",
+    "recommended_input_sha256": "1481372967024a657c94381324b36a6f90148245adc9b0d80407de63d719bb70",
+    "recommended_input_extension_count": 0,
+    "ci_scope": "The referenced earlier CI verified the native payload and original GUI. The revised GUI was packaged and verified locally on Windows."
+  }
 }

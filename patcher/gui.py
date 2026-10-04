@@ -28,7 +28,7 @@ class App:
         self.speed = tk.StringVar(value='1.0')
         self.quality = tk.StringVar(value='0')
         self.strategy = tk.StringVar(value='response')
-        self.strip = tk.BooleanVar(value=False)
+        self.strip = tk.BooleanVar(value=True)
         self.flags = {key: tk.BooleanVar(value=patcher.DEFAULTS[key]) for key in patcher.FEATURES}
         frame = ttk.Frame(root, padding=18)
         frame.pack(fill='both', expand=True)
@@ -62,7 +62,7 @@ class App:
             box.grid(row=0, column=column, sticky='w', padx=(0, 16))
             ttk.Label(box, text=label).pack(anchor='w')
             ttk.Combobox(box, textvariable=variable, values=values, width=20, state='readonly').pack(anchor='w', pady=4)
-        ttk.Checkbutton(frame, text='Remove app extensions (only if needed by your signing workflow)', variable=self.strip).grid(row=6, column=0, columnspan=3, sticky='w', pady=(10, 6))
+        ttk.Checkbutton(frame, text='Remove app extensions (recommended for SideStore and other sideloaders)', variable=self.strip).grid(row=6, column=0, columnspan=3, sticky='w', pady=(10, 6))
         ttk.Label(frame, text='Creates an unsigned IPA. Re-sign before installing. Device behavior is untested.\nIn the app, hold three fingers for one second to open patch settings.', wraplength=680).grid(row=7, column=0, columnspan=3, sticky='w', pady=8)
         actions = ttk.Frame(frame)
         actions.grid(row=8, column=0, columnspan=3, sticky='ew', pady=8)
@@ -141,7 +141,7 @@ class App:
         branding = dict(self.branding)
         def work():
             manifest = patcher.patch(source, target, patcher.ROOT/'build/RVPort.dylib', config, strip,branding)
-            return {'output': target, 'signing_required': True, 'device_validated': False, 'features': {key: manifest['config'][key] for key in patcher.FEATURES}}
+            return {'output': target, 'signing_required': True, 'device_validated': False, 'extensions_removed': manifest['extensions_removed'], 'features': {key: manifest['config'][key] for key in patcher.FEATURES}}
         self.start('Creating and verifying the patched IPA. Please keep this window open…', work)
 
     def load_config(self):
@@ -197,10 +197,12 @@ def main():
             library = patcher.payload(patcher.ROOT/'build/RVPort.dylib')
             root = tk.Tk()
             root.withdraw()
-            App(root)
+            app = App(root)
+            if not app.strip.get():
+                raise RuntimeError("GUI must remove extensions by default for sideloading")
             root.update()
             root.destroy()
-            Path(sys.argv[2]).write_text(json.dumps({'status': 'ok', 'profile': profile['id'], 'payload_sha256': patcher.sha(library), 'feature_switches':len(patcher.FEATURES), 'tk_interface_initialized': True}), encoding='utf-8')
+            Path(sys.argv[2]).write_text(json.dumps({'status': 'ok', 'profile': profile['id'], 'payload_sha256': patcher.sha(library), 'feature_switches':len(patcher.FEATURES), 'tk_interface_initialized': True, 'strip_extensions_default': True}), encoding='utf-8')
         except Exception as ex:
             Path(sys.argv[2]).write_text(json.dumps({'status': 'error', 'error': str(ex)}), encoding='utf-8')
             return 2

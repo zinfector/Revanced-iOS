@@ -49,3 +49,15 @@ Install using your existing sideloading workflow, then follow [DEVICE_TESTS.md](
 This repository's signing workflow has been implemented and its host-side checks tested. End-to-end signing requires the secrets and source IPA URL above; it cannot be verified without them.
 
 The user reports Google rejecting sign-in in the sideloaded app. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and the experimental adapter introduced in 0.3.1. Select `sideload-auth` when patching an original IPA to enable both authentication switches. Successful device login remains unverified; older 0.3 payloads are unchanged.
+
+## Extension-prefix installation failure
+
+`IXErrorDomain Code=8` with `AppMigrationExtension` and a required prefix such as `com.google.ios.youtube.<team>.` means the sideloader renamed the main app while an extension retained its old ID. The ordinary 0.3.1 expanded IPA retains six extensions, including the migration extension under `Extensions/`, so removing only `PlugIns/` is insufficient.
+
+For SideStore, select `YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa` and let SideStore sign that file. This artifact removes all six extensions and includes the expanded preset plus the experimental authentication adapters. Its SHA-256 is `1481372967024a657c94381324b36a6f90148245adc9b0d80407de63d719bb70`. Rebuilding from the original uses:
+
+```powershell
+python patcher.py patch original.ipa -o sideload-auth-unsigned.ipa --config configs/sideload-auth.json --strip-extensions
+```
+
+The GUI now removes extensions by default. Extension removal addresses this placeholder failure; installation and Google login still need device verification. Retaining extensions requires remapping their IDs and re-signing them with compatible profiles, as the cloud workflow already does.

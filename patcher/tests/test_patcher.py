@@ -144,6 +144,11 @@ class ArchiveTests(unittest.TestCase):
         with self.assertRaises(macho.PatchError):patcher.inspect(self.input)
 
     def test_extensions_removed_only_when_requested(self):
+        migration = 'Payload/YouTube.app/Extensions/AppMigrationExtension.appex/extension'
+        self.make_archive([(migration, b'migration extension')])
+        retained = self.root/'retained.ipa'
+        patcher.patch(self.input,retained,self.library,{})
+        with zipfile.ZipFile(retained) as z:self.assertIn(migration,z.namelist())
         patcher.patch(self.input,self.output,self.library,{},True)
         with zipfile.ZipFile(self.output) as z:self.assertFalse(any('.appex/' in n for n in z.namelist()))
 

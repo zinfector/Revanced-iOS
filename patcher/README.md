@@ -8,12 +8,12 @@ GitHub source checkout: build/output/dist files are generated locally or availab
 
 See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore comparison, verified iOS SSO request/keychain path and experimental 0.3.1 sign-in adapter. The older 0.3 IPAs remain unchanged; successful device login is not yet verified.
 
-For the sign-in experiment, use `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled.
+For the sign-in experiment, use `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
 
 ## Deliverables
 
 - `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
-- `output/YouTube-21.39.4-RVPort-0.3.1-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.1-expanded-unsigned.ipa`: latest default/expanded configurations with authentication adapters disabled.
+- `output/YouTube-21.39.4-RVPort-0.3.1-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.1-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
@@ -45,6 +45,8 @@ In the app, **hold three fingers for one second** to open settings. Feature togg
 
 Run `dist/YouTube-iOS-Patcher.exe`, select the original IPA and a new output path, select features, then create the patched IPA. `Load config` supports the full JSON configuration. `Branding` accepts a display name, header PNG and optional icons. A phone icon needs both 120x120 and 180x180 PNGs; an iPad icon accepts 152x152. PNGs must be 8-bit RGB/RGBA, non-interlaced, at most 2048x2048 and 5 MB; the patcher validates them without resizing.
 
+The GUI removes app extensions by default for sideloading. Clear that checkbox only when your signer remaps each retained extension ID to the renamed main app prefix and signs each with a matching profile. Removing extensions also removes their widgets, notification helpers, external sharing and migration integration.
+
 The GUI packages Python, its supported profile and the built dylib. It does not package Jadx, Ghidra, SDKs or the source IPA.
 
 ## Command line
@@ -54,7 +56,7 @@ Python 3.11 or later, standard library only. Run from this directory:
 ```powershell
 python patcher.py inspect "..\Ghidra Project\com.google.ios.youtube_21.39.4_und3fined.ipa"
 python patcher.py patch "original.ipa" -o "patched-unsigned.ipa"
-python patcher.py patch "original.ipa" -o "expanded-unsigned.ipa" --config configs/expanded.json
+python patcher.py patch "original.ipa" -o "sideload-auth-unsigned.ipa" --config configs/sideload-auth.json --strip-extensions
 python patcher.py verify "patched-unsigned.ipa"
 ```
 
@@ -98,7 +100,7 @@ The thumbnail proxy endpoint receives a URL-encoded `url` query parameter and mu
 
 `default_quality` is a resolution cap with fallback, not a guarantee of an exact quality or access to unavailable formats. Network quality values use `-1` to inherit and `0` for Auto; unknown network paths use the global policy. Explicit remembered route selections override configured caps. `sponsor_behaviors` supports `skip`, `skip-once`, `manual-skip`, `seekbar-only` and `ignore`; highlight points jump to the point rather than skip a range. Local statistics count seek requests and estimated skipped time, not confirmed playback time saved. Palette color overrides affect selected getters, not every app surface. `layout_patterns`/`action_patterns`/`flyout_patterns`/`comment_patterns` are positive UTF-8 identifiers in iOS element-data; arbitrary broad patterns can hide unrelated surfaces.
 
-`--ad-strategy response|trigger|coordinator` chooses one strategy. `--strip-extensions` removes .appex bundles only when explicitly selected; normally they are retained for re-signing. `verify` checks unsigned patch artifacts; a signer modifies code and signatures, so it is not a verifier for subsequently signed IPAs.
+`--ad-strategy response|trigger|coordinator` chooses one strategy. `--strip-extensions` removes .appex bundles under both `PlugIns` and `Extensions`. Select it for CLI sideloading builds; the CLI otherwise retains extensions for a signer that remaps and signs them. The GUI selects extension removal by default. `verify` checks unsigned patch artifacts; a signer modifies code and signatures, so it is not a verifier for subsequently signed IPAs.
 
 ## Injection and evidence
 
