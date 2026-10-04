@@ -1,5 +1,7 @@
 """Shared feature catalog for the CLI, Windows UI and generated native settings."""
 CATALOG = {
+    'sideload_auth_identity': 'Sideload sign-in identity (experimental)',
+    'sideload_auth_keychain': 'Sideload credential storage (experimental)',
     'video_ads': 'Hide video ads', 'background_playback': 'Background playback',
     'sponsorblock': 'SponsorBlock autoskip', 'feed_ads': 'Hide feed ads',
     'hide_shorts': 'Hide Shorts shelves', 'shorts_ads': 'Hide Shorts ads',

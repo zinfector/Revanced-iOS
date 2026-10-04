@@ -30,7 +30,7 @@ Paste each clipboard value into its corresponding GitHub secret. Clear the clipb
 | `ipa_url` | Direct HTTPS download; falls back to secret `IPA_SOURCE_URL`. Redirects must remain HTTPS. No Google Drive login/cookie handling is provided. |
 | `ipa_kind` | `original`: build RVPort, patch the supported original IPA and then sign. `patched`: verify an existing unsigned RVPort IPA and then sign. |
 | `ipa_sha256` | Required for `patched`. For `original`, empty uses the exact analyzed source hash `37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c`. A mismatched hash stops the job. |
-| `preset` | `expanded` or `defaults`; applies only when patching an original IPA. |
+| `preset` | `expanded`, `defaults` or experimental `sideload-auth`; applies only when patching an original IPA. |
 | `bundle_id` | Optional new main app bundle ID. Empty derives the exact ID from the main profile. A wildcard profile requires an explicit matching bundle ID. |
 | `strip_extensions` | Defaults to `true`. Set `false` only with matching profiles for every retained extension. |
 
@@ -48,4 +48,4 @@ Install using your existing sideloading workflow, then follow [DEVICE_TESTS.md](
 
 This repository's signing workflow has been implemented and its host-side checks tested. End-to-end signing requires the secrets and source IPA URL above; it cannot be verified without them.
 
-The user reports Google rejecting sign-in in the sideloaded app. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and a proposed adapter. It is not included in the 0.3 payload.
+The user reports Google rejecting sign-in in the sideloaded app. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and the experimental adapter introduced in 0.3.1. Select `sideload-auth` when patching an original IPA to enable both authentication switches. Successful device login remains unverified; older 0.3 payloads are unchanged.

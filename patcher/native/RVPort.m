@@ -55,60 +55,8 @@ static id RVSetting(NSString *key) {
     return override ?: RVConfig[key];
 }
 static BOOL RVEnabled(NSString *key) { return RVCompatible && [RVSetting(key) boolValue]; }
-static NSString *RVSignature(Method method) {
-    if (!method) return nil;
-    NSString *encoding=@(method_getTypeEncoding(method));
-    return [encoding stringByReplacingOccurrencesOfString:@"[0-9]+" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0,encoding.length)];
-}
-static BOOL RVCan(id object, const char *name, NSString *signature) {
-    if (!object) return NO;
-    SEL selector=sel_registerName(name);
-    if (![object respondsToSelector:selector]) return NO;
-    return [RVSignature(class_getInstanceMethod(object_getClass(object),selector)) isEqualToString:signature];
-}
-static id RVObject(id object,const char *name) {
-    if (!RVCan(object,name,@"@@:")) return nil;
-    return ((id(*)(id,SEL))objc_msgSend)(object,sel_registerName(name));
-}
-static BOOL RVBool(id object,const char *name) {
-    if (!RVCan(object,name,@"B@:")) return NO;
-    return ((BOOL(*)(id,SEL))objc_msgSend)(object,sel_registerName(name));
-}
-static int RVInt(id object,const char *name) {
-    if (!RVCan(object,name,@"i@:")) return 0;
-    return ((int(*)(id,SEL))objc_msgSend)(object,sel_registerName(name));
-}
-static double RVDouble(id object,const char *name) {
-    if (!RVCan(object,name,@"d@:")) return NAN;
-    return ((double(*)(id,SEL))objc_msgSend)(object,sel_registerName(name));
-}
-static void RVSetObject(id object,const char *name,id value) {
-    if (RVCan(object,name,@"v@:@")) ((void(*)(id,SEL,id))objc_msgSend)(object,sel_registerName(name),value);
-}
-
-typedef id (^RVReplacementFactory)(IMP,SEL);
-static BOOL RVHook(NSString *className,NSString *selectorName,NSString *signature,BOOL classMethod,RVReplacementFactory factory) {
-    Class cls=NSClassFromString(className);
-    if (!cls) { RVLog([@"Missing class: " stringByAppendingString:className]);return NO; }
-    SEL selector=NSSelectorFromString(selectorName);
-    if ([cls respondsToSelector:NSSelectorFromString(@"descriptor")])
-        ((id(*)(id,SEL))objc_msgSend)(cls,NSSelectorFromString(@"descriptor"));
-    Class target=classMethod ? object_getClass(cls) : cls;
-    Method method=class_getInstanceMethod(target,selector);
-    if (!method && !classMethod && [cls respondsToSelector:@selector(resolveInstanceMethod:)]) {
-        [cls resolveInstanceMethod:selector];
-        method=class_getInstanceMethod(target,selector);
-    }
-    if (![RVSignature(method) isEqualToString:signature]) {
-        RVLog([NSString stringWithFormat:@"Skipped %@ %@: ABI %@, expected %@",className,selectorName,RVSignature(method),signature]);
-        return NO;
-    }
-    IMP original=method_getImplementation(method);
-    IMP replacement=imp_implementationWithBlock(factory(original,selector));
-    // class_replaceMethod creates a class-local override when the method is inherited.
-    class_replaceMethod(target,selector,replacement,method_getTypeEncoding(method));
-    RVLog([NSString stringWithFormat:@"Installed %@ %@",className,selectorName]);return YES;
-}
+#include "RVRuntime.inc"
+#include "RVAuthentication.inc"
 
 static BOOL RVAds(NSString *strategy) { return RVEnabled(@"video_ads") && [RVSetting(@"ad_strategy") isEqual:strategy]; }
 static void RVInstallAds(void) {
@@ -463,7 +411,7 @@ static void RVInstallPlayer(void) {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return section==0 ? self.keys.count : section==1 ? 3 : 1; }
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { return section==0 ? @"Features" : section==1 ? @"Playback" : @"Diagnostics"; }
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    return section==0 ? @"Changes apply immediately. Reopen the video to rebuild its player response. Experimental features need device testing." : nil;
+    return section==0 ? @"Changes apply immediately. Reopen the video to rebuild its player response. Experimental features need device testing. Restart after changing authentication settings." : nil;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)index {
     UITableViewCell *cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
@@ -491,7 +439,7 @@ static void RVInstallPlayer(void) {
         [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSMutableDictionary *effective=[NSMutableDictionary dictionary];for (NSString *key in RVConfig) effective[key]=RVSetting(key) ?: NSNull.null;
             NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-            NSDictionary *report=@{@"patcher_version":@"0.3.0",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":effective,@"hooks":hooks};
+            NSDictionary *report=@{@"patcher_version":@"0.3.1",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":effective,@"hooks":hooks,@"authentication":RVAuthenticationReport()};
             NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
             if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         }]];
@@ -570,7 +518,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
         RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
-        if (RVCompatible) { RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
+        if (RVCompatible) { RVInstallAuthentication();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             [[NSNotificationCenter defaultCenter] addObserver:entrance selector:@selector(attach) name:UIApplicationDidBecomeActiveNotification object:nil];

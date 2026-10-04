@@ -20,7 +20,7 @@ on:
       preset:
         description: Patch configuration for an original IPA
         type: choice
-        options: [expanded, defaults]
+        options: [expanded, defaults, sideload-auth]
         default: expanded
         required: true
       bundle_id:

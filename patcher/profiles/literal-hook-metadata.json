@@ -466,5 +466,131 @@
         "imp": "0x10050da14"
       }
     ]
+  },
+  {
+    "name": "SSOSafariSignIn",
+    "address": "0x10caaaf00",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "signInWithURL:presentationAnchor:completionHandler:",
+        "encoding": "v40@0:8@16@24@?32",
+        "imp": "0x104099b04"
+      },
+      {
+        "kind": "-",
+        "selector": "SSOErrorFromAuthSessionError:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x10409a150"
+      }
+    ]
+  },
+  {
+    "name": "SSOOAuth2SignIn",
+    "address": "0x10cac6f70",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "loadFailedWithError:",
+        "encoding": "B24@0:8@16",
+        "imp": "0x1045aba38"
+      },
+      {
+        "kind": "-",
+        "selector": "displayRequest:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1045abcbc"
+      }
+    ]
+  },
+  {
+    "name": "SSOService",
+    "address": "0x10cac70b0",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "finishExternalSignInWithSceneSessionID:callbackURL:error:",
+        "encoding": "v40@0:8@16@24@32",
+        "imp": "0x1045b22dc"
+      },
+      {
+        "kind": "-",
+        "selector": "continueAuthenticationForURL:externalAuthState:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x1045b292c"
+      }
+    ]
+  },
+  {
+    "name": "SSOKeychainHelper",
+    "address": "0x10cac7930",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "accessGroup",
+        "encoding": "@16@0:8",
+        "imp": "0x100202850"
+      },
+      {
+        "kind": "+",
+        "selector": "sharedAccessGroup",
+        "encoding": "@16@0:8",
+        "imp": "0x1002028d4"
+      }
+    ]
+  },
+  {
+    "name": "SSOKeychainCore",
+    "address": "0x10cac7980",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "secItemAdd:result:",
+        "encoding": "i32@0:8@16^@24",
+        "imp": "0x1045ccc78"
+      },
+      {
+        "kind": "+",
+        "selector": "secItemCopyMatching:result:",
+        "encoding": "i32@0:8@16^@24",
+        "imp": "0x100202b2c"
+      },
+      {
+        "kind": "+",
+        "selector": "secItemUpdate:value:",
+        "encoding": "i32@0:8@16@24",
+        "imp": "0x1045cccd4"
+      }
+    ]
+  },
+  {
+    "name": "SSOConfiguration",
+    "address": "0x10cac7ae8",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "clientID",
+        "encoding": "@16@0:8",
+        "imp": "0x1001fec10"
+      },
+      {
+        "kind": "-",
+        "selector": "applicationScheme",
+        "encoding": "@16@0:8",
+        "imp": "0x1045cecc0"
+      },
+      {
+        "kind": "-",
+        "selector": "applicationIdentifier",
+        "encoding": "@16@0:8",
+        "imp": "0x1045cedfc"
+      }
+    ]
   }
 ]

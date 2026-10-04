@@ -1,12 +1,14 @@
-# YouTube iOS Patcher 0.3.0
+# YouTube iOS Patcher 0.3.1
 
-A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 71 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
+A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 73 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
 
 **Experimental: the user reports a Google sign-in rejection on the target iPhone; playback and feature behavior remain unverified.** The output is unsigned and must be re-signed, including RVPort.dylib and retained extensions, before installation. Compilation, hook metadata matches and archive checks establish the patch artifact's structure; they do not establish playback behavior.
 
-GitHub source checkout: build/output/dist files are generated locally or available through Actions artifacts. See the repository's `SIGNING.md` for manual cloud signing. The `cloud_*.py` scripts use your Apple signing credentials; GitHub does not supply a certificate. Twelve additional signing/download tests cover certificate/profile matching, expiry, bundle prefixes, wildcard entitlement refusal, nested signing order, validated archive extraction and download integrity, bringing the host suite to 31 tests.
+GitHub source checkout: build/output/dist files are generated locally or available through Actions artifacts. See the repository's `SIGNING.md` for manual cloud signing. The `cloud_*.py` scripts use your Apple signing credentials; GitHub does not supply a certificate. Twelve additional signing/download tests cover certificate/profile matching, expiry, bundle prefixes, wildcard entitlement refusal, nested signing order, validated archive extraction and download integrity, with two authentication tests bringing the host suite to 33 tests (the native authentication harness requires macOS).
 
-See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore comparison, verified iOS SSO request/keychain path and proposed sign-in adapter. The scheme is not implemented in the 0.3 IPAs.
+See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore comparison, verified iOS SSO request/keychain path and experimental 0.3.1 sign-in adapter. The older 0.3 IPAs remain unchanged; successful device login is not yet verified.
+
+For the sign-in experiment, use `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled.
 
 ## Deliverables
 

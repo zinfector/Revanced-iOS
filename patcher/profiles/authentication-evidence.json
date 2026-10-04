@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "scheme_only_not_implemented",
+  "status": "experimental_adapter_implemented_device_login_unverified",
   "observed_at": "2026-10-04",
   "device_report": {
     "model": "iPhone 17 Pro Max",
@@ -165,5 +165,15 @@
       "path": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/gms/GmsCoreSupportPatch.kt",
       "sha256": "b7e61ebaf8bb389b4e785557160a3e400795571f9ef9ad42940f8aefa3822261"
     }
-  ]
+  ],
+  "original_client_id": "755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd.apps.googleusercontent.com",
+  "original_callback_uri_format": "%@:/authCallback",
+  "implementation": {
+    "version": "0.3.1",
+    "identity_feature": "sideload_auth_identity",
+    "keychain_feature": "sideload_auth_keychain",
+    "preset": "configs/sideload-auth.json",
+    "diagnostics": "bounded fixed-key booleans/enums/numeric statuses; no raw auth material",
+    "device_login_verified": false
+  }
 }

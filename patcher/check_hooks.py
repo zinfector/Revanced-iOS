@@ -16,6 +16,8 @@ def check():
     source='\n'.join(p.read_text(encoding='utf-8') for p in (ROOT/'native').glob('*') if p.suffix in ('.m','.inc'))
     declarations=[(a,b,c,'+' if kind=='YES' else '-') for a,b,c,kind in re.findall(r'RVHook\(@"([^"]+)",\s*@"([^"]+)",\s*@"([^"]+)",\s*(YES|NO)',source)]
     declarations += [(a,b,'B@:','-') for a,b in re.findall(r'RVBoolGate\(@"([^"]+)",\s*@"([^"]+)"',source)]
+    for getters,cls,signature,kind in re.findall(r'for \(NSString \*getter in @\[(.*?)\]\) \{\s*RVHook\(@"([^"]+)",getter,@"([^"]+)",(YES|NO)',source,re.S):
+        declarations += [(cls,sel,signature,'+' if kind=='YES' else '-') for sel in re.findall(r'@"([^"]+)"',getters)]
     rows=[]
     for cls,sel,signature,kind in declarations:
         methods=[m for m in classes.get(cls,{}).get('methods',[]) if m['selector']==sel and m['kind']==kind]
@@ -23,7 +25,7 @@ def check():
         opposite=any(m['selector']==sel and m['kind']!=kind for m in classes.get(cls,{}).get('methods',[]))
         status='match' if signature in encodings else 'mismatch' if encodings or opposite else 'runtime_resolution_required'
         rows.append(dict(class_name=cls,selector=sel,kind=kind,expected=signature,metadata_encodings=encodings,status=status))
-    report={'scope':'Direct literal RVHook and RVBoolGate calls only. Does not enumerate loop-generated hooks or runtime-resolved accessors.',
+    report={'scope':'Literal RVHook/RVBoolGate calls and literal getter arrays. Other loops and runtime-resolved accessors require device diagnostics.',
             'device_validated':False,'counts':{s:sum(r['status']==s for r in rows) for s in ('match','mismatch','runtime_resolution_required')},'hooks':rows}
     (ROOT/'build').mkdir(exist_ok=True)
     (ROOT/'build/hook-check.json').write_text(json.dumps(report,indent=2),encoding='utf-8')

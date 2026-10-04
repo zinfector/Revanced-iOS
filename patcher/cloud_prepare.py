@@ -12,7 +12,7 @@ def main():
     mode = os.environ.get('IPA_KIND', 'original')
     preset = os.environ.get('PATCH_PRESET', 'expanded')
     strip = os.environ.get('STRIP_EXTENSIONS', 'true')
-    if mode not in ('original', 'patched') or preset not in ('defaults', 'expanded') or strip not in ('true', 'false'):
+    if mode not in ('original', 'patched') or preset not in ('defaults', 'expanded', 'sideload-auth') or strip not in ('true', 'false'):
         raise DownloadError('Unsupported workflow input')
     output = ROOT / 'build/cloud'
     output.mkdir(parents=True, exist_ok=True)
