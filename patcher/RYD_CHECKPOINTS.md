@@ -46,3 +46,7 @@ If `foreground_watch_snapshot_missing` appears, return to the video, leave the r
 This update was built and packaged without running tests. Device behavior and the rendering repair remain unverified.
 
 Version 0.3.14 additionally records root invalidation requests and completed native root layout passes, owned text didLoad and displayDidFinish callbacks, and existing layer raster contents. It does not force mounting, layout, or drawing. Root-layout callbacks are recorded only for the current owned text’s native Yoga root; all original callback results are preserved. Raster contents indicate a backing image, not proof that visible glyph pixels were drawn. Snapshot history preserves foreground failures before opening Settings.
+
+The report version in Report 541 is stale because the older Settings snapshot hardcoded 0.3.12. The checkpoint build explicitly reports 0.3.14 and a generated source fingerprint, so a diagnostic report can be matched to the compiled payload.
+
+For this delivered build, `build_source_sha256` must be `46dc60fdea3144be366361fccc9d86a30ef93f86abfd04866c268e5a4258b7de`. Use `YouTube-21.39.4-RVPort-0.3.14-SideStore-auth-unsigned.ipa` in SideStore.

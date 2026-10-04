@@ -165,3 +165,5 @@ The [0.3.9 build-only receipt](profiles/release-0.3.9.json) records the successf
 [0.3.13 build receipt](profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.14-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
 
 Read the [RYD capture/checkpoint guide](RYD_CHECKPOINTS.md).
+
+[0.3.14 build receipt](profiles/release-0.3.14.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37238785537) succeeded; regression, hook and GUI smoke checks were skipped. RYD checkpoint revision 2 preserves visible watch-page state and observes layout/mounting/loading/drawing without forcing it. Rendering repair remains unverified.
