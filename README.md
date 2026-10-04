@@ -63,3 +63,5 @@ Version 0.3.9 merges the user-authorized snapshot of the still-edited parallel n
 [0.3.11 build-only receipt](patcher/profiles/release-0.3.11.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37233522778) succeeded. Regression, hook-check and GUI smoke steps were skipped. Use the 0.3.12 SideStore-auth IPA; revised like/dislike rendering remains device-unverified.
 
 [0.3.12 build-only receipt](patcher/profiles/release-0.3.12.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316) succeeded with regression, hook and GUI smoke checks skipped. Use the 0.3.12 SideStore-auth IPA. Independent dislike rendering and the settings snapshot remain device-unverified.
+
+[0.3.13 build receipt](patcher/profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.13-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
