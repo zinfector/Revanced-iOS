@@ -26,7 +26,7 @@ Version 0.3.5 connects SponsorBlock to the native player event-center clock, sha
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
 - [COVERAGE.md](COVERAGE.md) and [coverage.json](coverage.json): mapping and limitations for all 113 local YouTube patch declarations, including the 51 named patches and shared factories/dependencies.
-- `build/release-manifest.json` and `build/release-manifest-0.3.7.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.5.json](profiles/release-0.3.5.json).
+- `build/release-manifest.json` and `build/release-manifest-0.3.7.json`: build hashes, sizes and test-skip status; previous receipts are preserved separately. Public receipt: [profiles/release-0.3.7.json](profiles/release-0.3.7.json).
 
 The old 0.1, 0.2, 0.3, 0.3.1 and 0.3.2 unsigned IPAs are retained separately. Supported source identity is in `profiles/youtube-21.39.4.json`; other binaries are refused. This targets iOS 17 or later, thin ARM64, with an unencrypted main executable. It does not add server authorization or credentials.
 
@@ -145,3 +145,5 @@ For 0.3.5, [profiles/release-0.3.5.json](profiles/release-0.3.5.json) records th
 Version 0.3.6 corrects the shared ordinary-video check to read `contentPlaybackData.playerResponse.playerData.isLivePlayback`. The supplied 0.3.5 device report confirmed both clocks worked but this check rejected the response wrapper before any segment fetch. The update also draws markers on the native modular timeline. Authentication and the released 0.3.5 settings UI are retained. Tests remain skipped at the user request, and device skip/marker behavior after this correction remains unverified. [Build-only receipt](profiles/release-0.3.6.json).
 
 Version 0.3.7 adds `miniplayer_hide_overlay_buttons`, exposed in ReVanced settings > Miniplayer and the Windows feature list. It hides the owned close/playback controls and circular backgrounds, retaining native tap expansion, progress and ad-skip. This raises the catalog to 80 switches and 114 runtime preferences. The flag is off in the defaults, expanded and SideStore-auth presets. Authentication and the 0.3.6 SponsorBlock fix carry over unchanged. No tests ran at the user request; device behavior remains unverified.
+
+The [0.3.7 build-only receipt](profiles/release-0.3.7.json) records the successful [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37190158948), artifact hashes and skipped test steps. The recommended SideStore IPA carries the SponsorBlock response-unwrapping correction and modular timeline markers; device behavior remains unverified.
