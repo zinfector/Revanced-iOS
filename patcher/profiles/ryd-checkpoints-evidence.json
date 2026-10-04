@@ -15,7 +15,7 @@
     "last_gate": "scanning_watch"
   },
   "finding": "Current-video data and Yoga measurement succeeded; no text render parent or loaded layer was reported. Capture foreground evidence to separate the failure from Settings navigation.",
-  "instrumentation_revision": "ryd-checkpoints-3",
+  "instrumentation_revision": "ryd-checkpoints-4",
   "checkpoint_order": [
     "feature_enabled",
     "playback_video_valid",
@@ -37,7 +37,7 @@
   "tests_run": false,
   "device_validated": false,
   "rendering_repair_claimed": false,
-  "implementation_version": "0.3.15",
+  "implementation_version": "0.3.16",
   "additional_checkpoints": [
     "native_root_invalidation_requests",
     "native_root_layout_completed",
@@ -46,18 +46,18 @@
     "existing_layer_raster_contents"
   ],
   "source_sha256": {
-    "RVElementDislikes.inc": "25d3864ecbe0fe78bb195aad791ce8e57386d50df68fd1bf261096de52547d9d",
-    "RVDislikesDiagnostics.inc": "490a3eb7924d6134157e36fb468817a2a87bdceb5501352746eb311fd61d323f"
+    "RVElementDislikes.inc": "62a8995c4be883722f6adf2c237f4d2d518bf0b61689d989b1d9c2230161c790",
+    "RVDislikesDiagnostics.inc": "ec4148bb1cd03b0fb819cb935c5db4e06e353376dc55203cf0f78e349d27895e"
   },
   "mounting_attempt_added": true,
   "diagnostic_inspection_remains_passive": true,
-  "latest_report": "RYD Report 615.txt",
-  "latest_report_sha256": "a773104f3bcbd3bd14f79322d80f7828babe080403b1ea59bbcf7b5ea87175ee",
-  "latest_report_finding": "While watch page is foreground, count and measurement succeed, four native root layout passes complete, but text has no render parent, loaded layer or drawing callbacks.",
-  "native_build_source_sha256": "f0d8f6f0dfaaf72ac3a1b13299d83698ebb7c6fddfbb820792c20c869712f0a8",
-  "payload_sha256": "65872495e713d491623d167eb4dc4191984e7e03ccc422494794fda408b3f951",
-  "cloud_run": 37239941953,
-  "source_commit": "6dbaa6077a6c11c6749a8077fe032a8e13dca66a",
-  "ipa_sha256": "5e96a00bc3fab355114f28f5e05bc6550b1ac6d2d3e8264ec3e60e3cf78c534e",
-  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa"
+  "latest_report": "RYD Report 635.txt",
+  "latest_report_sha256": "269d9208699623cf65b2231707148d9ad0d4ec230ae7d0a8525cf5ae388688f4",
+  "latest_report_finding": "User screenshot and report confirm visible dislike count in 0.3.15. Spacing and miniplayer restoration revised in 0.3.16; device confirmation pending.",
+  "native_build_source_sha256": "092b80bda0dd3e1989e161d1ef90304b542365f80d216e5b4d2493942488cc0a",
+  "payload_sha256": "ccd267bb5ae3e52b8234d95664739fa459a151b809fbb1a926590a8d9a115b5d",
+  "cloud_run": 37241222919,
+  "source_commit": "35b5d15f20aa65042ab835eee10afc2088421fd6",
+  "ipa_sha256": "775e3d9c1fd677ff64835f4d590e8101311f33162e96a0611169de8c45977c5e",
+  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.16-SideStore-auth-unsigned.ipa"
 }

@@ -23,5 +23,11 @@
     "RVDislikesDiagnostics.inc": "ec4148bb1cd03b0fb819cb935c5db4e06e353376dc55203cf0f78e349d27895e"
   },
   "tests_run": false,
-  "device_validated": false
+  "device_validated": false,
+  "native_build_source_sha256": "092b80bda0dd3e1989e161d1ef90304b542365f80d216e5b4d2493942488cc0a",
+  "payload_sha256": "ccd267bb5ae3e52b8234d95664739fa459a151b809fbb1a926590a8d9a115b5d",
+  "cloud_run": 37241222919,
+  "source_commit": "35b5d15f20aa65042ab835eee10afc2088421fd6",
+  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.16-SideStore-auth-unsigned.ipa",
+  "ipa_sha256": "775e3d9c1fd677ff64835f4d590e8101311f33162e96a0611169de8c45977c5e"
 }

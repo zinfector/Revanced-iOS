@@ -1,6 +1,6 @@
 # Return YouTube Dislike checkpoints
 
-Report 615 confirms the foreground failure: the count was available and measured, and four native root layout passes completed, but the text had no render parent or loaded layer. Version 0.3.15 adds guarded native mounting and a label fallback inside the native dislike button. Display, sizing and reuse still require device confirmation.
+Report 635 and the screenshot confirm the 0.3.15 count mounts and draws. Its history captures transient player detachment, node removal and delayed recreation after miniplayer return. Version 0.3.16 reserves the missing icon gap and adds lifecycle refreshes. Spacing and restoration still require device confirmation.
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
@@ -54,8 +54,9 @@ The report version in Report 541 is stale because the older Settings snapshot ha
 
 In 0.3.15, inspect geometry.mount_mode and mount_gate. `native_text_node` uses native AS mounting. `owned_label_in_native_button` renders a UILabel inside the verified native button; the AS text child remains a sizing proxy. For that mode, native_text_supernode_present and native_text_node_loaded may remain false, and AS text drawing callbacks may stay zero. Effective mount/load/window/clip checkpoints inspect the owned label instead. `label_fits_button_bounds` and clipping_ancestors identify any remaining size constraint. Diagnostics do not force mounting; the production renderer performs its own guarded mount.
 
-Delivered build: `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `f0d8f6f0dfaaf72ac3a1b13299d83698ebb7c6fddfbb820792c20c869712f0a8`. Cloud source commit: `6dbaa6077a6c11c6749a8077fe032a8e13dca66a`.
 
 Version 0.3.16 records spacing_points (8), spacing_gate (logical_start_margin_reserved), button_width, watch_suspended, suspension_count and resume_count. Transition event counters watch_appeared/watch_player_changed/watch_layout_ownership_changed and transition_refresh show refreshes that require no pause/unpause. watch_player_matches now verifies current content IDs; watch_player_pointer_matches separately describes cached pointer identity. Preserve a screenshot/report after miniplayer return before interacting with playback if the count still disappears.
 
 When icon_gap_measured is true, icon_text_gap_points reports the observed gap using the existing native icon view’s button-local rectangle. This distinguishes a reserved margin from actual displayed geometry; no icon views are loaded for diagnostics.
+
+Delivered build: `YouTube-21.39.4-RVPort-0.3.16-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `092b80bda0dd3e1989e161d1ef90304b542365f80d216e5b4d2493942488cc0a`. Source commit: `35b5d15f20aa65042ab835eee10afc2088421fd6`.
