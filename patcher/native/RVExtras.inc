@@ -356,6 +356,7 @@ static void RVShowTools(UIViewController *presenter) {
     if (RVEnabled(@"custom_speed_menu")) [menu addAction:[UIAlertAction actionWithTitle:@"Playback speed…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIAlertController *speeds=[UIAlertController alertControllerWithTitle:@"Speed" message:nil preferredStyle:UIAlertControllerStyleAlert];
         for (NSNumber *rate in RVSetting(@"custom_speeds")) [speeds addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@x",rate] style:UIAlertActionStyleDefault handler:^(UIAlertAction *choice) {
+            RVSpeedChoose(RVCurrentPlayer,rate.floatValue,nil,@"revanced_video_tools");
             if (RVCan(RVCurrentPlayer,"setPlaybackRate:",@"v@:f")) ((void(*)(id,SEL,float))objc_msgSend)(RVCurrentPlayer,sel_registerName("setPlaybackRate:"),rate.floatValue);
         }]];
         [speeds addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[presenter presentViewController:speeds animated:YES completion:nil];

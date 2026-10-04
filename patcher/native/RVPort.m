@@ -429,7 +429,10 @@ static id RVLimitFormats(id formats) {
     // Never leave the player with no selectable format.
     return accepted.count ? accepted : formats;
 }
+static BOOL RVVideoIDValid(id value);
+#include "RVSpeed.inc"
 static void RVInstallPlayer(void) {
+    RVInstallSpeedChoices();
     RVHook(@"YTLocalPlaybackController",@"singleVideo:currentVideoTimeDidChange:",@"v@:@@",NO,^id(IMP original,SEL sel) {
         return ^(id controller,id video,id time) {
             ((void(*)(id,SEL,id,id))original)(controller,sel,video,time);
@@ -449,25 +452,15 @@ static void RVInstallPlayer(void) {
             ((void(*)(id,SEL,id,id))original)(object,sel,controller,data);
             RVExtraSetPlayer(object,controller);
             RVObservePlayback(RVPlaybackForPlayer(object),nil,@"data_load");
-            dispatch_async(dispatch_get_main_queue(),^{
-                RVPlaybackSession *session=RVSession(object);
-                double value=[RVSetting(@"default_speed") doubleValue];
-                if (RVEnabled(@"remember_speed")) {
-                    NSNumber *last=[[NSUserDefaults standardUserDefaults] objectForKey:@"RVPort.lastSpeed"];
-                    if (last) value=last.doubleValue;
-                }
-                if ((!RVEnabled(@"remember_speed") && value==1.0) || !isfinite(value) || value<0.25 || value>4 || !RVCan(object,"setPlaybackRate:",@"v@:f")) return;
-                session.programmaticSpeed=YES;
-                ((void(*)(id,SEL,float))objc_msgSend)(object,sel_registerName("setPlaybackRate:"),(float)value);
-                session.programmaticSpeed=NO;session.speedApplied=YES;
-            });
+            __weak id weakPlayer=object;
+            dispatch_async(dispatch_get_main_queue(),^{ RVSpeedContentReady(weakPlayer,@"content_data_ready"); });
         };
     });
     RVHook(@"YTPlayerViewController",@"setPlaybackRate:",@"v@:f",NO,^id(IMP original,SEL sel) {
         return ^(id object,float rate) {
             ((void(*)(id,SEL,float))original)(object,sel,rate);
-            if (RVEnabled(@"remember_speed") && !RVSession(object).programmaticSpeed && isfinite(rate) && rate>=0.25 && rate<=4)
-                [[NSUserDefaults standardUserDefaults] setFloat:rate forKey:@"RVPort.lastSpeed"];
+            // Remember only explicit menu choices. Native initialization and
+            // programmatic restore must not overwrite the user's saved rate.
         };
     });
     for (NSString *cls in @[@"MLPersistentVideoQualitySettingFormatConstraint",@"MLQuickMenuVideoQualitySettingFormatConstraint"]) {

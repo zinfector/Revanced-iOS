@@ -175,6 +175,24 @@
         "selector": "watchViewDidLayoutSubviews:",
         "encoding": "v24@0:8@16",
         "imp": "0x101572c30"
+      },
+      {
+        "kind": "-",
+        "selector": "viewWillAppear:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x10156fe74"
+      },
+      {
+        "kind": "-",
+        "selector": "playerViewModifierDidBeginGesture:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101573048"
+      },
+      {
+        "kind": "-",
+        "selector": "playerViewModifierDidEndGesture:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10157322c"
       }
     ]
   },
@@ -420,6 +438,12 @@
         "selector": "currentVideoTotalMediaTime",
         "encoding": "d16@0:8",
         "imp": "0x1041ae574"
+      },
+      {
+        "kind": "-",
+        "selector": "playbackController:didActivateVideo:withPlaybackData:",
+        "encoding": "v40@0:8@16@24@32",
+        "imp": "0x1041b032c"
       }
     ]
   },
@@ -1639,6 +1663,29 @@
         "selector": "setCustomEdgePadding:",
         "encoding": "v24@0:8d16",
         "imp": "0x104261658"
+      }
+    ]
+  },
+  {
+    "name": "YTPlayerOverlayManager",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithOverlayFactory:playerViewController:delegate:",
+        "encoding": "@40@0:8@16@24@32",
+        "imp": "0x10048be00"
+      },
+      {
+        "kind": "-",
+        "selector": "varispeedSwitchController:didSelectRate:",
+        "encoding": "v28@0:8@16f24",
+        "imp": "0x1041aaad4"
+      },
+      {
+        "kind": "-",
+        "selector": "varispeedSwitchController:didSelectRateModel:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x1041aab10"
       }
     ]
   }

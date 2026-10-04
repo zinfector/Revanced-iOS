@@ -1,0 +1,23 @@
+{
+  "version": "0.3.17",
+  "input": "User 0.3.16 screenshot and native-menu first-launch report; Report 703.txt is empty at implementation time.",
+  "outer_edges": "Measure the nearest verified two-icon/native-text pair, reserve owned logical end margin to mirror native leading inset. Changes only owned text margin.",
+  "transition": "Synchronous will-appear/gesture refresh and retained same-video semantic ownership during temporary watch-player detachment; mount tracked labels during native watch layout.",
+  "speed": "Capture explicit native rate and model menu choices; cancel queued startup restore, persist only explicit selections, retry native setters up to four times while same ordinary content remains current; preserve native limits and autospeed models.",
+  "device_validated": false,
+  "tests_run": false,
+  "native_evidence": {
+    "speed-startup-transition-annotated.txt": "727d579ecff33ac5cc85640389d56245b053c5f28717338da0deb83fff95b4ca",
+    "speed-menu-contract-annotated.txt": "20171e3deab2a463544e5110d1e6d4ed7ed732e036548158c5ac8482919542fe",
+    "speed-native-apply-annotated.txt": "fdf0700b02f3e3ef1be2a0c79d56bfb4c27f8d9a40c833d4d53bfa2c53ecd0e0",
+    "speed-menu-selection-annotated.txt": "59140e76bab111e828a4fbb12e369e7fc9aa4a930efbd9ac3effb99876ecdf2a",
+    "speed-native-selection-and-watch-annotated.txt": "30d39b5737209a60cc04523d9634e7aa50ea5fa2210fc7b931b95b675027fa73",
+    "speed-overlay-owner-annotated.txt": "adec80771ff2dcbe6227081f539aecaa37261417cd73df3a921dbb73f4912aff"
+  },
+  "source_sha256": {
+    "RVElementDislikes.inc": "29ed06181f7cbfdc8e8be7edd615e8514b88bd8a4e065e93d3433a85a55bcd9e",
+    "RVSpeed.inc": "1b67bb06fe358dc6e883a1cb86b83b35581b1229da69045c6af160dbeb4e4d8e",
+    "RVPort.m": "fb49a97b7eda4b38410676b03686f7ab09f1be9e8368569124761f7ef8dda09a",
+    "RVExtras.inc": "f4d3a4efb9951746082070b94fa5de59c6f073257bf9272c1a90dff861d34e66"
+  }
+}

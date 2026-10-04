@@ -28,6 +28,11 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic,copy) NSString *mountGate;
 @property(nonatomic) NSUInteger mountAttempts;
 @property(nonatomic) CGFloat spacingPoints;
+@property(nonatomic) CGFloat endMargin;
+@property(nonatomic) CGFloat leadingInset;
+@property(nonatomic) CGFloat trailingInset;
+@property(nonatomic,copy) NSString *edgeGate;
+@property(nonatomic,weak) UIViewController *watch;
 @property(nonatomic,copy) NSString *spacingGate;
 @property(nonatomic) NSUInteger suspensionCount;
 @property(nonatomic) NSUInteger resumeCount;
@@ -197,11 +202,60 @@ static CGRect RVElementTextFrame(id text) {
 // ASLayoutElementStyleYoga.setSpacingBefore: is a no-op; use its margin API.
 typedef struct { NSInteger unit; double value; } RVElementDimension;
 typedef struct { RVElementDimension top,left,bottom,right,start,end,horizontal,vertical,all; } RVElementEdges;
-static BOOL RVElementSetTextGap(id text,CGFloat gap) {
+static BOOL RVElementSetTextGap(id text,CGFloat gap,CGFloat endMargin) {
     id style=RVObject(text,"style");
     if (!RVCan(style,"setMargin:",@"v@:{?={?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}}")) return NO;
-    RVElementEdges margin={0};margin.start=(RVElementDimension){1,gap};
+    RVElementEdges margin={0};margin.start=(RVElementDimension){1,gap};margin.end=(RVElementDimension){1,endMargin};
     ((void(*)(id,SEL,RVElementEdges))objc_msgSend)(style,sel_registerName("setMargin:"),margin);return YES;
+}
+static BOOL RVElementOwnedWatch(id parent,RVElementDislikeState *state) {
+    if (!state.textNode || ![state.video isEqual:RVDislikeVideo] || !RVDislikeHasCount() || !RVOrdinaryContent(RVCurrentPlayback)) return NO;
+    UIViewController *watch=state.watch;UIView *view=RVElementLoadedView(parent);
+    if (!watch.isViewLoaded || !view.window || ![view isDescendantOfView:watch.view] ||
+        (RVCurrentWatch && RVCurrentWatch!=watch) || state.element!=RVObject(state.component,"element")) return NO;
+    id ancestor=parent;
+    for (NSUInteger i=0;ancestor && i<12;i++,ancestor=RVElementParent(ancestor)) {
+        id component=RVObject(RVObject(ancestor,"nodeController"),"owningComponent");
+        for (NSUInteger j=0;component && j<6;j++,component=RVObject(component,"owningComponent")) if (component==state.component) return YES;
+    }return NO;
+}
+static BOOL RVElementRectInAncestor(id node,id ancestor,CGRect *result) {
+    CGRect rect=RVElementTextFrame(node);if (rect.size.width<=0 || rect.size.height<=0) return NO;
+    id parent=RVElementParent(node);
+    for (NSUInteger i=0;parent && parent!=ancestor && i<12;i++,parent=RVElementParent(parent)) {
+        CGRect frame=RVElementTextFrame(parent);rect.origin.x+=frame.origin.x;rect.origin.y+=frame.origin.y;
+    }
+    if (parent!=ancestor) return NO;*result=rect;return YES;
+}
+static void RVElementBalanceEdges(id parent,RVElementDislikeState *state) {
+    if (!state.textNode || state.updating || !RVElementOwnedWatch(parent,state)) return;
+    id pair=RVElementParent(parent);
+    BOOL rtl=RVElementLoadedView(parent).effectiveUserInterfaceLayoutDirection==UIUserInterfaceLayoutDirectionRightToLeft;
+    for (NSUInteger level=0;pair && level<6;level++,pair=RVElementParent(pair)) {
+        NSArray *nodes=RVElementSubtree(pair);if (nodes.count>=128) break;
+        NSMutableArray *images=[NSMutableArray array];BOOL nativeText=NO;
+        for (id node in nodes) {
+            if ([node isKindOfClass:NSClassFromString(@"ASImageNode")] && [RVObject(node,"image") isKindOfClass:UIImage.class]) [images addObject:node];
+            id text=RVObject(node,"attributedText");if (node!=state.textNode && [text isKindOfClass:NSAttributedString.class] && [text length]) nativeText=YES;
+        }
+        if (images.count>2) break;
+        if (images.count!=2 || !nativeText) continue;
+        id other=nil;NSUInteger downs=0;
+        for (id image in images) if (RVElementImageKind(image)==1) downs++;else other=image;
+        if (downs!=1 || !other) continue;
+        CGRect iconRect,textRect,pairRect=RVElementTextFrame(pair);
+        if (!RVElementRectInAncestor(other,pair,&iconRect) || !RVElementRectInAncestor(state.textNode,pair,&textRect) || pairRect.size.width<=0) continue;
+        CGFloat leading=rtl ? pairRect.size.width-CGRectGetMaxX(iconRect) : CGRectGetMinX(iconRect);
+        CGFloat trailing=rtl ? CGRectGetMinX(textRect) : pairRect.size.width-CGRectGetMaxX(textRect);
+        if (!isfinite(leading) || !isfinite(trailing) || leading<1 || leading>32 || trailing<0 || trailing>32) continue;
+        state.leadingInset=leading;state.trailingInset=trailing;
+        CGFloat target=MAX(0,MIN(24,state.endMargin+leading-trailing));
+        state.edgeGate=fabs(leading-trailing)<=.5 ? @"native_outer_edges_balanced" : @"native_outer_edge_adjustment";
+        if (fabs(target-state.endMargin)>.5 && RVElementSetTextGap(state.textNode,state.spacingPoints,target)) {
+            state.endMargin=target;RVElementInvalidateRoot(parent,state);RVElementDislikeEvent(@"outer_edge_margin_updated");
+        }return;
+    }
+    state.edgeGate=@"native_pair_geometry_unavailable";
 }
 static void RVElementSuspend(RVElementDislikeState *state,NSString *reason) {
     if (!state.textNode) return;
@@ -210,7 +264,7 @@ static void RVElementSuspend(RVElementDislikeState *state,NSString *reason) {
 }
 static void RVElementMountOwnedText(id parent,RVElementDislikeState *state) {
     if (!NSThread.isMainThread || !state.textNode || ![state.video isEqual:RVDislikeVideo] || !RVDislikeHasCount()) return;
-    if (!RVDislikeWatchAction(RVElementLoadedView(parent)) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) {
+    if ((!RVDislikeWatchAction(RVElementLoadedView(parent)) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) && !RVElementOwnedWatch(parent,state)) {
         RVElementSuspend(state,@"watch_transition_suspended");return;
     }
     CGRect frame=RVElementTextFrame(state.textNode);
@@ -278,7 +332,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     if (state.updating) return;
     UIView *view=RVElementLoadedView(parent);
     if (!RVDislikeHasCount() || (state.textNode && ![state.video isEqual:RVDislikeVideo])) { RVElementDislikeRemove(parent,state);return; }
-    if (!RVOrdinaryContent(RVCurrentPlayback) || !RVDislikeWatchAction(view) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) {
+    if ((!RVOrdinaryContent(RVCurrentPlayback) || !RVDislikeWatchAction(view) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) && !RVElementOwnedWatch(parent,state)) {
         RVElementSuspend(state,@"watch_transition_suspended");return;
     }
     id bound=nil,ancestor=pair;
@@ -293,7 +347,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     id element=RVObject(bound,"element");NSString *video=RVDislikeVideo;
     BOOL boundAlready=state && state.component==bound && state.element==element && [state.video isEqual:video];
     RVElementBindingState *binding=RVElementBinding(bound,video);
-    BOOL watchMatches=RVDislikeWatchPlayerMatches(RVCurrentWatch);
+    BOOL watchMatches=RVDislikeWatchPlayerMatches(RVCurrentWatch) || RVElementOwnedWatch(parent,state);
     BOOL videoMatches=binding.explicitVideo ? binding.videoMatches : watchMatches;
     if (!watchMatches || (!boundAlready && !videoMatches)) {
         RVElementLastGate=@"video_binding_missing";RVElementDislikeEvent(@"video_binding_missing");RVElementDislikeRemove(parent,state);return;
@@ -304,7 +358,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     }
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     if (![state.video isEqual:video]) { state.rootInvalidations=0;state.rootLayoutPasses=0;state.textLoadCallbacks=0;state.textDisplayCallbacks=0;state.mountAttempts=0; }
-    state.button=parent;state.component=bound;state.element=element;state.video=video;
+    state.button=parent;if (RVCurrentWatch) state.watch=RVCurrentWatch;state.component=bound;state.element=element;state.video=video;
     // The independently discovered dislike branch has no native text. Search
     // its nearest ancestors for the neighboring native like typography.
     NSDictionary *attributes=nil;id typography=pair;
@@ -342,7 +396,7 @@ static void RVElementDislikeApply(id parent,id pair) {
         RVSetObject(node,"setAttributedText:",display);
         RVSetObject(node,"setAccessibilityIdentifier:",@"rvport.dislike.count.element");
         state.spacingPoints=8;
-        state.spacingGate=RVElementSetTextGap(node,state.spacingPoints) ? @"logical_start_margin_reserved" : @"margin_contract_unavailable";
+        state.spacingGate=RVElementSetTextGap(node,state.spacingPoints,state.endMargin) ? @"logical_start_margin_reserved" : @"margin_contract_unavailable";
         if (RVCan(node,"setUserInteractionEnabled:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(node,sel_registerName("setUserInteractionEnabled:"),NO);
         objc_setAssociatedObject(node,RVElementTextTraceKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         state.textNode=node;RVSetObject(parent,"appendYogaChild:",node);
@@ -361,7 +415,7 @@ static void RVElementDislikeApply(id parent,id pair) {
         }
     }
     RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike estimate: %@ dislikes",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]]);
-    state.text=text;RVElementMountOwnedText(parent,state);state.updating=NO;RVElementLastGate=@"owned_count_attached";
+    state.text=text;RVElementMountOwnedText(parent,state);state.updating=NO;RVElementBalanceEdges(parent,state);RVElementLastGate=@"owned_count_attached";
 }
 static BOOL RVElementDownOnlyButton(id node) {
     id style=RVObject(node,"style");
@@ -420,7 +474,7 @@ static void RVRefreshElementDislikes(void) {
     for (id parent in RVElementDislikeParents.allObjects) {
         RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
         if (!RVDislikeHasCount() || ![state.video isEqual:RVDislikeVideo]) RVElementDislikeRemove(parent,state);
-        else if (!RVDislikeWatchAction(RVElementLoadedView(parent)) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) RVElementSuspend(state,@"watch_transition_suspended");
+        else if ((!RVDislikeWatchAction(RVElementLoadedView(parent)) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) && !RVElementOwnedWatch(parent,state)) RVElementSuspend(state,@"watch_transition_suspended");
     }
     UIViewController *watch=RVCurrentWatch;
     if (![watch isKindOfClass:UIViewController.class] || !watch.isViewLoaded) { RVElementLastGate=@"watch_unavailable";return; }
@@ -454,9 +508,12 @@ static void RVElementWatchTransition(id watch,NSString *reason) {
     NSUInteger generation=[objc_getAssociatedObject(watch,RVElementWatchGenerationKey) unsignedIntegerValue]+1;
     objc_setAssociatedObject(watch,RVElementWatchGenerationKey,@(generation),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     RVElementDislikeEvent(reason);__weak id weakWatch=watch;NSString *video=RVDislikeVideo;
+    UIViewController *current=watch;
+    if (current.isViewLoaded && current.view.window && RVDislikeWatchPlayerMatches(current)) RVCurrentWatch=current;
+    RVRefreshElementDislikes();RVElementDislikeEvent(@"synchronous_transition_refresh");
     // Bounded transition retries catch the native row's deferred reconstruction.
     // They are independent of playback state and do not request count data.
-    for (NSNumber *delay in @[@0,@250,@750,@1500]) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,delay.longLongValue*NSEC_PER_MSEC),dispatch_get_main_queue(),^{
+    for (NSNumber *delay in @[@16,@64,@250,@750]) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,delay.longLongValue*NSEC_PER_MSEC),dispatch_get_main_queue(),^{
         UIViewController *current=weakWatch;
         if (!current || [objc_getAssociatedObject(current,RVElementWatchGenerationKey) unsignedIntegerValue]!=generation || ![video isEqual:RVDislikeVideo]) return;
         if (current.isViewLoaded && current.view.window && RVDislikeWatchPlayerMatches(current)) RVCurrentWatch=current;
@@ -532,6 +589,7 @@ static NSDictionary *RVElementDislikeReport(void) {
             @"button_node_loaded":@(RVBool(node,"isNodeLoaded")),@"button_layer_backed":@(RVBool(node,"isLayerBacked")),
             @"node_context_matches_button":@(RVObject(node,"nodeContext")==RVObject(text,"nodeContext")),
             @"icon_gap_measured":@(gapMeasured),@"icon_text_gap_points":@(actualGap),@"icon_frame_x":@(iconFrame.origin.x),@"icon_frame_width":@(iconFrame.size.width),
+            @"outer_leading_inset":@(state.leadingInset),@"outer_trailing_inset":@(state.trailingInset),@"owned_end_margin":@(state.endMargin),@"outer_edge_gate":state.edgeGate ?: @"not_measured",
             @"spacing_points":@(state.spacingPoints),@"spacing_gate":state.spacingGate ?: @"unknown",
             @"watch_suspended":@(state.suspended),@"suspension_count":@(state.suspensionCount),@"resume_count":@(state.resumeCount),
             @"button_width":@(labelMounted ? state.renderLabel.superview.bounds.size.width : 0),
@@ -560,7 +618,7 @@ static NSDictionary *RVElementDislikeReport(void) {
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@7,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@8,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
         @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVDislikeWatchPlayerMatches(watch)),@"watch_player_pointer_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
@@ -568,6 +626,20 @@ static NSDictionary *RVElementDislikeReport(void) {
         @"strategy":@"flattening_aware_native_dislike_text_with_watch_binding",@"like_icon_required":@NO,@"device_verified":@NO};
 }
 static void RVInstallElementDislikes(void) {
+    RVHook(@"YTWatchViewController",@"viewWillAppear:",@"v@:B",NO,^id(IMP original,SEL sel) {
+        return ^(id watch,BOOL animated) {
+            if (NSThread.isMainThread && RVDislikeWatchPlayerMatches(watch)) RVCurrentWatch=watch;
+            ((void(*)(id,SEL,BOOL))original)(watch,sel,animated);
+            RVElementWatchTransition(watch,@"watch_will_appear");
+        };
+    });
+    for (NSString *name in @[@"playerViewModifierDidBeginGesture:",@"playerViewModifierDidEndGesture:"]) RVHook(@"YTWatchViewController",name,@"v@:@",NO,^id(IMP original,SEL sel) {
+        BOOL beginning=[name isEqual:@"playerViewModifierDidBeginGesture:"];
+        return ^(id watch,id modifier) {
+            ((void(*)(id,SEL,id))original)(watch,sel,modifier);
+            RVElementWatchTransition(watch,beginning ? @"watch_gesture_began" : @"watch_gesture_ended");
+        };
+    });
     RVHook(@"YTWatchViewController",@"setPlayerViewController:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id watch,id player) {
             ((void(*)(id,SEL,id))original)(watch,sel,player);
@@ -580,6 +652,10 @@ static void RVInstallElementDislikes(void) {
             ((void(*)(id,SEL,id))original)(watch,sel,view);
             if (!NSThread.isMainThread || ![watch isKindOfClass:UIViewController.class]) return;
             UIViewController *controller=watch;
+            for (id parent in RVElementDislikeParents.allObjects) {
+                RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
+                if (state.watch==controller) RVElementMountOwnedText(parent,state);
+            }
             id player=RVObject(watch,"playerViewController");
             NSValue *owner=[NSValue valueWithNonretainedObject:player];
             BOOL inWindow=controller.isViewLoaded && controller.view.window;
@@ -598,7 +674,7 @@ static void RVInstallElementDislikes(void) {
             if (!NSThread.isMainThread) return;
             NSHashTable *tracked=objc_getAssociatedObject(root,RVElementRootTraceKey);
             for (RVElementDislikeState *state in tracked.allObjects) if (state.textNode && state.layoutRoot==root && [state.video isEqual:RVDislikeVideo]) {
-                state.rootLayoutPasses++;RVElementDislikeEvent(@"owned_root_layout_finished");RVElementMountOwnedText(state.button,state);
+                state.rootLayoutPasses++;RVElementDislikeEvent(@"owned_root_layout_finished");RVElementMountOwnedText(state.button,state);RVElementBalanceEdges(state.button,state);
             }
         };
     });
