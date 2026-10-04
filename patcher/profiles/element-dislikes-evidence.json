@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.14",
+  "implementation_version": "0.3.15",
   "supported_youtube_version": "21.39.4",
   "status": "flattening_aware_text_render_adapter_device_unverified",
-  "device_failure_evidence": "device-report-541-ryd-render.json",
+  "device_failure_evidence": "device-report-615-ryd-mount.json",
   "metadata": [
     {
       "name": "YTIconResolverImpl",
@@ -353,14 +353,14 @@
     "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
-  "source_sha256": "7fc47e337d571bf0819e1a64b89457d1766528081a3afa760c000bd51a771958",
+  "source_sha256": "25d3864ecbe0fe78bb195aad791ce8e57386d50df68fd1bf261096de52547d9d",
   "binding": "One down icon and exactly one populated native image in a horizontal Yoga branch; semantic action component and matching active watch player/video. No up-icon requirement. Explicit element video IDs must match if present.",
   "layout": "Append one owned Yoga and view-flattening-enabled ASTextNode to the verified dislike branch; native renderer reconciles render subnodes and computes flattened ancestor offsets; retain native hit targets; remove owned text on invalid binding.",
   "no_native_commands_replaced": true,
   "tests_run": false,
   "device_verified": false,
   "service_votes_sent": 0,
-  "remaining_scope": "New rendering revision remains device-unverified; inspect actual mounted layer/window/clipping diagnostics for fixed-width constraints. No online Shorts or automatic vote forwarding.",
+  "remaining_scope": "New mounting/fallback, button width/clipping and reuse remain device-unverified. Native node loading/drawing callbacks do not apply to an owned UILabel fallback; render geometry explicitly distinguishes both surfaces.",
   "named_resource_path": {
     "caller": "ELMImageNode maybeUpdateImageWithLocalImage",
     "helper": "0x1005c342c",
@@ -376,7 +376,10 @@
     "ryd-yoga-render-tree-annotated.txt": "c481be1c07797ee593a1eb7ccf755df11178e176d708a17a7438376a25615592",
     "ryd-yoga-render-callbacks-annotated.txt": "6b700087ddcb9f454def7d2d9cdd9fc89ab339e597d178e684562a170d429ac4",
     "ryd-native-text-construction-annotated.txt": "e41e97ab9156b2183bc2cd5a56b6a0bc665b06b8bd587d0f1707bc3d16c90cf8",
-    "ryd-node-mount-annotated.txt": "1a98211e6e879c183d5120c408a69ba617ca439ad38c90c2671de3388e509e9b"
+    "ryd-node-mount-annotated.txt": "1a98211e6e879c183d5120c408a69ba617ca439ad38c90c2671de3388e509e9b",
+    "ryd-button-mount-contract-annotated.txt": "4b8cdf87e4cec1f9330148d2ab824bdf9449048ca7e71c30bcf0a8013e9d9eaa",
+    "ryd-node-context-init-annotated.txt": "723596df7f23f578c614632be1bab6ae4932e360f928a1251e639f3a9ab4fad2",
+    "ryd-context-scope-annotated.txt": "9f0862635bb00a7fbe48c584b4dce64e895bb1383f7892aec273b9e81a3e7519"
   },
   "previous_adapter_source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
   "horizontal_layout_contract": {
@@ -396,9 +399,18 @@
     },
     "native_render_pass": "0x10058c2a4",
     "render_callback": "0x104712a64",
-    "observed_behavior": "Flattening-enabled nodes accumulate skipped Yoga ancestor offsets before setFrame; render callback reconciles Yoga children into render subnodes using insertSubnode:atIndex:. A manually added subnode is not required.",
+    "observed_behavior": "Flattening-enabled nodes accumulate skipped Yoga ancestor offsets before setFrame; render callback reconciles Yoga children into render subnodes using insertSubnode:atIndex:. A manually added subnode is not required. Report 615 demonstrates reconciliation does not mount this owned text node even after four root passes; 0.3.15 adds guarded native mounting and an owned UIKit rendering fallback.",
     "implementation": "Enable native flattening on owned ASTextNode before appending; use native neighboring text attributes or YouTube page-style palette; report actual render ancestry, loaded layer, window and ancestor clipping.",
     "device_verified": false,
     "tests_run": false
+  },
+  "mount_contract": {
+    "native_method": "ASDisplayNode addSubnode:",
+    "encoding": "v24@0:8@16",
+    "imp": "0x10471708c",
+    "native_insert_imp": "0x10058d888",
+    "native_context_check": "Insertion returns without changing the render tree if parent._nodeContext and child._nodeContext differ. Matching context initializes locking in _initializeInstance; context must not be overwritten after initialization.",
+    "implementation": "For an already loaded, nonflattened native button view, try native addSubnode only when nodeContext identities match. Otherwise keep the existing Yoga text sizing child and mount one noninteractive owned UILabel using its measured button-local frame. No native context, icon, command or host view is replaced.",
+    "device_verified": false
   }
 }

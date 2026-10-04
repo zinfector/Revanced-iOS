@@ -2,11 +2,11 @@
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-2`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. It is diagnostic instrumentation, not a claim that the missing counter has been repaired.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-3`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. It is diagnostic instrumentation, not a claim that the missing counter has been repaired.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-2**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-3**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.
@@ -47,6 +47,7 @@ This update was built and packaged without running tests. Device behavior and th
 
 Version 0.3.14 additionally records root invalidation requests and completed native root layout passes, owned text didLoad and displayDidFinish callbacks, and existing layer raster contents. It does not force mounting, layout, or drawing. Root-layout callbacks are recorded only for the current owned text’s native Yoga root; all original callback results are preserved. Raster contents indicate a backing image, not proof that visible glyph pixels were drawn. Snapshot history preserves foreground failures before opening Settings.
 
-The report version in Report 541 is stale because the older Settings snapshot hardcoded 0.3.12. The checkpoint build explicitly reports 0.3.14 and a generated source fingerprint, so a diagnostic report can be matched to the compiled payload.
+The report version in Report 541 is stale because the older Settings snapshot hardcoded 0.3.12. The checkpoint build explicitly reports 0.3.15 and a generated source fingerprint, so a diagnostic report can be matched to the compiled payload.
 
-For this delivered build, `build_source_sha256` must be `46dc60fdea3144be366361fccc9d86a30ef93f86abfd04866c268e5a4258b7de`. Use `YouTube-21.39.4-RVPort-0.3.14-SideStore-auth-unsigned.ipa` in SideStore.
+
+In 0.3.15, inspect geometry.mount_mode and mount_gate. `native_text_node` uses native AS mounting. `owned_label_in_native_button` renders a UILabel inside the verified native button; the AS text child remains a sizing proxy. For that mode, native_text_supernode_present and native_text_node_loaded may remain false, and AS text drawing callbacks may stay zero. Effective mount/load/window/clip checkpoints inspect the owned label instead. `label_fits_button_bounds` and clipping_ancestors identify any remaining size constraint. Diagnostics do not force mounting; the production renderer performs its own guarded mount.

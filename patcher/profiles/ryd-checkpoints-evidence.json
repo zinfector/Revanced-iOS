@@ -15,7 +15,7 @@
     "last_gate": "scanning_watch"
   },
   "finding": "Current-video data and Yoga measurement succeeded; no text render parent or loaded layer was reported. Capture foreground evidence to separate the failure from Settings navigation.",
-  "instrumentation_revision": "ryd-checkpoints-2",
+  "instrumentation_revision": "ryd-checkpoints-3",
   "checkpoint_order": [
     "feature_enabled",
     "playback_video_valid",
@@ -37,7 +37,7 @@
   "tests_run": false,
   "device_validated": false,
   "rendering_repair_claimed": false,
-  "implementation_version": "0.3.14",
+  "implementation_version": "0.3.15",
   "additional_checkpoints": [
     "native_root_invalidation_requests",
     "native_root_layout_completed",
@@ -46,12 +46,9 @@
     "existing_layer_raster_contents"
   ],
   "source_sha256": {
-    "RVElementDislikes.inc": "7fc47e337d571bf0819e1a64b89457d1766528081a3afa760c000bd51a771958",
-    "RVDislikesDiagnostics.inc": "295fd60f29d0e3d16bff10c0763a4102ce135c81de6b3bb967d14225f6b0b0f5"
+    "RVElementDislikes.inc": "25d3864ecbe0fe78bb195aad791ce8e57386d50df68fd1bf261096de52547d9d",
+    "RVDislikesDiagnostics.inc": "490a3eb7924d6134157e36fb468817a2a87bdceb5501352746eb311fd61d323f"
   },
-  "build_source_sha256": "46dc60fdea3144be366361fccc9d86a30ef93f86abfd04866c268e5a4258b7de",
-  "payload_sha256": "f911cd42bf6a95e24b2c6c46b87da28982624370b41c944031404a8639cf76f4",
-  "ipa_sha256": "bd43ce4eff6d32980270001bd39cf99b3d9e64939b300e94f04aad2b816a48d9",
-  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.14-SideStore-auth-unsigned.ipa",
-  "cloud_build_run": 37238785537
+  "mounting_attempt_added": true,
+  "diagnostic_inspection_remains_passive": true
 }

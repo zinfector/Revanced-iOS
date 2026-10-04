@@ -22,6 +22,11 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic,copy) NSString *colorSource;
 @property(nonatomic) BOOL updating;
 @property(nonatomic,weak) id layoutRoot;
+@property(nonatomic,weak) id button;
+@property(nonatomic,strong) UILabel *renderLabel;
+@property(nonatomic,copy) NSString *mountMode;
+@property(nonatomic,copy) NSString *mountGate;
+@property(nonatomic) NSUInteger mountAttempts;
 @property(nonatomic) NSUInteger rootInvalidations;
 @property(nonatomic) NSUInteger rootLayoutPasses;
 @property(nonatomic) NSUInteger textLoadCallbacks;
@@ -177,12 +182,72 @@ static void RVElementTextTrace(id node,BOOL drawing) {
     };
     if (NSThread.isMainThread) record();else dispatch_async(dispatch_get_main_queue(),record);
 }
+static CGRect RVElementTextFrame(id text) {
+    if (!RVCan(text,"frame",@"{CGRect={CGPoint=dd}{CGSize=dd}}@:")) return CGRectZero;
+    CGRect frame=((CGRect(*)(id,SEL))objc_msgSend)(text,sel_registerName("frame"));
+    return isfinite(frame.origin.x) && isfinite(frame.origin.y) && isfinite(frame.size.width) && isfinite(frame.size.height) ? frame : CGRectZero;
+}
+static void RVElementMountOwnedText(id parent,RVElementDislikeState *state) {
+    if (!NSThread.isMainThread || !state.textNode || ![state.video isEqual:RVDislikeVideo] || !RVDislikeHasCount()) return;
+    if (!RVDislikeWatchAction(RVElementLoadedView(parent))) { state.mountGate=@"outside_active_watch";return; }
+    CGRect frame=RVElementTextFrame(state.textNode);
+    if (frame.size.width<=0 || frame.size.height<=0) { state.mountGate=@"waiting_for_measurement";return; }
+    // Mount only inside a real, existing native button, with button-local frame.
+    // Never create/load a native host or append to an unrelated cell/window.
+    if (!RVBool(parent,"isNodeLoaded")) { state.mountGate=@"button_not_loaded";return; }
+    if (RVBool(parent,"isFlattenable")) { state.mountGate=@"flattened_button_requires_native_renderer";return; }
+    if (RVBool(parent,"isLayerBacked")) { state.mountGate=@"layer_backed_button";return; }
+    UIView *view=RVObject(parent,"view");
+    if (![view isKindOfClass:UIView.class] || !view.window) { state.mountGate=@"button_view_not_in_window";return; }
+    id renderParent=RVObject(state.textNode,"supernode");
+    if (renderParent) {
+        [state.renderLabel removeFromSuperview];state.renderLabel=nil;
+        state.mountMode=@"native_text_node";state.mountGate=@"native_render_parent_present";return;
+    }
+    // Native _insertSubnode refuses nodes with different ASNodeContext identity.
+    // Do not rewrite that context: it also owns the node's locking configuration.
+    BOOL contextMatches=RVCan(parent,"nodeContext",@"@@:") && RVCan(state.textNode,"nodeContext",@"@@:") &&
+        RVObject(parent,"nodeContext")==RVObject(state.textNode,"nodeContext");
+    if (contextMatches && RVCan(parent,"addSubnode:",@"v@:@")) {
+        state.mountAttempts++;RVElementDislikeEvent(@"native_mount_attempt");
+        RVSetObject(parent,"addSubnode:",state.textNode);
+        if (RVObject(state.textNode,"supernode")) {
+            [state.renderLabel removeFromSuperview];state.renderLabel=nil;
+            state.mountMode=@"native_text_node";state.mountGate=@"native_button_mounted";
+            RVVoid(state.textNode,"setNeedsDisplay");return;
+        }
+    }
+    // Keep the ASTextNode as the Yoga sizing child. Render the exact same text
+    // using one owned UILabel inside this native button when native mounting is
+    // rejected. UIKit owns its context/layer lifecycle. Native commands and all
+    // existing subnodes/subviews stay intact; the label cannot intercept taps.
+    id display=RVObject(state.textNode,"attributedText");
+    if (![display isKindOfClass:NSAttributedString.class]) { state.mountGate=@"text_attributes_unavailable";return; }
+    if (!state.renderLabel) {
+        state.renderLabel=[UILabel new];state.renderLabel.userInteractionEnabled=NO;
+        state.renderLabel.accessibilityIdentifier=@"rvport.dislike.count.button";
+        state.renderLabel.backgroundColor=UIColor.clearColor;state.renderLabel.numberOfLines=1;
+    }
+    if (![state.renderLabel.attributedText isEqualToAttributedString:display]) state.renderLabel.attributedText=display;
+    state.renderLabel.accessibilityLabel=RVObject(state.textNode,"accessibilityLabel");
+    CGSize natural=[state.renderLabel sizeThatFits:CGSizeMake(frame.size.width,CGFLOAT_MAX)];
+    if (isfinite(natural.height) && natural.height>frame.size.height) {
+        frame.origin.y-=(natural.height-frame.size.height)/2;frame.size.height=natural.height;
+    }
+    state.renderLabel.frame=frame;
+    if (state.renderLabel.superview!=view) {
+        [view addSubview:state.renderLabel];state.mountAttempts++;RVElementDislikeEvent(@"owned_label_mounted");
+    }
+    state.mountMode=@"owned_label_in_native_button";
+    state.mountGate=contextMatches ? @"native_mount_rejected_using_button_label" : @"context_mismatch_using_button_label";
+}
 static void RVElementDislikeRemove(id parent,RVElementDislikeState *state) {
     if (!state.textNode || state.updating) return;
     state.updating=YES;
     RVSetObject(parent,"removeYogaChild:",state.textNode);
     if (RVCan(state.textNode,"removeFromSupernode",@"v@:")) ((void(*)(id,SEL))objc_msgSend)(state.textNode,sel_registerName("removeFromSupernode"));
-    state.textNode=nil;state.text=nil;state.updating=NO;
+    [state.renderLabel removeFromSuperview];state.renderLabel=nil;
+    state.textNode=nil;state.text=nil;state.mountMode=@"removed";state.mountGate=@"binding_invalidated";state.updating=NO;
 }
 static void RVElementDislikeApply(id parent,id pair) {
     RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
@@ -212,8 +277,8 @@ static void RVElementDislikeApply(id parent,id pair) {
         RVElementLastGate=@"yoga_contract_missing";RVElementDislikeEvent(@"yoga_contract_missing");return;
     }
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
-    if (![state.video isEqual:video]) { state.rootInvalidations=0;state.rootLayoutPasses=0;state.textLoadCallbacks=0;state.textDisplayCallbacks=0; }
-    state.component=bound;state.element=element;state.video=video;
+    if (![state.video isEqual:video]) { state.rootInvalidations=0;state.rootLayoutPasses=0;state.textLoadCallbacks=0;state.textDisplayCallbacks=0;state.mountAttempts=0; }
+    state.button=parent;state.component=bound;state.element=element;state.video=video;
     // The independently discovered dislike branch has no native text. Search
     // its nearest ancestors for the neighboring native like typography.
     NSDictionary *attributes=nil;id typography=pair;
@@ -268,7 +333,7 @@ static void RVElementDislikeApply(id parent,id pair) {
         }
     }
     RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike estimate: %@ dislikes",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]]);
-    state.text=text;state.updating=NO;RVElementLastGate=@"owned_count_attached";
+    state.text=text;RVElementMountOwnedText(parent,state);state.updating=NO;RVElementLastGate=@"owned_count_attached";
 }
 static BOOL RVElementDownOnlyButton(id node) {
     id style=RVObject(node,"style");
@@ -360,11 +425,13 @@ static NSDictionary *RVElementDislikeReport(void) {
         if (!text) continue;attached++;
         CGRect frame=CGRectZero;
         if (RVCan(text,"frame",@"{CGRect={CGPoint=dd}{CGSize=dd}}@:")) frame=((CGRect(*)(id,SEL))objc_msgSend)(text,sel_registerName("frame"));
+        BOOL labelMounted=state.renderLabel.superview!=nil;
+        if (labelMounted) frame=state.renderLabel.frame;
         BOOL positive=isfinite(frame.origin.x) && isfinite(frame.origin.y) && isfinite(frame.size.width) && isfinite(frame.size.height) && frame.size.width>0 && frame.size.height>0;
-        laidOut+=positive;id renderParent=RVObject(text,"supernode");mounted+=renderParent!=nil;
-        BOOL isLoaded=RVBool(text,"isNodeLoaded");loaded+=isLoaded;
-        UIView *host=renderParent ? RVElementLoadedView(renderParent) : nil;
-        CALayer *layer=isLoaded ? RVObject(text,"layer") : nil;
+        laidOut+=positive;id renderParent=RVObject(text,"supernode");mounted+=renderParent!=nil || labelMounted;
+        BOOL nativeLoaded=RVBool(text,"isNodeLoaded");BOOL isLoaded=nativeLoaded || labelMounted;loaded+=isLoaded;
+        UIView *host=labelMounted ? state.renderLabel.superview : renderParent ? RVElementLoadedView(renderParent) : nil;
+        CALayer *layer=labelMounted ? state.renderLabel.layer : nativeLoaded ? RVObject(text,"layer") : nil;
         BOOL onWindow=NO;
         if (host.window && [layer isKindOfClass:CALayer.class]) {
             CALayer *ancestor=layer;
@@ -373,6 +440,13 @@ static NSDictionary *RVElementDislikeReport(void) {
         }
         inWindow+=onWindow;
         BOOL raster=[layer isKindOfClass:CALayer.class] && layer.contents!=nil;
+        if (labelMounted && !raster) {
+            NSMutableArray<CALayer *> *layers=[NSMutableArray arrayWithObject:layer];
+            for (NSUInteger i=0;i<layers.count && i<16;i++) {
+                if (layers[i].contents) { raster=YES;break; }
+                for (CALayer *child in layers[i].sublayers) if (layers.count<16) [layers addObject:child];
+            }
+        }
         contents+=raster;displayFinished+=state.textDisplayCallbacks>0;
         BOOL visible=NO;NSUInteger clipping=0;
         if (onWindow && positive) {
@@ -396,8 +470,15 @@ static NSDictionary *RVElementDislikeReport(void) {
         if (geometry.count<8) [geometry addObject:@{
             @"frame_x":@(positive ? frame.origin.x : 0),@"frame_y":@(positive ? frame.origin.y : 0),
             @"frame_width":@(positive ? frame.size.width : 0),@"frame_height":@(positive ? frame.size.height : 0),
-            @"render_parent_present":@(renderParent!=nil),
-            @"render_parent_class":renderParent ? NSStringFromClass([renderParent class]) : @"none",@"text_superlayer_present":@(layer.superlayer!=nil),@"node_loaded":@(isLoaded),@"render_layer_in_window":@(onWindow),
+            @"render_parent_present":@(renderParent!=nil || labelMounted),
+            @"native_text_supernode_present":@(renderParent!=nil),@"native_text_node_loaded":@(nativeLoaded),
+            @"button_node_loaded":@(RVBool(node,"isNodeLoaded")),@"button_layer_backed":@(RVBool(node,"isLayerBacked")),
+            @"node_context_matches_button":@(RVObject(node,"nodeContext")==RVObject(text,"nodeContext")),
+            @"mount_mode":state.mountMode ?: @"not_mounted",@"mount_gate":state.mountGate ?: @"not_attempted",@"mount_attempts":@(state.mountAttempts),
+            @"label_superview_is_button":@(labelMounted && RVBool(node,"isNodeLoaded") && !RVBool(node,"isLayerBacked") && state.renderLabel.superview==RVObject(node,"view")),
+            @"label_fits_button_bounds":@(labelMounted && CGRectContainsRect(state.renderLabel.superview.bounds,state.renderLabel.frame)),
+            @"render_parent_class":labelMounted ? NSStringFromClass([state.renderLabel.superview class]) : renderParent ? NSStringFromClass([renderParent class]) : @"none",
+            @"render_surface_class":labelMounted ? @"UILabel" : NSStringFromClass([text class]),@"text_superlayer_present":@(layer.superlayer!=nil),@"node_loaded":@(isLoaded),@"render_layer_in_window":@(onWindow),
             @"button_class":NSStringFromClass([node class]),@"text_class":NSStringFromClass([text class]),
             @"button_host_in_window":@(RVElementLoadedView(node).window!=nil),
             @"video_matches_current":@([state.video isEqual:RVDislikeVideo]),
@@ -418,7 +499,7 @@ static NSDictionary *RVElementDislikeReport(void) {
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@5,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@6,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
         @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
@@ -433,7 +514,7 @@ static void RVInstallElementDislikes(void) {
             if (!NSThread.isMainThread || !RVEnabled(@"diagnostics")) return;
             NSHashTable *tracked=objc_getAssociatedObject(root,RVElementRootTraceKey);
             for (RVElementDislikeState *state in tracked.allObjects) if (state.textNode && state.layoutRoot==root && [state.video isEqual:RVDislikeVideo]) {
-                state.rootLayoutPasses++;RVElementDislikeEvent(@"owned_root_layout_finished");
+                state.rootLayoutPasses++;RVElementDislikeEvent(@"owned_root_layout_finished");RVElementMountOwnedText(state.button,state);
             }
         };
     });

@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.14",
+  "patcher_version": "0.3.15",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,

@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Version 0.3.14 adds RYD checkpoint revision 2: foreground watch snapshots, service status, native root layout, owned text mounting/loading/drawing and clipping. Report 541 finds a measured count with no render parent or loaded layer. This build adds diagnostic evidence and captures the authorized parallel settings UI work; it does not claim to repair the missing count. No tests run.
+Version 0.3.15 addresses the mounting failure confirmed by foreground RYD Report 615. It mounts count text inside the existing native dislike button, using native subnodes when their contexts match and an owned noninteractive UILabel fallback otherwise. Foreground checkpoints distinguish the rendering modes and remaining constraints. New count display remains device-unverified. Authentication, SponsorBlock and the packaged parallel settings UI are retained. No tests run.
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 
@@ -64,7 +64,7 @@ Version 0.3.9 merges the user-authorized snapshot of the still-edited parallel n
 
 [0.3.12 build-only receipt](patcher/profiles/release-0.3.12.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316) succeeded with regression, hook and GUI smoke checks skipped. Use the 0.3.12 SideStore-auth IPA. Independent dislike rendering and the settings snapshot remain device-unverified.
 
-[0.3.13 build receipt](patcher/profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.14-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
+[0.3.13 build receipt](patcher/profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
 
 Read the [RYD capture/checkpoint guide](patcher/RYD_CHECKPOINTS.md).
 
