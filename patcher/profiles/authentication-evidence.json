@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "status": "scheme_only_not_implemented",
+  "observed_at": "2026-10-04",
+  "device_report": {
+    "model": "iPhone 17 Pro Max",
+    "os": "iOS 27.0",
+    "evidence": "user supplied screenshot: Google rejects account sign-in; no server code available",
+    "launch_reaches_authentication": true,
+    "authentication_success": false,
+    "playback_verified": false,
+    "installed_signature_inspected": false
+  },
+  "binary": {
+    "version": "21.39.4",
+    "original_bundle_id": "com.google.ios.youtube",
+    "sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "uuid": "1f61665a5d4a35668b77da821e1d6c17"
+  },
+  "native_anchors": [
+    {
+      "class": "SSOBundleIdServiceImpl",
+      "kind": "-",
+      "selector": "bundleId",
+      "encoding": "@16@0:8",
+      "imp": "0x100c5fad8"
+    },
+    {
+      "class": "SSOSafariSignIn",
+      "kind": "-",
+      "selector": "signInWithURL:presentationAnchor:completionHandler:",
+      "encoding": "v40@0:8@16@24@?32",
+      "imp": "0x104099b04"
+    },
+    {
+      "class": "SSORPCService",
+      "kind": "-",
+      "selector": "requestAuthAdviceReauthenticating:deviceID:colorScheme:service:callback:",
+      "encoding": "v56@0:8@16@24@32@40@?48",
+      "imp": "0x1045ae498"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "accessGroup",
+      "encoding": "@16@0:8",
+      "imp": "0x100202850"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "queryMatchingID:serviceName:",
+      "encoding": "@32@0:8@16@24",
+      "imp": "0x10058907c"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "writeSharedKeychain:error:",
+      "encoding": "B32@0:8@16^@24",
+      "imp": "0x1045cc6d4"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "sharedAccessGroup",
+      "encoding": "@16@0:8",
+      "imp": "0x1002028d4"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "computeAppIdentifierPrefix",
+      "encoding": "@16@0:8",
+      "imp": "0x100202944"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "initWithClientID:supportedAccountServices:",
+      "encoding": "@32@0:8@16@24",
+      "imp": "0x1001fb8dc"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "authCallbackURLString",
+      "encoding": "@16@0:8",
+      "imp": "0x1045ceb48"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "shouldEnableSafariSignIn",
+      "encoding": "B16@0:8",
+      "imp": "0x1045ceba8"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "clientID",
+      "encoding": "@16@0:8",
+      "imp": "0x1001fec10"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "applicationScheme",
+      "encoding": "@16@0:8",
+      "imp": "0x1045cecc0"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "applicationIdentifier",
+      "encoding": "@16@0:8",
+      "imp": "0x1045cedfc"
+    }
+  ],
+  "auth_advice_builder": {
+    "imp": "0x1045ae678",
+    "request_package_name_source": "SSOConfiguration.applicationIdentifier",
+    "initial_identifier_source": "NSBundle.mainBundle.bundleIdentifier"
+  },
+  "keychain": {
+    "shared_group_suffix": "com.google.common.SSO",
+    "format_cfstring_va": "0x10b878218",
+    "suffix_cfstring_va": "0x10b99b5b8",
+    "format": "%@.%@",
+    "group_source": "computed AppIdentifierPrefix + shared suffix"
+  },
+  "original_callback_scheme": "com.google.sso.755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd",
+  "upstream": {
+    "ReVanced/GmsCore": "776a8fb7a3887fdee24df854b673dc79df5c9da7",
+    "YTLitePlus/YTLitePlus": "9cdde568d624da57a54bc9f32eb9357f2c49027d"
+  },
+  "local_research": [
+    {
+      "path": "build/auth-advice-decompiled-annotated.txt",
+      "sha256": "d83dcb41f8a52fb74861b245523eac74cfddb606b645893def5969eb80bbb3d7"
+    },
+    {
+      "path": "build/auth-flow-decompiled-annotated.txt",
+      "sha256": "f7fb367d628c32c3e89045d826ac66464105d4f816daa3967295cf005816d1cf"
+    },
+    {
+      "path": "build/auth-keychain-disassembly.txt",
+      "sha256": "dd58cbe974c965fb264134539832a11a297e99754854ed388419a24cd0a11714"
+    },
+    {
+      "path": "build/auth-request-builder-decompiled-annotated.txt",
+      "sha256": "5e8149be0268a279a8dd7d396e9b0afc2d768e1fb48ff500bfa13179c80f9af9"
+    },
+    {
+      "path": "build/auth-research-decompiled-annotated.txt",
+      "sha256": "d590f1ddd1192a085e8a087440ea28330e513c2adee80dacd17992bf3dec175a"
+    }
+  ],
+  "local_android_sources": [
+    {
+      "path": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/shared/misc/gms/GmsCoreSupportPatch.kt",
+      "sha256": "ca44b538d5d4eb569023c555c738281e2a8d6e1dbcec2ec37ff40645696cd785"
+    },
+    {
+      "path": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/gms/GmsCoreSupportPatch.kt",
+      "sha256": "b7e61ebaf8bb389b4e785557160a3e400795571f9ef9ad42940f8aefa3822261"
+    }
+  ]
+}

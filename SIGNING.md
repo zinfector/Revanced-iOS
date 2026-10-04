@@ -47,3 +47,5 @@ After success, download **signed-ipa** from the run's **Artifacts** section. It 
 Install using your existing sideloading workflow, then follow [DEVICE_TESTS.md](patcher/DEVICE_TESTS.md). `codesign --verify --deep --strict` and ZIP CRC checks establish host signature/archive validity; iOS installation authorization and runtime behavior remain device checks. The unsigned patch-manifest verifier is not a signed-IPA verifier because signing changes the executable and bundle identity.
 
 This repository's signing workflow has been implemented and its host-side checks tested. End-to-end signing requires the secrets and source IPA URL above; it cannot be verified without them.
+
+The user reports Google rejecting sign-in in the sideloaded app. Cloud signing alone does not implement account-authentication compatibility. See [the authentication scheme](patcher/AUTHENTICATION_SCHEME.md) for the verified native request/keychain path and a proposed adapter. It is not included in the 0.3 payload.
