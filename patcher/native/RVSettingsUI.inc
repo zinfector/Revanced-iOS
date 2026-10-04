@@ -152,7 +152,13 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 - (void)presentPreferenceAlert:(UIAlertController *)alert {
     // An active UISearchController owns presentation while editing a search result.
     UIViewController *presenter=self.search.isActive && self.search.isViewLoaded && self.search.view.window ? self.search : self;
-    if (!presenter.presentedViewController) [presenter presentViewController:alert animated:YES completion:nil];
+    UIViewController *previous=presenter.presentedViewController;
+    if ([previous isKindOfClass:UIAlertController.class]) {
+        // Picker actions can open an editor or validation message while the picker is closing.
+        [previous dismissViewControllerAnimated:YES completion:^{
+            if (presenter.view.window && !presenter.presentedViewController) [presenter presentViewController:alert animated:YES completion:nil];
+        }];
+    } else if (!previous) [presenter presentViewController:alert animated:YES completion:nil];
 }
 - (void)write:(NSString *)key value:(id)value {
     if (!RVSavePreference(key,value)) { [self message:@"Invalid setting" text:@"The value is outside the supported range or format."];return; }
