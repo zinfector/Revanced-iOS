@@ -4,11 +4,11 @@ Report 635 and the screenshot confirm the 0.3.15 count mounts and draws. Its his
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-5`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-6`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-5**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-6**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.
@@ -63,3 +63,5 @@ When icon_gap_measured is true, icon_text_gap_points reports the observed gap us
 Version 0.3.17 adds outer_leading_inset, outer_trailing_inset, owned_end_margin and outer_edge_gate. native_outer_edges_balanced means the measured pair’s two outer insets agree within half a point. watch_will_appear/watch_gesture_began/synchronous_transition_refresh distinguish restoration before animation completion. The full diagnostic report includes playback_speed with native menu source, requested/observed rates, attempt count and confirmation gate. Capture it on the first launch after a native speed selection if the rate still fails to change.
 
 Delivered build: `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `39b45371c1e727d0279e843c14c6b561bfc6493e4d3a3359578c1ce1a96b05d1`. Source commit: `d27b904dfabae3a62fc83a9b3644e48889a5ce04`.
+
+Version 0.3.18 adds semantic_binding_probe. If text_node_created is zero with semantic_role_missing, the probe distinguishes an uninitialized proto from a missing parent/component chain or unsupported role identifier. The full report includes playback_speed.command_bridge. Capture full diagnostics immediately after choosing 1.25 in the native slider on a fresh launch, and again after reload if the behavior differs. Copy RYD diagnostics while the watch row is visible for missing counts. Native like counts are never replaced by invented values.

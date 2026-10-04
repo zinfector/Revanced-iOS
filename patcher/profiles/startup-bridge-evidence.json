@@ -1,0 +1,21 @@
+{
+  "version": "0.3.18",
+  "tests_run": false,
+  "device_verified": false,
+  "speed_failure": "Both reports have zero legacy native-menu callbacks. Native block bridge setters invoke player directly; its weak player is captured once and a nil value yields empty result and no rate write. This hazard is statically proven; its occurrence on this device needs new bridge diagnostics.",
+  "repair": "Only synchronous main-thread rate getter/model/event-center/setter calls recover a nil native player from the loaded visible same-content watch. Non-nil native owners and other block methods remain native. Capture real granular writes in player model setter; preserve native model/scalar and core limits.",
+  "ryd_failure": "Reload report observes 48 semantic_role_missing with a fetched count, matching watch ownership and zero created labels. Follow native parent and owningComponent links; inspect key, templateURI and bounded proto bridge; expire negative cached binding checks.",
+  "like_count": "Native like text and arguments remain untouched. The report does not independently identify why native likes disappear; no guessed counts are synthesized.",
+  "native_evidence": {
+    "speed-granular-overlay-annotated.txt": "14d51330ce3e56526287a5ebb6b278c9d8818afebb2d744d13149736771d2eb8",
+    "speed-granular-block-annotated.txt": "b9276161ae9466ff53dfb80d51fb678304949b789b7ff73f46a7de6176b998ad",
+    "speed-block-owner-annotated.txt": "39578c9f89e5ee05b1f8eeddb3d731797ad419c2e7c2c1b7f09657afdfad2285",
+    "speed-block-context-annotated.txt": "406dff4edf8d1fe35d58e425f7b5f9e7073955b9d21622607ac43a45b28c04d3"
+  },
+  "source_sha256": {
+    "RVSpeed.inc": "4f8278cf1af0f4a2aaa285396496edf4d415bcbe940a60faa2e40e78138343d7",
+    "RVSpeedBridge.inc": "ed52905d99f7b9933cb0d71abad856e15006238a0d82bf41c9f2ae59a9092587",
+    "RVElementDislikes.inc": "a5dd13bb75f9a073baa570a6ece93447e47f23a8ae9e211ae45eebc4add3ac45",
+    "RVExtras.inc": "0228504e0d3a8b8adb9d7a7db9977ba89979b9c87dd9a011186aeb96d4e2666b"
+  }
+}

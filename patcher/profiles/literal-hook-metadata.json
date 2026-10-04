@@ -444,6 +444,12 @@
         "selector": "playbackController:didActivateVideo:withPlaybackData:",
         "encoding": "v40@0:8@16@24@32",
         "imp": "0x1041b032c"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRateModel:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1041af578"
       }
     ]
   },
@@ -1686,6 +1692,76 @@
         "selector": "varispeedSwitchController:didSelectRateModel:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x1041aab10"
+      }
+    ]
+  },
+  {
+    "name": "YTPlayerBlockImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithContext:playerViewController:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x101a8e3b0"
+      },
+      {
+        "kind": "-",
+        "selector": "retrievePlayerOrFailWithError:",
+        "encoding": "@24@0:8^@16",
+        "imp": "0x101a8f06c"
+      },
+      {
+        "kind": "-",
+        "selector": "getPlaybackRate:error:",
+        "encoding": "@32@0:8@16^@24",
+        "imp": "0x101a8e704"
+      },
+      {
+        "kind": "-",
+        "selector": "getPlaybackRateModel:error:",
+        "encoding": "@32@0:8@16^@24",
+        "imp": "0x101a8f358"
+      },
+      {
+        "kind": "-",
+        "selector": "getPlayerEventCenter:error:",
+        "encoding": "@32@0:8@16^@24",
+        "imp": "0x101a8e4ec"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRate:error:",
+        "encoding": "@32@0:8@16^@24",
+        "imp": "0x101a8e684"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRateModel:error:",
+        "encoding": "@32@0:8@16^@24",
+        "imp": "0x101a8f27c"
+      }
+    ]
+  },
+  {
+    "name": "YTPlaybackEventCenterBlockImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithContext:video:playerViewController:",
+        "encoding": "@40@0:8@16@24@32",
+        "imp": "0x101a91d68"
+      },
+      {
+        "kind": "-",
+        "selector": "subscribeToPlaybackRateChange:writer:error:",
+        "encoding": "B40@0:8@16@24^@32",
+        "imp": "0x101a91fe8"
+      },
+      {
+        "kind": "-",
+        "selector": "subscribeToActivePlaybackRateChange:writer:error:",
+        "encoding": "B40@0:8@16@24^@32",
+        "imp": "0x101a921b8"
       }
     ]
   }

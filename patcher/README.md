@@ -177,3 +177,5 @@ Version 0.3.16 reserves an eight-point logical gap between dislike icon and coun
 Version 0.3.17 balances the measured native like/dislike pair’s outer insets using owned text margin, restores verified same-video dislike labels during the swipe, and captures both native speed-menu paths with precedence over startup restoration and bounded readiness retries. Checkpoint revision 5 and playback_speed diagnostics expose remaining failures. Authentication, SponsorBlock and the packaged settings UI carry over. No tests run; device confirmation pending.
 
 [0.3.17 build receipt](profiles/release-0.3.17.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37243138174) succeeded. Use `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Regression, hook and GUI smoke checks were skipped. Device outer-inset matching, swipe timing and native speed-menu behavior remain unverified.
+
+Version 0.3.18 targets the native granular speed command bridge and retries semantic dislike binding after row initialization. Full diagnostics expose the actual slider bridge and redacted binding checkpoints. No tests run; device confirmation pending.

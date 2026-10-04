@@ -11,6 +11,7 @@ static NSMutableArray<NSDictionary *> *RVElementVoteImages;
 static _Thread_local int RVElementResolvedIcon;
 static BOOL RVElementRefreshQueued;
 static const void *RVElementImageKindKey=&RVElementImageKindKey;
+static NSArray *RVElementBindingProbe;
 static NSString *RVElementLastGate=@"not_observed";
 
 @interface RVElementDislikeState : NSObject
@@ -147,23 +148,30 @@ static const void *RVElementBindingKey=&RVElementBindingKey;
 @property(nonatomic) BOOL role;
 @property(nonatomic) BOOL videoMatches;
 @property(nonatomic) BOOL explicitVideo;
+@property(nonatomic) NSTimeInterval checkedAt;
+@property(nonatomic) BOOL protoAvailable;
+@property(nonatomic) NSUInteger protoLength;
+@property(nonatomic,copy) NSString *roleSource;
 @end
 @implementation RVElementBindingState @end
 static RVElementBindingState *RVElementBinding(id component,NSString *video) {
     id element=RVObject(component,"element");
     RVElementBindingState *state=objc_getAssociatedObject(component,RVElementBindingKey);
-    if (state && state.element==element && [state.video isEqual:video]) return state;
-    state=[RVElementBindingState new];state.element=element;state.video=video;
+    if (state && state.element==element && [state.video isEqual:video] && (state.role || [NSDate timeIntervalSinceReferenceDate]-state.checkedAt<.25)) return state;
+    state=[RVElementBindingState new];state.element=element;state.video=video;state.checkedAt=[NSDate timeIntervalSinceReferenceDate];
     NSArray *roles=@[@"video_action_bar",@"segmented_like_dislike",@"segmentedLikeDislike",@"SegmentedLikeDislikeButton"];
-    id key=RVObject(component,"key");
-    if ([key isKindOfClass:NSString.class] && [key length]<=1024)
-        for (NSString *role in roles) if ([key rangeOfString:role].location!=NSNotFound) { state.role=YES;break; }
+    for (NSString *source in @[@"key",@"templateURI"]) {
+        id key=RVObject(component,source.UTF8String);
+        if ([key isKindOfClass:NSString.class] && [key length]<=2048)
+            for (NSString *role in roles) if ([key rangeOfString:role options:NSCaseInsensitiveSearch].location!=NSNotFound) { state.role=YES;state.roleSource=source;break; }
+    }
     // ELMElement owns a C++ protobuf. Its native Objective-C diagnostic bridge
     // avoids fixed C++ offsets. Cache only boolean checks, never model text.
     Class cls=NSClassFromString(@"ELMElement");
     id text=cls && [element isKindOfClass:cls] ? RVObject(element,"protoText") : nil;
-    if ([text isKindOfClass:NSString.class] && [text length]<=131072) {
-        for (NSString *role in roles) if ([text rangeOfString:role].location!=NSNotFound) { state.role=YES;break; }
+    state.protoAvailable=[text isKindOfClass:NSString.class];state.protoLength=state.protoAvailable ? [text length] : 0;
+    if (state.protoAvailable && [text length]<=131072) {
+        for (NSString *role in roles) if ([text rangeOfString:role options:NSCaseInsensitiveSearch].location!=NSNotFound) { state.role=YES;state.roleSource=@"element_proto";break; }
         static NSRegularExpression *ids;static dispatch_once_t once;
         dispatch_once(&once,^{ ids=[NSRegularExpression regularExpressionWithPattern:@"(?:video_id|videoId|videoID)\\s*:\\s*\"([A-Za-z0-9_-]{11})\"" options:0 error:nil]; });
         NSArray *matches=[ids matchesInString:text options:0 range:NSMakeRange(0,[text length])];
@@ -172,6 +180,35 @@ static RVElementBindingState *RVElementBinding(id component,NSString *video) {
         for (NSTextCheckingResult *match in matches) if (![[text substringWithRange:[match rangeAtIndex:1]] isEqual:video]) { state.videoMatches=NO;break; }
     }
     objc_setAssociatedObject(component,RVElementBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);return state;
+}
+static NSArray *RVElementOwnerChain(id controller) {
+    if (!controller) return @[];
+    NSMutableArray *owners=[NSMutableArray arrayWithObject:controller];
+    NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];[seen addObject:controller];
+    // Materialized descendants can have a parent without an owningComponent.
+    // Follow both native Objective-C links; never cache a negative role forever.
+    for (NSUInteger i=0;i<owners.count && i<24;i++) for (NSString *link in @[@"owningComponent",@"parent"]) {
+        id next=RVObject(owners[i],link.UTF8String);
+        if (next && owners.count<24 && ![seen containsObject:next]) { [seen addObject:next];[owners addObject:next]; }
+    }
+    return owners;
+}
+static id RVElementFindBinding(id node,NSString *video) {
+    NSMutableArray *probe=[NSMutableArray array];
+    for (NSUInteger level=0;node && level<12;level++,node=RVElementParent(node)) {
+        id controller=RVObject(node,"nodeController");
+        for (id component in RVElementOwnerChain(controller)) {
+            RVElementBindingState *binding=RVElementBinding(component,video);
+            if (RVEnabled(@"diagnostics") && probe.count<24) [probe addObject:@{
+                @"owner_class":NSStringFromClass([component class]),@"role_found":@(binding.role),
+                @"role_source":binding.roleSource ?: @"absent",@"proto_available":@(binding.protoAvailable),
+                @"proto_length":@(binding.protoLength),@"explicit_video":@(binding.explicitVideo),
+                @"video_matches":@(binding.videoMatches),@"parent_present":@(RVObject(component,"parent")!=nil),
+                @"owning_component_present":@(RVObject(component,"owningComponent")!=nil)}];
+            if (binding.role) { RVElementBindingProbe=probe.copy;return component; }
+        }
+    }
+    RVElementBindingProbe=probe.copy;return nil;
 }
 static void RVElementInvalidateRoot(id parent,RVElementDislikeState *state) {
     id root=RVObject(parent,"yogaRoot");state.layoutRoot=root;
@@ -215,8 +252,7 @@ static BOOL RVElementOwnedWatch(id parent,RVElementDislikeState *state) {
         (RVCurrentWatch && RVCurrentWatch!=watch) || state.element!=RVObject(state.component,"element")) return NO;
     id ancestor=parent;
     for (NSUInteger i=0;ancestor && i<12;i++,ancestor=RVElementParent(ancestor)) {
-        id component=RVObject(RVObject(ancestor,"nodeController"),"owningComponent");
-        for (NSUInteger j=0;component && j<6;j++,component=RVObject(component,"owningComponent")) if (component==state.component) return YES;
+        for (id component in RVElementOwnerChain(RVObject(ancestor,"nodeController"))) if (component==state.component) return YES;
     }return NO;
 }
 static BOOL RVElementRectInAncestor(id node,id ancestor,CGRect *result) {
@@ -335,13 +371,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     if ((!RVOrdinaryContent(RVCurrentPlayback) || !RVDislikeWatchAction(view) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) && !RVElementOwnedWatch(parent,state)) {
         RVElementSuspend(state,@"watch_transition_suspended");return;
     }
-    id bound=nil,ancestor=pair;
-    for (NSUInteger level=0;ancestor && !bound && level<12;level++,ancestor=RVElementParent(ancestor)) {
-        id component=RVObject(RVObject(ancestor,"nodeController"),"owningComponent");
-        for (NSUInteger i=0;component && i<6;i++,component=RVObject(component,"owningComponent")) {
-            if (RVElementBinding(component,RVDislikeVideo).role) { bound=component;break; }
-        }
-    }
+    id bound=RVElementFindBinding(pair,RVDislikeVideo);
     if (!bound) { RVElementLastGate=@"semantic_role_missing";RVElementDislikeEvent(@"semantic_role_missing");RVElementDislikeRemove(parent,state);return; }
     RVElementDislikeEvent(@"semantic_role_matched");
     id element=RVObject(bound,"element");NSString *video=RVDislikeVideo;
@@ -618,12 +648,12 @@ static NSDictionary *RVElementDislikeReport(void) {
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@8,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@9,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
         @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVDislikeWatchPlayerMatches(watch)),@"watch_player_pointer_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
         @"last_gate":RVElementLastGate ?: @"not_observed",@"native_like_arguments_preserved":@YES,
-        @"strategy":@"flattening_aware_native_dislike_text_with_watch_binding",@"like_icon_required":@NO,@"device_verified":@NO};
+        @"strategy":@"flattening_aware_native_dislike_text_with_watch_binding",@"semantic_binding_probe":RVElementBindingProbe ?: @[],@"like_icon_required":@NO,@"device_verified":@NO};
 }
 static void RVInstallElementDislikes(void) {
     RVHook(@"YTWatchViewController",@"viewWillAppear:",@"v@:B",NO,^id(IMP original,SEL sel) {

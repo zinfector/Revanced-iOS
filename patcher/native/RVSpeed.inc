@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Explicit native menu choices take precedence over queued startup restoration.
+static _Thread_local BOOL RVSpeedBridgeCapture;
+static NSDictionary *RVSpeedBridgeReport(void);
 static const void *RVSpeedKey=&RVSpeedKey;
 static const void *RVSpeedOwnerKey=&RVSpeedOwnerKey;
 static NSHashTable *RVSpeedPlayers;
@@ -103,7 +105,7 @@ static void RVSpeedContentReady(id player,NSString *trigger) {
 static NSDictionary *RVSpeedReport(void) {
     RVSpeedState *state=objc_getAssociatedObject(RVCurrentPlayer,RVSpeedKey);
     float observed=RVSpeedObserved(RVCurrentPlayer);
-    return @{@"schema":@1,@"current_player_bound":@(RVCurrentPlayer!=nil),
+    return @{@"schema":@2,@"command_bridge":RVSpeedBridgeReport(),@"current_player_bound":@(RVCurrentPlayer!=nil),
         @"content_matches":@(RVSpeedCurrent(RVCurrentPlayer,state.video)),@"source":state.source ?: @"not_observed",
         @"gate":state.gate ?: @"not_observed",@"explicit_native_choice":@(state.explicitChoice),
         @"native_choice_count":@(state.nativeChoices),@"apply_attempts":@(state.attempts),
@@ -114,6 +116,15 @@ static NSDictionary *RVSpeedReport(void) {
         @"menu_owner_missing":@(atomic_load(&RVSpeedOwnerMissing)),@"native_limits_preserved":@YES,@"device_verified":@NO};
 }
 static void RVInstallSpeedChoices(void) {
+    RVHook(@"YTPlayerViewController",@"setPlaybackRateModel:",@"v@:@",NO,^id(IMP original,SEL sel) {
+        return ^(id player,id model) {
+            if (RVSpeedBridgeCapture && NSThread.isMainThread) {
+                RVSpeedBridgeCapture=NO;
+                RVSpeedChoose(player,RVSpeedFloat(model,"effectivePlaybackRate"),model,@"native_granular_picker");
+            }
+            ((void(*)(id,SEL,id))original)(player,sel,model);
+        };
+    });
     RVHook(@"YTPlayerOverlayManager",@"initWithOverlayFactory:playerViewController:delegate:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
         return ^id(id manager,id factory,id player,id delegate) {
             id result=((id(*)(id,SEL,id,id,id))original)(manager,sel,factory,player,delegate);
