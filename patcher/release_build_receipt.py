@@ -27,7 +27,8 @@ def main():
     artifacts = {}
     for name in names:
         path = ROOT/name
-        digest = hashlib.file_digest(path.open('rb'), 'sha256').hexdigest()
+        with path.open('rb') as stream:
+            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
