@@ -1,0 +1,351 @@
+{
+  "id": "youtube-ios-21.39.4-arm64",
+  "bundle": "com.google.ios.youtube",
+  "version": "21.39.4",
+  "uuid": "1f61665a5d4a35668b77da821e1d6c17",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "archive_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "hooks": [
+    {
+      "feature": "video_ads",
+      "class": "YTAdsControlFlowManagerImpl",
+      "kind": "-",
+      "selector": "handleActivationForTriggerBundles:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x101610374",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "video_ads",
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "isMonetized",
+      "encoding": "B16@0:8",
+      "imp": "0x10464cbb0",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "video_ads",
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "hasPrerollAds",
+      "encoding": "B16@0:8",
+      "imp": "0x10464d334",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "video_ads",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "createAdsPlaybackCoordinator",
+      "encoding": "@16@0:8",
+      "imp": "0x1004c14c8",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "YTIPlayabilityStatus",
+      "kind": "-",
+      "selector": "isPlayableInBackground",
+      "encoding": "B16@0:8",
+      "imp": "0x10464dcc8",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "MLVideo",
+      "kind": "-",
+      "selector": "playableInBackground",
+      "encoding": "B16@0:8",
+      "imp": "0x10450db80",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "YTPlaybackData",
+      "kind": "-",
+      "selector": "isPlayableInBackground",
+      "encoding": "B16@0:8",
+      "imp": "0x104476c08",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "isPlaybackBackgroundable",
+      "encoding": "B16@0:8",
+      "imp": "0x104185614",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "maybeStopBackgroundPlayback",
+      "encoding": "v16@0:8",
+      "imp": "0x10418380c",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "background_playback",
+      "class": "YTBackgroundabilityPolicyImpl",
+      "kind": "-",
+      "selector": "isBackgroundableByUserSettings",
+      "encoding": "B16@0:8",
+      "imp": "0x10104ef88",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "contentVideoID",
+      "encoding": "@16@0:8",
+      "imp": "0x104181270",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "isPlayingContentVideo",
+      "encoding": "B16@0:8",
+      "imp": "0x104181734",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "isPlayingAd",
+      "encoding": "B16@0:8",
+      "imp": "0x104181744",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "singleVideo:currentVideoTimeDidChange:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1080bf0b0",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "addActiveVideoObserver:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1004c5ea0",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "contentVideoMediaTime",
+      "encoding": "d16@0:8",
+      "imp": "0x1041ae6b0",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "player_context",
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "seekToTime:",
+      "encoding": "v24@0:8d16",
+      "imp": "0x1041af20c",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "feed_filter",
+      "class": "YTIElementRenderer",
+      "kind": "-",
+      "selector": "elementData",
+      "encoding": "@16@0:8",
+      "imp": "0x10050da14",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "feed_filter",
+      "class": "YTIElementRenderer",
+      "kind": "+",
+      "selector": "emptyCellElementRenderer",
+      "encoding": "@16@0:8",
+      "imp": "0x1043198cc",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "feed_filter",
+      "class": "YTSectionListViewController",
+      "kind": "-",
+      "selector": "loadWithModel:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1004f9d44",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "feed_filter",
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "loadWithModel:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1004fb334",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "feed_filter",
+      "class": "ELMNodeController",
+      "kind": "-",
+      "selector": "initWithElement:children:context:treeLocalContext:",
+      "encoding": "@48@0:8@16@24@32@40",
+      "imp": "0x10467343c",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "shorts_ads",
+      "class": "YTReelContentModel",
+      "kind": "+",
+      "selector": "makeContentModelForEntry:",
+      "encoding": "@24@0:8@16",
+      "imp": "0x1034f3344",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "shorts_ads",
+      "class": "YTReelModel",
+      "kind": "-",
+      "selector": "videoType",
+      "encoding": "i16@0:8",
+      "imp": "0x10350ff78",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "shorts_ads",
+      "class": "YTReelDataSource",
+      "kind": "-",
+      "selector": "setReels:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1034e7230",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "speed",
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "setPlaybackRate:",
+      "encoding": "v20@0:8f16",
+      "imp": "0x1041af4d8",
+      "evidence": "metadata_and_decompilation",
+      "runtime_validated": false
+    },
+    {
+      "feature": "speed",
+      "class": "YTPlaybackRateModel",
+      "kind": "-",
+      "selector": "initWithRate:scalar:",
+      "encoding": "@24@0:8f16f20",
+      "imp": "0x10049da48",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "speed",
+      "class": "YTActivePlaybackRateModel",
+      "kind": "-",
+      "selector": "activeRate",
+      "encoding": "f16@0:8",
+      "imp": "0x104233c74",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "quality",
+      "class": "YTVideoQualitySwitchRedesignedController",
+      "kind": "-",
+      "selector": "singleVideo:didSelectVideoFormat:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1010f3660",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "quality",
+      "class": "YTVideoQualitySwitchRedesignedController",
+      "kind": "-",
+      "selector": "setUserSelectableFormats:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1010f3794",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "quality",
+      "class": "YTVideoQualitySwitchRedesignedController",
+      "kind": "-",
+      "selector": "setSelectedVideoQualitySetting:withQualityLabel:toastEnabled:",
+      "encoding": "v32@0:8i16@20B28",
+      "imp": "0x1010f40d8",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "quality",
+      "class": "YTVideoQualitySwitchOriginalController",
+      "kind": "-",
+      "selector": "singleVideo:didSelectVideoFormat:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1010f1928",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "settings",
+      "class": "YTSettingsSectionItemManager",
+      "kind": "-",
+      "selector": "updateSectionForCategory:withEntry:",
+      "encoding": "v32@0:8Q16@24",
+      "imp": "0x101470264",
+      "evidence": "metadata",
+      "runtime_validated": false
+    },
+    {
+      "feature": "settings",
+      "class": "YTSettingsViewController",
+      "kind": "-",
+      "selector": "setSectionItems:forCategory:title:icon:titleDescription:headerHidden:",
+      "encoding": "v60@0:8@16Q24@32@40@48B56",
+      "imp": "0x101455cd0",
+      "evidence": "metadata",
+      "runtime_validated": false
+    }
+  ],
+  "device_validated": false
+}

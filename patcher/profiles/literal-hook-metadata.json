@@ -1,0 +1,470 @@
+[
+  {
+    "name": "YTPageStyleControllerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "pageStyle",
+        "encoding": "q16@0:8",
+        "imp": "0x1001e1414"
+      }
+    ]
+  },
+  {
+    "name": "YTRollingNumberView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setUpdatedCount:updatedCountNumber:rollFromCount:rollFromCountNumber:font:fontAttributes:color:skipAnimation:",
+        "encoding": "v76@0:8@16@24@32@40@48@56@64B72",
+        "imp": "0x100e79db0"
+      },
+      {
+        "kind": "-",
+        "selector": "setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",
+        "encoding": "v60@0:8@16@24@32@40@48B56",
+        "imp": "0x100e79f1c"
+      }
+    ]
+  },
+  {
+    "name": "YTAudioTrackSwitchControllerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setUserSelectableFormats:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101030990"
+      }
+    ]
+  },
+  {
+    "name": "YTPlayabilityResolutionUserActionUIControllerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "resolvePlayabilityResolutionUserActionRequest:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10804a788"
+      }
+    ]
+  },
+  {
+    "name": "YTBackgroundabilityPolicyImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "isPlayableInPictureInPictureByUserSettings",
+        "encoding": "B16@0:8",
+        "imp": "0x10104ef90"
+      }
+    ]
+  },
+  {
+    "name": "YTVideoQualitySwitchOriginalController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "showMenuFromView:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1010f168c"
+      },
+      {
+        "kind": "-",
+        "selector": "setSelectedQualityLabel:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1010f1cb0"
+      },
+      {
+        "kind": "-",
+        "selector": "createActionSheetActions",
+        "encoding": "@16@0:8",
+        "imp": "0x1010f25f8"
+      }
+    ]
+  },
+  {
+    "name": "YTColdConfigShortsConsumptionClientGlobalConfigImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "iosEnableAutoAdvanceInThreeDotMenu",
+        "encoding": "B16@0:8",
+        "imp": "0x10112629c"
+      }
+    ]
+  },
+  {
+    "name": "YTSemanticHapticsController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "playWithSemantic:",
+        "encoding": "v24@0:8q16",
+        "imp": "0x10114dcf8"
+      },
+      {
+        "kind": "-",
+        "selector": "playWithSemantic:throttleTimeout:",
+        "encoding": "v32@0:8q16d24",
+        "imp": "0x10114e144"
+      }
+    ]
+  },
+  {
+    "name": "YTHeaderLogoControllerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "updateLogoWithImage:needsRescaling:withYoodle:",
+        "encoding": "v32@0:8@16B24B28",
+        "imp": "0x1003447e0"
+      }
+    ]
+  },
+  {
+    "name": "YTHeaderLogoImageProviderImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "defaultHeaderLogoImageWithPageStyle:isPremium:",
+        "encoding": "@28@0:8q16B24",
+        "imp": "0x101386574"
+      }
+    ]
+  },
+  {
+    "name": "YTNavigationCommandHandlerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "handleUrlEndpoint:event:fromView:",
+        "encoding": "B40@0:8@16@24@32",
+        "imp": "0x1005b0ecc"
+      }
+    ]
+  },
+  {
+    "name": "YTAppPivotBarController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "defaultSelectedPivotIdentifier",
+        "encoding": "@16@0:8",
+        "imp": "0x100300db0"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "playerViewController:didActivateVideo:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x10157abc0"
+      }
+    ]
+  },
+  {
+    "name": "YTAdsControlFlowManagerImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "handleActivationForTriggerBundles:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101610374"
+      }
+    ]
+  },
+  {
+    "name": "YTMainAppVideoPlayerOverlayView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x10177789c"
+      },
+      {
+        "kind": "-",
+        "selector": "setClosedCaptionsOrSubtitlesButtonAvailable:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x10177a8bc"
+      },
+      {
+        "kind": "-",
+        "selector": "forceHidePreviousAndNextButtons",
+        "encoding": "B16@0:8",
+        "imp": "0x101780b50"
+      }
+    ]
+  },
+  {
+    "name": "YTMainAppControlsOverlayView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "forceAutonavSwitchHidden",
+        "encoding": "B16@0:8",
+        "imp": "0x101798190"
+      },
+      {
+        "kind": "-",
+        "selector": "setForceAutonavSwitchHidden:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x1017981a0"
+      }
+    ]
+  },
+  {
+    "name": "YTDoubleTapToSeekController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "enableDoubleTapToSeek:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x1004bac24"
+      },
+      {
+        "kind": "-",
+        "selector": "didDoubleTap:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1031298fc"
+      },
+      {
+        "kind": "-",
+        "selector": "didTwoFingerDoubleTap:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x103129a4c"
+      }
+    ]
+  },
+  {
+    "name": "YTVideoPlayerOverlayConfigTransformer",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "doubleTapSeekIntervalForVideoPlayerOverlayConfig:",
+        "encoding": "d24@0:8@16",
+        "imp": "0x1004ab35c"
+      }
+    ]
+  },
+  {
+    "name": "YTReelPlayerViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "playbackControllerDidFinishPlaybackAndWillTransitionInternallyToNextPlayback:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x1034b819c"
+      }
+    ]
+  },
+  {
+    "name": "YTReelContentModel",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "makeContentModelForEntry:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x1034f3344"
+      }
+    ]
+  },
+  {
+    "name": "YTPivotBarViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "viewDidAppear:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x100436d84"
+      },
+      {
+        "kind": "-",
+        "selector": "setSelectedPivotIdentifier:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x103518f18"
+      }
+    ]
+  },
+  {
+    "name": "YTInlinePlayerBarContainerView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x10049a19c"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlayedProgressBarColor:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1035f8a00"
+      },
+      {
+        "kind": "-",
+        "selector": "didPanFineScrubberEntryPoint:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1035f8fd4"
+      },
+      {
+        "kind": "-",
+        "selector": "shouldShowDurationLabel",
+        "encoding": "B16@0:8",
+        "imp": "0x1035fc314"
+      },
+      {
+        "kind": "-",
+        "selector": "shouldShowCurrentTitleLabel",
+        "encoding": "B16@0:8",
+        "imp": "0x10049c4c0"
+      }
+    ]
+  },
+  {
+    "name": "YTNeonMetalView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setAmbientStrength:",
+        "encoding": "v20@0:8f16",
+        "imp": "0x103610fd8"
+      }
+    ]
+  },
+  {
+    "name": "MDXSeamlessSignIn",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "presentSeamlessSignInIfNeeded",
+        "encoding": "B16@0:8",
+        "imp": "0x1036a3880"
+      }
+    ]
+  },
+  {
+    "name": "YTLocalPlaybackController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "singleVideo:currentVideoTimeDidChange:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x1080bf0b0"
+      },
+      {
+        "kind": "-",
+        "selector": "createAdsPlaybackCoordinator",
+        "encoding": "@16@0:8",
+        "imp": "0x1004c14c8"
+      },
+      {
+        "kind": "-",
+        "selector": "finishPlayback",
+        "encoding": "v16@0:8",
+        "imp": "0x104184e18"
+      }
+    ]
+  },
+  {
+    "name": "YTPlayerViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setPlaybackRate:",
+        "encoding": "v20@0:8f16",
+        "imp": "0x1041af4d8"
+      },
+      {
+        "kind": "-",
+        "selector": "playbackController:didLoadContentPlaybackData:",
+        "encoding": "v32@0:8@16@24",
+        "imp": "0x1041b0cec"
+      }
+    ]
+  },
+  {
+    "name": "YTInnerTubeContextFactory",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "clientInfoWithSendDeviceIdentifier:serviceType:",
+        "encoding": "@28@0:8B16q20",
+        "imp": "0x10024e10c"
+      }
+    ]
+  },
+  {
+    "name": "YTColdConfig",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "enableIosFloatingMiniplayer",
+        "encoding": "B16@0:8",
+        "imp": "0x104f0b6e0"
+      },
+      {
+        "kind": "-",
+        "selector": "enablePipMenuItem",
+        "encoding": "B16@0:8",
+        "imp": "0x104f0deb0"
+      },
+      {
+        "kind": "-",
+        "selector": "iosDisableCaptionsOnAppStartForVwc",
+        "encoding": "B16@0:8",
+        "imp": "0x104d1390c"
+      },
+      {
+        "kind": "-",
+        "selector": "addPipMenuItem",
+        "encoding": "B16@0:8",
+        "imp": "0x1041e001c"
+      },
+      {
+        "kind": "-",
+        "selector": "enableResumeToShorts",
+        "encoding": "B16@0:8",
+        "imp": "0x103d805b0"
+      }
+    ]
+  },
+  {
+    "name": "YTICommand",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "watchEndpoint",
+        "encoding": "@16@0:8",
+        "imp": "0x104ec64e8"
+      },
+      {
+        "kind": "-",
+        "selector": "hasWatchEndpoint",
+        "encoding": "B16@0:8",
+        "imp": "0x100325138"
+      },
+      {
+        "kind": "-",
+        "selector": "hasReelWatchEndpoint",
+        "encoding": "B16@0:8",
+        "imp": "0x10351231c"
+      }
+    ]
+  },
+  {
+    "name": "YTIElementRenderer",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "elementData",
+        "encoding": "@16@0:8",
+        "imp": "0x10050da14"
+      }
+    ]
+  }
+]

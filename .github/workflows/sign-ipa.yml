@@ -1,0 +1,101 @@
+name: Sign IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      ipa_url:
+        description: Direct HTTPS IPA URL (empty uses secret IPA_SOURCE_URL)
+        type: string
+        required: false
+      ipa_kind:
+        description: Original decrypted IPA or already patched unsigned RVPort IPA
+        type: choice
+        options: [original, patched]
+        default: original
+        required: true
+      ipa_sha256:
+        description: Source SHA-256 (required for patched; original defaults to analyzed hash)
+        type: string
+        required: false
+      preset:
+        description: Patch configuration for an original IPA
+        type: choice
+        options: [expanded, defaults]
+        default: expanded
+        required: true
+      bundle_id:
+        description: Main bundle ID (empty derives the exact ID from your profile)
+        type: string
+        required: false
+      strip_extensions:
+        description: Strip extensions (retaining them needs matching profiles)
+        type: boolean
+        default: true
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sign-ipa
+  cancel-in-progress: false
+
+jobs:
+  sign:
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: patcher
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - name: Check signing configuration
+        env:
+          CERTIFICATE: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          PROFILE: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+        run: |
+          python - <<'PY'
+          import os
+          if not os.environ.get('CERTIFICATE') or not os.environ.get('PROFILE'):
+              raise SystemExit('Configure BUILD_CERTIFICATE_BASE64 and BUILD_PROVISION_PROFILE_BASE64 repository secrets. See SIGNING.md.')
+          PY
+      - name: Build ARM64 iOS payload
+        run: python build.py
+      - name: Test patcher and signing checks
+        run: python -m unittest discover -s tests -v
+      - name: Download and prepare a verified unsigned IPA
+        env:
+          IPA_URL: ${{ inputs.ipa_url || secrets.IPA_SOURCE_URL }}
+          IPA_KIND: ${{ inputs.ipa_kind }}
+          IPA_SHA256: ${{ inputs.ipa_sha256 }}
+          PATCH_PRESET: ${{ inputs.preset }}
+          STRIP_EXTENSIONS: ${{ inputs.strip_extensions }}
+        run: python cloud_prepare.py
+      - name: Sign nested code and verify IPA
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          EXTENSION_PROFILES_ZIP_BASE64: ${{ secrets.EXTENSION_PROFILES_ZIP_BASE64 }}
+          SIGN_BUNDLE_ID: ${{ inputs.bundle_id }}
+          STRIP_EXTENSIONS: ${{ inputs.strip_extensions }}
+        run: |
+          sign_options=()
+          if [[ "$STRIP_EXTENSIONS" == "false" ]]; then
+            sign_options+=(--keep-extensions)
+          fi
+          python cloud_sign.py build/cloud/unsigned.ipa --output build/cloud/signed.ipa "${sign_options[@]}"
+      - name: Upload signed IPA and verification report
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: signed-ipa
+          path: |
+            patcher/build/cloud/signed.ipa
+            patcher/build/cloud/signed.json
+          if-no-files-found: error
+          retention-days: 3

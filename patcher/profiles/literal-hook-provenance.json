@@ -1,0 +1,8 @@
+{
+  "scope": "Original extracted method records for direct literal hooks only; not a complete class inventory.",
+  "source_metadata_sha256": "2d5c9625e5d0cbdc4860c11533da46b159d4e1822225fc0c4efd44e98fc8a596",
+  "source_executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "class_count": 30,
+  "method_count": 53,
+  "device_validated": false
+}

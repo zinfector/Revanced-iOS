@@ -1,0 +1,56 @@
+"""Shared feature catalog for the CLI, Windows UI and generated native settings."""
+CATALOG = {
+    'video_ads': 'Hide video ads', 'background_playback': 'Background playback',
+    'sponsorblock': 'SponsorBlock autoskip', 'feed_ads': 'Hide feed ads',
+    'hide_shorts': 'Hide Shorts shelves', 'shorts_ads': 'Hide Shorts ads',
+    'remember_speed': 'Remember playback speed',
+    'picture_in_picture': 'Picture in Picture', 'return_dislikes': 'Return YouTube Dislike counts',
+    'copy_video_url': 'Copy URL and timestamp tools', 'external_downloads': 'External downloader share handoff',
+    'loop_video': 'Loop ordinary videos', 'pause_on_interrupt': 'Pause on audio interruption',
+    'disable_haptics': 'Disable semantic haptics', 'disable_auto_captions': 'Disable automatic captions on mute',
+    'force_original_audio': 'Prefer original audio track', 'disable_hdr': 'Filter HDR formats',
+    'disable_vp9': 'Filter VP9 formats', 'hide_cast_button': 'Hide player Cast button',
+    'hide_captions_button': 'Hide player captions button', 'hide_autoplay_button': 'Hide player autoplay control',
+    'hide_previous_next': 'Hide previous and next controls', 'hide_watermark': 'Hide channel watermark',
+    'hide_timestamp': 'Hide player timestamp', 'hide_seekbar': 'Hide seekbar progress',
+    'hide_end_cards': 'Hide creator end cards', 'hide_autoplay_preview': 'Hide autoplay/end-screen previews',
+    'hide_info_cards': 'Hide information-card teasers', 'hide_related_overlay': 'Hide related-video overlay',
+    'disable_ambient': 'Disable ambient lighting', 'disable_popup_panels': 'Prevent automatic player panels',
+    'hide_action_buttons': 'Filter selected video action components',
+    'hide_flyout_items': 'Filter selected player flyout components',
+    'hide_comments': 'Filter comments components', 'hide_layout_components': 'Custom component filters',
+    'hide_shorts_navigation': 'Hide Shorts navigation item', 'disable_shorts_resume': 'Disable Shorts startup resume',
+    'shorts_autoplay': 'Enable native Shorts automatic advance menu',
+    'open_shorts_regular': 'Open Shorts links in regular player',
+    'open_videos_fullscreen': 'Open ordinary videos fullscreen', 'exit_fullscreen_end': 'Exit fullscreen at video end',
+    'disable_double_tap': 'Disable player double-tap gestures', 'disable_chapter_skip': 'Disable two-finger chapter skip',
+    'disable_precise_seeking': 'Disable fine-scrubber entry gesture', 'swipe_controls': 'Fullscreen brightness and volume swipes',
+    'custom_speed_menu': 'Custom playback speed tool', 'advanced_quality_menu': 'Open advanced quality menu directly',
+    'hide_premium_quality': 'Hide Premium quality choices', 'remember_quality': 'Remember selected resolution cap',
+    'alternative_thumbnails': 'Use video-frame thumbnails', 'bypass_redirects': 'Bypass YouTube URL redirects',
+    'open_links_external': 'Open external URL endpoints in browser', 'sanitize_sharing_links': 'Remove share tracking parameters',
+    'classic_miniplayer': 'Use classic native miniplayer', 'disable_rolling_numbers': 'Disable rolling-number animations',
+    'disable_tv_popup': 'Disable automatic TV sign-in prompt',
+    'remove_discretion_dialog': 'Auto-confirm content warnings (preserve age verification)',
+    'custom_header': 'Custom header image (requires supplied PNG)',
+    'spoof_app_version': 'Override request client version',
+    'spoof_dimensions': 'Override request screen dimensions',
+    'spoof_form_factor': 'Override request phone/tablet form factor',
+    'ryd_voting': 'Manual Return YouTube Dislike voting',
+    'sponsorblock_manual': 'SponsorBlock manual skip mode',
+    'sponsorblock_contribute': 'SponsorBlock voting and submission tools',
+    'announcements': 'ReVanced announcements reader',
+    'thumbnail_proxy': 'Thumbnail proxy (requires configured HTTPS URL)',
+    'tap_to_seek': 'Tap seekbar to seek',
+    'watch_history_dns': 'Watch-history DNS diagnostic tool',
+    'sponsorblock_markers': 'SponsorBlock seekbar segment markers',
+    'dearrow_thumbnails': 'DeArrow thumbnails with availability fallback',
+    'fast_thumbnail_stills': 'Use faster thumbnail still variants',
+}
+
+FEATURES = tuple(CATALOG)
+
+def native_header():
+    import json
+    literal = lambda values: '@[' + ','.join('@'+json.dumps(value, ensure_ascii=True) for value in values) + ']'
+    return '// Generated from features.py.\n#define RVFeatureKeys '+literal(FEATURES)+'\n#define RVFeatureLabels '+literal(CATALOG.values())+'\n'

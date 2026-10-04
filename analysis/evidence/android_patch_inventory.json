@@ -1,0 +1,410 @@
+[
+  {
+    "id": "hideAdsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide ads",
+    "description": "Adds options to remove general ads.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/ad/general/HideAdsPatch.kt",
+    "declaration_line": 79
+  },
+  {
+    "id": "videoAdsPatch",
+    "kind": "bytecodePatch",
+    "name": "Video ads",
+    "description": "Adds an option to remove ads in the video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/ad/video/VideoAdsPatch.kt",
+    "declaration_line": 15
+  },
+  {
+    "id": "copyVideoURLPatch",
+    "kind": "bytecodePatch",
+    "name": "Copy video URL",
+    "description": "Adds options to display buttons in the video player to copy video URLs.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/copyvideourl/CopyVideoURLPatch.kt",
+    "declaration_line": 44
+  },
+  {
+    "id": "removeViewerDiscretionDialogPatch",
+    "kind": "bytecodePatch",
+    "name": "Remove viewer discretion dialog",
+    "description": "Adds an option to remove the dialog that appears when opening a video that has been age-restricted ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/dialog/RemoveViewerDiscretionDialogPatch.kt",
+    "declaration_line": 30
+  },
+  {
+    "id": "addMoreDoubleTapToSeekLengthOptionsPatch",
+    "kind": "resourcePatch",
+    "name": "Add more double tap to seek length options",
+    "description": null,
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/doubletap/AddMoreDoubleTapToSeekLengthOptionsPatch.kt",
+    "declaration_line": 11
+  },
+  {
+    "id": "disableDoubleTapActionsPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable double tap actions",
+    "description": "Adds an option to disable player double tap gestures.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/doubletap/DisableChapterSkipDoubleTapPatch.kt",
+    "declaration_line": 22
+  },
+  {
+    "id": "downloadsPatch",
+    "kind": "bytecodePatch",
+    "name": "Downloads",
+    "description": "Adds support to download videos with an external downloader app ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/downloads/DownloadsPatch.kt",
+    "declaration_line": 65
+  },
+  {
+    "id": "disableHapticFeedbackPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable haptic feedback",
+    "description": "Adds an option to disable haptic feedback in the player for various actions.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/hapticfeedback/DisableHapticFeedbackPatch.kt",
+    "declaration_line": 26
+  },
+  {
+    "id": "seekbarPatch",
+    "kind": "bytecodePatch",
+    "name": "Seekbar",
+    "description": "Adds options to disable precise seeking when swiping up on the seekbar, ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/seekbar/SeekbarPatch.kt",
+    "declaration_line": 6
+  },
+  {
+    "id": "swipeControlsPatch",
+    "kind": "bytecodePatch",
+    "name": "Swipe controls",
+    "description": "Adds options to enable and configure volume and brightness swipe controls.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/interaction/swipecontrols/SwipeControlsPatch.kt",
+    "declaration_line": 95
+  },
+  {
+    "id": "disableAutoCaptionsPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable auto captions",
+    "description": "Adds an option to disable captions from being automatically enabled.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/autocaptions/AutoCaptionsPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "changeHeaderPatch",
+    "kind": "resourcePatch",
+    "name": "Change header",
+    "description": "Adds an option to change the header logo in the top left corner of the app.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/branding/header/ChangeHeaderPatch.kt",
+    "declaration_line": 101
+  },
+  {
+    "id": "hideVideoActionButtonsPatch",
+    "kind": "resourcePatch",
+    "name": "Hide video action buttons",
+    "description": "Adds options to hide action buttons (such as the Download button) under videos. ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/buttons/action/HideVideoActionsButtonsPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "navigationBarPatch",
+    "kind": "bytecodePatch",
+    "name": "Navigation bar",
+    "description": "Adds options to hide and change the bottom navigation bar (such as the Shorts button) ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/buttons/navigation/NavigationBarPatch.kt",
+    "declaration_line": 41
+  },
+  {
+    "id": "hidePlayerOverlayButtonsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide player overlay buttons",
+    "description": "Adds options to hide the player Cast, Autoplay, Captions, Previous & Next buttons, and the player ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/buttons/overlay/HidePlayerOverlayButtonsPatch.kt",
+    "declaration_line": 26
+  },
+  {
+    "id": "changeFormFactorPatch",
+    "kind": "bytecodePatch",
+    "name": "Change form factor",
+    "description": "Adds an option to change the UI appearance to a phone, tablet, or automotive device.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/formfactor/ChangeFormFactorPatch.kt",
+    "declaration_line": 22
+  },
+  {
+    "id": "hideAutoplayPreviewPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide autoplay preview",
+    "description": "Adds an option to hide the autoplay preview at the end of videos.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/autoplaypreview/HideAutoplayPreviewPatch.kt",
+    "declaration_line": 25
+  },
+  {
+    "id": "hideEndScreenCardsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide end screen cards",
+    "description": "Adds an option to hide suggested video cards at the end of videos.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/endscreencards/HideEndScreenCardsPatch.kt",
+    "declaration_line": 54
+  },
+  {
+    "id": "hideEndScreenSuggestedVideoPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide end screen suggested video",
+    "description": "Adds an option to hide the suggested video at the end of videos.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/endscreensuggestedvideo/HideEndScreenSuggestedVideoPatch.kt",
+    "declaration_line": 23
+  },
+  {
+    "id": "disableFullscreenAmbientModePatch",
+    "kind": "bytecodePatch",
+    "name": "Disable fullscreen ambient mode",
+    "description": "Adds an option to disable the ambient mode when in fullscreen.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/fullscreenambientmode/DisableFullscreenAmbientModePatch.kt",
+    "declaration_line": 21
+  },
+  {
+    "id": "hideInfoCardsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide info cards",
+    "description": "Adds an option to hide info cards that creators add in the video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/infocards/HideInfoCardsPatch.kt",
+    "declaration_line": 36
+  },
+  {
+    "id": "hidePlayerFlyoutMenuItemsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide player flyout menu items",
+    "description": "Adds options to hide menu items that appear when pressing the gear icon in the video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/player/flyoutmenu/HidePlayerFlyoutMenuPatch.kt",
+    "declaration_line": 15
+  },
+  {
+    "id": "disablePlayerPopupPanelsPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable player popup panels",
+    "description": "Adds an option to disable panels (such as live chat) from opening automatically.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/player/popup/PlayerPopupPanelsPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "hideRelatedVideoOverlayPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide related video overlay",
+    "description": "Adds an option to hide the related video overlay shown when swiping up in fullscreen.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/relatedvideooverlay/HideRelatedVideoOverlayPatch.kt",
+    "declaration_line": 20
+  },
+  {
+    "id": "disableRollingNumberAnimationsPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable rolling number animations",
+    "description": "Adds an option to disable rolling number animations of video view count, user likes, and upload time.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/rollingnumber/DisableRollingNumberAnimationPatch.kt",
+    "declaration_line": 21
+  },
+  {
+    "id": "hideShortsComponentsPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide Shorts components",
+    "description": "Adds options to hide components related to Shorts. ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/shorts/HideShortsComponentsPatch.kt",
+    "declaration_line": 147
+  },
+  {
+    "id": "disableSignInToTVPopupPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable sign in to TV popup",
+    "description": "Adds an option to disable the popup asking to sign into a TV on the same local network.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/signintotvpopup/DisableSignInToTVPopupPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "hideTimestampPatch",
+    "kind": "bytecodePatch",
+    "name": "Hide timestamp",
+    "description": "Adds an option to hide the timestamp in the bottom left of the video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/hide/time/HideTimestampPatch.kt",
+    "declaration_line": 16
+  },
+  {
+    "id": "miniplayerPatch",
+    "kind": "bytecodePatch",
+    "name": "Miniplayer",
+    "description": "Adds options to change the in-app minimized player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/miniplayer/MiniplayerPatch.kt",
+    "declaration_line": 67
+  },
+  {
+    "id": "exitFullscreenPatch",
+    "kind": "bytecodePatch",
+    "name": "Exit fullscreen",
+    "description": "Adds options to automatically exit fullscreen mode when a video reaches the end.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/player/fullscreen/ExitFullscreenPatch.kt",
+    "declaration_line": 19
+  },
+  {
+    "id": "openVideosFullscreenPatch",
+    "kind": "bytecodePatch",
+    "name": "Open videos fullscreen",
+    "description": "Adds an option to open videos in full screen portrait mode.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/player/fullscreen/OpenVideosFullscreenPatch.kt",
+    "declaration_line": 12
+  },
+  {
+    "id": "customPlayerOverlayOpacityPatch",
+    "kind": "bytecodePatch",
+    "name": "Custom player overlay opacity",
+    "description": "Adds an option to change the opacity of the video player background when player controls are visible.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/player/overlay/CustomPlayerOverlayOpacityPatch.kt",
+    "declaration_line": 19
+  },
+  {
+    "id": "returnYouTubeDislikePatch",
+    "kind": "bytecodePatch",
+    "name": "Return YouTube Dislike",
+    "description": "Adds an option to show the dislike count of videos with Return YouTube Dislike.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/returnyoutubedislike/ReturnYouTubeDislikePatch.kt",
+    "declaration_line": 47
+  },
+  {
+    "id": "shortsAutoplayPatch",
+    "kind": "bytecodePatch",
+    "name": "Shorts autoplay",
+    "description": "Adds options to automatically play the next Short.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/shortsautoplay/ShortsAutoplayPatch.kt",
+    "declaration_line": 39
+  },
+  {
+    "id": "openShortsInRegularPlayerPatch",
+    "kind": "bytecodePatch",
+    "name": "Open Shorts in regular player",
+    "description": "Adds options to open Shorts in the regular video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/shortsplayer/OpenShortsInRegularPlayerPatch.kt",
+    "declaration_line": 39
+  },
+  {
+    "id": "sponsorBlockPatch",
+    "kind": "bytecodePatch",
+    "name": "SponsorBlock",
+    "description": "Adds options to enable and configure SponsorBlock, which can skip undesired video segments such as sponsored content.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/sponsorblock/SponsorBlockPatch.kt",
+    "declaration_line": 114
+  },
+  {
+    "id": "spoofAppVersionPatch",
+    "kind": "bytecodePatch",
+    "name": "Spoof app version",
+    "description": "Adds an option to trick YouTube into thinking you are running an older version of the app. ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/spoofappversion/SpoofAppVersionPatch.kt",
+    "declaration_line": 25
+  },
+  {
+    "id": "changeStartPagePatch",
+    "kind": "bytecodePatch",
+    "name": "Change start page",
+    "description": "Adds an option to set which page the app opens in instead of the homepage.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/startpage/ChangeStartPagePatch.kt",
+    "declaration_line": 22
+  },
+  {
+    "id": "disableResumingShortsOnStartupPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable resuming Shorts on startup",
+    "description": "Adds an option to disable the Shorts player from resuming on app startup when Shorts were last being watched.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/startupshortsreset/DisableResumingShortsOnStartupPatch.kt",
+    "declaration_line": 27
+  },
+  {
+    "id": "alternativeThumbnailsPatch",
+    "kind": "bytecodePatch",
+    "name": "Alternative thumbnails",
+    "description": "Adds options to replace video thumbnails using the DeArrow API or image captures from the video.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/thumbnails/AlternativeThumbnailsPatch.kt",
+    "declaration_line": 23
+  },
+  {
+    "id": "bypassImageRegionRestrictionsPatch",
+    "kind": "bytecodePatch",
+    "name": "Bypass image region restrictions",
+    "description": "Adds an option to use a different host for user avatar and channel images ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/layout/thumbnails/BypassImageRegionRestrictionsPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "announcementsPatch",
+    "kind": "bytecodePatch",
+    "name": "Announcements",
+    "description": "Adds an option to show announcements from ReVanced on app startup.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/announcements/AnnouncementsPatch.kt",
+    "declaration_line": 16
+  },
+  {
+    "id": "pauseOnAudioInterruptPatch",
+    "kind": "bytecodePatch",
+    "name": "Pause on audio interrupt",
+    "description": "Adds an option to pause playback instead of lowering volume when other audio plays.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/audiofocus/PauseOnAudioInterruptPatch.kt",
+    "declaration_line": 17
+  },
+  {
+    "id": "removeBackgroundPlaybackRestrictionsPatch",
+    "kind": "bytecodePatch",
+    "name": "Remove background playback restrictions",
+    "description": "Removes restrictions on background playback, including playing kids videos in the background.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/backgroundplayback/BackgroundPlaybackPatch.kt",
+    "declaration_line": 32
+  },
+  {
+    "id": "spoofDeviceDimensionsPatch",
+    "kind": "bytecodePatch",
+    "name": "Spoof device dimensions",
+    "description": "Adds an option to spoof the device dimensions which can unlock higher video qualities.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/dimensions/spoof/SpoofDeviceDimensionsPatch.kt",
+    "declaration_line": 18
+  },
+  {
+    "id": "bypassURLRedirectsPatch",
+    "kind": "bytecodePatch",
+    "name": "Bypass URL redirects",
+    "description": "Adds an option to bypass URL redirects and open the original URL directly.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/links/BypassURLRedirectsPatch.kt",
+    "declaration_line": 21
+  },
+  {
+    "id": "openLinksExternallyPatch",
+    "kind": "bytecodePatch",
+    "name": "Open links externally",
+    "description": "Adds an option to always open links in your browser instead of the in-app browser.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/links/OpenLinksExternallyPatch.kt",
+    "declaration_line": 14
+  },
+  {
+    "id": "loopVideoPatch",
+    "kind": "bytecodePatch",
+    "name": "Loop video",
+    "description": "Adds an option to loop videos and display loop video button in the video player.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/loopvideo/LoopVideoPatch.kt",
+    "declaration_line": 21
+  },
+  {
+    "id": "disableVideoCodecsPatch",
+    "kind": "bytecodePatch",
+    "name": "Disable video codecs",
+    "description": "Adds options to disable HDR and VP9 codecs.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/video/codecs/DisableVideoCodecsPatch.kt",
+    "declaration_line": 21
+  },
+  {
+    "id": "videoQualityPatch",
+    "kind": "bytecodePatch",
+    "name": "Video quality",
+    "description": "Adds options to set default video qualities and always use the advanced video quality menu.",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/video/quality/VideoQualityPatch.kt",
+    "declaration_line": 15
+  },
+  {
+    "id": "playbackSpeedPatch",
+    "kind": "bytecodePatch",
+    "name": "Playback speed",
+    "description": "Adds options to customize available playback speeds, set a default playback speed, ",
+    "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/video/speed/PlaybackSpeedPatch.kt",
+    "declaration_line": 18
+  }
+]

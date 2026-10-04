@@ -1,0 +1,31 @@
+# Device verification: iPhone 17 Pro Max / iOS 27.0
+
+This is the user-reported target. No connected iPhone or iOS deployment tool was observed on this Windows workspace, and no signing or on-device execution has been performed. The host-verified deliverables remain device-untested.
+
+## Install and collect evidence
+
+1. Re-sign `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa` with your installation/signing workflow. It must sign the main app, `Frameworks/RVPort.dylib` and retained extensions. If that workflow cannot retain extensions, make a separate output with `--strip-extensions`. Signing can rename the bundle ID; preserve the YouTube executable name, app version and Mach-O UUID used by the runtime profile.
+2. Launch the app and record whether it reaches the feed and plays an ordinary video. A launch failure requires the iOS crash log, including exception, termination reason and loaded-image list, before diagnosing any feature.
+3. Hold three fingers for one second. Open **Show hook diagnostics**, then **Copy diagnostic report**. Save the report with profile acceptance, effective configuration and installed/skipped/missing hooks. A static metadata match is not evidence that installation succeeded on the device. **Copy patch configuration** exports settings that the Windows GUI can load.
+4. Use the switches to test individual features. A changed response/request feature may need a reopened video or app restart. Existing saved in-app preferences override the shipped JSON defaults.
+5. Record results in `build/device-results-template.json`, changing `pending` only after observing the behavior. Include video type, feature state, reproducer and diagnostics for failures.
+
+## Behavior checks
+
+| Area | Actions and evidence |
+|---|---|
+| Baseline and ads | Cold launch; ordinary video; seek; next/autoplay; midroll/content transition; live stream; Shorts. Exercise one ad strategy at a time and compare with its toggle off. |
+| Background and PiP | Background, lock/unlock and return to app. Start native PiP through Tools and native controls; close/reopen it. Record native capability rejection, interruptions and audio behavior. |
+| Speed and quality | Choose custom speeds, reopen/change videos, verify remembering; choose supported quality, advanced menu and cap; verify audio-only formats/fallback stay available. Switch Wi-Fi/cellular and reopen the video; test configured caps, remembered route selections, explicit Auto and unknown-route fallback. Test original audio with a video that actually supplies an original and dubbed track. |
+| Gestures on iOS 27 | Test enabled/disabled double-tap and chapter skip, configured interval, scrub drag, tap-to-seek and fine-scrubber suppression. Test fullscreen left brightness/right volume swipes alongside native dismiss/seek/zoom gestures. MPVolumeView slider discovery must be checked on this OS. |
+| Fullscreen and loop | Open in fullscreen, normal end exit, next-video transitions and looping. Loop takes precedence over exit-at-end. Live/ads must retain normal behavior. |
+| Layout controls | Toggle each hiding rule on/off; reopen videos; inspect portrait/landscape, inline/fullscreen, feed/search/comments, end cards, teasers, Shorts and pivots. Record exact iOS element identifiers when a component filter fails. |
+| Ambient/captions/animations | Compare ambient brightness, automatic captions on mute/start, semantic haptics and rolling numbers with each toggle off/on. Check that manual caption selection still works. |
+| Links and thumbnails | Public redirects, external links, Shorts/watch routing, clean URL/timestamp copying; frame/DeArrow thumbnails including live/missing-frame/error cases and cell refresh after the first probe. Check original/stills/DeArrow modes on home, subscriptions, library, search and player, plus fast still variants and user-configured proxy failure. Do not treat a proxy URL rewrite as proof of region bypass. |
+| SponsorBlock | Known ordinary-video segments; each category behavior, minimum duration, seek into/near overlaps, skip-once after rewind, manual mode, undo without immediate reskip, highlight at zero/nonzero time, rapid video switches and unavailable service. Check marker geometry/colors in portrait, landscape, fullscreen and inline playback; unrelated preview bars must stay unchanged. Inspect local seek estimates and account lookup. Manually review any quality/category vote, username change or segment/highlight submission before using it; record HTTP/service outcomes. Contributions are never automated by the test plan. |
+| RYD | Known video estimate, cache, rapid video changes, unavailable/rate-limited service, native badge orientation/layout. Manual service voting is separate from YouTube account voting; record puzzle/confirmation failure if encountered. |
+| Other tools | External downloader share handoff requires a compatible extension. Exercise the DNS diagnostic and announcements reader independently; unavailable endpoints should display a result without blocking playback. |
+| Branding/theme/client fields | Test supplied PNG/name/icon branding after re-signing and icon-cache refresh; native light/dark/system style with configured light/dark background colors, then clear those colors. Inspect surfaces using both native palettes. Test client version, dimensions and form factor individually, recording changed server responses or failures. These overrides do not implement stream replacement. |
+| Extensions and signing | Test retained share/widget extensions and re-launch after signing/install updates. Record signing errors independently of hook behavior. |
+
+A useful failure report contains the **feature key, exact steps, expected/actual behavior, hook diagnostics, and crash log when applicable**. Further native component and stream ports need this evidence before claiming complete behavior.

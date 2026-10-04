@@ -1,0 +1,81 @@
+name: Validate and build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: macos-15
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: patcher
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - name: Build ARM64 iOS payload using Xcode
+        run: python build.py
+      - name: Run patcher and signing regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Check directly named Objective-C hook ABIs
+        run: python check_hooks.py
+      - name: Upload native payload and host evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: native-build
+          path: |
+            patcher/build/RVPort.dylib
+            patcher/build/build-manifest.json
+            patcher/build/build.log
+            patcher/build/hook-check.json
+          if-no-files-found: error
+          retention-days: 7
+
+  windows:
+    needs: native
+    runs-on: windows-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: patcher
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.14'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: native-build
+          path: patcher/build
+      - name: Install pinned Windows packager
+        run: python -m pip install --target .tools/packager pyinstaller==6.22.3
+      - name: Package standalone GUI
+        run: python package_windows.py
+      - name: Check packaged GUI initialization
+        run: |
+          $smoke = Start-Process -FilePath '.\dist\YouTube-iOS-Patcher.exe' -ArgumentList @('--self-test','build\ci-packaged-smoke.json') -WindowStyle Hidden -Wait -PassThru
+          if ($smoke.ExitCode -ne 0) { throw 'Packaged GUI smoke test failed' }
+          $report = Get-Content build/ci-packaged-smoke.json -Raw | ConvertFrom-Json
+          if ($report.status -ne 'ok' -or $report.feature_switches -ne 71) { throw 'Unexpected GUI report' }
+      - name: Upload Windows patcher
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: windows-patcher
+          path: |
+            patcher/dist/YouTube-iOS-Patcher.exe
+            patcher/build/ci-packaged-smoke.json
+            LICENSE
+          if-no-files-found: error
+          retention-days: 7
