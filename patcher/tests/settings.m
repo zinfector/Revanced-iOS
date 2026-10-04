@@ -139,6 +139,9 @@ int main(void) { @autoreleasepool {
     assert(!RVApplyPreferenceImport(@{@"default_speed":@1.5,@"app_name":@"ignored runtime name"}));
     assert([RVSetting(@"default_speed") doubleValue]==1.5 && ![RVSetting(@"video_ads") boolValue]);
     assert([RVEffectivePreferences()[@"app_name"] isEqual:@"Original app"]);
+    assert(!RVApplyPreferenceImport(@{@"screen_width_points":@1920.0,@"screen_height_points":@1080.0,@"wifi_quality":@144.0}));
+    NSData *export=[NSJSONSerialization dataWithJSONObject:RVEffectivePreferences() options:0 error:nil];assert(export);
+    printf("Settings export: %s\n",[[[NSString alloc] initWithData:export encoding:NSUTF8StringEncoding] UTF8String]);
     RVCompatible=NO;assert(!RVSavePreference(@"video_ads",@YES));assert(RVApplyPreferenceImport(@{}));RVResetPreferences();assert(![RVSetting(@"video_ads") boolValue]);RVCompatible=YES;
     RVResetPreferences();assert([RVSetting(@"video_ads") boolValue]==[config[@"video_ads"] boolValue]);
     assert([[TestDefaults objectForKey:@"SSO.account"] isEqual:@"synthetic account"]);

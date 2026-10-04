@@ -60,11 +60,15 @@ static BOOL RVPreferenceValid(id value,NSDictionary *rule) {
     }
     return NO;
 }
+static id RVPreferenceStoredValue(id value,NSDictionary *rule) {
+    // Keep exported integer preferences compatible with the CLI's JSON type checks.
+    return [rule[@"integer"] boolValue] ? @([value longLongValue]) : value;
+}
 static NSDictionary *RVEffectivePreferences(void) {
     NSMutableDictionary *values=[NSMutableDictionary dictionary];
     for (NSString *key in RVPreferencesCatalog()[@"settings"]) {
         NSDictionary *rule=RVPreferenceDescriptor(key);id value=RVSetting(key);
-        values[key]=RVPreferenceValid(value,rule) ? value : rule[@"default"];
+        values[key]=RVPreferenceValid(value,rule) ? RVPreferenceStoredValue(value,rule) : rule[@"default"];
     }
     values[@"schema"]=@1;values[@"app_name"]=RVConfig[@"app_name"] ?: @"";return values;
 }
@@ -85,7 +89,7 @@ static NSString *RVValidatePreferenceImport(id values) {
 }
 static BOOL RVSavePreference(NSString *key,id value) {
     if (!RVCompatible || !RVPreferenceValid(value,RVPreferenceDescriptor(key))) return NO;
-    [NSUserDefaults.standardUserDefaults setObject:value forKey:[RVPreferencePrefix stringByAppendingString:key]];return YES;
+    [NSUserDefaults.standardUserDefaults setObject:RVPreferenceStoredValue(value,RVPreferenceDescriptor(key)) forKey:[RVPreferencePrefix stringByAppendingString:key]];return YES;
 }
 static NSString *RVApplyPreferenceImport(id values) {
     NSString *error=RVValidatePreferenceImport(values);if (error) return error;

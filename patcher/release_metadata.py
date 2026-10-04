@@ -5,6 +5,7 @@ import zipfile
 
 from features import CATALOG, FEATURES
 from patcher import file_sha, sha, validate_config
+from settings_catalog import catalog
 
 ROOT = Path(__file__).resolve().parent
 VERSION = '0.3.4'
@@ -33,6 +34,9 @@ def main():
                        if p.suffix in ('.m', '.inc'))
     require(all(f'@"{key}"' in native for key in FEATURES), 'Feature missing from native implementation')
     coverage = read('coverage.json')
+    settings = catalog()
+    require(len(settings['groups']) == 13 and len(settings['settings']) == 113,
+            'Unexpected runtime settings coverage')
     require(coverage['patcher_version'] == VERSION, 'Stale coverage')
     require(len({p['id'] for p in coverage['patches']}) == coverage['declaration_count'] == 113,
             'Incomplete or duplicate declaration coverage')
@@ -85,6 +89,7 @@ def main():
     target = read('build/device-test-target.json')
     manifest = {
         'version': VERSION, 'supported_version': '21.39.4', 'feature_switches': len(FEATURES),
+        'runtime_preferences': len(settings['settings']), 'preference_groups': len(settings['groups']),
         'expanded_enabled_switches': sum(read('configs/expanded.json')[key] for key in FEATURES),
         'auth_preset_enabled_switches':sum(read('configs/sideload-auth.json')[key] for key in FEATURES),
         'tests_passed': 37, 'test_scope': {'patcher_and_shared_helpers': 19, 'cloud_signing_and_download': 12, 'authentication_config_and_native_harness':2, 'miniplayer_config_and_native_harness':2, 'settings_catalog_and_native_harness':2}, 'ci':ci,
@@ -98,6 +103,7 @@ def main():
                          for p in [*ROOT.glob('*.py'), *sorted((ROOT / 'native').iterdir()),
                                    *sorted((ROOT / 'tests').glob('*.*'))] if p.is_file()},
         'original_ipa_sha256': source_sha, 'device_validated': False, 'signing_required': True,
+        'device_login_success_user_reported': True, 'device_settings_verified': False,
         'device_test_target': target, 'live_contributions_tested': False,
         'remaining_scope': 'Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; '
                            'The 0.3.1 auth IPA installs and its authentication hooks run but login failed; the 0.3.2 authentication adapter retained in 0.3.4 is user-reported to permit login; refresh, playback and new settings/UI behavior require device evidence.'}

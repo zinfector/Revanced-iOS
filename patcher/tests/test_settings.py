@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import subprocess
 import sys
 import tempfile
@@ -33,3 +34,8 @@ class SettingsTests(unittest.TestCase):
             result=subprocess.run([str(output)],capture_output=True,text=True,timeout=20)
             self.assertEqual(result.returncode,0,result.stdout+result.stderr)
             self.assertIn('checks passed',result.stdout)
+            exported=next(line.removeprefix('Settings export: ') for line in result.stdout.splitlines() if line.startswith('Settings export: '))
+            config=json.loads(exported)
+            self.assertEqual(patcher.validate_config(config),config)
+            self.assertEqual(config['wifi_quality'],144)
+            self.assertIs(type(config['screen_width_points']),int)
