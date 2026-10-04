@@ -1,0 +1,11 @@
+{
+  "source": "Authorized parallel worktree snapshot",
+  "files": {
+    "RVSettingsBridge.inc": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
+    "RVSettingsNativeUI.inc": "f73e987c5f4eced62a6e08184923d8696eaf668f2c0784d8f27eaf4193c3cd65",
+    "RVSettingsUI.inc": "79c7dfb219b5e282146762bdd091262d97e501c845a4ff709369423ce6d36bca",
+    "RVSettingsNavigation.inc": "f09a157644f44df46f885154f63f54584567a9b6a30240e5b8ba16553fe8e681"
+  },
+  "later_live_edits_preserved": true,
+  "device_verified": false
+}

@@ -3,6 +3,8 @@
 // Keep the native icons, commands, hit targets and backgrounds. Add one owned
 // text node only to a video-bound, semantically identified native action pair.
 static const void *RVElementDislikeKey=&RVElementDislikeKey;
+static const void *RVElementRootTraceKey=&RVElementRootTraceKey;
+static const void *RVElementTextTraceKey=&RVElementTextTraceKey;
 static NSMutableDictionary *RVElementDislikeCounts;
 static NSHashTable *RVElementDislikeParents;
 static NSMutableArray<NSDictionary *> *RVElementVoteImages;
@@ -19,6 +21,11 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic,copy) NSString *text;
 @property(nonatomic,copy) NSString *colorSource;
 @property(nonatomic) BOOL updating;
+@property(nonatomic,weak) id layoutRoot;
+@property(nonatomic) NSUInteger rootInvalidations;
+@property(nonatomic) NSUInteger rootLayoutPasses;
+@property(nonatomic) NSUInteger textLoadCallbacks;
+@property(nonatomic) NSUInteger textDisplayCallbacks;
 @end
 @implementation RVElementDislikeState @end
 
@@ -151,6 +158,25 @@ static RVElementBindingState *RVElementBinding(id component,NSString *video) {
     }
     objc_setAssociatedObject(component,RVElementBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);return state;
 }
+static void RVElementInvalidateRoot(id parent,RVElementDislikeState *state) {
+    id root=RVObject(parent,"yogaRoot");state.layoutRoot=root;
+    NSHashTable *tracked=objc_getAssociatedObject(root,RVElementRootTraceKey);
+    if (root && !tracked) { tracked=[NSHashTable weakObjectsHashTable];objc_setAssociatedObject(root,RVElementRootTraceKey,tracked,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+    [tracked addObject:state];state.rootInvalidations++;
+    RVVoid(parent,"setNeedsLayout");RVVoid(root,"setNeedsLayout");
+}
+static void RVElementTextTrace(id node,BOOL drawing) {
+    if (!RVEnabled(@"diagnostics")) return;
+    void (^record)(void)=^{
+        for (id parent in RVElementDislikeParents.allObjects) {
+            RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
+            if (state.textNode!=node || ![state.video isEqual:RVDislikeVideo]) continue;
+            if (drawing) state.textDisplayCallbacks++;else state.textLoadCallbacks++;
+            RVElementDislikeEvent(drawing ? @"owned_text_display_finished" : @"owned_text_did_load");
+        }
+    };
+    if (NSThread.isMainThread) record();else dispatch_async(dispatch_get_main_queue(),record);
+}
 static void RVElementDislikeRemove(id parent,RVElementDislikeState *state) {
     if (!state.textNode || state.updating) return;
     state.updating=YES;
@@ -186,6 +212,7 @@ static void RVElementDislikeApply(id parent,id pair) {
         RVElementLastGate=@"yoga_contract_missing";RVElementDislikeEvent(@"yoga_contract_missing");return;
     }
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+    if (![state.video isEqual:video]) { state.rootInvalidations=0;state.rootLayoutPasses=0;state.textLoadCallbacks=0;state.textDisplayCallbacks=0; }
     state.component=bound;state.element=element;state.video=video;
     // The independently discovered dislike branch has no native text. Search
     // its nearest ancestors for the neighboring native like typography.
@@ -226,9 +253,10 @@ static void RVElementDislikeApply(id parent,id pair) {
         id style=RVObject(node,"style");
         if (RVCan(style,"setSpacingBefore:",@"v@:d")) ((void(*)(id,SEL,double))objc_msgSend)(style,sel_registerName("setSpacingBefore:"),8);
         if (RVCan(node,"setUserInteractionEnabled:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(node,sel_registerName("setUserInteractionEnabled:"),NO);
+        objc_setAssociatedObject(node,RVElementTextTraceKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         state.textNode=node;RVSetObject(parent,"appendYogaChild:",node);
         RVVoid(node,"setNeedsDisplay");
-        RVVoid(parent,"setNeedsLayout");RVVoid(RVObject(parent,"yogaRoot"),"setNeedsLayout");
+        RVElementInvalidateRoot(parent,state);
         if (!RVElementDislikeParents) RVElementDislikeParents=[NSHashTable weakObjectsHashTable];[RVElementDislikeParents addObject:parent];
         RVElementDislikeEvent(@"owned_node_attached");
     } else {
@@ -236,7 +264,7 @@ static void RVElementDislikeApply(id parent,id pair) {
         if (![existing isKindOfClass:NSAttributedString.class] || ![existing isEqualToAttributedString:display]) RVSetObject(state.textNode,"setAttributedText:",display);
         if (![RVElementChildren(parent) containsObject:state.textNode]) {
             RVSetObject(parent,"appendYogaChild:",state.textNode);
-            RVVoid(parent,"setNeedsLayout");RVVoid(RVObject(parent,"yogaRoot"),"setNeedsLayout");
+            RVElementInvalidateRoot(parent,state);
         }
     }
     RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike estimate: %@ dislikes",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]]);
@@ -312,6 +340,7 @@ static void RVRefreshElementDislikes(void) {
         }
         for (UIView *child in view.subviews) if (views.count<2048) [views addObject:child];
     }
+    RVDislikeCaptureCheckpoint(@"watch_scan");
 }
 static void RVElementQueueRefresh(void) {
     @synchronized(UIImage.class) {
@@ -324,7 +353,7 @@ static void RVElementQueueRefresh(void) {
     });
 }
 static NSDictionary *RVElementDislikeReport(void) {
-    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0;
+    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0,contents=0,displayFinished=0;
     NSMutableArray *geometry=[NSMutableArray array];
     for (id node in RVElementDislikeParents.allObjects) {
         RVElementDislikeState *state=objc_getAssociatedObject(node,RVElementDislikeKey);id text=state.textNode;
@@ -336,8 +365,15 @@ static NSDictionary *RVElementDislikeReport(void) {
         BOOL isLoaded=RVBool(text,"isNodeLoaded");loaded+=isLoaded;
         UIView *host=renderParent ? RVElementLoadedView(renderParent) : nil;
         CALayer *layer=isLoaded ? RVObject(text,"layer") : nil;
-        BOOL onWindow=host.window && [layer isKindOfClass:CALayer.class] && layer.superlayer;
+        BOOL onWindow=NO;
+        if (host.window && [layer isKindOfClass:CALayer.class]) {
+            CALayer *ancestor=layer;
+            for (NSUInteger depth=0;ancestor && depth<64;depth++,ancestor=ancestor.superlayer)
+                if (ancestor==host.window.layer) { onWindow=YES;break; }
+        }
         inWindow+=onWindow;
+        BOOL raster=[layer isKindOfClass:CALayer.class] && layer.contents!=nil;
+        contents+=raster;displayFinished+=state.textDisplayCallbacks>0;
         BOOL visible=NO;NSUInteger clipping=0;
         if (onWindow && positive) {
             CGRect rect=layer.bounds;CALayer *ancestor=layer;
@@ -360,21 +396,54 @@ static NSDictionary *RVElementDislikeReport(void) {
         if (geometry.count<8) [geometry addObject:@{
             @"frame_x":@(positive ? frame.origin.x : 0),@"frame_y":@(positive ? frame.origin.y : 0),
             @"frame_width":@(positive ? frame.size.width : 0),@"frame_height":@(positive ? frame.size.height : 0),
-            @"render_parent_present":@(renderParent!=nil),@"node_loaded":@(isLoaded),@"render_layer_in_window":@(onWindow),
+            @"render_parent_present":@(renderParent!=nil),
+            @"render_parent_class":renderParent ? NSStringFromClass([renderParent class]) : @"none",@"text_superlayer_present":@(layer.superlayer!=nil),@"node_loaded":@(isLoaded),@"render_layer_in_window":@(onWindow),
+            @"button_class":NSStringFromClass([node class]),@"text_class":NSStringFromClass([text class]),
+            @"button_host_in_window":@(RVElementLoadedView(node).window!=nil),
+            @"video_matches_current":@([state.video isEqual:RVDislikeVideo]),
+            @"owned_node_is_yoga_child":@([RVObject(node,"yogaChildren") containsObject:text]),
+            @"owned_node_is_render_child":@([RVObject(node,"subnodes") containsObject:text]),
+            @"yoga_parent_present":@(RVObject(text,"yogaParent")!=nil),
+            @"yoga_parent_is_button":@(RVObject(text,"yogaParent")==node),
+            @"button_yoga_root_class":RVObject(node,"yogaRoot") ? NSStringFromClass([RVObject(node,"yogaRoot") class]) : @"none",
+            @"root_loaded":@(RVBool(state.layoutRoot,"isNodeLoaded")),
+            @"root_host_in_window":@(RVElementLoadedView(state.layoutRoot).window!=nil),
+            @"root_invalidation_requests":@(state.rootInvalidations),@"root_layout_passes":@(state.rootLayoutPasses),
+            @"text_load_callbacks":@(state.textLoadCallbacks),@"text_display_callbacks":@(state.textDisplayCallbacks),
+            @"raster_contents_present":@(raster),@"text_layer_hidden":@(layer.hidden),@"text_layer_opacity":@(layer ? layer.opacity : 0),
+            @"button_flattenable":@(RVBool(node,"isFlattenable")),@"text_flattenable":@(RVBool(text,"isFlattenable")),
             @"clipping_ancestors":@(clipping),@"geometrically_visible":@(visible),@"color_source":state.colorSource ?: @"unknown"}];
     }
     NSDictionary *counts;NSUInteger images;
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@4,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
-        @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,
+    return @{@"schema":@5,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+        @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
         @"last_gate":RVElementLastGate ?: @"not_observed",@"native_like_arguments_preserved":@YES,
         @"strategy":@"flattening_aware_native_dislike_text_with_watch_binding",@"like_icon_required":@NO,@"device_verified":@NO};
 }
 static void RVInstallElementDislikes(void) {
+    // Passive callbacks, restricted to owned text and its recorded Yoga roots.
+    RVHook(@"ASDisplayNode",@"__layout",@"v@:",NO,^id(IMP original,SEL sel) {
+        return ^(id root) {
+            ((void(*)(id,SEL))original)(root,sel);
+            if (!NSThread.isMainThread || !RVEnabled(@"diagnostics")) return;
+            NSHashTable *tracked=objc_getAssociatedObject(root,RVElementRootTraceKey);
+            for (RVElementDislikeState *state in tracked.allObjects) if (state.textNode && state.layoutRoot==root && [state.video isEqual:RVDislikeVideo]) {
+                state.rootLayoutPasses++;RVElementDislikeEvent(@"owned_root_layout_finished");
+            }
+        };
+    });
+    for (NSArray *contract in @[@[@"ASTextNode",@"didLoad"],@[@"ASDisplayNode",@"displayDidFinish"]]) RVHook(contract[0],contract[1],@"v@:",NO,^id(IMP original,SEL sel) {
+        BOOL drawing=[contract[1] isEqual:@"displayDidFinish"];
+        return ^(id node) {
+            ((void(*)(id,SEL))original)(node,sel);
+            if (objc_getAssociatedObject(node,RVElementTextTraceKey)) RVElementTextTrace(node,drawing);
+        };
+    });
     RVHook(@"YTELMResourceLoaderImpl",@"imageWithName:color:bundleId:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
         return ^id(id loader,id name,id color,id bundle) {
             id image=((id(*)(id,SEL,id,id,id))original)(loader,sel,name,color,bundle);
@@ -404,7 +473,8 @@ static void RVInstallElementDislikes(void) {
     });
     RVHook(@"ELMContainerNode",@"layoutDidFinish",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id node) { ((void(*)(id,SEL))original)(node,sel);RVElementDislikeEvent(@"container_layout");
-            if (NSThread.isMainThread) RVElementDislikeObserve(node);else RVElementQueueRefresh(); };
+            if (NSThread.isMainThread) { RVElementDislikeObserve(node);RVDislikeCaptureCheckpoint(@"container_layout_finished"); }
+            else RVElementQueueRefresh(); };
     });
     // ASNetworkImageNode has its own setter path. Hook the concrete ELM override too.
     for (NSString *cls in @[@"ASImageNode",@"ELMImageNode"]) RVHook(cls,@"setImage:",@"v@:@",NO,^id(IMP original,SEL sel) {

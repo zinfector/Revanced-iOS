@@ -41,6 +41,11 @@ def build(sdk=None, zig=None):
     (ROOT/'native/RVFeatures.h').write_bytes(native_header().encode('utf-8'))
     from settings_catalog import native_header as settings_header
     (ROOT/'native/RVSettingsCatalog.h').write_bytes(settings_header().encode('utf-8'))
+    source_files={p.relative_to(ROOT/'native').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+                  for p in sorted((ROOT/'native').rglob('*')) if p.is_file()}
+    source_fingerprint=hashlib.sha256(''.join(f'{name}:{digest}\n' for name,digest in source_files.items()).encode()).hexdigest()
+    (out/'RVBuildIdentity.h').write_text('// Generated source identity for device diagnostic reports.\n'
+        '#define RV_BUILD_SOURCE_SHA256 @"'+source_fingerprint+'"\n',encoding='ascii')
     if sys.platform == 'darwin' and not zig:
         sdk=Path(sdk or subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip())
         compiler=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0']
@@ -72,8 +77,13 @@ def build(sdk=None, zig=None):
     if len(padding)<16 or any(padding):
         raise RuntimeError('Built dylib has no zero-filled header space for the signing load command')
     source=(ROOT/'native/RVPort.m').read_bytes()
+    final_sources={p.relative_to(ROOT/'native').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
+                   for p in sorted((ROOT/'native').rglob('*')) if p.is_file()}
+    if final_sources != source_files:
+        raise RuntimeError('Native sources changed during compilation; rebuild before packaging')
     metadata={'payload_sha256':hashlib.sha256(binary).hexdigest(),'source_sha256':hashlib.sha256(source).hexdigest(),
-              'source_files':{p.relative_to(ROOT/'native').as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((ROOT/'native').rglob('*')) if p.is_file()},
+              'build_source_sha256':source_fingerprint,
+              'source_files':source_files,
               'compiler_command':args,'sdk':str(sdk),'signing_header_padding_bytes':len(padding),'runtime_validated':False}
     (out/'build-manifest.json').write_text(json.dumps(metadata,indent=2),encoding='utf-8')
     print(f'Built {out / "RVPort.dylib"} ({len(binary):,} bytes)')

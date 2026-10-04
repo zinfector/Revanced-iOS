@@ -792,6 +792,12 @@
         "selector": "appBounds",
         "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
         "imp": "0x100310184"
+      },
+      {
+        "kind": "+",
+        "selector": "statusBarHeight",
+        "encoding": "d16@0:8",
+        "imp": "0x1003d5990"
       }
     ]
   },
@@ -833,6 +839,18 @@
         "selector": "viewDidAppear:",
         "encoding": "v20@0:8B16",
         "imp": "0x10145565c"
+      },
+      {
+        "kind": "-",
+        "selector": "collectionView:layout:separatorAttributesAtSection:",
+        "encoding": "{SeparatorAttributes=BfffB}40@0:8@16@24q32",
+        "imp": "0x101456548"
+      },
+      {
+        "kind": "-",
+        "selector": "collectionView:layout:insetForSectionAtIndex:",
+        "encoding": "{UIEdgeInsets=dddd}40@0:8@16@24q32",
+        "imp": "0x101456554"
       }
     ]
   },
@@ -1431,6 +1449,18 @@
         "selector": "subnodes",
         "encoding": "@16@0:8",
         "imp": "0x100358290"
+      },
+      {
+        "kind": "-",
+        "selector": "__layout",
+        "encoding": "v16@0:8",
+        "imp": "0x1003fc1b0"
+      },
+      {
+        "kind": "-",
+        "selector": "displayDidFinish",
+        "encoding": "v16@0:8",
+        "imp": "0x1005bef70"
       }
     ]
   },
@@ -1473,6 +1503,12 @@
         "selector": "setAttributedText:",
         "encoding": "v24@0:8@16",
         "imp": "0x10055db5c"
+      },
+      {
+        "kind": "-",
+        "selector": "didLoad",
+        "encoding": "v16@0:8",
+        "imp": "0x10058ea34"
       }
     ]
   },
@@ -1497,6 +1533,100 @@
         "selector": "setImage:",
         "encoding": "v24@0:8@16",
         "imp": "0x1005c2640"
+      }
+    ]
+  },
+  {
+    "name": "YTCardCollectionViewUIFormatter",
+    "address": "0x10cab5868",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "updateCell:atIndexPath:sectionController:numberofSections:",
+        "encoding": "v48@0:8@16@24@32Q40",
+        "imp": "0x104244854"
+      },
+      {
+        "kind": "-",
+        "selector": "updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:",
+        "encoding": "v56@0:8@16@24Q32@40Q48",
+        "imp": "0x1042448e8"
+      },
+      {
+        "kind": "-",
+        "selector": "insetForSectionAtIndex:sectionController:numberOfSections:",
+        "encoding": "{UIEdgeInsets=dddd}40@0:8Q16@24Q32",
+        "imp": "0x10424497c"
+      },
+      {
+        "kind": "-",
+        "selector": "referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:",
+        "encoding": "{CGSize=dd}56@0:8{CGSize=dd}16Q32@40Q48",
+        "imp": "0x104244a1c"
+      },
+      {
+        "kind": "-",
+        "selector": "setCellPositioningStyle:",
+        "encoding": "v20@0:8i16",
+        "imp": "0x104245120"
+      }
+    ]
+  },
+  {
+    "name": "YTHeaderView",
+    "address": "0x10cabefa8",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "intrinsicContentSize",
+        "encoding": "{CGSize=dd}16@0:8",
+        "imp": "0x1043f3934"
+      },
+      {
+        "kind": "-",
+        "selector": "setHeaderParams",
+        "encoding": "v16@0:8",
+        "imp": "0x100335d18"
+      },
+      {
+        "kind": "-",
+        "selector": "resetHeaderParamsForStatusBarUpdate",
+        "encoding": "v16@0:8",
+        "imp": "0x1003dde80"
+      },
+      {
+        "kind": "-",
+        "selector": "didMoveToWindow",
+        "encoding": "v16@0:8",
+        "imp": "0x1003e53b4"
+      }
+    ]
+  },
+  {
+    "name": "YTMainWindowUtils",
+    "address": "0x10cae9040",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "mainWindow",
+        "encoding": "@16@0:8",
+        "imp": "0x10020c324"
+      }
+    ]
+  },
+  {
+    "name": "YTFeedHeaderView",
+    "address": "0x10cab6100",
+    "superclass": "YTCollectionReusableView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setCustomEdgePadding:",
+        "encoding": "v24@0:8d16",
+        "imp": "0x104261658"
       }
     ]
   }

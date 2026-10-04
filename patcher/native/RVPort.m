@@ -16,6 +16,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #include "RVFeatures.h"
+#include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
 #include "RVImageHeader.h"
 

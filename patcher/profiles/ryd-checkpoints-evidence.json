@@ -1,0 +1,52 @@
+{
+  "report": "Report 541.txt",
+  "report_sha256": "c838da4da9531ffa65f2906e2e56da354c727bd7479cff05119de1662f54237b",
+  "reported_patcher_version": "0.3.12",
+  "reported_element_layout": {
+    "schema": 4,
+    "count_matches_playback": true,
+    "watch_player_matches": 1,
+    "owned_text_nodes": 1,
+    "laid_out_text_nodes": 1,
+    "render_mounted_nodes": 0,
+    "loaded_text_nodes": 0,
+    "render_layers_in_window": 0,
+    "unclipped_text_nodes": 0,
+    "last_gate": "scanning_watch"
+  },
+  "finding": "Current-video data and Yoga measurement succeeded; no text render parent or loaded layer was reported. Capture foreground evidence to separate the failure from Settings navigation.",
+  "instrumentation_revision": "ryd-checkpoints-2",
+  "checkpoint_order": [
+    "feature_enabled",
+    "playback_video_valid",
+    "watch_foreground",
+    "watch_player_matches",
+    "count_matches_playback",
+    "dislike_icon_seen",
+    "text_node_created",
+    "text_node_measured",
+    "text_node_mounted",
+    "text_node_loaded",
+    "text_layer_in_window",
+    "text_raster_contents_present",
+    "text_unclipped"
+  ],
+  "capture_preserves_foreground_observation": true,
+  "forces_node_loading": false,
+  "diagnostic_history_limit": 8,
+  "tests_run": false,
+  "device_validated": false,
+  "rendering_repair_claimed": false,
+  "implementation_version": "0.3.14",
+  "additional_checkpoints": [
+    "native_root_invalidation_requests",
+    "native_root_layout_completed",
+    "owned_text_did_load",
+    "owned_text_display_did_finish",
+    "existing_layer_raster_contents"
+  ],
+  "source_sha256": {
+    "RVElementDislikes.inc": "7fc47e337d571bf0819e1a64b89457d1766528081a3afa760c000bd51a771958",
+    "RVDislikesDiagnostics.inc": "295fd60f29d0e3d16bff10c0763a4102ce135c81de6b3bb967d14225f6b0b0f5"
+  }
+}

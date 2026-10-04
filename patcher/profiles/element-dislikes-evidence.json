@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "implementation_version": "0.3.13",
+  "implementation_version": "0.3.14",
   "supported_youtube_version": "21.39.4",
   "status": "flattening_aware_text_render_adapter_device_unverified",
-  "device_failure_evidence": "device-0.3.12-ryd-render-failure.json",
+  "device_failure_evidence": "device-report-541-ryd-render.json",
   "metadata": [
     {
       "name": "YTIconResolverImpl",
@@ -353,7 +353,7 @@
     "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
-  "source_sha256": "74091bfabb4237f32f3ca73b2f229a0b9ae1ffd265c74ca901320a6b820ceaa0",
+  "source_sha256": "7fc47e337d571bf0819e1a64b89457d1766528081a3afa760c000bd51a771958",
   "binding": "One down icon and exactly one populated native image in a horizontal Yoga branch; semantic action component and matching active watch player/video. No up-icon requirement. Explicit element video IDs must match if present.",
   "layout": "Append one owned Yoga and view-flattening-enabled ASTextNode to the verified dislike branch; native renderer reconciles render subnodes and computes flattened ancestor offsets; retain native hit targets; remove owned text on invalid binding.",
   "no_native_commands_replaced": true,

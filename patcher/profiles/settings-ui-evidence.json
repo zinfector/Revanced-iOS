@@ -32,6 +32,30 @@
           "selector": "layoutForCollectionViewController",
           "encoding": "@16@0:8",
           "imp": "0x101456894"
+        },
+        {
+          "kind": "-",
+          "selector": "collectionView:layout:separatorAttributesAtSection:",
+          "encoding": "{SeparatorAttributes=BfffB}40@0:8@16@24q32",
+          "imp": "0x101456548"
+        },
+        {
+          "kind": "-",
+          "selector": "collectionView:layout:insetForSectionAtIndex:",
+          "encoding": "{UIEdgeInsets=dddd}40@0:8@16@24q32",
+          "imp": "0x101456554"
+        },
+        {
+          "kind": "-",
+          "selector": "viewDidLoad",
+          "encoding": "v16@0:8",
+          "imp": "0x10145530c"
+        },
+        {
+          "kind": "-",
+          "selector": "gestureRecognizerShouldBegin:",
+          "encoding": "B24@0:8@16",
+          "imp": "0x1014565b8"
         }
       ]
     },
@@ -252,6 +276,145 @@
           "imp": "0x10145a9a8"
         }
       ]
+    },
+    {
+      "name": "YTCardCollectionViewUIFormatter",
+      "address": "0x10cab5868",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "updateCell:atIndexPath:sectionController:numberofSections:",
+          "encoding": "v48@0:8@16@24@32Q40",
+          "imp": "0x104244854"
+        },
+        {
+          "kind": "-",
+          "selector": "updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:",
+          "encoding": "v56@0:8@16@24Q32@40Q48",
+          "imp": "0x1042448e8"
+        },
+        {
+          "kind": "-",
+          "selector": "insetForSectionAtIndex:sectionController:numberOfSections:",
+          "encoding": "{UIEdgeInsets=dddd}40@0:8Q16@24Q32",
+          "imp": "0x10424497c"
+        },
+        {
+          "kind": "-",
+          "selector": "referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:",
+          "encoding": "{CGSize=dd}56@0:8{CGSize=dd}16Q32@40Q48",
+          "imp": "0x104244a1c"
+        },
+        {
+          "kind": "-",
+          "selector": "setCellPositioningStyle:",
+          "encoding": "v20@0:8i16",
+          "imp": "0x104245120"
+        }
+      ]
+    },
+    {
+      "name": "YTHeaderView",
+      "address": "0x10cabefa8",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "intrinsicContentSize",
+          "encoding": "{CGSize=dd}16@0:8",
+          "imp": "0x1043f3934"
+        },
+        {
+          "kind": "-",
+          "selector": "setHeaderParams",
+          "encoding": "v16@0:8",
+          "imp": "0x100335d18"
+        },
+        {
+          "kind": "-",
+          "selector": "resetHeaderParamsForStatusBarUpdate",
+          "encoding": "v16@0:8",
+          "imp": "0x1003dde80"
+        },
+        {
+          "kind": "-",
+          "selector": "didMoveToWindow",
+          "encoding": "v16@0:8",
+          "imp": "0x1003e53b4"
+        }
+      ]
+    },
+    {
+      "name": "YTMainWindowUtils",
+      "address": "0x10cae9040",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "mainWindow",
+          "encoding": "@16@0:8",
+          "imp": "0x10020c324"
+        }
+      ]
+    },
+    {
+      "name": "YTUIUtils",
+      "address": "0x10cae8f28",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "statusBarHeight",
+          "encoding": "d16@0:8",
+          "imp": "0x1003d5990"
+        }
+      ]
+    },
+    {
+      "name": "YTFeedHeaderView",
+      "address": "0x10cab6100",
+      "superclass": "YTCollectionReusableView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setCustomEdgePadding:",
+          "encoding": "v24@0:8d16",
+          "imp": "0x104261658"
+        }
+      ]
+    },
+    {
+      "name": "YTNavigationController",
+      "address": "0x10caac3f0",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithParentResponder:",
+          "encoding": "@24@0:8@16",
+          "imp": "0x1040c2f48"
+        }
+      ]
+    },
+    {
+      "name": "YTSwipeNavigationTransitionController",
+      "address": "0x10c9b80f0",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "swipeToPopPossible:",
+          "encoding": "B24@0:8@16",
+          "imp": "0x1014d61a4"
+        },
+        {
+          "kind": "-",
+          "selector": "gestureRecognizerShouldBegin:",
+          "encoding": "B24@0:8@16",
+          "imp": "0x1014d622c"
+        }
+      ]
     }
   ],
   "evidence_sha256": {
@@ -259,7 +422,14 @@
     "annotated.txt": "dbda41ed57a431fbb579bade3c318a611b30fb7006e1096cc41c2696c37665b0",
     "cell-extra-annotated.txt": "54754567904cc4ebc27c69e4b81579c9f0acf4116ee1405d9edbc03e58a514f9",
     "icon-annotated.txt": "f0eda2384aaaceb2737d28cb50d6be6423618d9ba0b9ffce2b58cc5ea4836f9d",
-    "icon-policy.txt": "3fbe3b11c4a16319f81e9098b6b57afd650bacbd880eb12b5e708392fb433a33"
+    "icon-policy.txt": "3fbe3b11c4a16319f81e9098b6b57afd650bacbd880eb12b5e708392fb433a33",
+    "spacing-annotated.txt": "9f7f776c194532226983c1f48ad881864e2fd1f3be397f5bd1d03e9ccd86ddcb",
+    "spacing-extra-annotated.txt": "d6557826965894b24d7ed2a405401e6555a9409fad2b788e3483b22373c9bc13",
+    "spacing-window-annotated.txt": "0e86a546315d4e3fa88631309a4f5abda02f939fb72b06c74b1599423298db3e",
+    "swipe-back-annotated.txt": "b840a74fbe7d2100bb0c7a0d89aa59366c45982da2fa9d2294def5b9bc947f5b",
+    "swipe-gates-annotated.txt": "3c0612f37d02ad6ba42d3f151b65d9d215461b48e067a8764d7e9ee63be0505b",
+    "swipe-init-annotated.txt": "a71bb8980e700ec4fb3bfdcdeb4a5203c4072b70535e6fced07ba3e9c763359f",
+    "swipe-load.txt": "9ab7a6702f3c0443c6c7a3b0bdf613941dcbac2361b25c25ab6528adec52f3ff"
   },
   "icon_contract": {
     "section": "YTSettingsViewController createItemFromSectionController:categoryId: copies section.icon",
@@ -267,5 +437,29 @@
     "image": "YTSettingsCell setThumbnailWithIcon: calls iconImageWithColor: and reserves 24x24 points",
     "refresh": "YTSettingsCell updateColors calls hasIconType/iconType; native predicate at 0x10033f1bc accepts 0x415 for multicolor image refresh",
     "source_sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165"
+  },
+  "header_spacing_contract": {
+    "browse_insets": {
+      "selector": "yt_safeAreaInsetsForBrowse",
+      "category": "YTELMLoggingProperties",
+      "encoding": "{UIEdgeInsets=dddd}16@0:8",
+      "imp": "0x10030bed4",
+      "behavior": "App-global mainWindow safe-area top, falling back to YTUIUtils statusBarHeight"
+    },
+    "native_calculation": "YTHeaderView setHeaderParams caches statusBarHeight and layoutHeight/maxHeight = top inset + 44 points",
+    "repair_scope": "Native Settings and owned ReVanced host layout/appearance; attached window inset supplied only during native refresh",
+    "confidence": "Stale initial/global-window inset is inferred from binary behavior and screenshots; no device call trace",
+    "dividers": "Owned full-width section footers, 1 point, YTCommonColorPalette outline; native formatter controls section/header spacing",
+    "tests_run": false,
+    "device_validated": false
+  },
+  "swipe_back_contract": {
+    "native_settings": "viewDidLoad assigns interactivePopGestureRecognizer.delegate=self; gestureRecognizerShouldBegin checks navigation stack count > 1",
+    "owned_host_gap": "YTStyledViewController-based host has the custom back button but does not set up the Settings pop-gesture delegate",
+    "implementation": "RVSettingsContentController leases the existing recognizer through a retained, navigation-scoped forwarding delegate; releases after leaving owned pages",
+    "transition_safety": "No navigation-controller delegate/gesture targets replaced; block root, ongoing transition, modal and detached cases; retain lease for nested/cancelled transitions; native YTSwipeNavigationTransitionController begin callback preserved",
+    "scope": "Root, group, map, list and text/import pages; native and UIKit fallback presentations",
+    "tests_run": false,
+    "device_validated": false
   }
 }

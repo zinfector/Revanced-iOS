@@ -2,6 +2,7 @@
 // Native YouTube settings entry. UI presentation is supplied by RVSettingsUI.inc.
 static BOOL RVPresentSettings(id presenter);
 static void RVSettingsRefreshNativeHeader(UIViewController *controller);
+static void RVSettingsInstallHeaderGeometry(void);
 static NSString *const RVSettingsBuildScope=@"RVPort.SettingsBuildScope";
 static const void *RVSettingsOwnedSectionKey=&RVSettingsOwnedSectionKey;
 static const NSUInteger RVSettingsCategory=0x52565054; // Fits the native UInt32 category path.
@@ -41,9 +42,16 @@ static id RVSettingsCategoryOrder(id native) {
     return [native arrayByAddingObject:@(RVSettingsCategory)];
 }
 static void RVInstallSettingsBridge(void) {
+    RVSettingsInstallHeaderGeometry();
     RVHook(@"YTSettingsViewController",@"viewDidAppear:",@"v@:B",NO,^id(IMP original,SEL selector) {
         return ^(UIViewController *controller,BOOL animated) {
             ((void(*)(id,SEL,BOOL))original)(controller,selector,animated);
+            RVSettingsRefreshNativeHeader(controller);
+        };
+    });
+    RVHook(@"YTSettingsViewController",@"viewDidLayoutSubviews",@"v@:",NO,^id(IMP original,SEL selector) {
+        return ^(UIViewController *controller) {
+            ((void(*)(id,SEL))original)(controller,selector);
             RVSettingsRefreshNativeHeader(controller);
         };
     });

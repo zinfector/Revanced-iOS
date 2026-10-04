@@ -126,10 +126,10 @@ def generate():
                 factory=match[2],status=status,config_keys=keys.split(),implementation=behavior,limits=limits,parent=parent,device_validated=False))
     if set(named)-{r['id'] for r in rows}:raise ValueError('Named inventory missing from coverage')
     counts=dict(collections.Counter(r['status'] for r in rows))
-    report={'patcher_version':'0.3.13','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
+    report={'patcher_version':'0.3.14','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
         'device_validated':False,'named_inventory_count':len(named),'declaration_count':len(rows),'status_counts':counts,'patches':rows}
     (ROOT/'coverage.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
-    lines=['# YouTube iOS port coverage — 0.3.12','',
+    lines=['# YouTube iOS port coverage — 0.3.14','',
         'All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.','',
         f'The local tree contains {len(rows)} patch declarations, including the {len(named)} named patches in the original inventory. Declarations include dependencies and private resources; they are not {len(rows)} independent user features.','',
         '`adapted` = an iOS implementation of the selected behavior; `partial` = implemented subset with explicit remaining scope; `blocked` = no working port; `android_only` = Android mechanism absent on iOS; `native_existing` = retain the native iOS behavior; resource/infrastructure entries support the selected adapters.','',

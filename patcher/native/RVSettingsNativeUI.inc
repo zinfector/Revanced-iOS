@@ -39,6 +39,7 @@ static BOOL RVSettingsNativeRowsAvailable(void) {
         available &= RVUIRequire(@"YTSettingsCell",@"setParentResponder:",@"v@:@",NO);
         available &= [NSClassFromString(@"YTSettingsCell") isSubclassOfClass:UICollectionViewCell.class];
         available &= [NSClassFromString(@"YTFeedHeaderView") isSubclassOfClass:UICollectionReusableView.class];
+        available &= RVUIRequire(@"YTFeedHeaderView",@"setCustomEdgePadding:",@"v@:d",NO);
         RVLog(available ? @"Settings UI: native YouTube rows" : @"Settings UI: plain UIKit rows");
     });return available;
 }
@@ -54,6 +55,7 @@ static UIViewController *RVSettingsOwner(UIViewController *content) {
     UIViewController *parent=content.parentViewController;
     return objc_getAssociatedObject(parent,RVSettingsHostKey) ? parent : content;
 }
+#include "RVSettingsNavigation.inc"
 static NSInteger RVSettingsPageStyle(UIViewController *content) {
     NSString *theme=RVSetting(@"theme");
     if ([theme isEqual:@"dark"]) return 1;
@@ -89,16 +91,40 @@ static void RVSettingsRefreshAppearance(UIViewController *content) {
         RVCan(owner,"setupNavigationBarAppearance",@"v@:"))
         ((void(*)(id,SEL))objc_msgSend)(owner,sel_registerName("setupNavigationBarAppearance"));
 }
+static NSString *const RVSettingsHeaderGeometryScope=@"RVPort.SettingsHeaderGeometryScope";
+static void RVSettingsInstallHeaderGeometry(void) {
+    // Native browse insets use an app-global window, then fall back to a
+    // status-bar lookup. Only while refreshing a settings header, measure its
+    // actual attached window instead. The UIView category stays untouched.
+    RVHook(@"YTHeaderView",@"yt_safeAreaInsetsForBrowse",@"{UIEdgeInsets=dddd}@:",NO,^id(IMP original,SEL selector) {
+        return ^UIEdgeInsets(UIView *header) {
+            UIEdgeInsets native=((UIEdgeInsets(*)(id,SEL))original)(header,selector);
+            if (NSThread.currentThread.threadDictionary[RVSettingsHeaderGeometryScope]==header && header.window) {
+                CGFloat top=header.window.safeAreaInsets.top;
+                if (isfinite(top) && top>0) native.top=top;
+            }
+            return native;
+        };
+    });
+}
 static void RVSettingsRefreshNativeHeader(UIViewController *controller) {
     // YTHeaderView caches statusBarHeight/layoutHeight at construction. Once
     // attached, let its native status-area calculation refresh both together.
     // Do not shift title frames or add a device-specific top constant.
+    if (!NSThread.isMainThread || !controller.viewIfLoaded.window) return;
     UIView *header=RVObject(controller,"yt_headerView");
     if (![header isKindOfClass:NSClassFromString(@"YTHeaderView")] || !header.window ||
         !RVCan(header,"resetHeaderParamsForStatusBarUpdate",@"v@:")) return;
-    ((void(*)(id,SEL))objc_msgSend)(header,sel_registerName("resetHeaderParamsForStatusBarUpdate"));
+    CGFloat before=header.intrinsicContentSize.height;
+    NSMutableDictionary *thread=NSThread.currentThread.threadDictionary;id previous=thread[RVSettingsHeaderGeometryScope];
+    thread[RVSettingsHeaderGeometryScope]=header;
+    @try { ((void(*)(id,SEL))objc_msgSend)(header,sel_registerName("resetHeaderParamsForStatusBarUpdate")); }
+    @finally { if (previous) thread[RVSettingsHeaderGeometryScope]=previous;else [thread removeObjectForKey:RVSettingsHeaderGeometryScope]; }
+    CGFloat after=header.intrinsicContentSize.height;
+    if (before==after) return; // Avoid a layout/invalidation feedback loop.
     [header invalidateIntrinsicContentSize];[header setNeedsLayout];[header.superview setNeedsLayout];
     [controller.parentViewController.viewIfLoaded setNeedsLayout];
+    RVLog([NSString stringWithFormat:@"Settings header height refreshed: %.1f -> %.1f",before,after]);
 }
 static void RVSettingsHostLoad(id object,SEL selector) {
     (void)selector;((UIViewController *)object).view=[UIView new];
@@ -126,12 +152,18 @@ static void RVSettingsHostDidAppear(id object,SEL selector,BOOL animated) {
     ((void(*)(id,SEL,BOOL))original)(object,selector,animated);
     RVSettingsRefreshNativeHeader(object);
 }
+static void RVSettingsHostDidLayout(id object,SEL selector) {
+    IMP original=class_getMethodImplementation(class_getSuperclass(RVSettingsHostClass),selector);
+    ((void(*)(id,SEL))original)(object,selector);
+    RVSettingsRefreshNativeHeader(object);
+}
 static Class RVSettingsNativeHostClass(void) {
     static dispatch_once_t once;dispatch_once(&once,^{
         BOOL valid=RVUIRequire(@"YTStyledViewController",@"initWithParentResponder:",@"@@:@",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"viewDidLoad",@"v@:",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"viewWillAppear:",@"v@:B",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"viewDidAppear:",@"v@:B",NO);
+        valid &= RVUIRequire(@"YTStyledViewController",@"viewDidLayoutSubviews",@"v@:",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"setShouldSetupNavigationBarStyle:",@"v@:B",NO);
         valid &= RVUIRequire(@"YTStyledViewController",@"setupNavigationBarAppearance",@"v@:",NO);
         Class base=NSClassFromString(@"YTStyledViewController");
@@ -140,6 +172,7 @@ static Class RVSettingsNativeHostClass(void) {
         BOOL added=class_addMethod(cls,@selector(loadView),(IMP)RVSettingsHostLoad,"v@:");
         added &= class_addMethod(cls,@selector(viewDidLoad),(IMP)RVSettingsHostDidLoad,"v@:");
         added &= class_addMethod(cls,@selector(viewDidAppear:),(IMP)RVSettingsHostDidAppear,"v@:B");
+        added &= class_addMethod(cls,@selector(viewDidLayoutSubviews),(IMP)RVSettingsHostDidLayout,"v@:");
         added &= class_addMethod(cls,sel_registerName("pageStyle"),(IMP)RVSettingsHostPageStyle,"q@:");
         if (!added) { objc_disposeClassPair(cls);return; }
         RVSettingsHostClass=cls;objc_registerClassPair(cls);RVLog(@"Settings UI: native YouTube header");
@@ -178,8 +211,7 @@ static void RVSettingsPop(UIViewController *content) {
         self.label=[UILabel new];self.label.numberOfLines=0;self.label.adjustsFontForContentSizeCategory=YES;
         self.label.translatesAutoresizingMaskIntoConstraints=NO;[self addSubview:self.label];
         [NSLayoutConstraint activateConstraints:@[[self.label.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:16],
-            [self.label.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-16],[self.label.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
-            [self.label.bottomAnchor constraintLessThanOrEqualToAnchor:self.bottomAnchor constant:-8]]];
+            [self.label.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-16],[self.label.topAnchor constraintEqualToAnchor:self.topAnchor constant:8]]];
         self.separator=[UIView new];self.separator.translatesAutoresizingMaskIntoConstraints=NO;self.separator.hidden=YES;[self addSubview:self.separator];
         [NSLayoutConstraint activateConstraints:@[[self.separator.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
             [self.separator.trailingAnchor constraintEqualToAnchor:self.trailingAnchor],[self.separator.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
@@ -338,6 +370,7 @@ static void RVSettingsPop(UIViewController *content) {
         ((void(*)(id,SEL,id))objc_msgSend)(self.nativeSections[index.section],sel_registerName("updateHeader:"),supplement);
         ((void(*)(id,SEL,id,id,NSUInteger,id,NSUInteger))objc_msgSend)(self.formatter,
             sel_registerName("updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:"),supplement,kind,index.section,self.nativeSections[index.section],self.sections.count);
+        ((void(*)(id,SEL,double))objc_msgSend)(supplement,sel_registerName("setCustomEdgePadding:"),16);
         if (RVCan(supplement,"pageStyleDidChange:",@"v@:q")) ((void(*)(id,SEL,NSInteger))objc_msgSend)(supplement,sel_registerName("pageStyleDidChange:"),self.pageStyle);
     } else {
         RVSettingsSupplement *label=(id)supplement;label.label.text=self.sections[index.section][header ? @"title" : @"footer"];
