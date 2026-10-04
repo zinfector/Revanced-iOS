@@ -61,3 +61,5 @@ When icon_gap_measured is true, icon_text_gap_points reports the observed gap us
 
 
 Version 0.3.17 adds outer_leading_inset, outer_trailing_inset, owned_end_margin and outer_edge_gate. native_outer_edges_balanced means the measured pair’s two outer insets agree within half a point. watch_will_appear/watch_gesture_began/synchronous_transition_refresh distinguish restoration before animation completion. The full diagnostic report includes playback_speed with native menu source, requested/observed rates, attempt count and confirmation gate. Capture it on the first launch after a native speed selection if the rate still fails to change.
+
+Delivered build: `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `39b45371c1e727d0279e843c14c6b561bfc6493e4d3a3359578c1ce1a96b05d1`. Source commit: `d27b904dfabae3a62fc83a9b3644e48889a5ce04`.

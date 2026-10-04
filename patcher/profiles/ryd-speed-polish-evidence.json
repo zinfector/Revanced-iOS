@@ -19,5 +19,11 @@
     "RVSpeed.inc": "1b67bb06fe358dc6e883a1cb86b83b35581b1229da69045c6af160dbeb4e4d8e",
     "RVPort.m": "fb49a97b7eda4b38410676b03686f7ab09f1be9e8368569124761f7ef8dda09a",
     "RVExtras.inc": "f4d3a4efb9951746082070b94fa5de59c6f073257bf9272c1a90dff861d34e66"
-  }
+  },
+  "native_build_source_sha256": "39b45371c1e727d0279e843c14c6b561bfc6493e4d3a3359578c1ce1a96b05d1",
+  "payload_sha256": "0be58b27f796ae516c0e3ced40c55d414a83f0865805b8edc2df0ed6fa9c3fee",
+  "cloud_run": 37243138174,
+  "source_commit": "d27b904dfabae3a62fc83a9b3644e48889a5ce04",
+  "ipa_filename": "YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa",
+  "ipa_sha256": "0859ca01c475509358225ecdb2069a8e47467a903f9345f6c6b5bf2b643518aa"
 }
