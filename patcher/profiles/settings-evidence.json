@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.4",
+  "supported_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "metadata_anchors": [
+    {
+      "name": "YTSettingsViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "viewDidLoad",
+          "encoding": "v16@0:8",
+          "imp": "0x10145530c"
+        },
+        {
+          "kind": "-",
+          "selector": "settingsSectionControllers",
+          "encoding": "@16@0:8",
+          "imp": "0x101455428"
+        },
+        {
+          "kind": "-",
+          "selector": "showOrPushViewController:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x10145582c"
+        },
+        {
+          "kind": "-",
+          "selector": "setSectionItems:forCategory:title:icon:titleDescription:headerHidden:",
+          "encoding": "v60@0:8@16Q24@32@40@48B56",
+          "imp": "0x101455cd0"
+        },
+        {
+          "kind": "-",
+          "selector": "setSectionControllers",
+          "encoding": "v16@0:8",
+          "imp": "0x1014578f4"
+        }
+      ]
+    },
+    {
+      "name": "YTAppSettingsPresentationData",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "settingsCategoryOrder",
+          "encoding": "@16@0:8",
+          "imp": "0x10149ad6c"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsGroupData",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "type",
+          "encoding": "Q16@0:8",
+          "imp": "0x101467cf4"
+        },
+        {
+          "kind": "-",
+          "selector": "orderedCategories",
+          "encoding": "@16@0:8",
+          "imp": "0x101467cfc"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsSectionItem",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:",
+          "encoding": "@56@0:8@16@24@32@?40@?48",
+          "imp": "0x10186f214"
+        }
+      ]
+    }
+  ],
+  "runtime_uses_fixed_addresses": false,
+  "device_settings_verified": false,
+  "local_read_only_research_sha256": {
+    "build/settings-entry-annotated.txt": "43304242802d38bc105561e52f02b9c182c3e121dadeaaca8fabdecb2a1866f0",
+    "build/settings-order-annotated.txt": "c694ddfbe0b637cc746b501ee5c4f7226ca3d057100c3468d6accb1c31fde6c0",
+    "build/settings-navigation-annotated.txt": "213c3033745ba603652a7e202fdaa18f17d47e5e0d7ef4f17c147f74c0b781b3",
+    "build/settings-category-route-annotated.txt": "f1caf88f4137af9acac63dc4f08e52594ebb4743dcd00bfb1f6b74e0d4273604",
+    "build/settings-selection-annotated.txt": "4289e86df6ecc13e6f7acf443578923d7827daf04bab680896fe6b6f56f2c404",
+    "build/settings-item-init-annotated.txt": "0b369b91d9657605a2bc900c2197d07758b01958d2a296569735f9e6444a0552"
+  },
+  "android_settings_source_sha256": "62f692140edd376243d49a780f9966f5f264496263d65bb4ad90dd3e65440a5d",
+  "preference_groups": 13,
+  "runtime_preferences": 113,
+  "boolean_patch_switches": 79,
+  "limits": "Host fixtures exercise the production model and native menu bridge; real YouTube entry visibility, navigation and UIKit interactions require device checks."
+}

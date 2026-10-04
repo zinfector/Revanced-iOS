@@ -1,0 +1,12 @@
+{
+  "source": "User message in this thread",
+  "observation": "Login works now.",
+  "device_target": "iPhone 17 Pro Max / iOS 27.0",
+  "latest_supplied_artifact": "YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa",
+  "successful_artifact_filename_reconfirmed": false,
+  "login_success_user_reported": true,
+  "token_refresh_verified": false,
+  "cold_relaunch_verified": false,
+  "playback_verified": false,
+  "new_settings_ui_verified": false
+}

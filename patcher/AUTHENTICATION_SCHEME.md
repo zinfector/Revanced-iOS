@@ -102,3 +102,7 @@ Previously tested file: `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsi
 The [macOS/Windows workflow](https://github.com/zinfector/Revanced-iOS/actions/runs/37183327384) passed all 33 host tests with no skips, including the production authentication adapter, private-query branch and request-identity/privacy contracts. Xcode built the ARM64 iOS payload, 68 direct hook ABIs match the supplied metadata, and the packaged Windows GUI passed with 73 switches and extension removal selected by default. These checks do not execute Google login or iOS Security on the phone.
 
 Recommended file: `output/YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa`, SHA-256 `f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0`, 140,332,714 bytes. Real-IPA integration retained 11,760 original members byte-identically, removed 1,718 signature/extension members, and preserved section/LINKEDIT bytes, chained fixups and existing load commands; ZIP CRC checks passed. No `.appex` members remain. Receipt: [profiles/release-0.3.2.json](profiles/release-0.3.2.json).
+
+## User-reported login success
+
+The user subsequently reported, “Login works now,” after the revised auth IPA was supplied. The exact filename was not restated in that message. This is device evidence of successful login, not a test of token refresh, cold-relaunch persistence or every patch. Version 0.3.4 retains the authentication source unchanged while adding the dedicated ReVanced settings pane. [Recorded observation](profiles/device-auth-login-success.json).

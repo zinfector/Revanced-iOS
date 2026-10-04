@@ -103,7 +103,7 @@ INFRASTRUCTURE={
 'playerControlsPatch':'Native Tools menu and settings switches instead of Android injected resource controls.',
 'playerTypeHookPatch':'Guarded native ordinary/live/ad and fullscreen checks.',
 'recyclerViewTreeHookPatch':'Selected native view/model hooks; no Android RecyclerView traversal.',
-'settingsPatch':'Native settings table opened by three-finger one-second hold, with feature toggles and diagnostics.',
+'settingsPatch':'Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.',
 'videoInformationPatch':'Native content ID, time, duration and CPN accessors.',
 'playerResponseMethodHookPatch':'Selected player response/accessor and content-load/time hooks.',
 'videoIdPatch':'Guarded native video ID accessors and generation-checked service responses.',
@@ -126,10 +126,10 @@ def generate():
                 factory=match[2],status=status,config_keys=keys.split(),implementation=behavior,limits=limits,parent=parent,device_validated=False))
     if set(named)-{r['id'] for r in rows}:raise ValueError('Named inventory missing from coverage')
     counts=dict(collections.Counter(r['status'] for r in rows))
-    report={'patcher_version':'0.3.3','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
+    report={'patcher_version':'0.3.4','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
         'device_validated':False,'named_inventory_count':len(named),'declaration_count':len(rows),'status_counts':counts,'patches':rows}
     (ROOT/'coverage.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
-    lines=['# YouTube iOS port coverage — 0.3.3','',
+    lines=['# YouTube iOS port coverage — 0.3.4','',
         'All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.','',
         f'The local tree contains {len(rows)} patch declarations, including the {len(named)} named patches in the original inventory. Declarations include dependencies and private resources; they are not {len(rows)} independent user features.','',
         '`adapted` = an iOS implementation of the selected behavior; `partial` = implemented subset with explicit remaining scope; `blocked` = no working port; `android_only` = Android mechanism absent on iOS; `native_existing` = retain the native iOS behavior; resource/infrastructure entries support the selected adapters.','',

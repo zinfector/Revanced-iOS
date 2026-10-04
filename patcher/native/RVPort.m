@@ -395,83 +395,8 @@ static void RVInstallPlayer(void) {
 
 #include "RVExtras.inc"
 
-@interface RVSettingsController : UITableViewController
-@property(nonatomic,strong) NSArray<NSString *> *keys;
-@property(nonatomic,strong) NSArray<NSString *> *labels;
-@end
-@implementation RVSettingsController
-- (void)viewDidLoad {
-    [super viewDidLoad];self.title=@"ReVanced Port";
-    self.keys=RVFeatureKeys;
-    self.labels=RVFeatureLabels;
-    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Video tools" style:UIBarButtonItemStylePlain target:self action:@selector(tools)];
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
-}
-- (void)done { [self dismissViewControllerAnimated:YES completion:nil]; }
-- (void)tools { RVShowTools(self); }
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { return 3; }
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section { return section==0 ? self.keys.count : section==1 ? 5 : 1; }
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section { return section==0 ? @"Features" : section==1 ? @"Playback and miniplayer" : @"Diagnostics"; }
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    return section==0 ? @"Changes apply immediately. Reopen the video to rebuild its player response. Experimental features need device testing. Restart after changing authentication settings. Reopen the miniplayer after size changes. Visual changes apply on its next layout; relaunch if app shortcuts do not refresh." : nil;
-}
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)index {
-    UITableViewCell *cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
-    if (index.section==0) {
-        cell.textLabel.text=self.labels[index.row];UISwitch *toggle=[UISwitch new];toggle.tag=index.row;
-        toggle.on=RVEnabled(self.keys[index.row]);toggle.enabled=RVCompatible;
-        [toggle addTarget:self action:@selector(toggled:) forControlEvents:UIControlEventValueChanged];cell.accessoryView=toggle;
-    } else if (index.section==1) {
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-        if (index.row==0) { cell.textLabel.text=@"Default speed";cell.detailTextLabel.text=[NSString stringWithFormat:@"%.2fx",[RVSetting(@"default_speed") doubleValue]]; }
-        if (index.row==1) { cell.textLabel.text=@"Resolution cap";int q=[RVSetting(@"default_quality") intValue];cell.detailTextLabel.text=q ? [NSString stringWithFormat:@"%dp",q] : @"Auto"; }
-        if (index.row==2) { cell.textLabel.text=@"Ad strategy";cell.detailTextLabel.text=RVSetting(@"ad_strategy"); }
-        if (index.row==3) { cell.textLabel.text=@"Miniplayer minimum size";double size=[RVSetting(@"miniplayer_min_dimension_points") doubleValue];cell.detailTextLabel.text=size ? [NSString stringWithFormat:@"%.0f points",size] : @"Native"; }
-        if (index.row==4) { cell.textLabel.text=@"Miniplayer control-background opacity";cell.detailTextLabel.text=[NSString stringWithFormat:@"%.0f%%",100*[RVSetting(@"miniplayer_overlay_opacity") doubleValue]]; }
-    } else { cell.textLabel.text=RVCompatible ? @"Show hook diagnostics" : @"Unsupported app: features disabled";cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator; }
-    return cell;
-}
-- (void)toggled:(UISwitch *)toggle {
-    [[NSUserDefaults standardUserDefaults] setBool:toggle.on forKey:[RVPreferencePrefix stringByAppendingString:self.keys[toggle.tag]]];
-    if ([self.keys[toggle.tag] isEqual:@"hide_shorts_shortcut"]) RVRefreshShortcuts();
-}
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)index {
-    [tableView deselectRowAtIndexPath:index animated:YES];
-    if (index.section==0) return;
-    if (index.section==2) {
-        NSString *text;@synchronized(RVStatus) { text=[RVStatus componentsJoinedByString:@"\n"]; }
-        UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            NSMutableDictionary *effective=[NSMutableDictionary dictionary];for (NSString *key in RVConfig) effective[key]=RVSetting(key) ?: NSNull.null;
-            NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-            NSDictionary *report=@{@"patcher_version":@"0.3.3",@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":effective,@"hooks":hooks,@"authentication":RVAuthenticationReport()};
-            NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
-            if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Copy patch configuration" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            NSMutableDictionary *effective=[NSMutableDictionary dictionary];for (NSString *key in RVConfig) effective[key]=RVSetting(key) ?: NSNull.null;
-            NSData *data=[NSJSONSerialization dataWithJSONObject:effective options:NSJSONWritingPrettyPrinted error:nil];
-            if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:alert animated:YES completion:nil];return;
-    }
-    NSArray *values;NSString *key;
-    if (index.row==0) { values=@[@0.25,@0.5,@0.75,@1.0,@1.25,@1.5,@1.75,@2.0,@2.5,@3.0,@4.0];key=@"default_speed"; }
-    else if (index.row==1) { values=@[@0,@144,@240,@360,@480,@720,@1080,@1440,@2160];key=@"default_quality"; }
-    else if (index.row==2) { values=@[@"response",@"trigger",@"coordinator"];key=@"ad_strategy"; }
-    else if (index.row==3) { values=@[@0,@170,@192,@240,@300,@360,@480];key=@"miniplayer_min_dimension_points"; }
-    else { values=@[@0,@0.25,@0.5,@0.75,@1.0];key=@"miniplayer_overlay_opacity"; }
-    NSString *hint=index.row==2 ? @"Trigger and coordinator strategies are separate experiments." : index.row==3 ? @"0 keeps the native size. Clamped to fit the app window. Reopen the miniplayer after changing." : index.row==4 ? @"Changes circular control backgrounds; native fades are preserved." : nil;
-    UIAlertController *picker=[UIAlertController alertControllerWithTitle:@"Choose setting" message:hint preferredStyle:UIAlertControllerStyleAlert];
-    for (id value in values) {
-        [picker addAction:[UIAlertAction actionWithTitle:[value description] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [[NSUserDefaults standardUserDefaults] setObject:value forKey:[RVPreferencePrefix stringByAppendingString:key]];
-            [self.tableView reloadData];
-        }]];
-    }
-    [picker addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:picker animated:YES completion:nil];
-}
-@end
+#include "RVSettingsBridge.inc"
+#include "RVSettingsUI.inc"
 
 @interface RVSettingsEntrance : NSObject
 - (void)attach;
@@ -494,8 +419,9 @@ static void RVInstallPlayer(void) {
     if (gesture.state!=UIGestureRecognizerStateBegan) return;
     UIViewController *top=((UIWindow *)gesture.view).rootViewController;
     while (top.presentedViewController) top=top.presentedViewController;
-    if (!top || [top isKindOfClass:[RVSettingsController class]]) return;
-    RVSettingsController *settings=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];
+    UIViewController *visible=[top isKindOfClass:UINavigationController.class] ? ((UINavigationController *)top).visibleViewController : top;
+    if (!top || [visible isKindOfClass:RVSettingsController.class] || [visible isKindOfClass:RVPreferenceTextController.class]) return;
+    RVSettingsController *settings=[[RVSettingsController alloc] initWithStyle:UITableViewStyleInsetGrouped];settings.modalEntry=YES;
     [top presentViewController:[[UINavigationController alloc] initWithRootViewController:settings] animated:YES completion:nil];
 }
 @end
@@ -527,7 +453,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
         RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
-        if (RVCompatible) { RVInstallAuthentication();RVInstallMiniplayer();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
+        if (RVCompatible) { RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             [[NSNotificationCenter defaultCenter] addObserver:entrance selector:@selector(attach) name:UIApplicationDidBecomeActiveNotification object:nil];

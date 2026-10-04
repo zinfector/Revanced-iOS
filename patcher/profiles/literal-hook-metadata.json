@@ -734,5 +734,79 @@
         "imp": "0x100310184"
       }
     ]
+  },
+  {
+    "name": "YTSettingsViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "viewDidLoad",
+        "encoding": "v16@0:8",
+        "imp": "0x10145530c"
+      },
+      {
+        "kind": "-",
+        "selector": "settingsSectionControllers",
+        "encoding": "@16@0:8",
+        "imp": "0x101455428"
+      },
+      {
+        "kind": "-",
+        "selector": "showOrPushViewController:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10145582c"
+      },
+      {
+        "kind": "-",
+        "selector": "setSectionItems:forCategory:title:icon:titleDescription:headerHidden:",
+        "encoding": "v60@0:8@16Q24@32@40@48B56",
+        "imp": "0x101455cd0"
+      },
+      {
+        "kind": "-",
+        "selector": "setSectionControllers",
+        "encoding": "v16@0:8",
+        "imp": "0x1014578f4"
+      }
+    ]
+  },
+  {
+    "name": "YTAppSettingsPresentationData",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "settingsCategoryOrder",
+        "encoding": "@16@0:8",
+        "imp": "0x10149ad6c"
+      }
+    ]
+  },
+  {
+    "name": "YTSettingsGroupData",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "type",
+        "encoding": "Q16@0:8",
+        "imp": "0x101467cf4"
+      },
+      {
+        "kind": "-",
+        "selector": "orderedCategories",
+        "encoding": "@16@0:8",
+        "imp": "0x101467cfc"
+      }
+    ]
+  },
+  {
+    "name": "YTSettingsSectionItem",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:",
+        "encoding": "@56@0:8@16@24@32@?40@?48",
+        "imp": "0x10186f214"
+      }
+    ]
   }
 ]

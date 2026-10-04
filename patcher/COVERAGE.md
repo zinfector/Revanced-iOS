@@ -1,4 +1,4 @@
-# YouTube iOS port coverage — 0.3.3
+# YouTube iOS port coverage — 0.3.4
 
 All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.
 
@@ -113,8 +113,8 @@ Two wrappers remain blocked: full stream replacement and alternate-client transp
 | `versionCheckPatch` | android_only | No Google Play Services version checks. Patcher uses its iOS source profile and minimum OS checks. |
 | `sanitizeSharingLinksPatch` | partial | Removes identified public YouTube share-tracking query parameters; own copy action emits clean URLs. Does not intercept every native share producer. |
 | `recyclerViewTreeHookPatch` | infrastructure_adapter | Selected native view/model hooks; no Android RecyclerView traversal. Version-specific subset; runtime ABI checks and device tests remain necessary. |
-| `settingsResourcePatch` | infrastructure_adapter | Native settings table opened by three-finger one-second hold, with feature toggles and diagnostics. Version-specific subset; runtime ABI checks and device tests remain necessary. |
-| `settingsPatch` | infrastructure_adapter | Native settings table opened by three-finger one-second hold, with feature toggles and diagnostics. Version-specific subset; runtime ABI checks and device tests remain necessary. |
+| `settingsResourcePatch` | infrastructure_adapter | Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained. Version-specific subset; runtime ABI checks and device tests remain necessary. |
+| `settingsPatch` | infrastructure_adapter | Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained. Version-specific subset; runtime ABI checks and device tests remain necessary. |
 | `spoofVideoStreamsPatch` | blocked | No iOS stream replacement implementation. Requires a verified request/response protobuf adapter, account/token handling, stream URL and signature validation, expiry management and player format integration. Client-field overrides do not implement this. |
 | `userAgentClientSpoofPatch` | blocked | No alternate-client transport/header spoofing. No verified iOS Cronet/header request interception; changing headers alone can desynchronize client/auth/playback requests. |
 | `forceOriginalAudioPatch` | partial | Selects a positively identified .4 original audio track through the native switch controller. Original-track availability and source enum behavior need device tests; unmatched tracks remain unchanged. |

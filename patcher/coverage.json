@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.3",
+  "patcher_version": "0.3.4",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -1561,7 +1561,7 @@
       "factory": "resourcePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Native settings table opened by three-finger one-second hold, with feature toggles and diagnostics.",
+      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": "settingsPatch",
       "device_validated": false
@@ -1575,7 +1575,7 @@
       "factory": "bytecodePatch",
       "status": "infrastructure_adapter",
       "config_keys": [],
-      "implementation": "Native settings table opened by three-finger one-second hold, with feature toggles and diagnostics.",
+      "implementation": "Dedicated ReVanced entry in native YouTube settings, 13 groups covering all 79 switches and 34 runtime values, search, validated editors/import/export, reset and diagnostics. Existing preference keys and gesture fallback are retained.",
       "limits": "Version-specific subset; runtime ABI checks and device tests remain necessary.",
       "parent": null,
       "device_validated": false

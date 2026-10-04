@@ -34,6 +34,8 @@ def build(sdk=None, zig=None):
     out=ROOT/'build';out.mkdir(exist_ok=True)
     from features import native_header
     (ROOT/'native/RVFeatures.h').write_bytes(native_header().encode('utf-8'))
+    from settings_catalog import native_header as settings_header
+    (ROOT/'native/RVSettingsCatalog.h').write_bytes(settings_header().encode('utf-8'))
     if sys.platform == 'darwin' and not zig:
         sdk=Path(sdk or subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip())
         compiler=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0']
