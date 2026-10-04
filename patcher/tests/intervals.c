@@ -1,5 +1,6 @@
 #include "../native/RVIntervals.h"
 #include "../native/RVImageHeader.h"
+#include "../native/RVMiniplayerSupport.h"
 #include <stdio.h>
 #define CHECK(x) do { if (!(x)) { fprintf(stderr,"interval check failed on line %d\n",__LINE__);return 1; } } while (0)
 int main(void) {
@@ -26,5 +27,20 @@ int main(void) {
     CHECK(RVImageResponseValid(206,"image/jpeg",32));CHECK(RVImageResponseValid(200,"image/webp",-1));
     CHECK(!RVImageResponseValid(404,"image/jpeg",32));CHECK(!RVImageResponseValid(204,"image/jpeg",0));
     CHECK(!RVImageResponseValid(200,"text/html",100));CHECK(!RVImageResponseValid(200,"image/jpeg",6*1024*1024));
+    CHECK(RVMiniplayerDimension(192,0,430,932)==192);
+    CHECK(RVMiniplayerDimension(192,300,430,932)==300);
+    CHECK(RVMiniplayerDimension(192,480,430,932)==398);
+    CHECK(RVMiniplayerDimension(192,300,932,430)==300);
+    CHECK(RVMiniplayerDimension(192,300,180,300)==192);
+    CHECK(RVMiniplayerDimension(192,169,430,932)==192);
+    CHECK(RVMiniplayerDimension(192,481,430,932)==192);
+    CHECK(RVMiniplayerDimension(192,NAN,430,932)==192);
+    CHECK(RVMiniplayerDimension(192,300,NAN,932)==192);
+    CHECK(isnan(RVMiniplayerDimension(NAN,300,430,932)));
+    CHECK(RVMiniplayerDimension(0,300,430,932)==0);
+    CHECK(RVMiniplayerAlpha(.8,.5)==.4);
+    CHECK(RVMiniplayerAlpha(.8,0)==0 && RVMiniplayerAlpha(.8,1)==.8);
+    CHECK(RVMiniplayerAlpha(.8,-1)==.8 && RVMiniplayerAlpha(.8,2)==.8);
+    CHECK(RVMiniplayerAlpha(.8,NAN)==.8 && isnan(RVMiniplayerAlpha(NAN,.5)));
     puts("Shared native interval and marker geometry checks passed.");return 0;
 }

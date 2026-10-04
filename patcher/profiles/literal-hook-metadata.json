@@ -627,5 +627,112 @@
         "imp": "0x104fe0588"
       }
     ]
+  },
+  {
+    "name": "YTWatchFloatingMiniplayerViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "gestureRecognizerShouldBegin:",
+        "encoding": "B24@0:8@16",
+        "imp": "0x10158458c"
+      },
+      {
+        "kind": "-",
+        "selector": "didPan:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1015869b0"
+      },
+      {
+        "kind": "-",
+        "selector": "didPanMiniBarWithRecognizer:state:delta:velocity:",
+        "encoding": "v64@0:8@16q24{CGPoint=dd}32{CGPoint=dd}48",
+        "imp": "0x101584ea8"
+      },
+      {
+        "kind": "-",
+        "selector": "didDoubleTap:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101585214"
+      }
+    ]
+  },
+  {
+    "name": "YTMiniplayerLayerView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "didPanMiniplayer:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1014ea254"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchFloatingMiniplayerBadgeView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setMessagingText:showingPremiumBadge:",
+        "encoding": "v28@0:8@16B24",
+        "imp": "0x10158a338"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchFloatingMiniplayerWithPersistentControlsView",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "maskMiniplayerView",
+        "encoding": "v16@0:8",
+        "imp": "0x10158d62c"
+      },
+      {
+        "kind": "-",
+        "selector": "contentView",
+        "encoding": "@16@0:8",
+        "imp": "0x10158dea0"
+      },
+      {
+        "kind": "-",
+        "selector": "isCollapsingOrExpanding",
+        "encoding": "B16@0:8",
+        "imp": "0x10158dde8"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchMiniplayerConstants",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "minimumDefaultDimension",
+        "encoding": "d16@0:8",
+        "imp": "0x1034aa3e4"
+      }
+    ]
+  },
+  {
+    "name": "YTQuickActionsController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "shortcutItems",
+        "encoding": "@16@0:8",
+        "imp": "0x10066a308"
+      }
+    ]
+  },
+  {
+    "name": "YTUIUtils",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "appBounds",
+        "encoding": "{CGRect={CGPoint=dd}{CGSize=dd}}16@0:8",
+        "imp": "0x100310184"
+      }
+    ]
   }
 ]

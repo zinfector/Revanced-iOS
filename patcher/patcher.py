@@ -34,7 +34,7 @@ DEFAULTS = {'schema': 1, **{f: False for f in FEATURES}, 'video_ads': True,
             'thumbnail_proxy_url':'', 'dearrow_url':'https://dearrow-thumb.ajay.app/api/v1/getThumbnail',
             'sponsor_behaviors':{}, 'sponsor_colors':{}, 'sponsor_min_duration':0.0,
             'thumbnail_modes':{}, 'theme_light_background':'', 'theme_dark_background':''}
-DEFAULTS.update(wifi_quality=-1,cellular_quality=-1)
+DEFAULTS.update(wifi_quality=-1,cellular_quality=-1,miniplayer_min_dimension_points=0,miniplayer_overlay_opacity=1.0)
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def file_sha(path):
@@ -123,6 +123,10 @@ def validate_config(config):
         raise PatchError('double_tap_seconds must be 0 (unchanged) through 120')
     if type(c['overlay_opacity']) not in (int,float) or not math.isfinite(c['overlay_opacity']) or not 0<=c['overlay_opacity']<=1:
         raise PatchError('overlay_opacity must be between 0 and 1')
+    if type(c['miniplayer_min_dimension_points']) not in (int,float) or not math.isfinite(c['miniplayer_min_dimension_points']) or not (c['miniplayer_min_dimension_points']==0 or 170<=c['miniplayer_min_dimension_points']<=480):
+        raise PatchError('miniplayer_min_dimension_points must be 0 (native) or 170-480 points')
+    if type(c['miniplayer_overlay_opacity']) not in (int,float) or not math.isfinite(c['miniplayer_overlay_opacity']) or not 0<=c['miniplayer_overlay_opacity']<=1:
+        raise PatchError('miniplayer_overlay_opacity must be between 0 and 1')
     if not isinstance(c['seekbar_color'],str) or (c['seekbar_color'] and not re.fullmatch(r'#[0-9A-Fa-f]{6}',c['seekbar_color'])):
         raise PatchError('seekbar_color must be empty or #RRGGBB')
     for key in ('theme_light_background','theme_dark_background'):
@@ -179,7 +183,7 @@ def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
         if info.get('CFBundleIdentifier')!=p['bundle'] or info.get('CFBundleShortVersionString')!=p['version'] or image.uuid!=p['uuid'] or sha(binary)!=p['executable_sha256']:
             raise PatchError('Unsupported app version or executable hash; no output produced')
         binary = inject_library(binary, LOAD_PATH)
-        marker = {'patcher_version': '0.3.2', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
+        marker = {'patcher_version': '0.3.3', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
                   'uuid': p['uuid'], 'input_ipa_sha256': file_sha(ipa),
                   'original_executable_sha256': p['executable_sha256'], 'patched_executable_sha256': sha(binary),
                   'payload_sha256': sha(library), 'config': c, 'signing_required': True,

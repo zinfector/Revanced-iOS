@@ -16,7 +16,7 @@ from features import CATALOG as LABELS
 class App:
     def __init__(self, root):
         self.root = root
-        root.title('YouTube iOS Patcher 0.3.2 ? 21.39.4')
+        root.title('YouTube iOS Patcher 0.3.3 - 21.39.4')
         root.geometry('740x720')
         root.minsize(660, 680)
         self.events = queue.Queue()
@@ -28,6 +28,8 @@ class App:
         self.speed = tk.StringVar(value='1.0')
         self.quality = tk.StringVar(value='0')
         self.strategy = tk.StringVar(value='response')
+        self.miniplayer_size = tk.StringVar(value='0')
+        self.miniplayer_opacity = tk.StringVar(value='1.0')
         self.strip = tk.BooleanVar(value=True)
         self.flags = {key: tk.BooleanVar(value=patcher.DEFAULTS[key]) for key in patcher.FEATURES}
         frame = ttk.Frame(root, padding=18)
@@ -62,6 +64,14 @@ class App:
             box.grid(row=0, column=column, sticky='w', padx=(0, 16))
             ttk.Label(box, text=label).pack(anchor='w')
             ttk.Combobox(box, textvariable=variable, values=values, width=20, state='readonly').pack(anchor='w', pady=4)
+        for column, (label, variable, values) in enumerate((
+            ('Miniplayer size (0 = native)', self.miniplayer_size, ('0', '170', '192', '240', '300', '360', '480')),
+            ('Miniplayer background opacity', self.miniplayer_opacity, ('0.0', '0.25', '0.5', '0.75', '1.0')),
+        )):
+            box = ttk.Frame(playback)
+            box.grid(row=1, column=column, sticky='w', padx=(0, 16))
+            ttk.Label(box, text=label).pack(anchor='w')
+            ttk.Combobox(box, textvariable=variable, values=values, width=24, state='readonly').pack(anchor='w', pady=4)
         ttk.Checkbutton(frame, text='Remove app extensions (recommended for SideStore and other sideloaders)', variable=self.strip).grid(row=6, column=0, columnspan=3, sticky='w', pady=(10, 6))
         ttk.Label(frame, text='Creates an unsigned IPA. Re-sign before installing. Device behavior is untested.\nIn the app, hold three fingers for one second to open patch settings.', wraplength=680).grid(row=7, column=0, columnspan=3, sticky='w', pady=8)
         actions = ttk.Frame(frame)
@@ -136,7 +146,7 @@ class App:
         source, target = self.input.get().strip(), self.output.get().strip()
         if not source or not target: return messagebox.showerror('Patcher', 'Choose both input and output paths.')
         config = dict(self.config, **{key: flag.get() for key, flag in self.flags.items()})
-        config.update(default_speed=float(self.speed.get()), default_quality=int(self.quality.get()), ad_strategy=self.strategy.get())
+        config.update(default_speed=float(self.speed.get()), default_quality=int(self.quality.get()), ad_strategy=self.strategy.get(), miniplayer_min_dimension_points=float(self.miniplayer_size.get()), miniplayer_overlay_opacity=float(self.miniplayer_opacity.get()))
         strip = self.strip.get()
         branding = dict(self.branding)
         def work():
@@ -152,6 +162,7 @@ class App:
             self.config=patcher.validate_config(json.loads(Path(path).read_text(encoding='utf-8')))
             for key, flag in self.flags.items():flag.set(self.config[key])
             self.speed.set(str(self.config['default_speed']));self.quality.set(str(self.config['default_quality']));self.strategy.set(self.config['ad_strategy'])
+            self.miniplayer_size.set(str(self.config['miniplayer_min_dimension_points']));self.miniplayer_opacity.set(str(self.config['miniplayer_overlay_opacity']))
             self.write('Loaded configuration: '+path)
         except Exception as ex:messagebox.showerror('Patcher',str(ex))
 

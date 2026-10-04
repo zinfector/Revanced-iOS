@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.2",
+  "patcher_version": "0.3.3",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -675,10 +675,11 @@
       "config_keys": [
         "hide_shorts",
         "shorts_ads",
-        "hide_shorts_navigation"
+        "hide_shorts_navigation",
+        "hide_shorts_shortcut"
       ],
-      "implementation": "Shelf/cell filtering, native Shorts ad-model suppression and pivot hiding.",
-      "limits": "Individual Shorts player controls, Android shortcut and widget resources are not reproduced.",
+      "implementation": "Shelf/cell filtering, native Shorts ad-model suppression, pivot hiding and exact-type native Shorts app-shortcut filtering.",
+      "limits": "Individual Shorts player controls and widget buttons remain unported. Removing IPA extensions removes entire widgets rather than individual controls; shortcut cache updates can require relaunch.",
       "parent": "hideShortsComponentsPatch",
       "device_validated": false
     },
@@ -693,10 +694,11 @@
       "config_keys": [
         "hide_shorts",
         "shorts_ads",
-        "hide_shorts_navigation"
+        "hide_shorts_navigation",
+        "hide_shorts_shortcut"
       ],
-      "implementation": "Shelf/cell filtering, native Shorts ad-model suppression and pivot hiding.",
-      "limits": "Individual Shorts player controls, Android shortcut and widget resources are not reproduced.",
+      "implementation": "Shelf/cell filtering, native Shorts ad-model suppression, pivot hiding and exact-type native Shorts app-shortcut filtering.",
+      "limits": "Individual Shorts player controls and widget buttons remain unported. Removing IPA extensions removes entire widgets rather than individual controls; shortcut cache updates can require relaunch.",
       "parent": null,
       "device_validated": false
     },
@@ -741,10 +743,17 @@
       "factory": "resourcePatch",
       "status": "resource_adapter",
       "config_keys": [
-        "classic_miniplayer"
+        "classic_miniplayer",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_disable_double_tap",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners",
+        "miniplayer_min_dimension_points",
+        "miniplayer_overlay_opacity"
       ],
-      "implementation": "Disables the native floating-miniplayer experiment.",
-      "limits": "Android drag, sizing, opacity and custom miniplayer options are not reproduced.",
+      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension and circular control-background opacity.",
+      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, expand/close/rewind/forward button preferences and all server UI surfaces remain unported. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
       "parent": "miniplayerPatch",
       "device_validated": false
     },
@@ -757,10 +766,17 @@
       "factory": "bytecodePatch",
       "status": "partial",
       "config_keys": [
-        "classic_miniplayer"
+        "classic_miniplayer",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_disable_double_tap",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners",
+        "miniplayer_min_dimension_points",
+        "miniplayer_overlay_opacity"
       ],
-      "implementation": "Disables the native floating-miniplayer experiment.",
-      "limits": "Android drag, sizing, opacity and custom miniplayer options are not reproduced.",
+      "implementation": "Native floating-miniplayer experiment toggle plus verified controller/layer gesture gates, message/Premium badge suppression, stable rectangular content masks, bounded minimum dimension and circular control-background opacity.",
+      "limits": "Selected iOS equivalents: title/channel labels, complete Android type variants, expand/close/rewind/forward button preferences and all server UI surfaces remain unported. Opacity applies only to circular backgrounds; transitions preserve native masks. Size is a minimum, not a forced frame. Requires device verification; see MINIPLAYER_SCHEME.md.",
       "parent": null,
       "device_validated": false
     },

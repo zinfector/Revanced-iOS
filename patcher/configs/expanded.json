@@ -1,5 +1,7 @@
 {
   "schema": 1,
+  "sideload_auth_identity": false,
+  "sideload_auth_keychain": false,
   "video_ads": true,
   "background_playback": true,
   "sponsorblock": true,
@@ -53,6 +55,12 @@
   "bypass_redirects": true,
   "open_links_external": true,
   "sanitize_sharing_links": true,
+  "miniplayer_disable_drag": false,
+  "miniplayer_disable_horizontal_drag": false,
+  "miniplayer_disable_double_tap": false,
+  "miniplayer_hide_subtext": false,
+  "miniplayer_square_corners": false,
+  "hide_shorts_shortcut": false,
   "classic_miniplayer": false,
   "disable_rolling_numbers": true,
   "disable_tv_popup": true,
@@ -159,6 +167,6 @@
   "theme_dark_background": "",
   "wifi_quality": -1,
   "cellular_quality": -1,
-  "sideload_auth_identity": false,
-  "sideload_auth_keychain": false
+  "miniplayer_min_dimension_points": 0,
+  "miniplayer_overlay_opacity": 1.0
 }
