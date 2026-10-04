@@ -11,6 +11,14 @@ static NSString *RVNativeDislikeVideoForAction(id action);
 @end
 @implementation RVDislikeInlineState @end
 
+// Player controllers may be temporarily detached/replaced by miniplayer moves.
+// Require the watch's player to own the current content, not a cached pointer.
+static BOOL RVDislikeWatchPlayerMatches(id watch) {
+    id player=RVObject(watch,"playerViewController");
+    return player && RVDislikeVideo &&
+        [RVObject(player,"contentVideoID") isEqual:RVDislikeVideo] &&
+        [RVObject(RVCurrentPlayback,"contentVideoID") isEqual:RVDislikeVideo];
+}
 static BOOL RVDislikeWatchAction(UIView *view) {
     if (!NSThread.isMainThread || !view.window) return NO;
     // Discover the owning controller from the existing responder chain too;
@@ -21,8 +29,7 @@ static BOOL RVDislikeWatchAction(UIView *view) {
         ![view isDescendantOfView:((UIViewController *)RVCurrentWatch).view]) {
         UIResponder *responder=view;
         for (NSUInteger i=0;responder && i<64;i++,responder=responder.nextResponder) {
-            if (watchClass && [responder isKindOfClass:watchClass] && RVCurrentPlayer &&
-                RVObject(responder,"playerViewController")==RVCurrentPlayer) { RVCurrentWatch=responder;break; }
+            if (watchClass && [responder isKindOfClass:watchClass] && RVDislikeWatchPlayerMatches(responder)) { RVCurrentWatch=responder;break; }
         }
     }
     if (![RVCurrentWatch isKindOfClass:UIViewController.class]) return NO;

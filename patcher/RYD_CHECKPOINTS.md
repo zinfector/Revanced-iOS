@@ -4,11 +4,11 @@ Report 615 confirms the foreground failure: the count was available and measured
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-3`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-4`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-3**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-4**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.
@@ -55,3 +55,7 @@ The report version in Report 541 is stale because the older Settings snapshot ha
 In 0.3.15, inspect geometry.mount_mode and mount_gate. `native_text_node` uses native AS mounting. `owned_label_in_native_button` renders a UILabel inside the verified native button; the AS text child remains a sizing proxy. For that mode, native_text_supernode_present and native_text_node_loaded may remain false, and AS text drawing callbacks may stay zero. Effective mount/load/window/clip checkpoints inspect the owned label instead. `label_fits_button_bounds` and clipping_ancestors identify any remaining size constraint. Diagnostics do not force mounting; the production renderer performs its own guarded mount.
 
 Delivered build: `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `f0d8f6f0dfaaf72ac3a1b13299d83698ebb7c6fddfbb820792c20c869712f0a8`. Cloud source commit: `6dbaa6077a6c11c6749a8077fe032a8e13dca66a`.
+
+Version 0.3.16 records spacing_points (8), spacing_gate (logical_start_margin_reserved), button_width, watch_suspended, suspension_count and resume_count. Transition event counters watch_appeared/watch_player_changed/watch_layout_ownership_changed and transition_refresh show refreshes that require no pause/unpause. watch_player_matches now verifies current content IDs; watch_player_pointer_matches separately describes cached pointer identity. Preserve a screenshot/report after miniplayer return before interacting with playback if the count still disappears.
+
+When icon_gap_measured is true, icon_text_gap_points reports the observed gap using the existing native icon view’s button-local rectangle. This distinguishes a reserved margin from actual displayed geometry; no icon views are loaded for diagnostics.

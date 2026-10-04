@@ -1,0 +1,27 @@
+{
+  "version": "0.3.16",
+  "report": "RYD Report 635.txt",
+  "report_sha256": "269d9208699623cf65b2231707148d9ad0d4ec230ae7d0a8525cf5ae388688f4",
+  "finding": "Label rendering succeeds. Foreground history records watch player detachment, owned node removal, and delayed recreation. Text starts at x24 without the intended 8-point gap.",
+  "spacing_contract": {
+    "class": "ASLayoutElementStyleYoga",
+    "spacingBefore_is_noop": true,
+    "setMargin_abi": "v160@0:8{?={?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}{?=qd}}16",
+    "dimension_point_unit": 1,
+    "logical_start_gap_points": 8
+  },
+  "lifecycle": "Preserve and hide same-video owned node during transient ownership gaps; refresh on watch appearance, player changes and layout ownership changes with four bounded retries. Match actual watch player content ID against current playback, preserving a separate pointer-match checkpoint.",
+  "native_evidence": {
+    "ryd-spacing-contract-annotated.txt": "8465509209810c54c7b8ac31d69e8d49e716731268137e6bcfcb9876854c28f2",
+    "ryd-yoga-spacing-annotated.txt": "29d2893096f67cf5ae45e117835cebf767f5ac03046fb9d481bfad6dea93b4b4",
+    "ryd-yoga-edge-contract-annotated.txt": "eecf6b15c06bba85f14f3aaa01531314b1a333e7167a15612a2249f0875d2b42"
+  },
+  "source_sha256": {
+    "RVElementDislikes.inc": "62a8995c4be883722f6adf2c237f4d2d518bf0b61689d989b1d9c2230161c790",
+    "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
+    "RVExtras.inc": "634a547c726887816f03e5bac4801d75569eb18e05a88a67317a723c68cad15d",
+    "RVDislikesDiagnostics.inc": "ec4148bb1cd03b0fb819cb935c5db4e06e353376dc55203cf0f78e349d27895e"
+  },
+  "tests_run": false,
+  "device_validated": false
+}

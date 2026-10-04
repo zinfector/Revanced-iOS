@@ -163,6 +163,18 @@
         "selector": "playerViewController:didActivateVideo:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x10157abc0"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlayerViewController:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1015714d8"
+      },
+      {
+        "kind": "-",
+        "selector": "watchViewDidLayoutSubviews:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101572c30"
       }
     ]
   },

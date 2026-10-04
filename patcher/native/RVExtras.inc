@@ -8,6 +8,7 @@ static NSMutableDictionary *RVDislikeCache;
 static NSTimeInterval RVDislikeAttempt;
 static NSUInteger RVDislikeGeneration;
 static void RVRefreshDislikeUI(void);
+static void RVElementWatchTransition(id watch,NSString *reason);
 static void RVNativeDislikeRefresh(void);
 static void RVDislikeServiceValue(NSString *key,id value);
 static void RVDislikeServiceReset(void);
@@ -198,7 +199,7 @@ static void RVInstallLinks(void) {
                 if ([cls isEqual:@"YTWatchViewController"]) {
                     if ([selector isEqual:@"viewDidAppear:"]) RVCurrentWatch=current;
                     else if (RVCurrentWatch==current) RVCurrentWatch=nil;
-                    RVRefreshDislikeUI();
+                    RVRefreshDislikeUI();RVElementWatchTransition(current,[selector isEqual:@"viewDidAppear:"] ? @"watch_appeared" : @"watch_disappeared");
                 }
             });
         };
