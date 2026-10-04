@@ -87,7 +87,8 @@
     "build/settings-navigation-annotated.txt": "213c3033745ba603652a7e202fdaa18f17d47e5e0d7ef4f17c147f74c0b781b3",
     "build/settings-category-route-annotated.txt": "f1caf88f4137af9acac63dc4f08e52594ebb4743dcd00bfb1f6b74e0d4273604",
     "build/settings-selection-annotated.txt": "4289e86df6ecc13e6f7acf443578923d7827daf04bab680896fe6b6f56f2c404",
-    "build/settings-item-init-annotated.txt": "0b369b91d9657605a2bc900c2197d07758b01958d2a296569735f9e6444a0552"
+    "build/settings-item-init-annotated.txt": "0b369b91d9657605a2bc900c2197d07758b01958d2a296569735f9e6444a0552",
+    "build/settings-navigation-controller-annotated.txt": "9c44ffb7093ed65c3fa70d9054a609150b3645460cd985abc0d0937aa209d774"
   },
   "android_settings_source_sha256": "62f692140edd376243d49a780f9966f5f264496263d65bb4ad90dd3e65440a5d",
   "preference_groups": 13,

@@ -27,10 +27,10 @@ static id NestedController;
 @interface YTSettingsSectionItem : NSObject
 @property(nonatomic,copy) NSString *title,*summary,*identifier;
 @property(nonatomic,copy) BOOL (^selectBlock)(id,NSUInteger);
-+ (id)itemWithTitle:(id)title titleDescription:(id)description accessibilityIdentifier:(id)identifier detailTextBlock:(id)detail selectBlock:(id)select;
++ (id)itemWithTitle:(id)title titleDescription:(id)description accessibilityIdentifier:(id)identifier detailTextBlock:(id(^)(void))detail selectBlock:(BOOL(^)(id,NSUInteger))select;
 @end
 @implementation YTSettingsSectionItem
-+ (id)itemWithTitle:(id)title titleDescription:(id)description accessibilityIdentifier:(id)identifier detailTextBlock:(id)detail selectBlock:(id)select {
++ (id)itemWithTitle:(id)title titleDescription:(id)description accessibilityIdentifier:(id)identifier detailTextBlock:(id(^)(void))detail selectBlock:(BOOL(^)(id,NSUInteger))select {
     assert(detail==nil);
     if (MalformedItem) return [NSObject new];
     YTSettingsSectionItem *item=[self new];item.title=title;item.summary=description;item.identifier=identifier;item.selectBlock=select;return item;

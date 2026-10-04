@@ -147,7 +147,12 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 }
 - (void)message:(NSString *)title text:(NSString *)text {
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:alert animated:YES completion:nil];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
+}
+- (void)presentPreferenceAlert:(UIAlertController *)alert {
+    // An active UISearchController owns presentation while editing a search result.
+    UIViewController *presenter=self.search.isActive && self.search.isViewLoaded && self.search.view.window ? self.search : self;
+    if (!presenter.presentedViewController) [presenter presentViewController:alert animated:YES completion:nil];
 }
 - (void)write:(NSString *)key value:(id)value {
     if (!RVSavePreference(key,value)) { [self message:@"Invalid setting" text:@"The value is outside the supported range or format."];return; }
@@ -167,7 +172,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
     if (!values || [rule[@"kind"] isEqual:@"number"]) [picker addAction:[UIAlertAction actionWithTitle:@"Custom value" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self editScalar:key member:member]; }]];
     [picker addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     picker.popoverPresentationController.sourceView=self.view;picker.popoverPresentationController.sourceRect=CGRectMake(CGRectGetMidX(self.view.bounds),CGRectGetMidY(self.view.bounds),1,1);
-    [self presentViewController:picker animated:YES completion:nil];
+    [self presentPreferenceAlert:picker];
 }
 - (void)editScalar:(NSString *)key member:(NSString *)member {
     NSDictionary *rule=RVPreferenceDescriptor(key);BOOL numeric=[rule[@"kind"] isEqual:@"number"];
@@ -184,7 +189,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
         if (member) { NSMutableDictionary *map=[(RVSetting(key) ?: @{}) mutableCopy];if (!text.length) [map removeObjectForKey:member];else map[member]=text;value=map; }
         [self write:key value:value];
     }]];
-    [editor addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:editor animated:YES completion:nil];
+    [editor addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:editor];
 }
 - (void)editList:(NSString *)key {
     NSDictionary *rule=RVPreferenceDescriptor(key);BOOL numeric=[rule[@"kind"] isEqual:@"number_list"];
@@ -211,7 +216,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:alert animated:YES completion:nil];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)index {
     [tableView deselectRowAtIndexPath:index animated:YES];
@@ -227,7 +232,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
         if (index.row==3) {
             UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Reset patch settings?" message:@"Restore the configuration bundled in this IPA. Accounts, credentials and service identities are retained." preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:@"Reset settings" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { RVResetPreferences();RVPreferencesChanged();[self applyAppearance];[self.tableView reloadData]; }]];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentViewController:alert animated:YES completion:nil];return;
+            [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
         if (index.row==4) { [self diagnostics];return; }
         [self message:@"ReVanced iOS 0.3.4" text:[NSString stringWithFormat:@"YouTube %@\n79 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;

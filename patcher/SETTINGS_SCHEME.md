@@ -27,6 +27,8 @@ The local Android `misc/settings/SettingsPatch.kt` adds a ReVanced entry and cat
 
 The entry uses reserved category `0x52565054`, a native section item, and a weak reference to the originating settings controller. It refuses category collisions and malformed models instead of overwriting another section. The linear/grouped ordering hooks append the category only while the exact YouTube settings controller is building its sections, on the executing thread, and only after verifying ownership of the created section. Grouped menus append it only to group type 2. Native arrays remain unchanged; nested scopes and exceptions restore the prior scope. Other consumers retain their original arrays.
 
+Read-only tracing also confirmed that `YTNavigationController -pushViewController:animated:` (`0x1040c2fec`) forwards directly to UIKit. Its optional `-canBePushedWithBlock:` (`0x1040c32ac`) accepts a top controller without that selector, so the custom UIKit pages need no private navigation protocol.
+
 The containing section has no title and hides its header. The verified grouped-menu constructor recognizes this as a single-row action, calls its selection block, and retains the row title **ReVanced**. A titled section would instead route through Google's native category-detail endpoint and add an unnecessary intermediate screen.
 
 The supported binary identity is unchanged: decrypted YouTube 21.39.4, executable SHA-256 `ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf`. All hooks resolve class/selector names and check exact method encodings; fixed addresses are research anchors only. Metadata and local read-only research hashes are recorded in `profiles/settings-evidence.json`.
