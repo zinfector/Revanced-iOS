@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.7",
+  "patcher_version": "0.3.8",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -858,8 +858,8 @@
         "return_dislikes",
         "ryd_voting"
       ],
-      "implementation": "Cached dislike estimate badge; manual RYD registration, puzzle solving and voting through Tools.",
-      "limits": "Native YouTube vote-button interception, Shorts rendering, native text integration and Android UI preferences are not mapped. Live service/device tests remain.",
+      "implementation": "Cached RYD estimate badge plus video-ID-scoped native slim dislike-button text, matching main-video entity counts and accessibility estimates; manual RYD registration, puzzle solving and voting through Tools.",
+      "limits": "Native text integration covers the verified slim formatted action label and main-video entity paths only. Element-backed/segmented modern buttons, online Shorts text, automatic YouTube vote forwarding, native layout styling and Android UI preferences remain unported. The active video fetch is retained; no request or service vote is made during development. Device rendering is unverified and tests are skipped at the user request.",
       "parent": null,
       "device_validated": false
     },

@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "implementation_version": "0.3.8",
+  "supported_youtube_version": "21.39.4",
+  "source_profile": "youtube-21.39.4",
+  "metadata": [
+    {
+      "name": "YTSlimVideoScrollableActionBarCellController",
+      "superclass": "YTInnerTubeCellController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setCell:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x101430180"
+        },
+        {
+          "kind": "-",
+          "selector": "delegate",
+          "encoding": "@16@0:8",
+          "imp": "0x101432d50"
+        }
+      ]
+    },
+    {
+      "name": "YTSlimVideoDetailsActionView",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setToggled:",
+          "encoding": "v20@0:8B16",
+          "imp": "0x101435bcc"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutSubviews",
+          "encoding": "v16@0:8",
+          "imp": "0x101435da0"
+        },
+        {
+          "kind": "-",
+          "selector": "accessibilityLabel",
+          "encoding": "@16@0:8",
+          "imp": "0x101436108"
+        },
+        {
+          "kind": "-",
+          "selector": "label",
+          "encoding": "@16@0:8",
+          "imp": "0x101436f84"
+        },
+        {
+          "kind": "-",
+          "selector": "delegate",
+          "encoding": "@16@0:8",
+          "imp": "0x101437010"
+        },
+        {
+          "kind": "-",
+          "selector": "isToggled",
+          "encoding": "B16@0:8",
+          "imp": "0x101437078"
+        },
+        {
+          "kind": "+",
+          "selector": "actionViewWithSlimMetadataButtonSupportedRenderer:parentResponder:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x101435348"
+        }
+      ]
+    },
+    {
+      "name": "YTMainVideoEntityModel",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "videoID",
+          "encoding": "@16@0:8",
+          "imp": "0x1034653f8"
+        },
+        {
+          "kind": "-",
+          "selector": "dislikeCountString",
+          "encoding": "@16@0:8",
+          "imp": "0x1034663a8"
+        },
+        {
+          "kind": "-",
+          "selector": "dislikeAccessibilityText",
+          "encoding": "@16@0:8",
+          "imp": "0x103466468"
+        },
+        {
+          "kind": "-",
+          "selector": "dislikeCount",
+          "encoding": "Q16@0:8",
+          "imp": "0x104d89dcc"
+        }
+      ]
+    },
+    {
+      "name": "YTFormattedStringLabel",
+      "superclass": "NIAttributedLabel",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setFormattedString:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x1004b16e4"
+        }
+      ]
+    },
+    {
+      "name": "YTIFormattedString",
+      "superclass": "GPBMessage",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "formattedStringWithString:",
+          "encoding": "@24@0:8@16",
+          "imp": "0x1002f2cd8"
+        }
+      ]
+    },
+    {
+      "name": "YTISlimMetadataButtonSupportedRenderers",
+      "superclass": "GPBMessage",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "slimButton_text",
+          "encoding": "@16@0:8",
+          "imp": "0x101437d4c"
+        },
+        {
+          "kind": "-",
+          "selector": "slimButton_toggledText",
+          "encoding": "@16@0:8",
+          "imp": "0x101437f54"
+        },
+        {
+          "kind": "-",
+          "selector": "slimButton_isDislikeButton",
+          "encoding": "B16@0:8",
+          "imp": "0x1014386d8"
+        }
+      ]
+    }
+  ],
+  "decompilation": {
+    "ryd-native-paths-annotated.txt": {
+      "sha256": "0266b76794026fb8871635141dcb75fce788ba16bb32b5eedc4245499df02a11",
+      "local_path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-native-paths-annotated.txt"
+    },
+    "ryd-action-views-annotated.txt": {
+      "sha256": "c0ccbcaab63474ca0fdee02fe40f68b0215c7488fc773a81524392dd9a2e4726",
+      "local_path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-action-views-annotated.txt"
+    },
+    "ryd-label-lifecycle-annotated.txt": {
+      "sha256": "f7b23caf9b9df9396680d5c3091691a12377132ef09bbdb8f416d897a49151fe",
+      "local_path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-label-lifecycle-annotated.txt"
+    },
+    "ryd-binding-annotated.txt": {
+      "sha256": "3bab5f9ff8eb43085456c87d1df05b1f7e3107e819195d0f85791529db85ba8e",
+      "local_path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\ryd-binding-annotated.txt"
+    }
+  },
+  "android_reference": {
+    "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\returnyoutubedislike\\ReturnYouTubeDislike.java",
+    "sha256": "fc4c8daf911e699454fcfdcc41c39d3e8caa43d5d152bd0325432f0dd4097f3a"
+  },
+  "binding": "action.delegate is verified slim action controller; controller.delegate.videoId is the native video owner. Matching active fetched video ID required. No global label replacement.",
+  "native_status_mapping": {
+    "0": "like",
+    "1": "dislike",
+    "2": "remove_like"
+  },
+  "status_evidence": "YTLikeServiceImpl.requestForLikeWithStatus selects requestForLike/requestForDislike/requestForRemoveLike, but confirmed user-request completion/rollback forwarding is not implemented.",
+  "hooks_added": 7,
+  "tests_run": false,
+  "device_verified": false,
+  "remaining_scope": "Native text integration covers the verified slim formatted action label and main-video entity paths only. Element-backed/segmented modern buttons, online Shorts text, automatic YouTube vote forwarding, native layout styling and Android UI preferences remain unported. The active video fetch is retained; no request or service vote is made during development. Device rendering is unverified and tests are skipped at the user request."
+}

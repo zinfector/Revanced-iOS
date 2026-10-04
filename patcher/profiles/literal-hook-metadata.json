@@ -953,5 +953,149 @@
         "imp": "0x101589624"
       }
     ]
+  },
+  {
+    "name": "YTSlimVideoScrollableActionBarCellController",
+    "superclass": "YTInnerTubeCellController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setCell:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101430180"
+      },
+      {
+        "kind": "-",
+        "selector": "delegate",
+        "encoding": "@16@0:8",
+        "imp": "0x101432d50"
+      }
+    ]
+  },
+  {
+    "name": "YTSlimVideoDetailsActionView",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setToggled:",
+        "encoding": "v20@0:8B16",
+        "imp": "0x101435bcc"
+      },
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x101435da0"
+      },
+      {
+        "kind": "-",
+        "selector": "accessibilityLabel",
+        "encoding": "@16@0:8",
+        "imp": "0x101436108"
+      },
+      {
+        "kind": "-",
+        "selector": "label",
+        "encoding": "@16@0:8",
+        "imp": "0x101436f84"
+      },
+      {
+        "kind": "-",
+        "selector": "delegate",
+        "encoding": "@16@0:8",
+        "imp": "0x101437010"
+      },
+      {
+        "kind": "-",
+        "selector": "isToggled",
+        "encoding": "B16@0:8",
+        "imp": "0x101437078"
+      },
+      {
+        "kind": "+",
+        "selector": "actionViewWithSlimMetadataButtonSupportedRenderer:parentResponder:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x101435348"
+      }
+    ]
+  },
+  {
+    "name": "YTMainVideoEntityModel",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "videoID",
+        "encoding": "@16@0:8",
+        "imp": "0x1034653f8"
+      },
+      {
+        "kind": "-",
+        "selector": "dislikeCountString",
+        "encoding": "@16@0:8",
+        "imp": "0x1034663a8"
+      },
+      {
+        "kind": "-",
+        "selector": "dislikeAccessibilityText",
+        "encoding": "@16@0:8",
+        "imp": "0x103466468"
+      },
+      {
+        "kind": "-",
+        "selector": "dislikeCount",
+        "encoding": "Q16@0:8",
+        "imp": "0x104d89dcc"
+      }
+    ]
+  },
+  {
+    "name": "YTFormattedStringLabel",
+    "superclass": "NIAttributedLabel",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setFormattedString:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1004b16e4"
+      }
+    ]
+  },
+  {
+    "name": "YTIFormattedString",
+    "superclass": "GPBMessage",
+    "methods": [
+      {
+        "kind": "+",
+        "selector": "formattedStringWithString:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x1002f2cd8"
+      }
+    ]
+  },
+  {
+    "name": "YTISlimMetadataButtonSupportedRenderers",
+    "superclass": "GPBMessage",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "slimButton_text",
+        "encoding": "@16@0:8",
+        "imp": "0x101437d4c"
+      },
+      {
+        "kind": "-",
+        "selector": "slimButton_toggledText",
+        "encoding": "@16@0:8",
+        "imp": "0x101437f54"
+      },
+      {
+        "kind": "-",
+        "selector": "slimButton_isDislikeButton",
+        "encoding": "B16@0:8",
+        "imp": "0x1014386d8"
+      }
+    ]
   }
 ]

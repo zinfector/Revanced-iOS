@@ -8,6 +8,7 @@ static NSMutableDictionary *RVDislikeCache;
 static NSTimeInterval RVDislikeAttempt;
 static NSUInteger RVDislikeGeneration;
 static __weak UILabel *RVDislikeBadge;
+static void RVNativeDislikeRefresh(void);
 static __weak UIView *RVCurrentOverlay;
 static __weak UIView *RVSegmentBar;
 static NSString *RVThumbnailContext=@"home";
@@ -266,14 +267,14 @@ static void RVExtraObserve(id controller) {
     NSString *video=RVObject(controller,"contentVideoID");
     if (!RVVideoIDValid(video)) return;
     if (![RVDislikeVideo isEqual:video]) {
-        [RVDislikeTask cancel];RVDislikeTask=nil;RVDislikeVideo=video;RVDislikeCount=nil;RVDislikeAttempt=0;RVDislikeGeneration++;
+        [RVDislikeTask cancel];RVDislikeTask=nil;RVDislikeVideo=video;RVDislikeCount=nil;RVDislikeAttempt=0;RVDislikeGeneration++;RVNativeDislikeRefresh();
     }
-    if (!RVEnabled(@"return_dislikes")) { [RVDislikeTask cancel];RVDislikeTask=nil;return; }
+    if (!RVEnabled(@"return_dislikes")) { [RVDislikeTask cancel];RVDislikeTask=nil;RVNativeDislikeRefresh();return; }
     if (!RVOrdinaryContent(controller)) return;
     if (!RVDislikeCache) RVDislikeCache=[NSMutableDictionary dictionary];
     NSDictionary *cached=RVDislikeCache[video];
     NSTimeInterval now=[NSDate timeIntervalSinceReferenceDate];
-    if (cached && now-[cached[@"time"] doubleValue]<600) { RVDislikeCount=cached[@"count"];return; }
+    if (cached && now-[cached[@"time"] doubleValue]<600) { RVDislikeCount=cached[@"count"];RVNativeDislikeRefresh();return; }
     if (RVDislikeTask || RVDislikeCount || now-RVDislikeAttempt<60) return;
     RVDislikeAttempt=now;
     NSUInteger generation=RVDislikeGeneration;
@@ -285,18 +286,20 @@ static void RVExtraObserve(id controller) {
         id json=nil;
         if (!error && [(NSHTTPURLResponse *)response statusCode]==200 && data.length<65536) json=[NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         NSNumber *count=[json isKindOfClass:[NSDictionary class]] && [json[@"dislikes"] isKindOfClass:[NSNumber class]] ? json[@"dislikes"] : nil;
-        if (!isfinite(count.doubleValue) || count.doubleValue<0) count=nil;
+        if (!isfinite(count.doubleValue) || count.doubleValue<0 || count.doubleValue>1e15 || floor(count.doubleValue)!=count.doubleValue) count=nil;
         dispatch_async(dispatch_get_main_queue(),^{
             if (generation!=RVDislikeGeneration || ![RVDislikeVideo isEqual:requested]) return;
             RVDislikeTask=nil;
             if (count) {
                 if (RVDislikeCache.count>=100) [RVDislikeCache removeAllObjects];
                 RVDislikeCache[requested]=@{@"count":count,@"time":@([NSDate timeIntervalSinceReferenceDate])};RVDislikeCount=count;
-                [RVCurrentOverlay setNeedsLayout];
+                RVNativeDislikeRefresh();[RVCurrentOverlay setNeedsLayout];
             }
         });
     }];[RVDislikeTask resume];
 }
+
+#include "RVNativeDislikes.inc"
 
 @interface RVToolsRouter : NSObject
 - (void)open:(UIButton *)button;
@@ -772,4 +775,5 @@ static void RVInstallLayout(void) {
         };
     });
 }
-static void RVInstallExtras(void) { RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
+static void RVInstallExtras(void) {
+    RVInstallNativeDislikes(); RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
