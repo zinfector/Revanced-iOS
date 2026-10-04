@@ -1,16 +1,16 @@
 {
-  "patcher_version": "0.3.0",
+  "patcher_version": "0.3.1",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
   "declaration_count": 113,
   "status_counts": {
     "resource_adapter": 14,
-    "partial": 51,
+    "partial": 52,
     "adapted": 24,
     "native_existing": 1,
     "infrastructure_adapter": 16,
-    "android_only": 5,
+    "android_only": 4,
     "blocked": 2
   },
   "patches": [
@@ -1302,10 +1302,13 @@
       "source": "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/misc/gms/GmsCoreSupportPatch.kt",
       "line": 23,
       "factory": "gmsCoreSupportPatch",
-      "status": "android_only",
-      "config_keys": [],
-      "implementation": "No iOS equivalent of microG/GmsCore integration.",
-      "limits": "Android Google Play Services, package names and service binding do not apply to this IPA.",
+      "status": "partial",
+      "config_keys": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "implementation": "Scoped native SSO application-identifier adaptation and signer-authorized keychain group, with redacted authentication diagnostics.",
+      "limits": "Android GmsCore/Binder/account services are not transplanted. Experimental 0.3.1 adapter; device login, refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements.",
       "parent": null,
       "device_validated": false
     },

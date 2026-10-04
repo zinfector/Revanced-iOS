@@ -1,0 +1,119 @@
+{
+  "version": "0.3.1",
+  "supported_version": "21.39.4",
+  "feature_switches": 73,
+  "expanded_enabled_switches": 30,
+  "auth_preset_enabled_switches": 32,
+  "tests_passed": 33,
+  "test_scope": {
+    "patcher_and_shared_helpers": 19,
+    "cloud_signing_and_download": 12,
+    "authentication_config_and_native_harness": 2
+  },
+  "ci": {
+    "run_id": 37177944021,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37177944021",
+    "commit": "bdaa810521e394d41fb4e5c4328fd72d644d55b6",
+    "conclusion": "success",
+    "tests_passed": 33,
+    "tests_skipped": 0,
+    "native_auth_harness_passed": true,
+    "windows_package_passed": true,
+    "payload_sha256": "01a2d6140442c1707f09079124d1a58cec61a529bd11c667e803f25df7fbf1c9",
+    "native_log_sha256": "90f43d447052b3794d49fe501f3058b5f468dddfde8452723cf667c047810f5b",
+    "device_login_verified": false
+  },
+  "native_compilation": "ARM64 iOS 17, warnings treated as errors",
+  "hook_check": {
+    "match": 65,
+    "mismatch": 0,
+    "runtime_resolution_required": 0
+  },
+  "hook_check_scope": "Literal RVHook/RVBoolGate calls and literal getter arrays. Other loops and runtime-resolved accessors require device diagnostics.",
+  "coverage": {
+    "declarations": 113,
+    "named_inventory": 51,
+    "statuses": {
+      "resource_adapter": 14,
+      "partial": 52,
+      "adapted": 24,
+      "native_existing": 1,
+      "infrastructure_adapter": 16,
+      "android_only": 4,
+      "blocked": 2
+    }
+  },
+  "original_ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "device_validated": false,
+  "signing_required": true,
+  "remaining_scope": "Per-patch partial behavior and blocked stream/header wrappers in COVERAGE.md; runtime installation, playback and UI/service behavior require device evidence.",
+  "artifacts": {
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "58414fba2833a485ecb448c8c46c1e9e0bcffc217809bb69166bddcb1ec787bd",
+      "size": 13730500
+    },
+    "build/RVPort.dylib": {
+      "sha256": "01a2d6140442c1707f09079124d1a58cec61a529bd11c667e803f25df7fbf1c9",
+      "size": 291120
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.1-unsigned.ipa": {
+      "sha256": "f75a4db548cf4c532518e02164dd490dd0a6802fc77af49a364453f6c2f29812",
+      "size": 151943883
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.1-expanded-unsigned.ipa": {
+      "sha256": "522545dfcf378f0095d2d393e2316a81f076a196ad08f2b9122cdc0ca6d4dd0a",
+      "size": 151944183
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa": {
+      "sha256": "1481372967024a657c94381324b36a6f90148245adc9b0d80407de63d719bb70",
+      "size": 140331042
+    },
+    "coverage.json": {
+      "sha256": "28969382ee81a13dd8fd733f627710d5f908af5b20a98b11f23b2df346ebc5f3",
+      "size": 82498
+    },
+    "COVERAGE.md": {
+      "sha256": "fd4f86ae11b3286617cf7c4a6c05bf86385ff76eb1feb00d3a7909a7a7635409",
+      "size": 28392
+    },
+    "configs/defaults.json": {
+      "sha256": "05bb7a4c35ef44c65a786c0d0b89cb4c2ebcfd62c3bfecae6a11c8449808fe81",
+      "size": 3686
+    },
+    "configs/expanded.json": {
+      "sha256": "af4de3966668556ed07d44ceac2c19617f05a244276d61b90f29d8617eed1ea1",
+      "size": 4238
+    },
+    "configs/all-candidates.json": {
+      "sha256": "808b6e0eba321ec9ce7fd9f9fa4777c8dfeafa2352c1ef3b45bba5958024c908",
+      "size": 3615
+    },
+    "configs/sideload-auth.json": {
+      "sha256": "1ef3df0c6ccc58e149d8417c670a1c203a46dd53b92e5b9c733fcd7378786525",
+      "size": 4236
+    },
+    "AUTHENTICATION_SCHEME.md": {
+      "sha256": "86f1843b131c312c66d6b1275417f78863a0d68588052e067b569010ccc92920",
+      "size": 15620
+    },
+    "README.md": {
+      "sha256": "f9da0c2a13770b2d4b90aa36778eadb2fa21e784349c14d2e21e6dcf7a7d72d8",
+      "size": 16219
+    },
+    "DEVICE_TESTS.md": {
+      "sha256": "c47b60a8ece2117a38e70d862e262e5f921740c7944912df22a8bb91d0c7b371",
+      "size": 7069
+    }
+  },
+  "verification": {
+    "build/hook-check.json": "441de8ae0d652da5b5a67866dd177142441a3e2e7a4ed644ee6f7ff46cdaf5e5",
+    "build/auth-ci-evidence.json": "d77b87ee10b21fad8b087fee00f5ebc5e6bad1372bfdff57c52306302adeec00",
+    "build/gui-smoke-0.3.1.json": "db17210a08fef0ff0352c00f764bd9addbd9a5505b1d56f6fd8d4b971304389d",
+    "build/packaged-smoke-0.3.1.json": "db17210a08fef0ff0352c00f764bd9addbd9a5505b1d56f6fd8d4b971304389d",
+    "build/verification-0.3.1-defaults.json": "b03e4e55694185dc6dbbcba85a884628a33c0515c507babe7233f50157da3f81",
+    "build/verification-0.3.1-expanded.json": "670df731c578d08bf999bdebc1d7d38416f9f5363e1d6d9c1b33783a231099ff",
+    "build/verification-0.3.1-sideload-auth.json": "8fc8aeb8fe666835ad5834743f7aa3fc87e6c23f09dbe7b1b974ab8ad58fc6f9"
+  },
+  "recommended_ipa": "output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa",
+  "device_evidence": "User supplied screenshot proves reaching Google authentication, with login rejected in older 0.3 artifact. No successful login/playback test of 0.3.1."
+}

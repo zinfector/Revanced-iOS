@@ -69,7 +69,7 @@ MAPPING={
 'checkEnvironmentPatch':('adapted','schema','Exact source hash/profile checks in patcher and runtime UUID/version/config compatibility checks.','No Android installer/environment heuristics.'),
 'spoofVideoStreamsPatch':('blocked','','No iOS stream replacement implementation.','Requires a verified request/response protobuf adapter, account/token handling, stream URL and signature validation, expiry management and player format integration. Client-field overrides do not implement this.'),
 'userAgentClientSpoofPatch':('blocked','','No alternate-client transport/header spoofing.','No verified iOS Cronet/header request interception; changing headers alone can desynchronize client/auth/playback requests.'),
-'gmsCoreSupportPatch':('android_only','','No iOS equivalent of microG/GmsCore integration.','Android Google Play Services, package names and service binding do not apply to this IPA.'),
+'gmsCoreSupportPatch':('partial','sideload_auth_identity sideload_auth_keychain','Scoped native SSO application-identifier adaptation and signer-authorized keychain group, with redacted authentication diagnostics.','Android GmsCore/Binder/account services are not transplanted. Experimental 0.3.1 adapter; device login, refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements.'),
 'accountCredentialsInvalidTextPatch':('android_only','','No Android GmsCore error-text rewrite.','The Android account-credential screen does not apply to the iOS app.'),
 'fixContentProviderPatch':('android_only','','No Android ContentProvider manifest rewrite.','iOS has no Android ContentProvider authority.'),
 'fixBackToExitGesturePatch':('android_only','','No Android system-back gesture fix.','iOS navigation/back behavior differs.'),
@@ -126,10 +126,10 @@ def generate():
                 factory=match[2],status=status,config_keys=keys.split(),implementation=behavior,limits=limits,parent=parent,device_validated=False))
     if set(named)-{r['id'] for r in rows}:raise ValueError('Named inventory missing from coverage')
     counts=dict(collections.Counter(r['status'] for r in rows))
-    report={'patcher_version':'0.3.0','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
+    report={'patcher_version':'0.3.1','scope':'All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.',
         'device_validated':False,'named_inventory_count':len(named),'declaration_count':len(rows),'status_counts':counts,'patches':rows}
     (ROOT/'coverage.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
-    lines=['# YouTube iOS port coverage — 0.3.0','',
+    lines=['# YouTube iOS port coverage — 0.3.1','',
         'All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.','',
         f'The local tree contains {len(rows)} patch declarations, including the {len(named)} named patches in the original inventory. Declarations include dependencies and private resources; they are not {len(rows)} independent user features.','',
         '`adapted` = an iOS implementation of the selected behavior; `partial` = implemented subset with explicit remaining scope; `blocked` = no working port; `android_only` = Android mechanism absent on iOS; `native_existing` = retain the native iOS behavior; resource/infrastructure entries support the selected adapters.','',

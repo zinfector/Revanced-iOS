@@ -134,5 +134,7 @@
   "theme_light_background": "",
   "theme_dark_background": "",
   "wifi_quality": -1,
-  "cellular_quality": -1
+  "cellular_quality": -1,
+  "sideload_auth_identity": true,
+  "sideload_auth_keychain": true
 }

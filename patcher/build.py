@@ -33,7 +33,7 @@ def materialize_sdk_file_links(sdk):
 def build(sdk=None, zig=None):
     out=ROOT/'build';out.mkdir(exist_ok=True)
     from features import native_header
-    (ROOT/'native/RVFeatures.h').write_text(native_header(),encoding='utf-8')
+    (ROOT/'native/RVFeatures.h').write_bytes(native_header().encode('utf-8'))
     if sys.platform == 'darwin' and not zig:
         sdk=Path(sdk or subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip())
         compiler=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0']

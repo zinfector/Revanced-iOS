@@ -1,4 +1,4 @@
-# YouTube iOS port coverage — 0.3.0
+# YouTube iOS port coverage — 0.3.1
 
 All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.
 
@@ -100,7 +100,7 @@ Two wrappers remain blocked: full stream replacement and alternate-client transp
 | `fixContentProviderPatch` | android_only | No Android ContentProvider manifest rewrite. iOS has no Android ContentProvider authority. |
 | `fixPlaybackSpeedWhilePlayingPatch` | partial | Default/remembered rate plus native Tools custom-rate picker, 0.25–4x. Android limits above 4x, speed dialog styling and all rate-change sources are not reproduced. |
 | `accountCredentialsInvalidTextPatch` | android_only | No Android GmsCore error-text rewrite. The Android account-credential screen does not apply to the iOS app. |
-| `gmsCoreSupportPatch` | android_only | No iOS equivalent of microG/GmsCore integration. Android Google Play Services, package names and service binding do not apply to this IPA. |
+| `gmsCoreSupportPatch` | partial | Scoped native SSO application-identifier adaptation and signer-authorized keychain group, with redacted authentication diagnostics. Android GmsCore/Binder/account services are not transplanted. Experimental 0.3.1 adapter; device login, refresh and persistence remain unverified. It cannot satisfy cryptographic signing-team/attestation requirements. |
 | `cronetImageURLHookPatch` | infrastructure_adapter | Selected GPB thumbnail URL accessors; no global iOS Cronet image interceptor. Version-specific subset; runtime ABI checks and device tests remain necessary. |
 | `lithoFilterPatch` | infrastructure_adapter | Positive element-data filters; Android Litho runtime is not transplanted. Version-specific subset; runtime ABI checks and device tests remain necessary. |
 | `loopVideoButtonResourcePatch` | resource_adapter | Seeks ordinary completed playback to zero and plays again using native controller APIs. Not live/ads; suppresses normal finish only when guarded methods are available. |

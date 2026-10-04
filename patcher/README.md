@@ -12,11 +12,13 @@ For the sign-in experiment, use `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-a
 
 ## Deliverables
 
+- `output/YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
+- `output/YouTube-21.39.4-RVPort-0.3.1-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.1-expanded-unsigned.ipa`: latest default/expanded configurations with authentication adapters disabled.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
 - [COVERAGE.md](COVERAGE.md) and [coverage.json](coverage.json): mapping and limitations for all 113 local YouTube patch declarations, including the 51 named patches and shared factories/dependencies.
-- `build/release-manifest.json`: final hashes, sizes and verification references.
+- `build/release-manifest.json` and `build/release-manifest-0.3.1.json`: hashes, sizes and verification references; the old 0.3 receipt is preserved separately. Public receipt: [profiles/release-0.3.1.json](profiles/release-0.3.1.json).
 
 The old 0.1 and 0.2 unsigned IPAs are retained separately. Supported source identity is in `profiles/youtube-21.39.4.json`; other binaries are refused. This targets iOS 17 or later, thin ARM64, with an unencrypted main executable. It does not add server authorization or credentials.
 
@@ -35,7 +37,7 @@ The original ad/background/SponsorBlock/feed/speed/quality hooks are extended wi
 - RYD estimate badge and manual service votes; SponsorBlock per-category skip/skip-once/manual/marker-only/ignore policies, seekbar markers, highlight jumps, autoskip/manual skip/undo, minimum duration, manual segment/category votes and reviewed submissions; announcements reader; watch-history DNS diagnostic.
 - SponsorBlock account lookup and manual username changes, local estimated seek statistics, and configuration/diagnostic report copying for device feedback.
 
-Read the per-patch limits in [COVERAGE.md](COVERAGE.md). Downloads are a share handoff requiring a compatible installed extension. RYD service votes are separate from your YouTube account's votes. Thumbnail proxying requires your own compatible endpoint. Age/login/rental verification remains native. Full stream replacement and alternate-client transport/header spoofing are **not implemented**; request-field overrides are not equivalents. Android GmsCore, ContentProvider and system-back fixes have no corresponding mechanism in this IPA. Many UI patches implement a selected subset, not complete Android preference or resource parity.
+Read the per-patch limits in [COVERAGE.md](COVERAGE.md). Downloads are a share handoff requiring a compatible installed extension. RYD service votes are separate from your YouTube account's votes. Thumbnail proxying requires your own compatible endpoint. Age/login/rental verification remains native. Full stream replacement and alternate-client transport/header spoofing are **not implemented**; request-field overrides are not equivalents. Android GmsCore services are not transplanted; 0.3.1 instead adapts selected native SSO behavior. ContentProvider and system-back fixes have no corresponding mechanism in this IPA. Many UI patches implement a selected subset, not complete Android preference or resource parity.
 
 In the app, **hold three fingers for one second** to open settings. Feature toggles, default speed, resolution cap, ad strategy and hook diagnostics are available there. Video Tools can also be opened from settings or the player overlay. Diagnostics offers **Copy patch configuration** and **Copy diagnostic report**; reports include hook statuses and effective configuration, without service identities. SponsorBlock Tools exposes category behavior/color controls and manual contribution actions. Reopen the video or restart after changes affecting request construction/player models or network quality policy; not every feature updates an existing player immediately.
 
