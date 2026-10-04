@@ -302,7 +302,7 @@
     "ryd-element-identification-annotated.txt": "2cb1639e4057c2608b013305c566c5b3ecfd35f4b32d908c45155df07e346076",
     "ryd-prototext-format-annotated.txt": "c8d54ce9d0632d2d518bcb346a9c3147f862aafa2c7269411118478c10e59da6"
   },
-  "source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b",
+  "source_sha256": "7edaf53856e66eeb1ee1793dd68ae394ba234e9bc207109afa69b361ea3f86b3",
   "binding": "Native one-up/one-down Yoga branches in the active watch outside the player overlay; semantic action component plus matching watch.playerViewController and contentVideoID. Explicit element video IDs, if present, must also match.",
   "layout": "Append one owned ASTextNode to the existing dislike Yoga branch; remove it on disabled feature, video change, or invalid binding; reattach only the owned child if native children are rebuilt.",
   "no_native_commands_replaced": true,
@@ -321,5 +321,6 @@
     "ryd-image-watch-gates-annotated.txt": "00ebb30eb6d33411b243cb25f90dba3c22a7c155822b4b436035d749c74c2633",
     "ryd-local-image-dispatch-annotated.txt": "f14d652a4165443e88905c917361238ea6c02ee4ceb7a89292b34bbe5e2349a4",
     "ryd-resource-loader-annotated.txt": "a641e725d1fa6ffbb879405cc9a711f5eea3754f9dc77d8ab209976fb7badf30"
-  }
+  },
+  "previous_adapter_source_sha256": "beb668bdf6c4a0cfcc9c8b7154b61a491223899ce525eac8321f85dc3f7f5c8b"
 }
