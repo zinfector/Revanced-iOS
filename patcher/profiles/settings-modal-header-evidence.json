@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "base_commit": "f8822dc",
+  "youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "build_run": false,
+  "device_validated": false,
+  "problem": "Triple-hold paired a YTStyledViewController host with a plain UINavigationController. Native yt_headerView returns nil for the plain bar, leaving background and shadow styling without a target; UIKit scroll-edge default can become transparent.",
+  "contracts": [
+    {
+      "name": "YTStyledViewController",
+      "address": "0x10cabee68",
+      "superclass": "YTMultiSizeViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "updateShadowNavBar",
+          "encoding": "v16@0:8",
+          "imp": "0x1003dc9fc"
+        },
+        {
+          "kind": "-",
+          "selector": "setupNavigationBarAppearance",
+          "encoding": "v16@0:8",
+          "imp": "0x1043f0f68"
+        }
+      ]
+    },
+    {
+      "name": "YTNavigationController",
+      "address": "0x10caac3f0",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithParentResponder:",
+          "encoding": "@24@0:8@16",
+          "imp": "0x1040c2f48"
+        },
+        {
+          "kind": "-",
+          "selector": "modalPresentationStyle",
+          "encoding": "q16@0:8",
+          "imp": "0x1040c3150"
+        }
+      ]
+    },
+    {
+      "name": "YTNavigationBar",
+      "address": "0x10cabf440",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setBarTintColor:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x10029f914"
+        },
+        {
+          "kind": "-",
+          "selector": "setupStyle",
+          "encoding": "v16@0:8",
+          "imp": "0x10029f7c4"
+        }
+      ]
+    }
+  ],
+  "header_lookup": {
+    "category": "UIViewController(YTHeaderView)",
+    "selector": "yt_headerView",
+    "encoding": "@16@0:8",
+    "imp": "0x1002a20ec",
+    "plain_bar_behavior": "nil unless a YTHeaderContentComboView supplies a separate header",
+    "native_bar_behavior": "Returns YTNavigationBar"
+  },
+  "implementation": {
+    "factory": "RVSettingsModalNavigation in native/RVSettingsModal.inc",
+    "native": "ABI-checked YTNavigationController initWithParentResponder:, validated YTNavigationBar, setViewControllers:animated: through public UIKit",
+    "fallback": "Plain UIKit navigation with the same explicit opaque appearances",
+    "routes": [
+      "RVSettingsEntrance.open: triple hold",
+      "RVPresentSettings modal fallback",
+      "RVSettingsPush modal fallback"
+    ],
+    "ownership": "Associated modal state gates all bar and item appearance changes. Unrelated native navigation stacks are not assigned these appearances.",
+    "presentation": "Explicit pageSheet, matching native default; no forced fullScreen or fixed top padding",
+    "appearance": "Opaque equal standard/scroll-edge/compact/compact-scroll-edge appearance for owned bar and each settings item; uses effective palette, clears blur/shadow, tints native custom title and button views plus standard button items",
+    "lifecycle": "Refresh after native host viewWillAppear and viewDidAppear, content appearance, and color-trait changes. No scroll/layout hook added. Hidden pages cannot restyle the active shared bar.",
+    "close": "Root xmark targets the modal state retained by the navigation controller, with a weak navigation reference. Ends editing and dismisses the settings stack; also present in no-navigation fallback.",
+    "diagnostics": "Logs constructed navigation and bar class and the explicit appearance policy."
+  },
+  "verification": {
+    "sdk": "All four UINavigationBar and UINavigationItem appearance fields exist in the supplied iOS 16.5 headers",
+    "native_abi": "Constructor, setupStyle, titleButton and setCustomTitleColor: match extracted Objective-C encodings",
+    "literal_contract_check": {
+      "match": 148,
+      "mismatch": 0,
+      "runtime_resolution_required": 31
+    },
+    "source_routes": "All three modal paths use shared factory; direct stock modal construction removed",
+    "build": "Not run at user request"
+  },
+  "research_hashes": {
+    "header-ownership-annotated.txt": "df9dc8261c93b26f7d9b8356e8cd11244dd486bda7db63152229628df93b2bf7",
+    "navigation-annotated.txt": "45fbdeb776fdc00b96b4c614a373a57e5d646e7d8bf902ab88e2dd1c67ae6961"
+  },
+  "device_checks_pending": [
+    "Exact top and overscroll",
+    "Mid-list and scroll-to-top",
+    "Light/dark plus DeArrow-specific theme",
+    "Sheet dragging and cancelled dismissal",
+    "Submenu push/pop and text editor keyboard/Save",
+    "Rotation and close dismissal",
+    "Native header lookup resolves on the native path; no underlay bleed"
+  ]
+}

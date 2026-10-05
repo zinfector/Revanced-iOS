@@ -1875,5 +1875,31 @@
         "imp": "0x10106d3e4"
       }
     ]
+  },
+  {
+    "name": "YTNavigationController",
+    "address": "0x10caac3f0",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithParentResponder:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x1040c2f48"
+      }
+    ]
+  },
+  {
+    "name": "YTNavigationBar",
+    "address": "0x10cabf440",
+    "superclass": null,
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "setupStyle",
+        "encoding": "v16@0:8",
+        "imp": "0x10029f7c4"
+      }
+    ]
   }
 ]

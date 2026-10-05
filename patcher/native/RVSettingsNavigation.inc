@@ -79,7 +79,15 @@ static void RVSettingsReleaseBackGesture(UINavigationController *navigation) {
 @implementation RVSettingsContentController
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];UIViewController *owner=RVSettingsOwner(self);
+    RVSettingsRefreshAppearance(self);
     self.backGestureNavigation=owner.navigationController;RVSettingsAcquireBackGesture(owner);
+}
+- (void)traitCollectionDidChange:(UITraitCollection *)previous {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [super traitCollectionDidChange:previous];
+#pragma clang diagnostic pop
+    if (self.isViewLoaded && [self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previous]) RVSettingsRefreshAppearance(self);
 }
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];

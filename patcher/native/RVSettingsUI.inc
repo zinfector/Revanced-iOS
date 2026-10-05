@@ -293,6 +293,6 @@ static BOOL RVPresentSettings(id presenter) {
     UIViewController *page=RVSettingsWrap(content,source);
     if (RVCan(source,"showOrPushViewController:",@"v@:@")) ((void(*)(id,SEL,id))objc_msgSend)(source,sel_registerName("showOrPushViewController:"),page);
     else if (source.navigationController) [source.navigationController pushViewController:page animated:YES];
-    else { content.modalEntry=YES;page.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"xmark"] style:UIBarButtonItemStylePlain target:content action:@selector(done)];[source presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil]; }
+    else { content.modalEntry=YES;[source presentViewController:RVSettingsModalNavigation(page,source) animated:YES completion:nil]; }
     return YES;
 }

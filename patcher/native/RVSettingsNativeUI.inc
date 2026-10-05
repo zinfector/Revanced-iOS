@@ -56,6 +56,7 @@ static UIViewController *RVSettingsOwner(UIViewController *content) {
     UIViewController *parent=content.parentViewController;
     return objc_getAssociatedObject(parent,RVSettingsHostKey) ? parent : content;
 }
+static void RVSettingsRefreshAppearance(UIViewController *content);
 #include "RVSettingsNavigation.inc"
 static NSInteger RVSettingsPageStyle(UIViewController *content) {
     NSString *theme=RVSetting(@"theme");
@@ -85,6 +86,7 @@ static UIColor *RVSettingsColor(UIViewController *content,const char *token) {
     if (!strcmp(token,"outline")) return [UIColor colorWithWhite:dark ? .25 : .85 alpha:1];
     return dark ? [UIColor colorWithWhite:15.0/255 alpha:1] : UIColor.whiteColor;
 }
+#include "RVSettingsModal.inc"
 static void RVSettingsRefreshAppearance(UIViewController *content) {
     UIViewController *owner=RVSettingsOwner(content);NSString *theme=RVSetting(@"theme");
     UIUserInterfaceStyle style=[theme isEqual:@"dark"] ? UIUserInterfaceStyleDark : [theme isEqual:@"light"] ? UIUserInterfaceStyleLight : UIUserInterfaceStyleUnspecified;
@@ -96,6 +98,9 @@ static void RVSettingsRefreshAppearance(UIViewController *content) {
     if (owner.viewIfLoaded.window && (!owner.navigationController || owner.navigationController.visibleViewController==owner) &&
         RVCan(owner,"setupNavigationBarAppearance",@"v@:"))
         ((void(*)(id,SEL))objc_msgSend)(owner,sel_registerName("setupNavigationBarAppearance"));
+    // Apply after native styling, which uses the source's style context. Limit
+    // the explicit opaque appearance to our independently owned modal stack.
+    RVSettingsRefreshModalAppearance(content);
 }
 static NSString *const RVSettingsHeaderGeometryScope=@"RVPort.SettingsHeaderGeometryScope";
 static void RVSettingsInstallHeaderGeometry(void) {
@@ -156,7 +161,15 @@ static NSInteger RVSettingsHostPageStyle(id object,SEL selector) {
 static void RVSettingsHostDidAppear(id object,SEL selector,BOOL animated) {
     IMP original=class_getMethodImplementation(class_getSuperclass(RVSettingsHostClass),selector);
     ((void(*)(id,SEL,BOOL))original)(object,selector,animated);
+    RVSettingsHostState *state=objc_getAssociatedObject(object,RVSettingsHostKey);
+    if (state.content) RVSettingsRefreshAppearance(state.content);
     RVSettingsRefreshNativeHeader(object);
+}
+static void RVSettingsHostWillAppear(id object,SEL selector,BOOL animated) {
+    IMP original=class_getMethodImplementation(class_getSuperclass(RVSettingsHostClass),selector);
+    ((void(*)(id,SEL,BOOL))original)(object,selector,animated);
+    RVSettingsHostState *state=objc_getAssociatedObject(object,RVSettingsHostKey);
+    if (state.content) RVSettingsRefreshAppearance(state.content);
 }
 static void RVSettingsHostDidLayout(id object,SEL selector) {
     IMP original=class_getMethodImplementation(class_getSuperclass(RVSettingsHostClass),selector);
@@ -177,6 +190,7 @@ static Class RVSettingsNativeHostClass(void) {
         Class cls=objc_allocateClassPair(base,"RVPortNativeSettingsHost",0);if (!cls) return;
         BOOL added=class_addMethod(cls,@selector(loadView),(IMP)RVSettingsHostLoad,"v@:");
         added &= class_addMethod(cls,@selector(viewDidLoad),(IMP)RVSettingsHostDidLoad,"v@:");
+        added &= class_addMethod(cls,@selector(viewWillAppear:),(IMP)RVSettingsHostWillAppear,"v@:B");
         added &= class_addMethod(cls,@selector(viewDidAppear:),(IMP)RVSettingsHostDidAppear,"v@:B");
         added &= class_addMethod(cls,@selector(viewDidLayoutSubviews),(IMP)RVSettingsHostDidLayout,"v@:");
         added &= class_addMethod(cls,sel_registerName("pageStyle"),(IMP)RVSettingsHostPageStyle,"q@:");
@@ -199,7 +213,7 @@ static void RVSettingsPush(UIViewController *content,UIViewController *destinati
     UIViewController *page=RVSettingsWrap(destination,state.source ?: owner);
     if (owner.navigationController) [owner.navigationController pushViewController:page animated:YES];
     else if (RVCan(state.source,"showOrPushViewController:",@"v@:@")) ((void(*)(id,SEL,id))objc_msgSend)(state.source,sel_registerName("showOrPushViewController:"),page);
-    else [owner presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil];
+    else [owner presentViewController:RVSettingsModalNavigation(page,state.source ?: owner) animated:YES completion:nil];
 }
 static void RVSettingsPop(UIViewController *content) {
     UIViewController *owner=RVSettingsOwner(content);

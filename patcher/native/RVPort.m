@@ -401,8 +401,7 @@ static NSDictionary *RVSponsorReport(void) {
     if (!top || objc_getAssociatedObject(visible,RVSettingsHostKey) || [visible isKindOfClass:RVSettingsController.class] || [visible isKindOfClass:RVPreferenceTextController.class]) return;
     RVSettingsController *settings=[RVSettingsController new];settings.modalEntry=YES;settings.title=@"ReVanced";
     UIViewController *page=RVSettingsWrap(settings,visible);
-    page.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"xmark"] style:UIBarButtonItemStylePlain target:settings action:@selector(done)];
-    [top presentViewController:[[UINavigationController alloc] initWithRootViewController:page] animated:YES completion:nil];
+    [top presentViewController:RVSettingsModalNavigation(page,visible) animated:YES completion:nil];
 }
 @end
 
