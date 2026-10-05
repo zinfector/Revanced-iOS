@@ -64,7 +64,7 @@ static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *list
     if ([groupID isEqual:@"dearrow"]) return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows},
         @{@"title":@"Current video and service",@"rows":@[@{@"title":@"Show original for current video",@"dearrow_action":@0},
         @{@"title":@"Use community version for current video",@"dearrow_action":@1},@{@"title":@"Clear DeArrow cache",@"dearrow_action":@2},
-        @{@"title":@"Copy DeArrow checkpoints",@"dearrow_action":@3}]}];
+        @{@"title":@"Start DeArrow diagnostic capture",@"dearrow_action":@4},@{@"title":@"Probe service for current video",@"dearrow_action":@5},@{@"title":@"Copy DeArrow checkpoints",@"dearrow_action":@3}]}];
     return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows}];
 }
 static BOOL RVSettingsSaveToggle(NSDictionary *row,BOOL on) {

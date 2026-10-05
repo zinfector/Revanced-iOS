@@ -1,11 +1,11 @@
-"""Record 0.3.34 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.35 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.34'
+VERSION = '0.3.35'
 
 
 def main():
@@ -47,8 +47,8 @@ def main():
     # Internal Markdown stays local and is excluded from public release receipts.
     names = [name for name in names if Path(name).suffix.lower() != '.md']
     names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json',
-              'native/RVDeArrowBackend.h','native/RVDeArrowBackend.inc','native/RVDeArrowProjection.inc','native/RVDeArrowUI.inc',
-              'profiles/dearrow-ui-contract.json','profiles/dearrow-backend-contract.json']
+              'native/RVDeArrowBackend.h','native/RVDeArrowBackend.inc','native/RVDeArrowProjection.inc','native/RVDeArrowUI.inc','native/RVDeArrowDiagnostics.inc',
+              'profiles/dearrow-ui-contract.json','profiles/dearrow-options-scheme.json','profiles/dearrow-diagnostics-contract.json','profiles/dearrow-backend-contract.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -73,7 +73,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'DeArrow backend/settings/presentation adapters implemented for pinned ordinary-video roots. Shared raw-pointer, entity-only and unverified template layouts retain originals with explicit checkpoints. On-device title/image/reuse/navigation behavior remains unverified. No tests run.'}
+        'remaining_scope': 'Home and watch DeArrow replacements are user-reported failing. Diagnostic capture and service-only probe added to identify the active blocker; device report pending. Full 26-option parity remains planned in profiles/dearrow-options-scheme.json. Unknown native roots retain originals. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

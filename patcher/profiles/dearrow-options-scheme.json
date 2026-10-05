@@ -1,0 +1,386 @@
+{
+  "schema": 1,
+  "date": "2026-10-05",
+  "baseline": "0.3.34",
+  "baseline_commit": "420e59f",
+  "status": "options_scheme_only; diagnostic_capture_implemented_in_0.3.35",
+  "upstream": {
+    "repository": "https://github.com/ajayyy/DeArrow",
+    "commit": "00275920e71f894d13ed6f765afb4e47fb7a7c9f",
+    "files": [
+      {
+        "path": "src/config/config.ts",
+        "sha256": "90add8e676af67b8c66a7864d0072d077de96164b2017d5eb69ee8d999b4e88c",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/config/config.ts"
+      },
+      {
+        "path": "public/options/options.html",
+        "sha256": "c2172cb37b8778fb83596dfb7da9511cc801a73f6e2310edb8c481da0d2b2cb1",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/public/options/options.html"
+      },
+      {
+        "path": "src/options.ts",
+        "sha256": "a39476be6d279e9745783c23ce324337716e4f455af6a39a469ee5c46340db3a",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/options.ts"
+      },
+      {
+        "path": "src/submission/casualVote.const.ts",
+        "sha256": "ef5465849399439b2c5f28d8795745c314eac0e043f3d4754341478e310763eb",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/submission/casualVote.const.ts"
+      },
+      {
+        "path": "src/config/channelOverrides.ts",
+        "sha256": "043fbf0b772439d19ec3b7922c999f388a272097147fcbcce91a87306f4f27f9",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/config/channelOverrides.ts"
+      },
+      {
+        "path": "src/titles/titleFormatterData.ts",
+        "sha256": "e6da805f38ff30d9862024deaf4d3ba09c9790245c61b8f53aa5136b3196a3db",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/titles/titleFormatterData.ts"
+      },
+      {
+        "path": "src/options/CasualChoiceComponent.tsx",
+        "sha256": "8753219da0964abb34f3bc6015b1bf329de67809cc642ee328b95552a33fec4a",
+        "url": "https://github.com/ajayyy/DeArrow/blob/00275920e71f894d13ed6f765afb4e47fb7a7c9f/src/options/CasualChoiceComponent.tsx"
+      }
+    ]
+  },
+  "screenshots": "All four supplied screenshots; every shown setting is mapped below.",
+  "runtime_failure": {
+    "reported_by_user": "Titles and thumbnails unchanged on both Home and watch with both switches enabled.",
+    "root_cause": "Not established without device capture. Static evidence establishes diagnostics gaps, not the active failing device gate.",
+    "confirmed_gaps": [
+      "Early failed bindings are discarded without samples.",
+      "Previous history omits factory entry counts and rejected legacy unions.",
+      "Current-source check returns only a boolean; all stale callbacks share one label.",
+      "0.3.34 implements community replacements only, unlike upstream original-title formatting and general thumbnail fallbacks."
+    ],
+    "suspected_gates": [
+      "Missing section scope on direct cellNodeBlock route.",
+      "A live server template/revision or model extension outside the pinned profile.",
+      "Unknown owner ancestry or row-view-model contract.",
+      "Missing submissions or community-original decisions; these are intentional originals.",
+      "Service response/selection/image failure.",
+      "Projection accepted but copied renderer not consumed or native row not rematerialized."
+    ]
+  },
+  "options": [
+    {
+      "option": "Classic / Casual mode",
+      "upstream_keys": "casualMode, casualModeSettings",
+      "proposed_ios_keys": "dearrow_mode; dearrow_casual_categories",
+      "phase": "selection",
+      "semantics": "Classic keeps the existing trusted community ranking. Casual also evaluates title-matched community category votes; selected category thresholds can retain an original. Add funny, creative, clever, descriptive and other categories. Do not guess casual classification from title wording.",
+      "implementation": "Extend immutable backend metadata/result with bounded casualVotes; compare against the owned original title; refresh title and thumbnail independently.",
+      "status": "planned"
+    },
+    {
+      "option": "Replace titles",
+      "upstream_keys": "replaceTitles",
+      "proposed_ios_keys": "dearrow_titles",
+      "phase": "existing",
+      "semantics": "Keep the existing independent switch and per-screen overrides.",
+      "implementation": "Policy result gates all title transformations, including original-title formatting; changing it restores/reloads matching native rows.",
+      "status": "implemented_unconfirmed"
+    },
+    {
+      "option": "Replace thumbnails",
+      "upstream_keys": "replaceThumbnails",
+      "proposed_ios_keys": "dearrow_thumbnails",
+      "phase": "existing",
+      "semantics": "Keep the independent thumbnail switch and screen policy.",
+      "implementation": "Image state must distinguish community, generated fallback, native original, and explicit blank; native image decode/cache and lease stay scoped.",
+      "status": "implemented_unconfirmed"
+    },
+    {
+      "option": "Use crowdsourced titles",
+      "upstream_keys": "useCrowdsourcedTitles",
+      "proposed_ios_keys": "dearrow_use_crowdsourced_titles",
+      "phase": "formatting",
+      "semantics": "A separate switch chooses whether a community title may supply text. Original-title formatting can still operate when this is disabled.",
+      "implementation": "Do not request title-only branding when no selection-dependent option needs it. Choose the original source, then run the formatter.",
+      "status": "planned"
+    },
+    {
+      "option": "Default to original information",
+      "upstream_keys": "defaultToCustom (inverted)",
+      "proposed_ios_keys": "dearrow_default_original",
+      "phase": "interaction",
+      "semantics": "Keep a per-video session choice separate from the preference. Prefetch decisions but initially present the leased original when enabled.",
+      "implementation": "Use a native card context-menu action and a watch-page menu action to reveal community details. Do not require mouse hover or add a floating player box.",
+      "status": "planned"
+    },
+    {
+      "option": "Title format: Disabled / Title Case / Sentence Case / Lower Case / First Letter Uppercase / Capitalize Words",
+      "upstream_keys": "titleFormatting",
+      "proposed_ios_keys": "dearrow_title_format",
+      "phase": "formatting",
+      "semantics": "Define explicit stable string enums: disabled, title_case, sentence_case, lower_case, first_letter_uppercase, capitalize_words. Preserve original wording before every application.",
+      "implementation": "Create RVDeArrowFormatting.inc with Unicode-aware word/sentence handling, abbreviation and acronym rules, bounded text, and original/custom provenance. A generic capitalizedString alone is not title-case parity.",
+      "status": "planned"
+    },
+    {
+      "option": "Format original titles",
+      "upstream_keys": "formatOriginalTitles",
+      "proposed_ios_keys": "dearrow_format_original_titles",
+      "phase": "formatting",
+      "semantics": "Apply the selected case policy to the actual original title when no usable community title is selected, or crowdsourced titles are disabled.",
+      "implementation": "This is the primary difference from 0.3.34: absence of submissions must not prevent local formatting. Show-original restores the unformatted lease.",
+      "status": "planned"
+    },
+    {
+      "option": "Format submitted titles",
+      "upstream_keys": "formatCustomTitles",
+      "proposed_ios_keys": "dearrow_format_custom_titles",
+      "phase": "formatting",
+      "semantics": "Gate case conversion independently for community titles.",
+      "implementation": "Emoji cleanup is a separate policy; disabling case conversion must not silently disable it. Never format already formatted text again.",
+      "status": "planned"
+    },
+    {
+      "option": "Remove emojis",
+      "upstream_keys": "shouldCleanEmojis",
+      "proposed_ios_keys": "dearrow_remove_emojis",
+      "phase": "formatting",
+      "semantics": "Process composed Unicode sequences and upstream letter-like emoji substitutions; preserve useful letters, numbers and mathematical symbols.",
+      "implementation": "Handle ZWJ, variation selectors, modifiers and keycaps as sequences. Emoji cleanup and fancy-letter normalization precede case conversion; record only lengths and hashes.",
+      "status": "planned"
+    },
+    {
+      "option": "Capitalize words for non-English titles",
+      "upstream_keys": "onlyTitleCaseInEnglish (inverted UI)",
+      "proposed_ios_keys": "dearrow_capitalize_non_english",
+      "phase": "formatting",
+      "semantics": "Use source-language recognition on the original title, not interface language. Low-confidence detection retains original case when non-English conversion is disabled.",
+      "implementation": "Add NaturalLanguage framework and confidence-aware language detection. Protect proper nouns, acronyms, Turkish casing and Greek-letter behavior; do not claim browser-language-model equivalence.",
+      "status": "planned"
+    },
+    {
+      "option": "Fallback: Screenshot from a random time",
+      "upstream_keys": "thumbnailFallback=RandomTime",
+      "proposed_ios_keys": "dearrow_fallback=random_time",
+      "phase": "fallback",
+      "semantics": "Use a validated per-video duration and stable chosen timestamp, preferably the branding randomTime fraction. Avoid promotional SponsorBlock intervals for that video.",
+      "implementation": "Extend backend metadata with videoDuration/randomTime; add a bounded per-video duration and segment cache. Never use the currently playing duration/segments for a different feed video. Send explicit time to the image service and verify timestamp/decode.",
+      "status": "planned"
+    },
+    {
+      "option": "Fallback: Original thumbnail",
+      "upstream_keys": "thumbnailFallback=Original",
+      "proposed_ios_keys": "dearrow_fallback=original",
+      "phase": "existing",
+      "semantics": "This remains the migration default. A trusted community-original decision also retains the native source.",
+      "implementation": "Separate deliberate original from missing metadata, service error, role rejection and decoded-image failure in reports.",
+      "status": "implemented_unconfirmed"
+    },
+    {
+      "option": "Fallback: Blank box",
+      "upstream_keys": "thumbnailFallback=Blank",
+      "proposed_ios_keys": "dearrow_fallback=blank",
+      "phase": "fallback",
+      "semantics": "Blank is an intentional presentation state, not a network failure or collapsed row.",
+      "implementation": "Supply a scoped opaque placeholder image with original aspect ratio and preserve duration overlays, accessibility, taps and cell size; restore native source when disabled/reused.",
+      "status": "planned"
+    },
+    {
+      "option": "Fallback: YouTube auto-generated thumbnail",
+      "upstream_keys": "thumbnailFallback=AutoGenerated; thumbnailFallbackAutogenerated",
+      "proposed_ios_keys": "dearrow_fallback=youtube_frame; thumbnail_frame",
+      "phase": "fallback",
+      "semantics": "Expose start/middle/end generated variants with full-image validation. Existing stills maps to this policy during migration.",
+      "implementation": "Resolve hq1/hq2/hq3 for the bound video; reject unavailable/placeholder images, retain original on failure. Replace cached-only probing with an asynchronous decoded result and guarded refresh.",
+      "status": "planned"
+    },
+    {
+      "option": "Channel avatar for upcoming videos",
+      "upstream_keys": "showLiveCover",
+      "proposed_ios_keys": "dearrow_upcoming_avatar",
+      "phase": "metadata",
+      "semantics": "Require an explicit upcoming/live metadata contract and owning channel ID; this is not inferred from a title label.",
+      "implementation": "Use a validated avatar from that channel to compose a cover image with native aspect ratio. Keep avatar replacement scoped to the thumbnail role; do not alter native channel avatars globally.",
+      "status": "planned"
+    },
+    {
+      "option": "Never use A/B-tested thumbnails",
+      "upstream_keys": "ignoreAbThumbnails",
+      "proposed_ios_keys": "dearrow_ignore_ab_thumbnails",
+      "phase": "metadata",
+      "semantics": "Normalize a verified native original _custom_N URL variant to its stable original source for that same video.",
+      "implementation": "Store both the received native variant and the normalized presentation source. Validate the normalized image and fall back to the received source on errors; preserve proxy query semantics and unaffected URLs.",
+      "status": "planned"
+    },
+    {
+      "option": "Hide details while fetching",
+      "upstream_keys": "hideDetailsWhileFetching",
+      "proposed_ios_keys": "dearrow_hide_while_fetching",
+      "phase": "presentation",
+      "semantics": "Only the owned title/thumbnail roles enter a pending placeholder state; loading a feed row must never hide channel data, controls or the whole card.",
+      "implementation": "Use a bounded deadline and restore originals on timeout, missing/untrusted/original decisions, disabled policy, owner change or reuse. Screen readers need a temporary loading label and native restoration. This requires a proven role and native layout contract.",
+      "status": "planned"
+    },
+    {
+      "option": "Do not show translated YouTube titles",
+      "upstream_keys": "ignoreTranslatedTitles",
+      "proposed_ios_keys": "dearrow_ignore_translated_titles",
+      "phase": "metadata",
+      "semantics": "Prefer verified originalTitle fields in the same owned video model when no community title is available.",
+      "implementation": "ELMPBMetadata.originalTitle30 is already known for some templates. Add explicit entity/legacy source-language title evidence before enabling other routes; no global translation disabling or generic text heuristics.",
+      "status": "planned"
+    },
+    {
+      "option": "Maximum title lines",
+      "upstream_keys": "titleMaxLines",
+      "proposed_ios_keys": "dearrow_title_max_lines",
+      "phase": "presentation",
+      "semantics": "Bound the preference to 1..6 and apply to ordinary feed suggestions, with watch title handled separately according to its native layout.",
+      "implementation": "Use Metadata.maxTitleLine7 on the isolated copy where the template reads it; identify lockup/watch text constraints before changing them. Recompute native row sizing and preserve accessibility/RTL/truncation.",
+      "status": "planned"
+    },
+    {
+      "option": "Thumbnail saturation",
+      "upstream_keys": "thumbnailSaturationLevel",
+      "proposed_ios_keys": "dearrow_thumbnail_saturation",
+      "phase": "presentation",
+      "semantics": "Clamp 0..100; 100 retains native colors. Treat this as a presentation transform after image selection.",
+      "implementation": "Use CoreImage color controls on decoded images off main, with cache keys including source, timestamp and effect revision. For originals use an owned source/result, not a global UIImage hook; keep original leases unfiltered.",
+      "status": "planned"
+    },
+    {
+      "option": "Store submitted votes",
+      "upstream_keys": "keepUnsubmitted",
+      "proposed_ios_keys": "dearrow_store_selected_votes",
+      "phase": "voting",
+      "semantics": "Requires a DeArrow submission/vote interface and candidate UUIDs. It is not an existing SponsorBlock vote or a cache-retention switch.",
+      "implementation": "Extend backend results with candidate identity; persist bounded per-video local selections separately from downloaded rankings, prune by age/count, and invalidate by settings revision. Do not send any vote automatically.",
+      "status": "planned"
+    },
+    {
+      "option": "Always display Show Original",
+      "upstream_keys": "alwaysShowShowOriginalButton",
+      "proposed_ios_keys": "dearrow_always_show_original",
+      "phase": "interaction",
+      "semantics": "Provide a native watch menu row and card context-menu entry consistently, including when no branding changed.",
+      "implementation": "The action uses the existing original/community lease. Inline controls require a verified native title/action slot; maintain native spacing and navigation gestures, and never overlay the video player.",
+      "status": "planned"
+    },
+    {
+      "option": "Swap original/custom on hover",
+      "upstream_keys": "showOriginalOnHover, showOriginalOnHoverOfVideo",
+      "proposed_ios_keys": "dearrow_peek_interaction",
+      "phase": "interaction",
+      "semantics": "On touch use explicit tap-toggle/context-menu preview; optional pointer hover may be added on pointer-equipped iPads.",
+      "implementation": "Temporary peek restores the previous presentation state on release/dismissal and respects reuse/settings revisions. It must not steal the native long-press video preview, swipe-back, or scrolling gestures.",
+      "status": "planned"
+    },
+    {
+      "option": "Show Original for auto-formatted titles",
+      "upstream_keys": "showIconForFormattedTitles",
+      "proposed_ios_keys": "dearrow_show_original_for_formatted",
+      "phase": "interaction",
+      "semantics": "Track formatted-original separately from community title provenance.",
+      "implementation": "Expose the original action when local formatting changed visible text according to this setting; returning original bypasses both case and emoji cleanup.",
+      "status": "planned"
+    },
+    {
+      "option": "Guideline help",
+      "upstream_keys": "showGuidelineHelp",
+      "proposed_ios_keys": "dearrow_guideline_help",
+      "phase": "help",
+      "semantics": "Add a native help row and guidance in the future contribution screen.",
+      "implementation": "Link the official guidelines and provide short local explanations. Keep configuration help independent of service and presentation readiness.",
+      "status": "planned"
+    },
+    {
+      "option": "Dark mode on options page",
+      "upstream_keys": "darkMode",
+      "proposed_ios_keys": "existing YouTube/ReVanced theme policy",
+      "phase": "help",
+      "semantics": "The browser options-page preference becomes Use app theme / Light / Dark for a native settings controller if needed.",
+      "implementation": "Reuse the existing settings/theme infrastructure; do not force a global appearance change or duplicate a web-style options page.",
+      "status": "planned"
+    }
+  ],
+  "pipeline": [
+    "native original + owner/video/source lease",
+    "effective independent part policy",
+    "explicit per-video original/community selection",
+    "metadata, casual votes, optional local selections",
+    "original/community/auto-format title choice",
+    "format and language/emoji transforms",
+    "community/original/generated/blank/cover image choice",
+    "saturation and pending presentation state",
+    "isolated typed projection",
+    "guarded native materialization and layout refresh",
+    "restoration on policy/reuse/owner change"
+  ],
+  "phases": [
+    {
+      "order": 0,
+      "name": "Capture actual failing native route",
+      "deliverable": "0.3.35 diagnostics, settings capture/probe/copy actions, pinned native evidence, one unsigned Xcode IPA. No option-parity claims or guessed template expansion."
+    },
+    {
+      "order": 1,
+      "name": "Repair the captured first blocking native gate",
+      "deliverable": "Use owner/union/template/model/ABI observations to corroborate a typed route in the original binary. Add a pinned contract, then connect factory ownership and refresh; unknown roots remain originals."
+    },
+    {
+      "order": 2,
+      "name": "Selection and formatting",
+      "deliverable": "Versioned policy, six case modes, crowdsourced toggle, separate original/custom formatting, Unicode cleanup, language gate, default-original state and original actions."
+    },
+    {
+      "order": 3,
+      "name": "Fallback images and metadata",
+      "deliverable": "Original/blank/YouTube frame/random screenshot, per-video duration/SponsorBlock intervals, upcoming cover, stable native thumbnail and anti-translated title where evidence exists."
+    },
+    {
+      "order": 4,
+      "name": "Presentation controls",
+      "deliverable": "Native title-line constraints, scoped saturation, pending placeholders with restore deadlines, context-menu/tap/pointer original preview; no floating player controls."
+    },
+    {
+      "order": 5,
+      "name": "Casual decisions and contributions",
+      "deliverable": "Category votes bound to the original title, threshold selection, candidate UUIDs, explicit voting/submission UI and persisted local selections; contextual guidelines and app theme."
+    }
+  ],
+  "precedence": [
+    "Known owner and video identity are mandatory regardless of mode.",
+    "Disabled part or explicit Show Original returns the untouched original lease.",
+    "Explicit community reveal overrides default-original and temporary Casual choice; screen original policies still disable their part.",
+    "Do not override a trusted community-original thumbnail with random/blank fallback.",
+    "Format from pristine original/community text exactly once, never the displayed title.",
+    "A service/image error is separate from intentional blank, missing submissions and original selection."
+  ],
+  "migration": {
+    "existing_keys": "Keep dearrow_titles, dearrow_thumbnails, endpoint keys and per-screen policies. Schema bump supplies safe defaults without losing saved settings.",
+    "fallback": "original stays original; legacy stills maps to youtube_frame; random_time and blank require explicit settings choices.",
+    "defaults": "Do not silently convert every existing feed to browser defaults while diagnosing a failed adapter. Enable new formatting/fallback behavior only when its effective policy is defined and shown.",
+    "native_ui": "Use the shared native settings catalog/row model; create Mode, Titles, Thumbnails, Display, Original/Community, Service/Diagnostics sections without a parallel HTML page."
+  },
+  "planned_modules": [
+    "RVDeArrowPolicy.inc",
+    "RVDeArrowFormatting.inc",
+    "RVDeArrowFallback.inc",
+    "RVDeArrowPresentation.inc",
+    "RVDeArrowOriginalActions.inc"
+  ],
+  "backend_extensions": [
+    "original/custom candidate UUID and provenance",
+    "bounded casualVotes with title match and category counts",
+    "validated videoDuration and randomTime",
+    "fallback result/source enum distinct from community vote decisions",
+    "cancelled/coalesced per-video ancillary metadata and segment lookups",
+    "decoded-image effect cache key separate from service cache"
+  ],
+  "native_evidence": {
+    "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "short_factory": "ELMCellNode.nodeBlockForEntry:responder:0x100461bd4 delegates to full factory; YTElementsCellController.cellNodeBlock0x104242828 uses that route without itself establishing section TLS.",
+    "data_consumption": "YTIElementRenderer.elementData0x10050da14 reads/caches the native bytes extension. FUN10050d94c calls that getter before element decode; the RenderNext builder also uses it. New capture counts copied-byte consumption.",
+    "initialization": "initWithElementData:0x1043197b0 stores the native extension; initWithElement:0x104319848 obtains serialized data first.",
+    "row_lease": "Original array entry, cached controller, controller entry, owner/video, serialized source and revisions are checked individually; the report names the failed contract."
+  },
+  "tests_run": false,
+  "device_verified": false
+}

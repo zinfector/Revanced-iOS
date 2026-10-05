@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.34'
+VERSION = '0.3.35'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'integrated-dearrow',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-diagnostics',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Merged DeArrow service coordinator with dedicated settings, independent surface policies, typed native title/static-thumbnail presentation copies, cached-only frame fallback, guarded row rematerialization and redacted diagnostics. Retains the working adblock, SponsorBlock, speed, navigation, authentication and settings changes. Unknown/shared/entity-only roots keep native originals; device confirmation pending.'}
-    (ROOT/'build/package-manifest-0.3.34.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Adds armed DeArrow capture, rejected binding samples, native hook and materialization counts, effective policy snapshots and a service-only current-video probe. Home/watch replacements are user-reported failing; the active device blocker remains unconfirmed. The 26-option parity scheme is planning, not implemented option support. Retains existing patches. No tests run.'}
+    (ROOT/'build/package-manifest-0.3.35.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

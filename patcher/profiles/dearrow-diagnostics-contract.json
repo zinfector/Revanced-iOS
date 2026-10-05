@@ -1,0 +1,43 @@
+{
+  "schema": 2,
+  "release": "0.3.35",
+  "status": "implemented_device_capture_pending",
+  "device_verified": false,
+  "tests_run": false,
+  "source": "native/RVDeArrowDiagnostics.inc",
+  "capture_actions": [
+    "Start DeArrow diagnostic capture",
+    "Probe service for current video",
+    "Copy DeArrow checkpoints"
+  ],
+  "bounds": {
+    "events": 96,
+    "attempt_samples": 32,
+    "bindings": 32,
+    "owner_hops": 16,
+    "component_samples": 8,
+    "scanned_nodes": 32,
+    "diagnostic_bytes": 131072
+  },
+  "settings_snapshot": "Independent switches, whitelisted screen overrides, legacy thumbnail migration and effective per-screen part policies; no service URLs.",
+  "observation_only": "Failed binding snapshots and service probe never relax production identity, ordinary-video, role, or lifecycle gates.",
+  "known_gap": "0.3.34 discarded failed bind attempts and did not implement upstream original formatting/general fallback behavior.",
+  "device_report_required": "Both Home and watch replacements fail despite enabled switches; active native blocker not established.",
+  "native_contracts": {
+    "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "short_factory": "ELMCellNode.nodeBlockForEntry:responder:0x100461bd4 delegates to full factory; YTElementsCellController.cellNodeBlock0x104242828 uses that route without itself establishing section TLS.",
+    "data_consumption": "YTIElementRenderer.elementData0x10050da14 reads/caches the native bytes extension. FUN10050d94c calls that getter before element decode; the RenderNext builder also uses it. New capture counts copied-byte consumption.",
+    "initialization": "initWithElementData:0x1043197b0 stores the native extension; initWithElement:0x104319848 obtains serialized data first.",
+    "row_lease": "Original array entry, cached controller, controller entry, owner/video, serialized source and revisions are checked individually; the report names the failed contract."
+  },
+  "interpretation": [
+    "No native calls: hook/layout route gap.",
+    "Blocked attempts: inspect exact owner/union/template/model/ID gate.",
+    "No requested parts: effective policy or unresolved roles.",
+    "Missing or original decision: intentional original.",
+    "Data accepted but no projection: typed projection/copy/source gap.",
+    "Projected but no data consumption/materialization: native adapter/refresh gap.",
+    "Result rejected: exact ownership/source/index/revision reason.",
+    "Service probe proves only service data/decode, not UI success."
+  ]
+}
