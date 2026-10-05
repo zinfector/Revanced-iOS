@@ -1,11 +1,11 @@
-"""Record 0.3.32 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.33 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.32'
+VERSION = '0.3.33'
 
 
 def main():
@@ -30,6 +30,7 @@ def main():
              'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
              'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
              'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc', 'native/RVSettingsNavigation.inc', 'native/RVDislikesDiagnostics.inc', 'RYD_CHECKPOINTS.md', 'profiles/ryd-checkpoints-evidence.json', 'profiles/device-report-541-ryd-render.json', 'profiles/device-report-615-ryd-mount.json', 'profiles/device-report-635-ryd-lifecycle.json', 'profiles/ryd-lifecycle-evidence.json', 'profiles/ryd-speed-polish-evidence.json', 'native/RVSpeed.inc', 'native/RVSpeedBridge.inc', 'profiles/device-report-728-startup.json', 'profiles/startup-bridge-evidence.json', 'PLAYBACK_SPEED_SCHEME.md', 'profiles/parallel-ui-snapshot-0.3.14.json', 'profiles/device-0.3.12-ryd-render-failure.json']
+    names += ['native/RVNavigation.inc', 'profiles/navigation-options-evidence.json']
     names += ['native/RVAdElements.inc', 'ADBLOCK_ELEMENTS_INLINE_IMPLEMENTATION.md', 'profiles/device-adblock-report-408.json', 'profiles/adblock-elements-inline-evidence.json']
     names += ['native/RVSpeedContext.inc', 'native/RVShortsLayout.inc', 'SPEED_CONTEXT_IMPLEMENTATION.md', 'SHORTS_LAYOUT_IMPLEMENTATION.md', 'profiles/merged-speed-shorts-source.json']
     names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
@@ -54,7 +55,7 @@ def main():
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 82, 'runtime_preferences': 116,
+        'feature_switches': 86, 'runtime_preferences': 120,
         'build_only': True, 'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
@@ -70,7 +71,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Regular native 3x option and configured limits implemented; device confirmation pending. Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
+        'remaining_scope': 'Native regular 3x button, upsell command removal and configured 3x range implemented; device confirmation pending. Navigation tab filtering, reversible native icon-only labels, surviving-tab startup selection and detailed navigation diagnostics implemented. New navigation behavior requires device confirmation. Retains working adblocking. Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

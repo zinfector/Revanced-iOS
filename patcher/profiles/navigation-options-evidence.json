@@ -1,0 +1,45 @@
+{
+  "version": "0.3.32",
+  "base_commit": "21c7e17",
+  "tests_run": false,
+  "device_validated": false,
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "implementation": [
+    "hide_home_navigation",
+    "hide_subscriptions_navigation",
+    "hide_library_navigation",
+    "hide_navigation_labels",
+    "Shorts start page"
+  ],
+  "native_evidence": [
+    "navigation-options-native-metadata.json",
+    "navigation-options-native-disassembly.txt"
+  ],
+  "design": {
+    "tab_identity": "Exact verified native pivot identifiers only; unknown/action entries are retained.",
+    "filter": "Use original pivot items under a verified model lease, recalculate on each setting change, restore on disable and leave native concurrent mutations alone.",
+    "selection": "Use surviving native items, prefer configured start page, retain a known content tab if all are hidden.",
+    "labels": "Reproduce updateTitleAndLayoutForRenderer isIconsOnly branch: nil normal title, hidden label, style 0 and padding 0; preserve native accessibility name and rerun native title logic for restoration."
+  },
+  "checkpoints": {
+    "pivot_renderer": "Native setRenderer: hook installed",
+    "navigation_labels": "Native title-layout hook installed",
+    "pivot_checkpoint": "native_model_compacted / native_model_already_compacted / restored, or an explicit contract failure",
+    "retained_pivots": "Actual surviving tab IDs",
+    "last_content_tab_retained": "Safety recovery when all known content tabs are selected for hiding",
+    "pivot_removed_selection_recovered": "Native selection moved to a surviving tab",
+    "label_checkpoint": "native_icon_only_layout_applied / native_already_icon_only, or native_button_contract_missing",
+    "native_layout_observed": "Final native tab frames, after layout"
+  },
+  "remaining": [
+    "Create and Notifications toolbar relocation",
+    "Navigation animations and narrow-button styling",
+    "Android translucency/status bar settings",
+    "Other Android browse destinations",
+    "Device confirmation of new navigation behavior"
+  ],
+  "android_sources": {
+    "NavigationBarPatch.java": "968eb3d214c1cbb6027633887c1bafc9b9dfd37ce563a3ea2d8f88ef0ccc71a2",
+    "ChangeStartPagePatch.java": "df4b7dd0475d42495a367bc57b154cf1cb4c54c6694d223dc65c1fc18e803808"
+  }
+}

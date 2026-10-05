@@ -1,8 +1,8 @@
-name: Build regular native 3x speed payload with Xcode
+name: Build regular native 3x and navigation payload with Xcode
 
 on:
   push:
-    branches: [fix/native-three-x-0.3.32]
+    branches: [fix/native-three-x-0.3.33]
 
 permissions:
   contents: read

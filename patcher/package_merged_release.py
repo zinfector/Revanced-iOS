@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.32'
+VERSION = '0.3.33'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'regular-native-three-x',
+    receipt = {'version': VERSION, 'release_flavor': 'regular-native-three-x-navigation',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Regular native 3x option, cleared speed upsell action and matching configured playback limits. Structural Elements display-ad removal and retained-cell fallback, verified inline-player ownership and checkpoint revision 5. Native speed configuration preservation and sheet checkpoints, merged with 0.3.29 ad ownership/display filtering and 0.3.27 Shorts model/header/pivot fixes. SponsorBlock prompts, authentication and native settings retained. One SideStore-compatible native-ad preset.'}
-    (ROOT/'build/package-manifest-0.3.32.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Makes the native 3x option an ordinary selectable speed, removes its upsell command and extends the configured speed range to 3x while retaining engine capability limits. Adds Home/Subscriptions/You tab filtering, native icon-only labels and hidden/start-tab recovery. Structural Elements display-ad removal and retained-cell fallback, verified inline-player ownership and checkpoint revision 5. Native speed configuration preservation and sheet checkpoints, merged with 0.3.29 ad ownership/display filtering and 0.3.27 Shorts model/header/pivot fixes. SponsorBlock prompts, authentication and native settings retained. One SideStore-compatible native-ad preset.'}
+    (ROOT/'build/package-manifest-0.3.33.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 
