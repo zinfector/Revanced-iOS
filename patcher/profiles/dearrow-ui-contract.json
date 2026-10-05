@@ -73,7 +73,16 @@
       "behavior": "oneof imageData2 -> NSData -> UIImage.imageWithData; maybeUpdateImageWithLocalImage applies it and returns true, preceding the remote path"
     },
     "materialization": "YTSectionController.nodeBlockForItemAtIndex:0x100504fc0 passes original entry, owning cell controller and client-data/block registries to ELMCellNode.nodeBlockForEntry:responder:clientDataObservable:blockRegistry:blockRegistryProvider:. Project only that argument; never mutate the feed entry or raw C++ storage.",
-    "refresh": "YTSectionController.reloadCellAtIndex:0x10426919c -> delegate.reloadCellAtIndex:inSection:0x104336174 -> native reloadItemsAtIndexPaths:. Check current item identity and native valid index path first. updateView: and updateCell: are not refresh methods."
+    "refresh": "YTSectionController.reloadCellAtIndex:0x10426919c -> delegate.reloadCellAtIndex:inSection:0x104336174 -> native reloadItemsAtIndexPaths:. Check current item identity and native valid index path first. updateView: and updateCell: are not refresh methods.",
+    "legacy_watch_title": {
+      "class": "YTISlimVideoInformationRenderer",
+      "descriptor": "0x10044ff74",
+      "field_table": "0x10ce68870",
+      "field_count": 15,
+      "title_field": 1,
+      "title_message_class": "YTIFormattedString",
+      "identity": "Explicit owning metadata/cell controller videoID; matching ordinary current playback only for legacy watch eligibility."
+    }
   },
   "integration_scheme": [
     "Merge backend d4ab390 without replacing working native hooks.",
@@ -81,7 +90,8 @@
     "Trusted custom title updates only an isolated typed title value; incompatible ranges are discarded while component styling remains native.",
     "Decoded custom image is encoded into bounded ImageSource.imageData2 in the copied static thumbnail; no downloader callback/signature assumptions or remote-original cache collision.",
     "Keep native original immutable; update generation/revisions on reuse/settings/foreground; asynchronously reload only a still-matching row.",
-    "Unknown, ad, live, Shorts, multi-video, shared raw-pointer and unverified template roots pass through with bounded checkpoints."
+    "Unknown, ad, live, Shorts, multi-video, shared raw-pointer and unverified template roots pass through with bounded checkpoints.",
+    "Compare original serialized source snapshot as well as entry, owner, index, generation, settings and backend revision before accepting callbacks or native refreshes."
   ],
   "limitations": [
     "Runtime/server template versions outside the pinned bundle still require a separate profile.",

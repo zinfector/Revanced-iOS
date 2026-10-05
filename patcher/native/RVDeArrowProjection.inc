@@ -134,7 +134,7 @@ static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArra
     if ([name isEqual:@"video_with_context_slots.eml-js|7f46bdff852ff164"]) {
         // This model is C++ only. Its extension number is not guessed: the pinned
         // template establishes $1.1.1 as VideoData; accept one opaque extension.
-        NSArray *extensions=RVVoteFields(model);
+        NSArray<RVVoteField *> *extensions=RVVoteFields(model);
         if (extensions.count==1 && [extensions[0] wire]==2) modelPath=@[@([extensions[0] number]),@1,@1];
     }
     BOOL watch=[@[@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7"] containsObject:name];
