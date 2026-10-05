@@ -16,7 +16,7 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 - <img src="assets/progress/in-progress.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
 - <img src="assets/progress/not-started.svg" width="16" height="16" alt="not started"> **not started**: no working iOS implementation; Android-only mechanisms are identified explicitly.
 
-**27 done - 81 in-progress - 6 not started** across the entries below.
+**30 done - 78 in-progress - 6 not started** across the entries below.
 
 ## Named patches
 
@@ -37,8 +37,8 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | Remove background playback restrictions | Native background gates and capability-checked PiP action implemented. | ![done](assets/progress/done.svg "done") |
 | Bypass URL redirects | Public redirect targets validated and unwrapped on the mapped endpoint path. | ![done](assets/progress/done.svg "done") |
 | Loop video | Native seek-to-start and repeat playback for ordinary completed videos implemented. | ![done](assets/progress/done.svg "done") |
-| Hide ads | Typed filtering, structural Elements ad logging, native empty-renderer/cell fallbacks and companion clearing implemented; user reports adblocking working, with unidentified routes still unverified. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
-| Video ads | Native ad coordinator with verified Watch and inline-preview ownership implemented; user reports adblocking working, with exhaustive playback-route coverage still unverified. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
+| Hide ads | Typed feed/banner filtering, structural Elements ad handling, native cell fallbacks and companion clearing implemented; adblocking reported working on device. | ![done](assets/progress/done.svg "done") |
+| Video ads | Native ad coordinator suppression for Watch and inline previews implemented; adblocking reported working on device. | ![done](assets/progress/done.svg "done") |
 | Remove viewer discretion dialog | Ordinary warning confirmation implemented; age, login and purchase verification stays native. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | Downloads | External downloader share handoff implemented; internal download/offline management remains unported. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | Disable haptic feedback | Selected native semantic haptics suppressed; other haptic producers remain. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
@@ -93,7 +93,7 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | `loopVideoButtonResourcePatch` | Supports Loop video through the selected native iOS adapter; inherits its remaining scope. | ![done](assets/progress/done.svg "done") |
 | `loopVideoButtonPatch` | Supports Loop video through the selected native iOS adapter; inherits its remaining scope. | ![done](assets/progress/done.svg "done") |
 | `playerControlsResourcePatch` | URL/timestamp actions supplied by native Video tools rather than Android resources. | ![done](assets/progress/done.svg "done") |
-| `hideAdsResourcePatch` | Supports Hide ads through the selected native iOS adapter; inherits its remaining scope. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
+| `hideAdsResourcePatch` | Supports Hide ads through the selected native iOS adapter; inherits its remaining scope. | ![done](assets/progress/done.svg "done") |
 | `downloadsResourcePatch` | Supports Downloads through the selected native iOS adapter; inherits its remaining scope. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | `disablePreciseSeekingGesturePatch` | Supports Seekbar through the selected native iOS adapter; inherits its remaining scope. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | `enableTapToSeekPatch` | Supports Seekbar through the selected native iOS adapter; inherits its remaining scope. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
