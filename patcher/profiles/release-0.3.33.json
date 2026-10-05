@@ -1,0 +1,600 @@
+{
+  "version": "0.3.33",
+  "supported_youtube_version": "21.39.4",
+  "feature_switches": 86,
+  "runtime_preferences": 120,
+  "build_only": true,
+  "tests_run": false,
+  "tests_passed": null,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "gui_smoke_test_run": false,
+  "static_hook_check_run": false,
+  "standalone_archive_test_run": false,
+  "packaging": "IPAs created by the production patcher with its normal source/config/payload validation; no regression or integration test suite executed.",
+  "device_playback_verified": false,
+  "signing_required": true,
+  "authentication_login": "Previously user-reported working; authentication implementation unchanged.",
+  "source_commit": "9b4231e680f55c9a37b482501a5bf2cc301c6b7f",
+  "ci": {
+    "run_id": 37291298372,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37291298372",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "native",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Build ARM64 iOS payload with established Xcode toolchain",
+            "conclusion": "success"
+          },
+          {
+            "name": "Record compiler and cloud build provenance",
+            "conclusion": "success"
+          },
+          {
+            "name": "Upload compiled payload and provenance",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  },
+  "native_build": {
+    "payload_sha256": "1f26da16875e289bf09e190476b7a85acf54ee0a88d5f29383c4c4bca1f0cd09",
+    "source_sha256": "8ede2d349692e2ebec3bb9e40d6a6341e6a0d04536e39da4b12fec2d69df2ce7",
+    "build_source_sha256": "08c49f9c12399cb531e54acdd031576ee4e672e63b7f8dd5b805972c506c724b",
+    "source_files": {
+      "RVAdCoordinator.inc": "0dcc8ccaaa3032863235bd2edfd185ceffcf144defaa723e4a1d6cd64df44c60",
+      "RVAdDisplay.inc": "d7af1b83aa1d2cde4b255c7d3fd830cb7a4efb27984212cf9a7bdf9a61243f69",
+      "RVAdDisplayDiagnostics.inc": "999be9bd559ebde6b0d418e8f9255e19ae8eca12258780d329e35012970d01a5",
+      "RVAdElements.inc": "89f05236ba2af6502149da74f776e696934a5031bf9200d39f6c1e8bbc567782",
+      "RVAdFeed.inc": "b2ebe1aaca340e212283e8d9becfa9280bc3d5cc4c815f5ac67ce9237a15c98c",
+      "RVAdWatchOwnership.inc": "33f72fdf13d1328ad8a905f3a4f728a107d3e36a421d385ecc5a4e0727487051",
+      "RVAds.inc": "4dd482bd4cf674493b88c18a18328b28e4d1a24ba7f71a103e94864fcd9ccc80",
+      "RVAdsDiagnostics.inc": "e66ee263367d88878a2a94f081811ac59bea1c1af1c151dbcf2356ec250f9455",
+      "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "RVDislikesDiagnostics.inc": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
+      "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
+      "RVElementDislikes.inc": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
+      "RVExtras.inc": "f47ce6b30c9b3af34fed96c665fb7deb150b8a5b9948e88538893322237b385a",
+      "RVFeatures.h": "c839de952f38f884a06c89dbbdfb499705f7671d1f519ba2c0a4470995429c50",
+      "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+      "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+      "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+      "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+      "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+      "RVNavigation.inc": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
+      "RVPort.m": "8ede2d349692e2ebec3bb9e40d6a6341e6a0d04536e39da4b12fec2d69df2ce7",
+      "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+      "RVServices.inc": "3d152f138bc1a8162ec67048d864c3011e2fec1a8ed68f22f233ba319d700987",
+      "RVSettingsBridge.inc": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
+      "RVSettingsCatalog.h": "daee46696b05bb7f2376b2d10ce080fa1ee71f896c682cc6f135ac7e908d73e7",
+      "RVSettingsIcon.inc": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+      "RVSettingsNativeUI.inc": "f73e987c5f4eced62a6e08184923d8696eaf668f2c0784d8f27eaf4193c3cd65",
+      "RVSettingsNavigation.inc": "f09a157644f44df46f885154f63f54584567a9b6a30240e5b8ba16553fe8e681",
+      "RVSettingsRows.inc": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+      "RVSettingsUI.inc": "c7046f9b69c1f6c0e35c5c3aec690f1465f5f86cd6c656e79b2b8e559bfb33f3",
+      "RVShortsLayout.inc": "5f76d162a07253f20441569e41edc692f165f1b8aab0b56900b6f7c109ec982d",
+      "RVSpeed.inc": "a6045436ed282c8313bc54edbcfbf51f95c6fcd0424aa1753118e6fb6502d79a",
+      "RVSpeedBridge.inc": "0d619ee72a8f8e88118f3528ad28fbfed7c59c0a4d168234ca575b0918e0edd2",
+      "RVSpeedContext.inc": "1149191e32faf01fcb367519cdbae4c84d81acea3a0da6f46c948c8665473613",
+      "RVSpeedDiagnostics.inc": "ec9a2c699a16e150b4e6d4762671236322bb703299d37eb74193377cfc98c131",
+      "RVSpeedThreeX.inc": "3ef9cf4d352c7bb10cd551efa887907a73de1119e4984264fe2e3b29ddb86d47",
+      "RVSponsorPrompt.inc": "a360f36e0639a5dd11d19d52cb7b2026091a19eb6a0d1bb08d7b044953d19837",
+      "RVSponsorPromptUI.inc": "78cca5ec61310777fb135def1e03be92898e232460ef3d1036c2a7036ad6d07d",
+      "RVVoteFirstLaunch.inc": "7c5b16c640f0aa41fd9a41e059675549f573a7bb55280576dd8416dbd9f07171",
+      "RVVoteLayoutCompatibility.inc": "26ea55db7eefc2180e6ccad180850fc839808964d8ddd19ec72b27dd0014c2f2",
+      "RVVoteLifecycle.inc": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+      "RVVoteModel.inc": "38301ebce7b52258be76deadd48d587553671b48d2ed81a9e29747955a5c9dea",
+      "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165"
+    },
+    "compiler_command": [
+      "xcrun",
+      "--sdk",
+      "iphoneos",
+      "clang",
+      "-target",
+      "arm64-apple-ios17.0",
+      "-isysroot",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+      "-isystem",
+      "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/include",
+      "-L/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/usr/lib",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/Frameworks",
+      "-F/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk/System/Library/PrivateFrameworks",
+      "-fobjc-arc",
+      "-fblocks",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wno-unused-parameter",
+      "-fvisibility=hidden",
+      "-dynamiclib",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/native/RVPort.m",
+      "-o",
+      "/Users/runner/work/Revanced-iOS/Revanced-iOS/patcher/build/RVPort.dylib",
+      "-framework",
+      "Foundation",
+      "-framework",
+      "UIKit",
+      "-framework",
+      "AVFoundation",
+      "-framework",
+      "MediaPlayer",
+      "-framework",
+      "CoreGraphics",
+      "-framework",
+      "QuartzCore",
+      "-framework",
+      "Network",
+      "-framework",
+      "Security",
+      "-lobjc",
+      "-Wl,-install_name,@executable_path/Frameworks/RVPort.dylib",
+      "-Wl,-headerpad,0x4000"
+    ],
+    "sdk": "/Applications/Xcode_16.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.5.sdk",
+    "signing_header_padding_bytes": 28424,
+    "runtime_validated": false
+  },
+  "artifacts": {
+    "build.py": {
+      "sha256": "11aed2349a0b597d03cb72c4bd3198cedf95d837e8b69dcdf55f9e2214ac493a",
+      "size": 5549
+    },
+    "build/RVPort.dylib": {
+      "sha256": "1f26da16875e289bf09e190476b7a85acf54ee0a88d5f29383c4c4bca1f0cd09",
+      "size": 1369872
+    },
+    "dist/YouTube-iOS-Patcher.exe": {
+      "sha256": "98d8d86f562d4ff5f4d81b878c6d6ff8f7c7c40e338c441617eae0328051e789",
+      "size": 14586377
+    },
+    "build/build-manifest.json": {
+      "sha256": "6663c96aa962d464a63a8662381a3df1c867ce54e3e2b6b4a465e6bf6475551d",
+      "size": 6347
+    },
+    "build/build.log": {
+      "sha256": "180e5613a4988a3438a9a149b3611c65b6ed55beed673255fabc90b9583b192d",
+      "size": 230
+    },
+    "native/RVPort.m": {
+      "sha256": "8ede2d349692e2ebec3bb9e40d6a6341e6a0d04536e39da4b12fec2d69df2ce7",
+      "size": 25982
+    },
+    "native/RVExtras.inc": {
+      "sha256": "f47ce6b30c9b3af34fed96c665fb7deb150b8a5b9948e88538893322237b385a",
+      "size": 55575
+    },
+    "native/RVSettingsUI.inc": {
+      "sha256": "c7046f9b69c1f6c0e35c5c3aec690f1465f5f86cd6c656e79b2b8e559bfb33f3",
+      "size": 22784
+    },
+    "native/RVAuthentication.inc": {
+      "sha256": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "size": 8732
+    },
+    "native/RVAuthenticationSupport.h": {
+      "sha256": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "size": 8062
+    },
+    "profiles/sponsorblock-evidence.json": {
+      "sha256": "b7bc15a89588da846f3e10bd1c3dfd088b62660802ffdce8edb41814965a903a",
+      "size": 5670
+    },
+    "profiles/sponsorblock-response-evidence.json": {
+      "sha256": "7885360e2fc4a4d886b8295a2cbfda74f5e7db47348fa5b4d5486f234cb321a0",
+      "size": 4123
+    },
+    "profiles/device-sponsorblock-0.3.5-failure.json": {
+      "sha256": "fc8a89a4959a0aa170af7d1b876bfa12a851075053a400a52eb525bbf860b236",
+      "size": 1019
+    },
+    "coverage.json": {
+      "sha256": "fceba6b79f311f0e864f53bf61dea7f2c980af6579d906b320d248dabd432c0c",
+      "size": 86032
+    },
+    "native/RVMiniplayer.inc": {
+      "sha256": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "size": 13667
+    },
+    "native/RVFeatures.h": {
+      "sha256": "c839de952f38f884a06c89dbbdfb499705f7671d1f519ba2c0a4470995429c50",
+      "size": 4947
+    },
+    "native/RVSettingsCatalog.h": {
+      "sha256": "daee46696b05bb7f2376b2d10ce080fa1ee71f896c682cc6f135ac7e908d73e7",
+      "size": 28486
+    },
+    "profiles/miniplayer-controls-evidence.json": {
+      "sha256": "f7eb30f17ea0e8117cc0e49461735009094e9703b691d9781854be19520a875d",
+      "size": 4980
+    },
+    "features.py": {
+      "sha256": "0765bb30f0dc82c1df30e96feaa98d1a56388ec5b09d5c1b112c840db644528d",
+      "size": 5522
+    },
+    "settings_catalog.py": {
+      "sha256": "377c0909c4a31c22ba702844b191e62e58dc756236f3a3bf76344dc190cb3641",
+      "size": 12044
+    },
+    "native/RVNativeDislikes.inc": {
+      "sha256": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+      "size": 8318
+    },
+    "profiles/native-dislikes-evidence.json": {
+      "sha256": "584389a4f159e73087fa214c4570996ab44f635fd35bddde4ae5ee1fd71534e9",
+      "size": 6577
+    },
+    "native/RVSettingsNativeUI.inc": {
+      "sha256": "f73e987c5f4eced62a6e08184923d8696eaf668f2c0784d8f27eaf4193c3cd65",
+      "size": 31852
+    },
+    "native/RVSettingsRows.inc": {
+      "sha256": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+      "size": 5212
+    },
+    "native/RVSettingsIcon.inc": {
+      "sha256": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "size": 3213
+    },
+    "native/assets/ReVancedSettings.png": {
+      "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "size": 302918
+    },
+    "native/RVDislikesUI.inc": {
+      "sha256": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
+      "size": 11291
+    },
+    "profiles/settings-ui-evidence.json": {
+      "sha256": "bbef3c2b8ce474e6785911a8290ba9c0e0bee6d8ec2f3df0c63170227683808c",
+      "size": 14653
+    },
+    "profiles/parallel-ui-snapshot-0.3.9.json": {
+      "sha256": "98d8179fa17a973a856c8e0af9833b127e7ac18ed1dba23b640048ce28ea6158",
+      "size": 5387
+    },
+    "profiles/ryd-native-vote-contracts.json": {
+      "sha256": "9375d47bd4a994ece956ea24201c082e0581cba4cb932de5b5dd5f3605540e3b",
+      "size": 3314
+    },
+    "native/RVElementDislikes.inc": {
+      "sha256": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
+      "size": 58997
+    },
+    "profiles/element-dislikes-evidence.json": {
+      "sha256": "3d95f21e54a8b76e50cf3ae546add36bd60480812aff237f09e06b2e65115d73",
+      "size": 13533
+    },
+    "profiles/device-0.3.9-ryd-display-failure.json": {
+      "sha256": "d9a11b5b67055b7b1d694f5266f03cbdf78040ebeef00b139105193904df6a4b",
+      "size": 940
+    },
+    "profiles/device-0.3.10-vote-display-failure.json": {
+      "sha256": "c6b78f14c9b119da809648eaa0610c21cb533f4e156f723154ae6d835168ccc8",
+      "size": 768
+    },
+    "profiles/device-0.3.11-vote-display-failure.json": {
+      "sha256": "ae195e9f6eaba9600e67218d42ac7ad329b1e2d67b8898f70b9e2cce41a6aee2",
+      "size": 2980
+    },
+    "profiles/parallel-ui-snapshot-0.3.12.json": {
+      "sha256": "50e5f18faf12dd9966f07d2baf975ef8d8d048201931bb35def0cf27a33b9a03",
+      "size": 632
+    },
+    "native/RVSettingsBridge.inc": {
+      "sha256": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
+      "size": 5327
+    },
+    "native/RVSettingsNavigation.inc": {
+      "sha256": "f09a157644f44df46f885154f63f54584567a9b6a30240e5b8ba16553fe8e681",
+      "size": 5444
+    },
+    "native/RVDislikesDiagnostics.inc": {
+      "sha256": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
+      "size": 8584
+    },
+    "profiles/ryd-checkpoints-evidence.json": {
+      "sha256": "503b7867aa25f113187ea99180b2b9dd5dc621618f1d1923724fca805911e6f1",
+      "size": 2900
+    },
+    "profiles/device-report-541-ryd-render.json": {
+      "sha256": "7dda22fd9043d33810e108e4d0525c9eb24b7b473114152e5d8710fdcdf52a07",
+      "size": 2547
+    },
+    "profiles/device-report-615-ryd-mount.json": {
+      "sha256": "baa2ffdf758ca499e193cee0d8eacdcd9ddf93eda238eab9aaa55a0513e23e23",
+      "size": 3426
+    },
+    "profiles/device-report-635-ryd-lifecycle.json": {
+      "sha256": "624cce513a3fe5b77323cf5ca7be54c7a838037686bb0f90853a09dca46c4e86",
+      "size": 30347
+    },
+    "profiles/ryd-lifecycle-evidence.json": {
+      "sha256": "1bf29370e778c1a3d9d26cade1348b144bec78c974c2aa078f12966694315700",
+      "size": 2187
+    },
+    "profiles/ryd-speed-polish-evidence.json": {
+      "sha256": "cdd65c06881184575340088e76a79219005dc38aa9e42a218bd03573c50e9818",
+      "size": 2376
+    },
+    "native/RVSpeed.inc": {
+      "sha256": "a6045436ed282c8313bc54edbcfbf51f95c6fcd0424aa1753118e6fb6502d79a",
+      "size": 21161
+    },
+    "native/RVSpeedBridge.inc": {
+      "sha256": "0d619ee72a8f8e88118f3528ad28fbfed7c59c0a4d168234ca575b0918e0edd2",
+      "size": 8112
+    },
+    "profiles/device-report-728-startup.json": {
+      "sha256": "a63107315b6529615883227d3f0b5538bd0fcccd181d6fa95c5e9e8abced6823",
+      "size": 13947
+    },
+    "profiles/startup-bridge-evidence.json": {
+      "sha256": "e1640b85e71ae5db3dadd60a76720c43e1ef2cb9d646286e5f20b94647fe7c62",
+      "size": 2033
+    },
+    "profiles/parallel-ui-snapshot-0.3.14.json": {
+      "sha256": "ec4451c1c96f70dcb60a3b5735bd9674ba20258900e0bdbfac3141af9e56b3e2",
+      "size": 525
+    },
+    "profiles/device-0.3.12-ryd-render-failure.json": {
+      "sha256": "8ea93cec3ca6409317e416b7c5e94982b42826f2ace9f37f1d952613113a3fc7",
+      "size": 3288
+    },
+    "native/RVNavigation.inc": {
+      "sha256": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
+      "size": 6116
+    },
+    "profiles/navigation-options-evidence.json": {
+      "sha256": "05bdd8a8c457c42da5076272e94a77f952387705d5c125a25d860c64af9af20c",
+      "size": 2334
+    },
+    "native/RVAdElements.inc": {
+      "sha256": "89f05236ba2af6502149da74f776e696934a5031bf9200d39f6c1e8bbc567782",
+      "size": 7173
+    },
+    "profiles/device-adblock-report-408.json": {
+      "sha256": "d12ab2a7ade311a1db87f5cb605e812b04ec268439c24742802a6585c480f559",
+      "size": 16648
+    },
+    "profiles/adblock-elements-inline-evidence.json": {
+      "sha256": "fc8ce34503c05a4aac9310b6fb8aea469816e675ffdd9d5b6d334ea5094fa839",
+      "size": 3413
+    },
+    "native/RVSpeedContext.inc": {
+      "sha256": "1149191e32faf01fcb367519cdbae4c84d81acea3a0da6f46c948c8665473613",
+      "size": 10524
+    },
+    "native/RVShortsLayout.inc": {
+      "sha256": "5f76d162a07253f20441569e41edc692f165f1b8aab0b56900b6f7c109ec982d",
+      "size": 15154
+    },
+    "profiles/merged-speed-shorts-source.json": {
+      "sha256": "99b730b134ee8bd6e94b1d3fee8f24cf76f4f23cfad53f15ebd110b9fe4d38d3",
+      "size": 773
+    },
+    "native/RVSpeedDiagnostics.inc": {
+      "sha256": "ec9a2c699a16e150b4e6d4762671236322bb703299d37eb74193377cfc98c131",
+      "size": 7316
+    },
+    "profiles/speed-checkpoints-evidence.json": {
+      "sha256": "737a6a1096792eac518f797c4d7a8c5c3bf851866a4d2f31520b6164085bc699",
+      "size": 1559
+    },
+    "profiles/device-report-755-speed.json": {
+      "sha256": "b5b7bd73f6c0b8b72b1411dd9fd2289119c5462277d0db169d615095aa68993b",
+      "size": 3090
+    },
+    "native/RVVoteLayoutCompatibility.inc": {
+      "sha256": "26ea55db7eefc2180e6ccad180850fc839808964d8ddd19ec72b27dd0014c2f2",
+      "size": 1355
+    },
+    "profiles/vote-layout-compatibility-evidence.json": {
+      "sha256": "82e9391b0f6b7f89620a829f86541ed0b12790072891cca974a19822290d9185",
+      "size": 2798
+    },
+    "profiles/device-report-823-vote-layout.json": {
+      "sha256": "ba3f40e5c2f4741bb1865ea48f0f818886c009ec4f43ee302b0be256f1fe941f",
+      "size": 28146
+    },
+    "native/RVVoteModel.inc": {
+      "sha256": "38301ebce7b52258be76deadd48d587553671b48d2ed81a9e29747955a5c9dea",
+      "size": 28011
+    },
+    "native/RVVoteLifecycle.inc": {
+      "sha256": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+      "size": 5694
+    },
+    "profiles/vote-model-implementation-evidence.json": {
+      "sha256": "eabb6cc5485cf241bb0001ff5a044abbbd07e867920feb0c3a3963af05e46005",
+      "size": 1699
+    },
+    "profiles/vote-startup-investigation.json": {
+      "sha256": "9ec8f416345b46ab44e2b708c6f13bd671697a2deaceb5ce4ea80fe232385f8c",
+      "size": 24498
+    },
+    "profiles/vote-counter-fix-scheme.json": {
+      "sha256": "583e22ff42cf156a218fba3c863f4b54a14c36d15fd8a001e92c86ee73b9cd71",
+      "size": 6950
+    },
+    "configs/defaults.json": {
+      "sha256": "cbc6d4153f1ad9b84f1429b6090ca1faf8e83f3375ecb6968fde0c5bc6b3f46b",
+      "size": 4103
+    },
+    "configs/expanded.json": {
+      "sha256": "4877154a51c276feb164bc82670c1326dbc6b4ed500ddf1ab3d9a502158f4b75",
+      "size": 4631
+    },
+    "configs/sideload-auth.json": {
+      "sha256": "8f8e655815466967b41910b278e0177cdd22db3e04da72a55cf9581a3cc101fa",
+      "size": 4629
+    },
+    "configs/all-candidates.json": {
+      "sha256": "7790b15082dd4e0738a5ac947c6b593b5152f0fd1741a718505153b65f321101",
+      "size": 4025
+    },
+    "native/RVVoteFirstLaunch.inc": {
+      "sha256": "7c5b16c640f0aa41fd9a41e059675549f573a7bb55280576dd8416dbd9f07171",
+      "size": 5542
+    },
+    "profiles/first-launch-ui-evidence.json": {
+      "sha256": "6c2238388429df492684bf5eca2b496666273bd2c1157f1e708ae377f373f184",
+      "size": 1274
+    },
+    "output/YouTube-21.39.4-RVPort-0.3.33-unsigned.ipa": {
+      "sha256": "351304a9d39bf4ccfb50caba2dafe7a89ebdb3585841e7f3fbc99aec52dff444",
+      "size": 140857362
+    },
+    "native/RVAds.inc": {
+      "sha256": "4dd482bd4cf674493b88c18a18328b28e4d1a24ba7f71a103e94864fcd9ccc80",
+      "size": 16158
+    },
+    "native/RVAdFeed.inc": {
+      "sha256": "b2ebe1aaca340e212283e8d9becfa9280bc3d5cc4c815f5ac67ce9237a15c98c",
+      "size": 18607
+    },
+    "native/RVAdsDiagnostics.inc": {
+      "sha256": "e66ee263367d88878a2a94f081811ac59bea1c1af1c151dbcf2356ec250f9455",
+      "size": 10542
+    },
+    "configs/adblock-native.json": {
+      "sha256": "cb7d7cd7749dbba74101607287c18a8c51175fccc734f945a9f36e6490d3c825",
+      "size": 4632
+    },
+    "profiles/adblock-port-evidence.json": {
+      "sha256": "a2769a1f023e55f14a36b6aa1874bf747ebe5e570e13b41c350865dc38d5873a",
+      "size": 11948
+    },
+    "profiles/adblock-implementation-evidence.json": {
+      "sha256": "8fd5187c9a0a38cc55c71d2f0223db755db00769c0dd327ae2c2c68bc598f152",
+      "size": 4865
+    },
+    "profiles/adblock-merge-0.3.23.json": {
+      "sha256": "6135251b90f678038343cd0921738feacd41bb3577d50816b351308bf83c2fd3",
+      "size": 2891
+    },
+    "native/RVAdCoordinator.inc": {
+      "sha256": "0dcc8ccaaa3032863235bd2edfd185ceffcf144defaa723e4a1d6cd64df44c60",
+      "size": 20847
+    },
+    "profiles/adblock-handoff-evidence.json": {
+      "sha256": "4e5ba18032531ef6ebd79c476457309db4c1328daaf8374c9db1ccdba97256f7",
+      "size": 6471
+    },
+    "profiles/adblock-handoff-implementation-evidence.json": {
+      "sha256": "47a9d1b832862b6ad1244e340733d9e60a74eb5655bbde286627414482d10b01",
+      "size": 6766
+    },
+    "profiles/adblock-handoff-decompiled.txt": {
+      "sha256": "90fd9a69bb609d902c169bd56afade074e5f66256c8df252baef59333580023e",
+      "size": 46289
+    },
+    "profiles/device-adblock-report-1251.json": {
+      "sha256": "8f451462ed96924929c5ef965674fcaf1478dffaaa5267888c4fc033cddcda3f",
+      "size": 3426
+    },
+    "native/RVAdDisplay.inc": {
+      "sha256": "d7af1b83aa1d2cde4b255c7d3fd830cb7a4efb27984212cf9a7bdf9a61243f69",
+      "size": 13501
+    },
+    "native/RVAdDisplayDiagnostics.inc": {
+      "sha256": "999be9bd559ebde6b0d418e8f9255e19ae8eca12258780d329e35012970d01a5",
+      "size": 6522
+    },
+    "profiles/adblock-display-evidence.json": {
+      "sha256": "89c88f806088fe9345d86f2a5768b60f6d75d45773b80624d7554619d633ae99",
+      "size": 15679
+    },
+    "profiles/adblock-display-protobuf-fields.json": {
+      "sha256": "2701d199c8717d23f14896ed5199cd256c7a0747e6262dba64132e3af02d4e31",
+      "size": 192558
+    },
+    "profiles/adblock-display-decompiled.txt": {
+      "sha256": "ca5ebfd4eec77d985ac9431c76266c6f76c0e47905a94b45a951664b79675171",
+      "size": 90247
+    },
+    "profiles/adblock-display-implementation-evidence.json": {
+      "sha256": "0571f2dafd7af2cd15a31393693d974fd8439b4bd29511dc4d98f33875b31939",
+      "size": 2633
+    },
+    "native/RVSponsorPrompt.inc": {
+      "sha256": "a360f36e0639a5dd11d19d52cb7b2026091a19eb6a0d1bb08d7b044953d19837",
+      "size": 22082
+    },
+    "native/RVSponsorPromptUI.inc": {
+      "sha256": "78cca5ec61310777fb135def1e03be92898e232460ef3d1036c2a7036ad6d07d",
+      "size": 20104
+    },
+    "profiles/sponsor-prompt-evidence.json": {
+      "sha256": "84553647c2ebfee3f42e81dd3fe50f20ebb7f8c20c8fbf4b0d1a28e6d37ed725",
+      "size": 7485
+    },
+    "profiles/sponsor-prompts-implementation-evidence.json": {
+      "sha256": "afc210d4533d60b57c7552a0c95d61b5174dfce430a0f2d91677a1d1aaaf8f20",
+      "size": 25143
+    },
+    "profiles/merged-display-sponsor-source.json": {
+      "sha256": "8968c6eeb85bdc2b9096c4e5773940b134f6d40f8bc959eb6c68cfcf7d094c65",
+      "size": 637
+    },
+    "package_merged_release.py": {
+      "sha256": "f154774b253c31fe5f354fbf2fe2d3134b9e9f2d811c602e2ee22ead336a083d",
+      "size": 4111
+    },
+    "build/cloud-build.json": {
+      "sha256": "cfd1b1bca701505a1c29648a52ee8832281a0120ca111e2375dc1214eecc6ae5",
+      "size": 461
+    },
+    "native/RVAdWatchOwnership.inc": {
+      "sha256": "33f72fdf13d1328ad8a905f3a4f728a107d3e36a421d385ecc5a4e0727487051",
+      "size": 6705
+    },
+    "profiles/device-adblock-report-348.json": {
+      "sha256": "c3233a90f75697f9f6ff5b9a3a46930749b4f992215796c19bec8ca776858df8",
+      "size": 12451
+    },
+    "profiles/adblock-ownership-evidence.json": {
+      "sha256": "de4df7aea5d0b24c19320ba230fbbd3bc05a722d2fd4c048f046fddf9569ec29",
+      "size": 4430
+    },
+    "native/RVSpeedThreeX.inc": {
+      "sha256": "3ef9cf4d352c7bb10cd551efa887907a73de1119e4984264fe2e3b29ddb86d47",
+      "size": 9804
+    },
+    "profiles/speed-three-x-evidence.json": {
+      "sha256": "a8892be7cc105a5d276309cac29ae00bead781d32450a1d8d983edf652a6c5f0",
+      "size": 3464
+    }
+  },
+  "remaining_scope": "Native regular 3x button, upsell command removal and configured 3x range implemented; device confirmation pending. Navigation tab filtering, reversible native icon-only labels, surviving-tab startup selection and detailed navigation diagnostics implemented. New navigation behavior requires device confirmation. Retains working adblocking. Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending."
+}
