@@ -1,0 +1,738 @@
+{
+  "schema": 1,
+  "purpose": "Read-only investigation of native vote presentation across a clean reinstall and subsequent launches",
+  "tests_run": false,
+  "runtime_changed": false,
+  "user_first_launch_definition": "First launch after deleting and reinstalling YouTube",
+  "report_file": "Report 931.txt",
+  "report_sha256": "a6bd68cc428df305ba398a1ac54cfa3daf005c6a7e7f150380e905405ba5ea94",
+  "build_source_sha256": "4fb8571f8595dfbd1681d843cd4c8f1f4ee8a835d103fd80fbe36f44585531aa",
+  "diagnostics_revision": "ryd-checkpoints-7",
+  "current_video_snapshot_matches": true,
+  "observed": {
+    "first_blocked_checkpoint": "native_pair_detected",
+    "checkpoints": {
+      "watch_foreground": true,
+      "native_pair_detected": 0,
+      "watch_player_matches": true,
+      "text_node_created": 1,
+      "text_node_loaded": 1,
+      "native_like_text_in_pair_detected": 0,
+      "count_matches_playback": true,
+      "text_unclipped": 1,
+      "text_node_mounted": 1,
+      "playback_video_valid": true,
+      "text_layer_in_window": 1,
+      "feature_enabled": true,
+      "dislike_icon_seen": 1,
+      "text_raster_contents_present": 1,
+      "text_node_measured": 1
+    },
+    "service": {
+      "cache_age_seconds": 1.8375170230865479,
+      "response_bytes": 191,
+      "http_status": 200,
+      "json_parse_error_code": 0,
+      "fetch_state": "cache_hit",
+      "network_error_code": 0,
+      "content_gate": "ready",
+      "retry_after_seconds": 0
+    },
+    "layout_compatibility": {
+      "schema": 1,
+      "launch_number": 3,
+      "enabled": true,
+      "session_id": "ABD01041-01B2-494D-A297-FABCBFBB350F",
+      "strategy": "native_watch_pair_experiment_compatibility",
+      "installed_before_app_launch": true,
+      "flag_reads": {
+        "YTColdConfigCrossPlatformCoreClientGlobalConfigImpl.enableWatchModernTypographyAssociatedUxChangesNative": {
+          "reads": 0,
+          "hook_installed": true
+        },
+        "YTColdConfigCrossPlatformCoreClientGlobalConfigImpl.enableAlignVideoActionButtonStyleWithTetrisButtonStyleNative": {
+          "reads": 0,
+          "hook_installed": true
+        },
+        "YTColdConfig.crossPlatformCoreClientGlobalConfigEnableWatchModernTypographyAssociatedUxChangesNative": {
+          "reads": 0,
+          "hook_installed": true
+        },
+        "YTColdConfig.crossPlatformCoreClientGlobalConfigEnableAlignVideoActionButtonStyleWithTetrisButtonStyleNative": {
+          "reads": 0,
+          "hook_installed": true
+        }
+      },
+      "native_likes_replaced": false,
+      "persistent_experiment_cache_changed": false,
+      "device_layout_verified": false
+    },
+    "geometry": [
+      {
+        "button_class": "ELMContainerNode",
+        "spacing_gate": "logical_start_margin_reserved",
+        "owned_end_margin": 0,
+        "raster_contents_present": true,
+        "text_layer_hidden": false,
+        "render_parent_present": 1,
+        "node_loaded": true,
+        "native_like_text_present": false,
+        "mount_attempts": 1,
+        "geometrically_visible": true,
+        "render_layer_in_window": true,
+        "icon_gap_measured": true,
+        "node_context_matches_button": 0,
+        "icon_frame_width": 24,
+        "outer_leading_inset": 0,
+        "text_load_callbacks": 0,
+        "outer_edge_gate": "native_pair_geometry_unavailable",
+        "clipping_ancestors": 0,
+        "label_fits_button_bounds": 1,
+        "native_pair_present": false,
+        "frame_width": 9,
+        "button_yoga_root_class": "ELMCellNode",
+        "text_class": "ASTextNode",
+        "button_flattenable": false,
+        "button_host_in_window": 1,
+        "icon_text_gap_points": 8,
+        "color_source": "native_palette",
+        "watch_suspended": false,
+        "icon_geometry_source": "flattened_native_yoga_frame",
+        "frame_height": 33,
+        "yoga_parent_is_button": 1,
+        "frame_x": 32,
+        "frame_y": 7.666666666666668,
+        "spacing_points": 8,
+        "root_host_in_window": 1,
+        "outer_trailing_inset": 0,
+        "text_flattenable": false,
+        "mount_gate": "context_mismatch_using_button_label",
+        "mount_mode": "owned_label_in_native_button",
+        "render_surface_class": "UILabel",
+        "video_matches_current": true,
+        "root_loaded": true,
+        "suspension_count": 0,
+        "native_text_node_loaded": false,
+        "button_width": 41,
+        "owned_node_is_yoga_child": true,
+        "yoga_parent_present": 1,
+        "render_parent_class": "_ASDisplayView",
+        "text_display_callbacks": 0,
+        "icon_frame_x": 0,
+        "native_text_supernode_present": 0,
+        "button_node_loaded": true,
+        "root_layout_passes": 3,
+        "root_invalidation_requests": 1,
+        "text_layer_opacity": 1,
+        "label_superview_is_button": 1,
+        "text_superlayer_present": 1,
+        "resume_count": 0,
+        "owned_node_is_render_child": false,
+        "button_layer_backed": false
+      }
+    ]
+  },
+  "before_after_comparison": [
+    {
+      "report_file": "After reload (speed working) Report 755.txt",
+      "patcher_version": "0.3.18",
+      "geometry": [
+        {
+          "color_source": "native_palette",
+          "frame_height": 33,
+          "button_width": 41,
+          "outer_edge_gate": "native_pair_geometry_unavailable",
+          "mount_mode": "owned_label_in_native_button"
+        }
+      ]
+    },
+    {
+      "report_file": "Before reload (speed not working) Report 755.txt",
+      "patcher_version": "0.3.18",
+      "geometry": [
+        {
+          "color_source": "native_neighbor",
+          "frame_height": 14.333333333333334,
+          "button_width": 56,
+          "outer_edge_gate": "native_pair_geometry_unavailable",
+          "mount_mode": "owned_label_in_native_button"
+        }
+      ]
+    }
+  ],
+  "comparison_limitation": "Before/after reports concern different videos; widths and numeric counts are not a controlled comparison.",
+  "binary_file": "analysis/evidence/YouTube.macho",
+  "binary_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "action_button_enum": {
+    "descriptor_function": "0x10514fdc4",
+    "values_table": "0x10aa0ad54",
+    "values": {
+      "VideoActionButtonTypeUnknown": 0,
+      "VideoActionButtonTypeShare": 1,
+      "VideoActionButtonTypeRemoveAds": 2,
+      "VideoActionButtonTypeLikeButton": 3,
+      "VideoActionButtonTypeDislikeButton": 4,
+      "VideoActionButtonTypeSaveToPlaylistButton": 5,
+      "VideoActionButtonTypeAccountLinkButton": 6,
+      "VideoActionButtonTypeDownloadButton": 7,
+      "VideoActionButtonTypeRemixButton": 8,
+      "VideoActionButtonTypeLiveChatButton": 9,
+      "VideoActionButtonTypeClipButton": 10,
+      "VideoActionButtonTypeLiveReportButton": 11,
+      "VideoActionButtonTypeSuperVodButton": 12,
+      "VideoActionButtonTypeLensButton": 13,
+      "VideoActionButtonTypeVideoReportButton": 14,
+      "VideoActionButtonTypeSegmentedLikeDislikeButton": 15,
+      "VideoActionButtonTypeCommentsEntryPointButton": 16,
+      "VideoActionButtonTypeOverflowButton": 17,
+      "VideoActionButtonTypeShopButton": 18,
+      "VideoActionButtonTypePlayButton": 19,
+      "VideoActionButtonTypeShortsButton": 20,
+      "VideoActionButtonTypeAssistant": 21,
+      "VideoActionButtonTypeBlock": 22
+    }
+  },
+  "protobuf_descriptors": {
+    "YTIColdConfigGroup": {
+      "address": "0x10cda4158",
+      "fields": [
+        {
+          "name": "configData",
+          "number": 1,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "hashData",
+          "number": 2,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "netColdConfig",
+          "number": 3,
+          "data_type": 15,
+          "message_class": "YTINetColdConfig"
+        },
+        {
+          "name": "mediaColdConfig",
+          "number": 4,
+          "data_type": 15,
+          "message_class": "YTIMediaColdConfig"
+        },
+        {
+          "name": "mainAppColdConfig",
+          "number": 131749530,
+          "data_type": 15,
+          "message_class": "YTIMainAppColdConfig"
+        },
+        {
+          "name": "accountStateChangeConfig",
+          "number": 133303311,
+          "data_type": 15,
+          "message_class": "YTIAccountStateChangeConfig"
+        },
+        {
+          "name": "adsColdConfig",
+          "number": 134712936,
+          "data_type": 15,
+          "message_class": "YTIAdsColdConfig"
+        },
+        {
+          "name": "migratedGlobalConfigsColdConfig",
+          "number": 135001491,
+          "data_type": 15,
+          "message_class": "YTIMigratedGlobalConfigsColdConfig"
+        },
+        {
+          "name": "musicColdConfig",
+          "number": 137741476,
+          "data_type": 15,
+          "message_class": "YTIMusicColdConfig"
+        },
+        {
+          "name": "iosPlayerAttestationConfig",
+          "number": 138062751,
+          "data_type": 15,
+          "message_class": "YTIIosPlayerAttestationConfig"
+        },
+        {
+          "name": "renderingColdConfig",
+          "number": 145604684,
+          "data_type": 15,
+          "message_class": "YTIRenderingColdConfig"
+        },
+        {
+          "name": "appSettingsSnapshotConfig",
+          "number": 148245853,
+          "data_type": 15,
+          "message_class": "YTIAppSettingsSnapshotConfig"
+        },
+        {
+          "name": "creatorColdConfig",
+          "number": 149792373,
+          "data_type": 15,
+          "message_class": "YTICreatorColdConfig"
+        },
+        {
+          "name": "offlineColdConfig",
+          "number": 151136198,
+          "data_type": 15,
+          "message_class": "YTIOfflineColdConfig"
+        },
+        {
+          "name": "mdxColdConfig",
+          "number": 151776035,
+          "data_type": 15,
+          "message_class": "YTIMdxColdConfig"
+        },
+        {
+          "name": "mobileInfraColdConfig",
+          "number": 159026001,
+          "data_type": 15,
+          "message_class": "YTIMobileInfraColdConfig"
+        },
+        {
+          "name": "embeddedPlayerColdConfig",
+          "number": 160990915,
+          "data_type": 15,
+          "message_class": "YTIEmbeddedPlayerColdConfig"
+        },
+        {
+          "name": "loggingColdConfig",
+          "number": 162416414,
+          "data_type": 15,
+          "message_class": "YTILoggingColdConfig"
+        },
+        {
+          "name": "uploadsColdConfig",
+          "number": 164054961,
+          "data_type": 15,
+          "message_class": "YTIUploadsColdConfig"
+        },
+        {
+          "name": "locationInfoConfig",
+          "number": 164633719,
+          "data_type": 15,
+          "message_class": "YTILocationInfoConfig"
+        },
+        {
+          "name": "systemHealthColdConfig",
+          "number": 170744984,
+          "data_type": 15,
+          "message_class": "YTISystemHealthColdConfig"
+        },
+        {
+          "name": "playerColdConfig",
+          "number": 173130557,
+          "data_type": 15,
+          "message_class": "YTIPlayerColdConfig"
+        },
+        {
+          "name": "unpluggedColdConfig",
+          "number": 180961179,
+          "data_type": 15,
+          "message_class": "YTIUnpluggedColdConfig"
+        },
+        {
+          "name": "notificationsColdConfig",
+          "number": 185188262,
+          "data_type": 15,
+          "message_class": "YTINotificationsColdConfig"
+        },
+        {
+          "name": "iosCommerceLibColdConfig",
+          "number": 188198017,
+          "data_type": 15,
+          "message_class": "YTIIosCommerceLibColdConfig"
+        },
+        {
+          "name": "commerceColdConfig",
+          "number": 209827097,
+          "data_type": 15,
+          "message_class": "YTICommerceColdConfig"
+        },
+        {
+          "name": "commentColdConfig",
+          "number": 215017337,
+          "data_type": 15,
+          "message_class": "YTICommentColdConfig"
+        },
+        {
+          "name": "kidsColdConfig",
+          "number": 223848404,
+          "data_type": 15,
+          "message_class": "YTIKidsColdConfig"
+        },
+        {
+          "name": "appBundleColdConfig",
+          "number": 243357123,
+          "data_type": 15,
+          "message_class": "YTIAppBundleColdConfig"
+        },
+        {
+          "name": "firebaseColdConfig",
+          "number": 245106155,
+          "data_type": 15,
+          "message_class": "YTIFirebaseColdConfig"
+        },
+        {
+          "name": "accountColdConfig",
+          "number": 249348777,
+          "data_type": 15,
+          "message_class": "YTIAccountColdConfig"
+        },
+        {
+          "name": "experimentFlags",
+          "number": 346648555,
+          "data_type": 15,
+          "message_class": "YTIExperimentFlagConfig"
+        },
+        {
+          "name": "scriptingColdConfig",
+          "number": 346651376,
+          "data_type": 15,
+          "message_class": "YTIScriptingColdConfig"
+        },
+        {
+          "name": "reelColdConfig",
+          "number": 364602436,
+          "data_type": 15,
+          "message_class": "YTIReelColdConfig"
+        },
+        {
+          "name": "createColdConfig",
+          "number": 528568647,
+          "data_type": 15,
+          "message_class": "YTICreateColdConfig"
+        }
+      ]
+    },
+    "YTIVideoActionBarButton": {
+      "address": "0x10cf51d10",
+      "fields": [
+        {
+          "name": "buttonViewModel",
+          "number": 10,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "buttonType",
+          "number": 13,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "buttonVisibilityEntityKey",
+          "number": 15,
+          "data_type": 14,
+          "message_class": null
+        }
+      ]
+    },
+    "YTICompactifyVideoActionBarViewModel": {
+      "address": "0x10cf51ba0",
+      "fields": [
+        {
+          "name": "buttonsArray",
+          "number": 1,
+          "data_type": 15,
+          "message_class": "YTIVideoActionBarButton"
+        },
+        {
+          "name": "watchMetapanelCollapseEntityKey",
+          "number": 2,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "barStyle",
+          "number": 3,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "experiments",
+          "number": 4,
+          "data_type": 15,
+          "message_class": "ELMPBVideoActionBarExperiments"
+        },
+        {
+          "name": "ignoreCollapse",
+          "number": 5,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "channelBar",
+          "number": 6,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "rendererContext",
+          "number": 997,
+          "data_type": 15,
+          "message_class": "YTIRendererContext"
+        }
+      ]
+    },
+    "YTISegmentedLikeDislikeButtonViewModel": {
+      "address": "0x10cdab610",
+      "fields": [
+        {
+          "name": "likeButtonViewModel",
+          "number": 1,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "dislikeButtonViewModel",
+          "number": 2,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "likeStatusEntityKey",
+          "number": 3,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "likeStatusEntity",
+          "number": 4,
+          "data_type": 15,
+          "message_class": "YTILikeStatusEntity"
+        },
+        {
+          "name": "likeCountEntity",
+          "number": 7,
+          "data_type": 15,
+          "message_class": "YTILikeCountEntity"
+        },
+        {
+          "name": "dynamicLikeCountUpdateStatus",
+          "number": 8,
+          "data_type": 15,
+          "message_class": "YTIDynamicLikeCountUpdateStatus"
+        },
+        {
+          "name": "dynamicLikeCountUpdateData",
+          "number": 9,
+          "data_type": 15,
+          "message_class": "YTIDynamicLikeCountUpdateData"
+        },
+        {
+          "name": "teasersOrderEntityKey",
+          "number": 10,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "enableAnimationURL",
+          "number": 14,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "likeAnimationLightURL",
+          "number": 15,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "likeAnimationDarkURL",
+          "number": 16,
+          "data_type": 14,
+          "message_class": null
+        }
+      ]
+    },
+    "ELMPBVideoActionBarExperiments": {
+      "address": "0x10cf52120",
+      "fields": [
+        {
+          "name": "useCollectionTypeStretchToLargestCell",
+          "number": 3,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "enableRemoveAdsButtonViewModelButtonTypeCheck",
+          "number": 4,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "useChannelAnimatedButtonsInActionBar",
+          "number": 5,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "enableIncreasedStopAdsVisibility",
+          "number": 6,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "enableCompactifyVabMarginStartAdjustment",
+          "number": 7,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "disableAssistantPushover",
+          "number": 8,
+          "data_type": 0,
+          "message_class": null
+        }
+      ]
+    }
+  },
+  "templates": [
+    {
+      "resource_name": "compactify_video_action_bar.eml-js_389b4963b9de5676",
+      "bytes": 35301,
+      "sha256": "548e389b5485fa55b92009cc41edbe5af11cda5329e2d1d2e3cb9fef23731a89"
+    },
+    {
+      "resource_name": "dislike_button.eml-js_a1b74f39d78629b7",
+      "bytes": 742,
+      "sha256": "d1be89ab0816d924ca953969c769bab8f658c08ac14d8fd31eb5c6c770ec1ebc"
+    },
+    {
+      "resource_name": "dislike_button_vm.eml-js_55b38334546db3fb",
+      "bytes": 2992,
+      "sha256": "224903ce78b2262721152ab8653fc9ba1fd03762d731a8f9c44c46dd0237ac54"
+    },
+    {
+      "resource_name": "fullscreen_video_action_button.eml_2a0246dd83daf6a4",
+      "bytes": 7271,
+      "sha256": "404bb84005e94d4e822f4f6a5d231b0ec2e2bd5c28983f1adfbedef2a62d5490"
+    },
+    {
+      "resource_name": "like_button.eml-js_c1e077e9a44d41dd",
+      "bytes": 7412,
+      "sha256": "055d9caf5d25275531e174275fb6cdf1e7792e0d25a932901226f513c829641d"
+    },
+    {
+      "resource_name": "like_button_with_vm_input.eml-js_2d7972148ce483cd",
+      "bytes": 3806,
+      "sha256": "738234cbabaae6f4310789b06d7406dda08475a607107d7465f5125a5c67a5f3"
+    },
+    {
+      "resource_name": "reel_dislike_button.eml_6b38e0e54d724491",
+      "bytes": 2767,
+      "sha256": "101a6b6310251b869e7820eb0da72545fd64f8d750d33ab6b4b23ae47e516157"
+    },
+    {
+      "resource_name": "reel_like_button.eml_ff916b191f0f347b",
+      "bytes": 2763,
+      "sha256": "048cbf5467544160943f3dbc1ea2c6fae89865a0556df2e05699fc3e2205b70d"
+    },
+    {
+      "resource_name": "segmented_like_dislike_button.eml-js_e62f4cef49e86e5c",
+      "bytes": 6262,
+      "sha256": "0bbb029ed0a15a884e8143d04470b77b7d9f378b55a1e040acafa805e75b801f"
+    },
+    {
+      "resource_name": "segmented_like_dislike_button_inner.eml_6d41b91a900e0a7e",
+      "bytes": 42865,
+      "sha256": "518b681d911e84de00b7190123fc6eb44be3e6c52a05460c58e24ec7dbe9d07f"
+    },
+    {
+      "resource_name": "video_action_bar.eml-js_ddbcdaf5e25c5861",
+      "bytes": 30725,
+      "sha256": "4f642c959b57c9e771e7b52480c4cf217dfe6407f3089e3dfccc573c576c8d11"
+    },
+    {
+      "resource_name": "video_action_button.eml-js_bc0f6652d43b90d8",
+      "bytes": 38943,
+      "sha256": "5676e3696602cf88ee67415fabad1ac9a0be7b48aba4e3cba1eacc933dd09026"
+    },
+    {
+      "resource_name": "video_action_button_pill.eml_cdc94b5a9e77dcfb",
+      "bytes": 34854,
+      "sha256": "c06530185e7abe487b3385599cfd69b8188e5165fa7c80b5fa3096a98be4f4e7"
+    },
+    {
+      "resource_name": "video_action_button_with_vm_input.eml-js_680caefdccc88833",
+      "bytes": 22586,
+      "sha256": "f915c47b671961910652cd22511ceed0534e176698c699dd821b3f789076cfc6"
+    },
+    {
+      "resource_name": "video_action_toggle_button.eml-js_564fba98a29fbf6",
+      "bytes": 1240,
+      "sha256": "2e60da97fd48e7f65e46d546532c6573d386306e607da649e767a453f0ac0cf6"
+    }
+  ],
+  "read_only_decompilation_exports": [
+    {
+      "file": "vote-startup-storage-annotated.txt",
+      "sha256": "07aa629abd4083f0d22a7257b0d47441f94af5b4c09e1affa3c684224e6025f1"
+    },
+    {
+      "file": "vote-config-update-pipeline-annotated.txt",
+      "sha256": "7832da07cf467c6f4c714a93bfa5db4597ae02a1118fd3cc451baafd331bff48"
+    },
+    {
+      "file": "vote-cold-proto-descriptors-annotated.txt",
+      "sha256": "ca53a2fd87ce0e2e1c85c1416e6bae63dee1b7658c74e2f6c77a7deb127af0ff"
+    },
+    {
+      "file": "vote-client-context-annotated.txt",
+      "sha256": "e9fc58aa629289057e543f0162bd384f2e64980f9799ef0c7ffbbc6f548301d5"
+    },
+    {
+      "file": "vote-elements-config-bridge-annotated.txt",
+      "sha256": "8c92da8a3e10a65fff3b359dc5420f6bd3891a59101532e4c064b7cafd8d00ac"
+    },
+    {
+      "file": "vote-scripting-descriptors-annotated.txt",
+      "sha256": "02d4a1e846c71edf18981ed22979692e9f7927bb0c8043ac5c948acbea0e5316"
+    },
+    {
+      "file": "vote-watch-layout-selection-annotated.txt",
+      "sha256": "50c345a1c8e2a24f8acd732f4f37f81826294be43371f11f28648f6a9e55baa3"
+    },
+    {
+      "file": "vote-button-type-annotated.txt",
+      "sha256": "a7a4ffaf40aaace2481415b07d987c08aa61df16653cdb1f7eac9846e70166ad"
+    }
+  ],
+  "confirmed_native_mechanism": [
+    "Missing app-local cold-config blob returns empty group",
+    "Initialization loads active cold group; refreshed groups saved without swapping active pointer in inspected path",
+    "Client request context carries coldConfigData and configuration hashes",
+    "Feature-gated Elements serving context can be persisted and reloaded",
+    "Action button model distinguishes independent types 3/4 and combined type 15"
+  ],
+  "not_established": [
+    "Exact device experiment or model responsible for first/later layout switch",
+    "Actual on-device cold-config and template cache generations",
+    "Complete branch conditions of compiled Elements resources",
+    "All native like representations from bounded ASImageNode search"
+  ],
+  "ruled_out_preliminary_inference": "YTELMGetColdConfigFunctionBinding uses scriptingColdConfig, whose descriptor contains only testValue; it is not evidence of serializing all native vote-layout flags.",
+  "device_runtime_startup_checkpoints_status": "Proposed in VOTE_STARTUP_INVESTIGATION.md; not yet implemented in release 0.3.20",
+  "native_functions": {
+    "0x1000e5150": "YTColdConfigStorage initWithBlobStorageBlocking:hotConfig:userDefaultsInjector:",
+    "0x1000e574c": "YTColdConfigStorage loadColdConfigGroupFromBlobStorage:dataKey:",
+    "0x100192f44": "YTColdConfigStorage coldConfigGroup",
+    "0x1000e4f7c": "YTColdConfig coldConfigGroup",
+    "0x100f0b29c": "YTGlobalConfigsApplier loadGlobalConfigs:",
+    "0x100f0b548": "YTGlobalConfigsApplier deserializeAndSendColdConfigGroup:newColdHash:",
+    "0x100f02e44": "YTColdConfigStorage saveToBlobStoreColdConfig:hash:error:",
+    "0x10024e10c": "YTInnerTubeContextFactory clientInfoWithSendDeviceIdentifier:serviceType:",
+    "0x10019c0ec": "YTElementUpdateHandler emlTemplateServingContext",
+    "0x10019c178": "YTElementUpdateHandler serving-context initialization helper",
+    "0x100e92fc8": "YTElementUpdateHandler onDiskCacheServingContextUpdated:cacheExpirationTimeSecs:",
+    "0x10050b1e8": "YTELMGetColdConfigFunctionBinding init (uses scriptingColdConfig)",
+    "0x100192d8c": "YTIScriptingColdConfig descriptor (testValue only)",
+    "0x101753090": "YTWatchNextResultsViewController slimVideoMetadataContainsCompactifyPlaceholderSlimVideoInfo:",
+    "0x10349eebc": "YTBAWatchPageFillerBlock getVideoActionBarElement:error:",
+    "0x10349f344": "YTBAWatchPageFillerBlock getCompactifyVideoActionBarElement:error:"
+  }
+}
