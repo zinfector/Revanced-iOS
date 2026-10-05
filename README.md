@@ -4,6 +4,8 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
+`patcher/output` contains IPA files only. Windows executables belong in `patcher/dist`; build receipts belong in `patcher/build` or `patcher/profiles`, and source code stays in Git.
+
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
 On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.37. This confirms the reported device behavior; coverage of every ad format remains unverified.
