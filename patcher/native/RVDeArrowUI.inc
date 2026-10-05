@@ -591,7 +591,7 @@ static void RVInstallDeArrowUI(void) {
                         if (current.profile.liveCard) { RVDAUIBindConsumerRoot(current,weakNode);RVDAUIObserveConsumers(current,weakNode,generation,0); }
                         if (next!=entry) {
                             RVDAUIEvent(@"D09_native_target_materialized",current,nil);
-                            [current.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
+                            if (!current.profile.liveCard) [current.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
                         }
                     }
                 });return node;

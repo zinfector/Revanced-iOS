@@ -68,8 +68,11 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         @"title_confirmed":@(binding.titleConsumerVerified),@"thumbnail_confirmed":@(binding.imageConsumerVerified),
         @"title_replacement_consumed":@(titleApplied),@"image_replacement_consumed":@(imageApplied),@"blocker":blocker ?: @"ready"};
     RVDADiagRecord(@"D04_live_native_consumers",binding,blocker,binding.consumerCheckpoint);
-    if (titleApplied || imageApplied) RVDADiagRecord(@"D09_live_native_replacement_consumed",binding,nil,
-        @{@"title":@(titleApplied),@"image":@(imageApplied),@"generation_checked":@YES});
+    if (titleApplied || imageApplied) {
+        RVDADiagRecord(@"D09_live_native_replacement_consumed",binding,nil,
+            @{@"title":@(titleApplied),@"image":@(imageApplied),@"generation_checked":@YES});
+        [binding.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
+    }
     if (changed) RVDAUIRefresh(binding);
     if (attempt<3 && (blocker || (expected && !titleApplied) || (expectedBytes && !imageApplied))) {
         __weak RVDAUIBinding *weak=binding;__weak id weakRoot=root;
