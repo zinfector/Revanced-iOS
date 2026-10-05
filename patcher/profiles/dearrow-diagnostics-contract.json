@@ -1,7 +1,7 @@
 {
   "schema": 2,
-  "release": "0.3.35",
-  "status": "implemented_device_capture_pending",
+  "release": "0.3.36",
+  "status": "implemented_report_105_followup_pending",
   "device_verified": false,
   "tests_run": false,
   "source": "native/RVDeArrowDiagnostics.inc",
@@ -17,12 +17,13 @@
     "owner_hops": 16,
     "component_samples": 8,
     "scanned_nodes": 32,
-    "diagnostic_bytes": 131072
+    "diagnostic_bytes": 131072,
+    "native_template_samples": 32
   },
   "settings_snapshot": "Independent switches, whitelisted screen overrides, legacy thumbnail migration and effective per-screen part policies; no service URLs.",
   "observation_only": "Failed binding snapshots and service probe never relax production identity, ordinary-video, role, or lifecycle gates.",
   "known_gap": "0.3.34 discarded failed bind attempts and did not implement upstream original formatting/general fallback behavior.",
-  "device_report_required": "Both Home and watch replacements fail despite enabled switches; active native blocker not established.",
+  "device_report_required": "Verify the repaired ordinary-video routes and capture newly opened watch/related rows.",
   "native_contracts": {
     "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
     "short_factory": "ELMCellNode.nodeBlockForEntry:responder:0x100461bd4 delegates to full factory; YTElementsCellController.cellNodeBlock0x104242828 uses that route without itself establishing section TLS.",
@@ -39,5 +40,17 @@
     "Projected but no data consumption/materialization: native adapter/refresh gap.",
     "Result rejected: exact ownership/source/index/revision reason.",
     "Service probe proves only service data/decode, not UI success."
-  ]
+  ],
+  "new_fields": [
+    "native_templates",
+    "settings.options",
+    "attempt_samples.components.raw_uri_length",
+    "attempt_samples.components.uri_field",
+    "attempt_samples.components.uri_normalized",
+    "bindings.service_parts",
+    "bindings.local_title_changed",
+    "bindings.image_origin",
+    "bindings.duration_available"
+  ],
+  "observed_failure_profile": "device-dearrow-report-105.json"
 }

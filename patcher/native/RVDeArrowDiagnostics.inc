@@ -2,6 +2,7 @@
 // Bounded structural diagnostics. Never serialize title text, IDs, URLs or views.
 static BOOL RVDAUIDiagnosticsArmed;
 static NSMutableDictionary *RVDAUICounts,*RVDAUILastStages,*RVDAUISamples;
+static NSMutableDictionary *RVDAUITemplateSamples;
 static NSString *RVDAUISalt;
 static BOOL RVDADiagEnabled(void) { return RVEnabled(@"diagnostics") || RVDAUIDiagnosticsArmed; }
 static NSString *RVDADiagHash(NSData *data) {
@@ -53,18 +54,30 @@ static NSDictionary *RVDADiagShape(NSData *data) {
 static NSString *RVDADiagTemplateName(NSString *uri) {
     // Admit only the conventional template filename + hex revision, not a URL.
     if (!uri.length || uri.length>160) return @"absent_or_unrecognized";
-    NSRange range=[uri rangeOfString:@"^[A-Za-z0-9_]+\\.eml(-js)?\\|[0-9a-fA-F]{16}$" options:NSRegularExpressionSearch];
+    NSRange range=[uri rangeOfString:@"^[A-Za-z0-9_]+\\.eml(-js)?\\|[0-9a-fA-F]{1,16}$" options:NSRegularExpressionSearch];
     return range.location==0 && range.length==uri.length ? uri : @"unrecognized_template_hash";
+}
+static void RVDADiagNativeTemplate(NSString *raw) {
+    if (!RVDADiagEnabled() || ![raw isKindOfClass:NSString.class] || raw.length>2048) return;
+    RVDADiagCount(@"native.template_uri_entered");NSString *name=RVDAResourceName(raw),*hash=RVDADiagHash([raw dataUsingEncoding:NSUTF8StringEncoding]);
+    @synchronized(RVDAUIBinding.class) {
+        if (!RVDAUITemplateSamples) RVDAUITemplateSamples=[NSMutableDictionary dictionary];
+        NSDictionary *prior=RVDAUITemplateSamples[hash];if (!prior && RVDAUITemplateSamples.count>=32) return;
+        RVDAUITemplateSamples[hash]=@{@"template":RVDADiagTemplateName(name),@"raw_uri_hash":hash,@"raw_uri_length":@(raw.length),@"normalized":@(name!=nil),@"occurrences":@([prior[@"occurrences"] unsignedLongLongValue]+1)};
+    }
 }
 static void RVDADiagWalk(NSData *data,NSUInteger depth,NSUInteger *budget,NSMutableArray *components) {
     if (depth>12 || !*budget || components.count>=8) return;(*budget)--;
     NSArray<RVVoteField *> *fields=RVVoteFields(data);if (!fields) return;
     NSData *component=RVDAPath(data,@[@1,@168777401]),*shared=RVDAPath(data,@[@1,@484616221]);
     if (component || shared) {
+        NSString *rawURI=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
         NSString *uri=RVDATemplate(component);NSData *model=RVDAChild(component,5);
         RVDAProjection *profile=RVDAProfile(data,nil);
         [components addObject:@{@"depth":@(depth),@"kind":component ? @"serialized_component" : @"shared_component",
             @"template":RVDADiagTemplateName(uri),@"template_hash":uri ? RVDADiagHash([uri dataUsingEncoding:NSUTF8StringEncoding]) : @"absent",
+            @"raw_uri_length":@(rawURI.length),@"uri_field":RVDADiagShape(RVDAPath(component,@[@3,@172035250,@1])),
+            @"uri_has_path":@([rawURI containsString:@"/"]),@"uri_has_pipe":@([rawURI containsString:@"|"]),@"uri_normalized":@(uri!=nil),
             @"model":RVDADiagShape(model),@"single_video_profile_found":@(profile!=nil),
             @"title_role":@(profile.titleRole),@"image_role":@(profile.imageRole),
             @"serialized_role_blocker":profile.blocker ?: (profile ? @"ready" : @"not_resolved_without_owner"),
@@ -113,7 +126,9 @@ static NSDictionary *RVDADiagSettings(void) {
             @"image_requested":@(RVDAUIPolicy(surface,NO) && ![surface isEqual:@"player"])}];
     }
     id titles=RVSetting(@"dearrow_title_modes"),images=RVSetting(@"dearrow_thumbnail_modes"),legacy=RVSetting(@"thumbnail_modes");
-    return @{@"titles_enabled":@(RVEnabled(@"dearrow_titles")),@"thumbnails_enabled":@(RVEnabled(@"dearrow_thumbnails")),
+    NSMutableDictionary *options=[NSMutableDictionary dictionary];
+    for (NSString *key in @[@"dearrow_mode",@"dearrow_casual_categories",@"dearrow_use_crowdsourced_titles",@"dearrow_default_original",@"dearrow_title_format",@"dearrow_format_original_titles",@"dearrow_format_custom_titles",@"dearrow_remove_emojis",@"dearrow_capitalize_non_english",@"dearrow_upcoming_avatar",@"dearrow_ignore_ab_thumbnails",@"dearrow_hide_while_fetching",@"dearrow_ignore_translated_titles",@"dearrow_title_max_lines",@"dearrow_thumbnail_saturation",@"dearrow_store_selected_votes",@"dearrow_always_show_original",@"dearrow_peek_interaction",@"dearrow_show_original_for_formatted",@"dearrow_guideline_help",@"dearrow_settings_theme"]) if (RVSetting(key)) options[key]=RVSetting(key);
+    return @{@"options":options,@"titles_enabled":@(RVEnabled(@"dearrow_titles")),@"thumbnails_enabled":@(RVEnabled(@"dearrow_thumbnails")),
         @"profile_accepted":@(RVCompatible),@"title_overrides":titles ?: @{},@"image_overrides":images ?: @{},
         @"legacy_thumbnail_modes":legacy ?: @{},@"fallback":RVSetting(@"dearrow_fallback") ?: @"original",@"surface_policies":policies};
 }

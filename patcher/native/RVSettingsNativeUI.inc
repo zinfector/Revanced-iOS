@@ -58,6 +58,10 @@ static UIViewController *RVSettingsOwner(UIViewController *content) {
 #include "RVSettingsNavigation.inc"
 static NSInteger RVSettingsPageStyle(UIViewController *content) {
     NSString *theme=RVSetting(@"theme");
+    NSString *group=RVObject(content,"groupID");
+    if ([group isEqual:@"dearrow"]) {
+        NSString *dearrow=RVSetting(@"dearrow_settings_theme");if ([@[@"light",@"dark"] containsObject:dearrow]) theme=dearrow;
+    }
     if ([theme isEqual:@"dark"]) return 1;
     if ([theme isEqual:@"light"]) return 0;
     UIViewController *owner=RVSettingsOwner(content);

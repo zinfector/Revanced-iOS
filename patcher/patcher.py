@@ -36,6 +36,7 @@ DEFAULTS = {'schema': 1, **{f: False for f in FEATURES}, 'video_ads': True,
             'dearrow_title_modes':{}, 'dearrow_thumbnail_modes':{}, 'dearrow_fallback':'original',
             'dearrow_branding_url':'https://sponsor.ajay.app/api/branding',
             'thumbnail_modes':{}, 'theme_light_background':'', 'theme_dark_background':''}
+DEFAULTS.update({'dearrow_mode': 'classic', 'dearrow_casual_categories': ['funny', 'creative', 'clever', 'descriptive', 'other'], 'dearrow_use_crowdsourced_titles': True, 'dearrow_default_original': False, 'dearrow_title_format': 'title_case', 'dearrow_format_original_titles': True, 'dearrow_format_custom_titles': True, 'dearrow_remove_emojis': True, 'dearrow_capitalize_non_english': True, 'dearrow_upcoming_avatar': True, 'dearrow_ignore_ab_thumbnails': True, 'dearrow_hide_while_fetching': False, 'dearrow_ignore_translated_titles': False, 'dearrow_title_max_lines': 3, 'dearrow_thumbnail_saturation': 100, 'dearrow_store_selected_votes': True, 'dearrow_always_show_original': False, 'dearrow_peek_interaction': False, 'dearrow_show_original_for_formatted': True, 'dearrow_guideline_help': True, 'dearrow_settings_theme': 'system'})
 DEFAULTS.update(paired_vote_buttons=True,first_launch_ui=True,wifi_quality=-1,cellular_quality=-1,miniplayer_min_dimension_points=0,miniplayer_overlay_opacity=1.0)
 
 def sha(data): return hashlib.sha256(data).hexdigest()
@@ -96,7 +97,7 @@ def validate_config(config):
     if unknown: raise PatchError('Unknown configuration keys: '+', '.join(sorted(unknown)))
     c = dict(DEFAULTS, **config)
     if type(c['schema']) is not int or c['schema'] != 1: raise PatchError('Unsupported configuration schema')
-    for f in (*FEATURES, 'diagnostics'):
+    for f in (*FEATURES, 'diagnostics', *('dearrow_use_crowdsourced_titles', 'dearrow_default_original', 'dearrow_format_original_titles', 'dearrow_format_custom_titles', 'dearrow_remove_emojis', 'dearrow_capitalize_non_english', 'dearrow_upcoming_avatar', 'dearrow_ignore_ab_thumbnails', 'dearrow_hide_while_fetching', 'dearrow_ignore_translated_titles', 'dearrow_store_selected_votes', 'dearrow_always_show_original', 'dearrow_peek_interaction', 'dearrow_show_original_for_formatted', 'dearrow_guideline_help')):
         if type(c[f]) is not bool: raise PatchError(f'{f} must be true or false')
     if c['ad_strategy'] not in ('response', 'trigger', 'coordinator'): raise PatchError('Invalid ad strategy')
     if type(c['default_speed']) not in (int, float) or not math.isfinite(c['default_speed']) or not 0.25<=c['default_speed']<=4:
@@ -140,7 +141,14 @@ def validate_config(config):
         modes=c[key]
         if not isinstance(modes,dict) or set(modes)-{'home','subscriptions','library','player','search','related'} or any(v not in ('original','custom') for v in modes.values()):
             raise PatchError(key+' must map a supported screen to original or custom; omitted screens inherit')
-    if c['dearrow_fallback'] not in ('original','stills'):raise PatchError('Invalid DeArrow thumbnail fallback')
+    if c['dearrow_fallback'] not in ('original','stills','random_time','blank','youtube_frame'):raise PatchError('Invalid DeArrow thumbnail fallback')
+    if c['dearrow_mode'] not in ('classic','casual'):raise PatchError('Invalid DeArrow mode')
+    if c['dearrow_title_format'] not in ('disabled','title_case','sentence_case','lower_case','first_letter_uppercase','capitalize_words'):raise PatchError('Invalid DeArrow title format')
+    if c['dearrow_settings_theme'] not in ('system','light','dark'):raise PatchError('Invalid DeArrow settings theme')
+    for key,lo,hi in [('dearrow_title_max_lines',1,6),('dearrow_thumbnail_saturation',0,100)]:
+        if type(c[key]) is not int or not lo<=c[key]<=hi:raise PatchError('Invalid '+key)
+    categories=c['dearrow_casual_categories']
+    if not isinstance(categories,list) or len(categories)>5 or any(x not in ('funny','creative','clever','descriptive','other') for x in categories):raise PatchError('Invalid DeArrow Casual categories')
     endpoint=c['dearrow_branding_url']
     if not isinstance(endpoint,str) or len(endpoint)>1024:raise PatchError('Invalid dearrow_branding_url')
     parts=urlsplit(endpoint)

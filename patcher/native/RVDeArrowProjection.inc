@@ -47,7 +47,7 @@ static NSData *RVDALockupTitle(NSData *renderer,NSString *title) {
 }
 static NSData *RVDAStaticImage(NSData *thumbnail,NSData *imageBytes) {
     NSData *image=RVDAChild(thumbnail,1);NSArray *fields=RVVoteFields(image);if (!fields) return nil;
-    if (RVDAChild(thumbnail,14) || RVDAChild(thumbnail,60)) return nil; // animation/composite
+    if (RVDAChild(thumbnail,60)) return nil; // composite has no owned single image
     NSData *source=RVVoteMessageField(2,imageBytes); // ImageSource.imageData, native oneof
     NSData *next=RVVoteReplace(fields,@{@1:RVVoteMessageField(1,source)},nil);
     return RVDASet(thumbnail,1,next);
@@ -57,11 +57,15 @@ static NSString *RVDAFrameURL(NSString *video) {
     NSString *url=[NSString stringWithFormat:@"https://i.ytimg.com/vi/%@/hq%d.jpg",video,[RVSetting(@"thumbnail_frame") intValue]];
     return RVImageCachedAvailable(url) ? url : nil;
 }
-static NSData *RVDAVideoData(NSData *data,NSString *title,NSData *image,BOOL fallback) {
+static NSData *RVDAVideoData(NSData *data,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
     NSData *next=data,*metadata=RVDAChild(data,2),*thumbnail=RVDAChild(data,1);
     if (title) {
         NSData *value=metadata ? RVDAMetadataTitle(metadata,title) : nil;if (value) next=RVDASet(next,2,value) ?: next;
         NSData *lockup=RVDAChild(next,21);if (lockup) next=RVDASet(next,21,RVDALockupTitle(lockup,title)) ?: next;
+    }
+    if (lines>=1 && lines<=6 && metadata) {
+        NSData *value=RVVoteReplace(RVVoteFields(RVDAChild(next,2)),@{@7:RVVoteScalarField(7,lines)},nil);
+        if (value) next=RVDASet(next,2,value) ?: next;
     }
     if (image && thumbnail) { NSData *value=RVDAStaticImage(thumbnail,image);if (value) next=RVDASet(next,1,value) ?: next; }
     else if (fallback && thumbnail && !RVDAChild(thumbnail,14)) {
@@ -96,13 +100,46 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @property(nonatomic,copy) NSString *video,*route,*blocker;
 @property(nonatomic,strong) NSArray<NSNumber *> *componentPath,*videoDataPath;
 @property(nonatomic,strong) NSData *source;
+@property(nonatomic,copy) NSString *originalTitle,*untranslatedTitle,*originalImageURL;
+@property(nonatomic) double duration;
 @property(nonatomic) BOOL watchTitle,titleRole,imageRole;
 @property(nonatomic) BOOL contextSlots;
 @end
 @implementation RVDAProjection @end
 
+static NSString *RVDAResourceName(NSString *uri) {
+    if (!uri.length || uri.length>2048) return nil;
+    // The service can supply a resource path, while bundled filenames use an
+    // underscore revision separator. Keep the exact revision; never admit an
+    // arbitrary downloaded revision by basename alone.
+    NSString *leaf=[uri.lastPathComponent stringByRemovingPercentEncoding];if (!leaf) return nil;
+    static NSRegularExpression *regex;static dispatch_once_t once;
+    dispatch_once(&once,^{ regex=[NSRegularExpression regularExpressionWithPattern:@"^([A-Za-z0-9_]+\\.eml(?:-js)?)[_|]([0-9a-fA-F]{1,16})$" options:0 error:nil]; });
+    NSTextCheckingResult *match=[regex firstMatchInString:leaf options:0 range:NSMakeRange(0,leaf.length)];
+    if (!match) return nil;
+    return [NSString stringWithFormat:@"%@|%@",[leaf substringWithRange:[match rangeAtIndex:1]],[[leaf substringWithRange:[match rangeAtIndex:2]] lowercaseString]];
+}
 static NSString *RVDATemplate(NSData *component) {
-    return RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
+    return RVDAResourceName(RVDAText(RVDAPath(component,@[@3,@172035250,@1])));
+}
+static double RVDADurationText(NSString *text) {
+    if (!text.length || text.length>16) return 0;NSArray *parts=[text componentsSeparatedByString:@":"];
+    if (parts.count<2 || parts.count>3) return 0;double value=0;NSUInteger index=0;
+    for (NSString *part in parts) {
+        if (!part.length || [part rangeOfCharacterFromSet:NSCharacterSet.decimalDigitCharacterSet.invertedSet].location!=NSNotFound) return 0;
+        double next=part.doubleValue;if (next<0 || (index++ && next>=60)) return 0;value=value*60+next;
+    }return value>0 && value<=604800 ? value : 0;
+}
+static NSString *RVDAImageURL(NSData *image,NSString *video) {
+    NSString *best=nil;uint64_t width=0;NSUInteger count=0;
+    for (RVVoteField *field in RVVoteFields(image)) if (field.number==1 && field.wire==2) {
+        if (++count>16) return nil;
+        NSString *url=RVDAText(RVDAChild(field.value,1));NSURLComponents *parts=[NSURLComponents componentsWithString:url ?: @""];
+        NSArray *path=parts.path.pathComponents;
+        if (![parts.scheme isEqual:@"https"] || ![@[@"i.ytimg.com",@"i1.ytimg.com",@"i2.ytimg.com",@"i3.ytimg.com",@"i4.ytimg.com"] containsObject:parts.host.lowercaseString] || parts.user || parts.password || path.count!=4 || ![@[@"vi",@"vi_webp"] containsObject:path[1]] || ![path[2] isEqual:video]) continue;
+        RVVoteField *size=RVVoteOne(RVVoteFields(field.value),4,0);
+        if (!best || size.scalar>=width) { best=url;width=size.scalar; }
+    }return best;
 }
 static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
     NSArray *fields=RVVoteFields(data);if (!fields) return nil;
@@ -146,7 +183,14 @@ static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArra
         profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];
         profile.videoDataPath=modelPath;profile.titleRole=watch || RVDAChild(videoData,2) || RVDAPath(videoData,@[@21,@8178,@1]);
         NSData *thumbnail=RVDAChild(videoData,1);
-        profile.imageRole=!watch && RVDAPath(thumbnail,@[@1,@1]) && !RVDAChild(thumbnail,14) && !RVDAChild(thumbnail,60);
+        // sourcesArray is repeated; preview metadata owns a separate preview.
+        profile.imageRole=!watch && RVDAChild(thumbnail,1) && !RVDAChild(thumbnail,60);
+        NSData *metadata=RVDAChild(videoData,2);
+        profile.originalTitle=watch ? RVDAText(RVDAPath(model,@[@377581260,@6,@1019,@1,@1])) :
+            RVDAText(RVDAChild(metadata,1)) ?: RVDAText(RVDAPath(metadata,@[@27,@1])) ?: RVDAText(RVDAPath(videoData,@[@21,@8178,@1,@1]));
+        profile.untranslatedTitle=RVDAText(RVDAChild(metadata,30));
+        profile.duration=RVDADurationText(RVDAText(RVDAChild(thumbnail,2)));
+        profile.originalImageURL=RVDAImageURL(RVDAChild(thumbnail,1),video);
         // Semantic slots can supersede the title/image passed to metadata.
         // A slot without an individually verified element profile passes through.
         if ([name hasPrefix:@"video_with_context_slots."]) {
@@ -169,14 +213,14 @@ static RVDAProjection *RVDAProfile(NSData *data,NSString *watchVideo) {
     RVDADiscover(data,@[],found,0,&budget,watchVideo);
     if (found.count!=1) return nil;RVDAProjection *profile=found[0];profile.source=data;return profile;
 }
-static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image,BOOL fallback) {
+static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
     NSData *component=RVDAPath(profile.source,profile.componentPath),*model=RVDAChild(component,5),*next=model;
     if (profile.watchTitle && title && profile.titleRole) {
         NSArray *path=@[@377581260,@6,@1019,@1];NSData *original=RVDAPath(model,path);
         next=RVDASetPath(model,path,RVDAAttributed(original,title)) ?: model;
     } else if (profile.videoDataPath) {
         NSData *original=RVDAPath(model,profile.videoDataPath);
-        NSData *value=RVDAVideoData(original,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback);
+        NSData *value=RVDAVideoData(original,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
         next=RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil);
         next=RVDASetPath(next,profile.videoDataPath,value) ?: next;
         if (profile.contextSlots) {

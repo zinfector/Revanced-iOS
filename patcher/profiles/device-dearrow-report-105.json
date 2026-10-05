@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "report": "Dearrow Report 105.txt",
+  "sha256": "75f6ad961ac5c8e61fe01494d6fb1507362742ba98603750cae6dee2563303fb",
+  "patcher_version": "0.3.35",
+  "build_source_sha256": "8e8955a9075c248725c6c4d7740d47b93375554397f484eae7618b72d140f15a",
+  "confirmed": {
+    "profile_accepted": true,
+    "titles_enabled": true,
+    "thumbnails_enabled": true,
+    "installed_hooks": 11,
+    "binding_attempts": 109,
+    "active_bindings": 0,
+    "metadata_requests": 0,
+    "surfaces_observed": [
+      "home"
+    ],
+    "counts": {
+      "native.section_cell_update_entered": 6,
+      "native.section_node_factory_entered": 93,
+      "native.elements_factory_entered": 103,
+      "blocked.legacy_section_scope_absent": 19,
+      "D00_capture_started": 1,
+      "D04_role_bound": 99,
+      "binding_attempt": 109,
+      "native.controller_cell_bind_entered": 25,
+      "blocked.template_or_video_profile_unknown": 70,
+      "blocked.renderer_union_or_type_unsupported": 29,
+      "blocked.section_scope_absent": 10
+    },
+    "surface_policies": [
+      {
+        "surface": "home",
+        "title_requested": true,
+        "image_requested": 1
+      },
+      {
+        "surface": "search",
+        "title_requested": true,
+        "image_requested": 1
+      },
+      {
+        "surface": "subscriptions",
+        "title_requested": true,
+        "image_requested": 1
+      },
+      {
+        "surface": "library",
+        "title_requested": true,
+        "image_requested": 0
+      },
+      {
+        "surface": "player",
+        "title_requested": true,
+        "image_requested": 0
+      },
+      {
+        "surface": "related",
+        "title_requested": true,
+        "image_requested": 0
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "controller": "YTVideoElementCellController",
+      "blocker": "legacy_section_scope_absent",
+      "occurrences": 19,
+      "models": [
+        [
+          {
+            "wire": 2,
+            "occurrences": 1,
+            "byte_length": 15785,
+            "field": 232954548
+          }
+        ]
+      ]
+    },
+    {
+      "controller": "YTChipCloudChipCellController",
+      "blocker": "renderer_union_or_type_unsupported",
+      "occurrences": 26,
+      "models": []
+    },
+    {
+      "controller": "YTElementsCellController",
+      "blocker": "template_or_video_profile_unknown",
+      "occurrences": 47,
+      "models": [
+        [
+          {
+            "wire": 2,
+            "occurrences": 1,
+            "byte_length": 8134,
+            "field": 436234506
+          }
+        ]
+      ]
+    },
+    {
+      "controller": "YTElementCellViewController",
+      "blocker": "section_scope_absent",
+      "occurrences": 10,
+      "models": [
+        [
+          {
+            "wire": 2,
+            "occurrences": 1,
+            "byte_length": 1140,
+            "field": 33555503
+          }
+        ]
+      ]
+    },
+    {
+      "controller": "YTChipDividerCellController",
+      "blocker": "renderer_union_or_type_unsupported",
+      "occurrences": 2,
+      "models": []
+    },
+    {
+      "controller": "YTVideoElementCellController",
+      "blocker": "template_or_video_profile_unknown",
+      "occurrences": 23,
+      "models": [
+        [
+          {
+            "wire": 2,
+            "occurrences": 1,
+            "byte_length": 17570,
+            "field": 232954548
+          }
+        ]
+      ]
+    },
+    {
+      "controller": "YTButtonCellController",
+      "blocker": "renderer_union_or_type_unsupported",
+      "occurrences": 1,
+      "models": []
+    }
+  ],
+  "conclusion": "Home is rejected before service dispatch, not a demonstrated backend outage. Native hook installation and Home ownership are proven. Unknown profile matching dominates. Chip/divider/button renderer rejection is expected. Missing section scope affects another ordinary-video route. Related image policy is disabled by legacy player=stills despite enabled global thumbnail switch.",
+  "limitations": [
+    "Capture has no watch surface events; watch failure is not independently localized.",
+    "Old diagnostic regex masked all actual template names. Exact live names/revisions cannot be recovered from salted hashes; URI mismatch is corroborated from source/bundled filename contracts, not a directly visible live URI.",
+    "No device-visible fix is claimed from compilation."
+  ],
+  "source_repairs": [
+    "Canonicalize bare/resource/path/percent-escaped pipe or underscore URI spellings while retaining exact revision matching.",
+    "Recover section/index only from bounded native responder chain with exact entry and cached controller identities.",
+    "Independent DeArrow screen overrides replace implicit legacy-thumbnail vetoes.",
+    "Repeated Image.sourcesArray and animated preview metadata no longer disqualify the primary static image.",
+    "Copied primary-image data preserves separate preview metadata, overlays and native commands."
+  ],
+  "next_capture": [
+    "Verify normalized component identities and native_templates against the actual device URI.",
+    "Confirm D02-D04 success and D05/D06/D07 requests/decisions.",
+    "Confirm D08 independent title/image readiness and D09 copied bytes consumption/materialization.",
+    "Confirm D10 guarded row reload; then inspect source/index/revision blockers if rejected.",
+    "Capture a newly opened ordinary watch video and related rows."
+  ],
+  "tests_run": false,
+  "device_verified": false
+}

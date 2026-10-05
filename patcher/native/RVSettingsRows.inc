@@ -57,14 +57,35 @@ static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *list
             id value=mapKey ? RVSettingsEffectiveValue(mapKey)[key] : RVSettingsEffectiveValue(key);
             row[@"detail"]=mapKey && !value ? @"Default" : RVPreferenceValueTitle(value,rule);
         }
+        if ([key isEqual:@"dearrow_store_selected_votes"]) {
+            [row removeObjectForKey:@"toggle"];row[@"disabled"]=@YES;row[@"detail"]=@"Contribution UI pending";
+        }
         [rows addObject:row];
     }
     if (searching && !rows.count) [rows addObject:@{@"title":@"No matching settings",@"disabled":@YES}];
-    NSString *footer=mapKey ? @"Default removes this per-item override. Global settings then apply." : listKey ? @"Enabled categories are requested when the next video is opened." : group[@"hint"];
-    if ([groupID isEqual:@"dearrow"]) return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows},
-        @{@"title":@"Current video and service",@"rows":@[@{@"title":@"Show original for current video",@"dearrow_action":@0},
-        @{@"title":@"Use community version for current video",@"dearrow_action":@1},@{@"title":@"Clear DeArrow cache",@"dearrow_action":@2},
-        @{@"title":@"Start DeArrow diagnostic capture",@"dearrow_action":@4},@{@"title":@"Probe service for current video",@"dearrow_action":@5},@{@"title":@"Copy DeArrow checkpoints",@"dearrow_action":@3}]}];
+    NSString *footer=mapKey ? @"Default removes this per-item override. Global settings then apply." : listKey ? ([listKey isEqual:@"dearrow_casual_categories"] ? @"Selected categories keep the original title when community votes identify a match." : @"Enabled categories are requested when the next video is opened.") : group[@"hint"];
+    if ([groupID isEqual:@"dearrow"] && !mapKey && !listKey) {
+        NSDictionary *frameRule=RVPreferenceDescriptor(@"thumbnail_frame");
+        [rows addObject:@{@"title":frameRule[@"title"],@"key":@"thumbnail_frame",@"identifier":@"rvport.pref.thumbnail_frame",@"detail":RVPreferenceValueTitle(RVSettingsEffectiveValue(@"thumbnail_frame"),frameRule)}];
+        NSArray *titles=@[@"Mode",@"Titles",@"Thumbnails",@"Display",@"Original and custom",@"Service and diagnostics"];
+        NSArray *keys=@[@[@"dearrow_mode",@"dearrow_casual_categories"],
+            @[@"dearrow_titles",@"dearrow_use_crowdsourced_titles",@"dearrow_title_format",@"dearrow_format_original_titles",@"dearrow_format_custom_titles",@"dearrow_remove_emojis",@"dearrow_capitalize_non_english",@"dearrow_ignore_translated_titles",@"dearrow_title_modes"],
+            @[@"dearrow_thumbnails",@"dearrow_fallback",@"thumbnail_frame",@"dearrow_upcoming_avatar",@"dearrow_ignore_ab_thumbnails",@"dearrow_thumbnail_modes"],
+            @[@"dearrow_hide_while_fetching",@"dearrow_title_max_lines",@"dearrow_thumbnail_saturation",@"dearrow_settings_theme"],
+            @[@"dearrow_default_original",@"dearrow_always_show_original",@"dearrow_peek_interaction",@"dearrow_show_original_for_formatted",@"dearrow_store_selected_votes",@"dearrow_guideline_help"],
+            @[@"dearrow_branding_url",@"dearrow_url"]];
+        NSMutableArray *sections=[NSMutableArray array];
+        for (NSUInteger index=0;index<titles.count;index++) {
+            NSMutableArray *items=[NSMutableArray array];for (NSString *key in keys[index]) for (NSDictionary *row in rows) if ([row[@"key"] isEqual:key]) [items addObject:row];
+            [sections addObject:@{@"title":titles[index],@"rows":items}];
+        }
+        NSMutableArray *actions=[NSMutableArray array];
+        if (RVDAUIOriginalActionsAvailable()) [actions addObjectsFromArray:@[@{@"title":@"Show original for current video",@"dearrow_action":@0},@{@"title":@"Use custom version for current video",@"dearrow_action":@1}]];
+        if (RVEnabled(@"dearrow_peek_interaction")) [actions addObject:@{@"title":@"Preview original and custom details",@"dearrow_action":@6}];
+        if (RVEnabled(@"dearrow_guideline_help")) [actions addObject:@{@"title":@"DeArrow guidelines and help",@"dearrow_action":@7}];
+        [actions addObjectsFromArray:@[@{@"title":@"Clear DeArrow cache",@"dearrow_action":@2},@{@"title":@"Start DeArrow diagnostic capture",@"dearrow_action":@4},@{@"title":@"Probe service for current video",@"dearrow_action":@5},@{@"title":@"Copy DeArrow checkpoints",@"dearrow_action":@3}]];
+        [sections addObject:@{@"title":@"Current video and troubleshooting",@"footer":footer ?: @"",@"rows":actions}];return sections;
+    }
     return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows}];
 }
 static BOOL RVSettingsSaveToggle(NSDictionary *row,BOOL on) {

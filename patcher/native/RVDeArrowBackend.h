@@ -64,6 +64,8 @@ typedef NS_ENUM(NSUInteger, RVDeArrowBlocker) {
 @property(nonatomic,readonly) RVDeArrowDecision titleDecision;
 @property(nonatomic,readonly) RVDeArrowDecision thumbnailDecision;
 @property(nonatomic,readonly,copy,nullable) NSString *title;
+@property(nonatomic,readonly,copy) NSArray<NSDictionary *> *casualVotes;
+@property(nonatomic,readonly,strong,nullable) NSNumber *videoDuration,*randomTime;
 @property(nonatomic,readonly,strong,nullable) NSNumber *thumbnailTimestamp;
 @property(nonatomic,readonly,strong,nullable) UIImage *thumbnailImage;
 @property(nonatomic,readonly) RVDeArrowImageState imageState;

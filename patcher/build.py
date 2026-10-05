@@ -61,7 +61,7 @@ def build(sdk=None, zig=None):
         '-fobjc-arc','-fblocks','-O2','-Wall','-Wextra',
         '-Werror','-Wno-unused-parameter','-fvisibility=hidden','-dynamiclib',
         str(ROOT/'native/RVPort.m'),'-o',str(out/'RVPort.dylib'),
-        '-framework','Foundation','-framework','UIKit','-framework','ImageIO','-framework','AVFoundation','-framework','MediaPlayer','-framework','CoreGraphics','-framework','QuartzCore','-framework','Network','-framework','Security','-lobjc',
+        '-framework','Foundation','-framework','UIKit','-framework','ImageIO','-framework','NaturalLanguage','-framework','CoreImage','-framework','AVFoundation','-framework','MediaPlayer','-framework','CoreGraphics','-framework','QuartzCore','-framework','Network','-framework','Security','-lobjc',
         '-Wl,-install_name,@executable_path/Frameworks/RVPort.dylib',
         '-Wl,-headerpad,0x4000']
     with (out/'build.log').open('w',encoding='utf-8') as log:

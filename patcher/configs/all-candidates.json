@@ -156,5 +156,32 @@
   "dearrow_title_modes": {},
   "dearrow_thumbnail_modes": {},
   "dearrow_fallback": "original",
-  "dearrow_branding_url": "https://sponsor.ajay.app/api/branding"
+  "dearrow_branding_url": "https://sponsor.ajay.app/api/branding",
+  "dearrow_mode": "classic",
+  "dearrow_casual_categories": [
+    "funny",
+    "creative",
+    "clever",
+    "descriptive",
+    "other"
+  ],
+  "dearrow_use_crowdsourced_titles": true,
+  "dearrow_default_original": false,
+  "dearrow_title_format": "title_case",
+  "dearrow_format_original_titles": true,
+  "dearrow_format_custom_titles": true,
+  "dearrow_remove_emojis": true,
+  "dearrow_capitalize_non_english": true,
+  "dearrow_upcoming_avatar": true,
+  "dearrow_ignore_ab_thumbnails": true,
+  "dearrow_hide_while_fetching": false,
+  "dearrow_ignore_translated_titles": false,
+  "dearrow_title_max_lines": 3,
+  "dearrow_thumbnail_saturation": 100,
+  "dearrow_store_selected_votes": true,
+  "dearrow_always_show_original": false,
+  "dearrow_peek_interaction": false,
+  "dearrow_show_original_for_formatted": true,
+  "dearrow_guideline_help": true,
+  "dearrow_settings_theme": "system"
 }

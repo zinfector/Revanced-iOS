@@ -382,5 +382,30 @@
     "row_lease": "Original array entry, cached controller, controller entry, owner/video, serialized source and revisions are checked individually; the report names the failed contract."
   },
   "tests_run": false,
-  "device_verified": false
+  "device_verified": false,
+  "implementation_release": "0.3.36",
+  "runtime_settings_added": 21,
+  "implemented_consumers": [
+    "native grouped settings and validation",
+    "pristine original/custom six-mode formatting",
+    "emoji and language policy",
+    "Casual title-matched category selection",
+    "default-original with explicit session custom choice",
+    "fully decoded four-state fallbacks",
+    "video-scoped random duration and SponsorBlock avoidance",
+    "original-image A/B source normalization",
+    "scoped saturation and native metadata max-title-line",
+    "bounded pending restoration",
+    "verified original-language title selection",
+    "legacy explicit upcoming/avatar cover",
+    "current-video original/custom settings actions and preview",
+    "guideline help and native settings theme"
+  ],
+  "remaining_capabilities": [
+    "Contribution voting and stored selected submissions are unavailable; the settings row is disabled and clearly labeled.",
+    "Original/custom and preview actions are provided in DeArrow settings, not new per-card inline controls.",
+    "Modern upcoming/entity-only/shared/unknown template roles retain native behavior.",
+    "Unicode casing uses a native formatter and language recognition rather than the browser ML model."
+  ],
+  "device_confirmation_pending": true
 }

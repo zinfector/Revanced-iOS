@@ -29,6 +29,16 @@ static BOOL RVDANumber(id value) {
 static BOOL RVDABoolean(id value) {
     return [value isKindOfClass:NSNumber.class] && CFGetTypeID((__bridge CFTypeRef)value)==CFBooleanGetTypeID();
 }
+static NSArray<NSDictionary *> *RVDACasualVotes(id input) {
+    if (![input isKindOfClass:NSArray.class] || [input count]>128) return @[];
+    NSMutableArray *result=[NSMutableArray array];
+    for (id vote in input) {
+        if (![vote isKindOfClass:NSDictionary.class] || ![@[@"funny",@"creative",@"clever",@"descriptive",@"other"] containsObject:vote[@"id"]] || !RVDANumber(vote[@"count"]) || fabs([vote[@"count"] doubleValue])>1e9) continue;
+        id title=vote[@"title"];if (title && (![title isKindOfClass:NSString.class] || [title length]>1024)) continue;
+        NSMutableDictionary *item=[@{@"id":vote[@"id"],@"count":vote[@"count"]} mutableCopy];if (title) item[@"title"]=title;
+        [result addObject:item.copy];
+    }return result.copy;
+}
 static NSString *RVDATitleText(id value) {
     if (![value isKindOfClass:NSString.class] || [value length]>1024) return nil;
     NSString *title=value;
@@ -114,6 +124,8 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,readwrite) uint64_t configurationRevision,clientGeneration;
 @property(nonatomic,readwrite) RVDeArrowDecision titleDecision,thumbnailDecision;
 @property(nonatomic,readwrite,copy) NSString *title;
+@property(nonatomic,readwrite,copy) NSArray<NSDictionary *> *casualVotes;
+@property(nonatomic,readwrite,strong) NSNumber *videoDuration,*randomTime;
 @property(nonatomic,readwrite,strong) NSNumber *thumbnailTimestamp;
 @property(nonatomic,readwrite,strong) UIImage *thumbnailImage;
 @property(nonatomic,readwrite) RVDeArrowImageState imageState;
@@ -209,6 +221,8 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @interface RVDAMetadata : NSObject
 @property(nonatomic) RVDeArrowDecision titleDecision,thumbnailDecision;
 @property(nonatomic,copy) NSString *title;
+@property(nonatomic,copy) NSArray<NSDictionary *> *casualVotes;
+@property(nonatomic,strong) NSNumber *videoDuration,*randomTime;
 @property(nonatomic,strong) NSNumber *timestamp;
 @property(nonatomic) NSUInteger titleCandidates,thumbnailCandidates;
 @property(nonatomic) NSInteger httpStatus;
@@ -233,6 +247,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) RVDAImage *image;
 @property(nonatomic,strong) RVDAHTTP *transfer;
 @property(nonatomic) BOOL metadataCacheHit,imageCacheHit,imageQueued;
+@property(nonatomic) NSUInteger imageRetries;
 @end
 @implementation RVDAJob @end
 @interface RVDAOperation : NSObject
@@ -356,6 +371,9 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         // Stored titles are already normalized. Reapplying escape-marker cleanup
         // on every launch could progressively remove literal '>' characters.
         entry.title=RVDATitleText(record[@"title"]);id timestamp=record[@"timestamp"];
+        entry.casualVotes=RVDACasualVotes(record[@"casual_votes"]);
+        if (RVDANumber(record[@"duration"]) && [record[@"duration"] doubleValue]>0 && [record[@"duration"] doubleValue]<=604800) entry.videoDuration=record[@"duration"];
+        if (RVDANumber(record[@"random_time"]) && [record[@"random_time"] doubleValue]>=0 && [record[@"random_time"] doubleValue]<1) entry.randomTime=record[@"random_time"];
         if (RVDANumber(timestamp) && [timestamp doubleValue]>=0 && [timestamp doubleValue]<=604800) entry.timestamp=timestamp;
         if ((entry.titleDecision==RVDeArrowDecisionCustom && !entry.title) || (entry.thumbnailDecision==RVDeArrowDecisionCustom && !entry.timestamp)) continue;
         entry.expires=expiry;entry.lastUsed=now;
@@ -375,6 +393,8 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
             NSMutableDictionary *record=[@{@"video":video,@"expires":@(entry.expires),@"http":@(entry.httpStatus),
                 @"title_decision":@(entry.titleDecision),@"thumbnail_decision":@(entry.thumbnailDecision)} mutableCopy];
             if (entry.title) record[@"title"]=entry.title;if (entry.timestamp) record[@"timestamp"]=entry.timestamp;
+            if (entry.casualVotes) record[@"casual_votes"]=entry.casualVotes;
+            if (entry.videoDuration) record[@"duration"]=entry.videoDuration;if (entry.randomTime) record[@"random_time"]=entry.randomTime;
             [records addObject:record];if (records.count>=RVDAMaxEntries) break;
         }
         NSDictionary *root=@{@"schema":@1,@"namespace":RVDAHash(self.options.brandingEndpoint.absoluteString),@"records":records};
@@ -477,6 +497,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         result.titleDecision=title ? job.metadata.titleDecision : RVDeArrowDecisionDisabled;
         result.thumbnailDecision=image ? job.metadata.thumbnailDecision : RVDeArrowDecisionDisabled;
         result.title=title && result.titleDecision==RVDeArrowDecisionCustom ? job.metadata.title : nil;
+        result.casualVotes=job.metadata.casualVotes ?: @[];result.videoDuration=job.metadata.videoDuration;result.randomTime=job.metadata.randomTime;
         result.thumbnailTimestamp=image && result.thumbnailDecision==RVDeArrowDecisionCustom ? job.metadata.timestamp : nil;
         result.metadataBlocker=job.metadata.blocker;result.metadataHTTPStatus=job.metadata.httpStatus;result.metadataCacheHit=job.metadataCacheHit;
         result.titleBlocker=title ? [self blockerForMetadata:job.metadata decision:result.titleDecision] : RVDeArrowBlockerNone;
@@ -609,6 +630,9 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
             if (!record) {
                 entry.titleDecision=RVDeArrowDecisionMissing;entry.thumbnailDecision=RVDeArrowDecisionMissing;entry.blocker=RVDeArrowBlockerVideoMissing;
             } else if ([record isKindOfClass:NSDictionary.class]) {
+                entry.casualVotes=RVDACasualVotes(record[@"casualVotes"]);
+                if (RVDANumber(record[@"videoDuration"]) && [record[@"videoDuration"] doubleValue]>0 && [record[@"videoDuration"] doubleValue]<=604800) entry.videoDuration=record[@"videoDuration"];
+                if (RVDANumber(record[@"randomTime"]) && [record[@"randomTime"] doubleValue]>=0 && [record[@"randomTime"] doubleValue]<1) entry.randomTime=record[@"randomTime"];
                 entry.titleDecision=[self select:record[@"titles"] title:YES metadata:entry];
                 entry.thumbnailDecision=[self select:record[@"thumbnails"] title:NO metadata:entry];
                 entry.titleCandidates=[record[@"titles"] isKindOfClass:NSArray.class] ? MIN(512,[record[@"titles"] count]) : 0;
@@ -646,6 +670,16 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 }
 - (void)imageResponse:(NSData *)data response:(NSHTTPURLResponse *)response blocker:(RVDeArrowBlocker)blocker operation:(RVDAOperation *)operation {
     RVDAJob *job=operation.job;RVDAImage *entry=[RVDAImage new];entry.httpStatus=response.statusCode;
+    NSString *failure=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
+    if (blocker==RVDeArrowBlockerNone && entry.httpStatus==204 && job.imageRetries<2 &&
+        ([failure containsString:@"not generated"] || [failure containsString:@"not cached"] || [failure containsString:@"queue"])) {
+        NSUInteger attempt=++job.imageRetries;
+        [self record:RVDeArrowCheckpointImageReceived blocker:RVDeArrowBlockerImageNoContent video:job.videoID details:@{@"http_status":@204,@"generation_retry":@(attempt),@"image_pending":@YES}];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(attempt*2*NSEC_PER_SEC)),self.queue,^{
+            if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) return;
+            RVDAOperation *retry=[RVDAOperation new];retry.job=job;retry.image=YES;retry.URL=operation.URL;[self.operations addObject:retry];[self pump];
+        });return;
+    }
     BOOL timestampMatches=NO;
     if (blocker==RVDeArrowBlockerNone && entry.httpStatus==200) {
         NSString *raw=RVDAHeader(response,@"X-Timestamp");double timestamp=0;

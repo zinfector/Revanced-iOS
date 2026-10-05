@@ -1,8 +1,8 @@
-name: Build DeArrow diagnostic payload with Xcode
+name: Build DeArrow options payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-diagnostics-0.3.35]
+    branches: [fix/dearrow-options-0.3.36]
 
 permissions:
   contents: read

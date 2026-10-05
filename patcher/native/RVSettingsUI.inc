@@ -44,6 +44,27 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
 }
 @end
 
+@interface RVDeArrowPreviewController : RVSettingsContentController
+@property(nonatomic,copy) NSDictionary *snapshot;
+@end
+@implementation RVDeArrowPreviewController
+- (void)viewDidLoad {
+    [super viewDidLoad];RVSettingsRefreshAppearance(self);
+    UIScrollView *scroll=[UIScrollView new];scroll.translatesAutoresizingMaskIntoConstraints=NO;[self.view addSubview:scroll];
+    UIStackView *stack=[UIStackView new];stack.axis=UILayoutConstraintAxisVertical;stack.spacing=16;stack.translatesAutoresizingMaskIntoConstraints=NO;[scroll addSubview:stack];
+    for (NSArray *section in @[@[@"Original",@"original_title",@"original_image"],@[@"Custom / formatted",@"custom_title",@"custom_image"]]) {
+        UILabel *heading=[UILabel new];heading.text=section[0];heading.font=[UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];heading.textColor=RVSettingsColor(self,"textPrimary");[stack addArrangedSubview:heading];
+        UILabel *label=[UILabel new];label.text=self.snapshot[section[1]];label.numberOfLines=0;label.font=[UIFont preferredFontForTextStyle:UIFontTextStyleBody];label.textColor=RVSettingsColor(self,"textPrimary");[stack addArrangedSubview:label];
+        id image=self.snapshot[section[2]];
+        if ([image isKindOfClass:UIImage.class]) { UIImageView *view=[[UIImageView alloc] initWithImage:image];view.contentMode=UIViewContentModeScaleAspectFit;view.accessibilityLabel=[section[0] stringByAppendingString:@" thumbnail"];[stack addArrangedSubview:view];[view.heightAnchor constraintEqualToAnchor:view.widthAnchor multiplier:9.0/16].active=YES; }
+        else { UILabel *hint=[UILabel new];hint.text=@"Thumbnail is unavailable in this preview; the native card keeps its original.";hint.numberOfLines=0;hint.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];hint.textColor=RVSettingsColor(self,"textSecondary");[stack addArrangedSubview:hint]; }
+    }
+    UILayoutGuide *safe=self.view.safeAreaLayoutGuide;
+    [NSLayoutConstraint activateConstraints:@[[scroll.topAnchor constraintEqualToAnchor:safe.topAnchor],[scroll.leadingAnchor constraintEqualToAnchor:safe.leadingAnchor],[scroll.trailingAnchor constraintEqualToAnchor:safe.trailingAnchor],[scroll.bottomAnchor constraintEqualToAnchor:safe.bottomAnchor],
+        [stack.topAnchor constraintEqualToAnchor:scroll.contentLayoutGuide.topAnchor constant:16],[stack.leadingAnchor constraintEqualToAnchor:scroll.contentLayoutGuide.leadingAnchor constant:16],[stack.trailingAnchor constraintEqualToAnchor:scroll.contentLayoutGuide.trailingAnchor constant:-16],[stack.bottomAnchor constraintEqualToAnchor:scroll.contentLayoutGuide.bottomAnchor constant:-16],[stack.widthAnchor constraintEqualToAnchor:scroll.frameLayoutGuide.widthAnchor constant:-32]]];
+}
+@end
+
 @interface RVSettingsController : RVSettingsContentController <UISearchBarDelegate>
 @property(nonatomic,copy) NSString *groupID,*mapKey,*listKey;
 @property(nonatomic,strong) RVSettingsListController *list;
@@ -191,7 +212,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"dearrow-diagnostics",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
+        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"dearrow-options",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -226,6 +247,8 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
         else if (action==2) { RVDAUIClearCaches();[self message:@"DeArrow cache cleared" text:@"Visible eligible videos will request fresh branding."]; }
         else if (action==4) { RVDAUIStartCapture();[self message:@"DeArrow capture started" text:@"Close settings, scroll Home, open an ordinary video and related videos, then return here and copy DeArrow checkpoints."]; }
         else if (action==5) { BOOL started=RVDAUIProbeCurrentService();[self message:started ? @"DeArrow service probe started" : @"No eligible current video" text:started ? @"This checks the service independently of native rendering. Wait for the request to finish, then copy DeArrow checkpoints. It does not alter playback or replace a card." : @"Open an ordinary video in the supported YouTube version first."]; }
+        else if (action==6) { NSDictionary *snapshot=RVDAUIPreviewSnapshot();if (!snapshot) [self message:@"No eligible current video" text:@"Open an ordinary video with a resolved DeArrow binding first."];else { RVDeArrowPreviewController *page=[RVDeArrowPreviewController new];page.snapshot=snapshot;page.title=@"DeArrow preview";RVSettingsPush(self,page); } }
+        else if (action==7) { [UIApplication.sharedApplication openURL:[NSURL URLWithString:@"https://wiki.sponsor.ajay.app/w/DeArrow/Guidelines"] options:@{} completionHandler:nil]; }
         else { NSData *data=[NSJSONSerialization dataWithJSONObject:RVDAUIReport() options:NSJSONWritingPrettyPrinted error:nil];if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];[self message:@"DeArrow checkpoints copied" text:@"The report identifies the service, role, ownership, and refresh stages."]; }
         return;
     }

@@ -1,16 +1,16 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.35**, `YouTube-21.39.4-RVPort-0.3.35-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.36**, `YouTube-21.39.4-RVPort-0.3.36-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.35. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.36. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
 ## Porting progress
 
-Status reflects the merged 0.3.35 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.36 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
@@ -64,7 +64,7 @@ Status reflects the merged 0.3.35 source. This report covers every declaration i
 | SponsorBlock | Category policies, markers, native skip/undo prompts and contribution tools implemented; complete parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Spoof app version | Copied request client-version override implemented; executable/header/stream spoofing remains separate. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Change start page | Home/Subscriptions/You/Shorts initial pivot selection and surviving-tab recovery implemented; other destinations/restores remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
-| Alternative thumbnails | DeArrow service and native presentation adapters implemented; replacements currently reported failing on Home and watch. Diagnostic capture and a service-only probe identify blocked routes. [Option parity scheme](patcher/profiles/dearrow-options-scheme.json) covers formatting, fallbacks, Casual mode and presentation controls; those extensions remain planned. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| Alternative thumbnails | [Report 105](patcher/profiles/device-dearrow-report-105.json) identified Home rejection before service dispatch. URI matching, owner scope, screen policies and primary-image roles corrected. Native settings now consume formatting, Casual categories, fallbacks, saturation and original/preview policies. Contribution voting remains unavailable; unknown templates retain originals. [Implementation scope](patcher/profiles/dearrow-options-scheme.json). Device confirmation pending. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Bypass image region restrictions | Configurable HTTPS thumbnail proxy implemented; requires a compatible user-supplied service. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Announcements | Manual announcements reader implemented; service availability and notification scheduling remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Pause on audio interrupt | Pause on native audio interruption implemented; resumption/audio-focus parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
