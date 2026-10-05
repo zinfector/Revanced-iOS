@@ -14,10 +14,10 @@
   "device_playback_verified": false,
   "signing_required": true,
   "authentication_login": "Previously user-reported working; authentication implementation unchanged.",
-  "source_commit": "e93e656807660fdaa5a73160121da42771a91384",
+  "source_commit": "04dca64149bd5e8a2a39580178061a04ae8eeb0c",
   "ci": {
-    "run_id": 37351178898,
-    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37351178898",
+    "run_id": 37351643727,
+    "url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37351643727",
     "conclusion": "success",
     "jobs": [
       {
@@ -65,9 +65,9 @@
     ]
   },
   "native_build": {
-    "payload_sha256": "9d24efd518fedcdf907b7dbac6f215fb5f914c98558162205d9d5a5f44361a21",
+    "payload_sha256": "654da66b4fda59afd13bb3c784e8d021563497b7d3e30841884f286b99abbc55",
     "source_sha256": "7891aa8fa63a09b46970ceb4be20a70ee741afeb2b006d129a789ff9fd82addb",
-    "build_source_sha256": "95b249fbb2a25475cfb885af02ac08e19d2047d025fd0ece154d2048f30eaf13",
+    "build_source_sha256": "a5ed55179bd68b080615e2721b236fa0a73ac0fe678229586ed38f5336a98b6a",
     "source_files": {
       "RVAdCoordinator.inc": "0dcc8ccaaa3032863235bd2edfd185ceffcf144defaa723e4a1d6cd64df44c60",
       "RVAdDisplay.inc": "d7af1b83aa1d2cde4b255c7d3fd830cb7a4efb27984212cf9a7bdf9a61243f69",
@@ -101,11 +101,14 @@
       "RVPort.m": "7891aa8fa63a09b46970ceb4be20a70ee741afeb2b006d129a789ff9fd82addb",
       "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
       "RVServices.inc": "3d152f138bc1a8162ec67048d864c3011e2fec1a8ed68f22f233ba319d700987",
+      "RVSettingsBrandIconData.h": "f663b3136faa707bc60193800104a5fb81fb5785dd9834526379f53fd1d2c228",
+      "RVSettingsBrandIcons.inc": "bcbfa39e1770d8db5d0aba4adf6e2571a7e87bee724463d365fac5fa2d59526a",
       "RVSettingsBridge.inc": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
       "RVSettingsCatalog.h": "bb4d28ec85d1b2b3ef66cf44987c28bd25e7742815a146cab7363f0fa6bcf2cb",
-      "RVSettingsIcon.inc": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+      "RVSettingsIcon.inc": "d506ea29dd44da86ce962bf4d7d2b409d4ee7f8af8b68dae02b1dbf263174111",
+      "RVSettingsMenuIcons.inc": "cf28298272fadab41b3b624707ec86867b5ec2cea61d1cdeab7df6571dda3ec1",
       "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
-      "RVSettingsNativeUI.inc": "5a4f9d49b48ee2a869c28e37bed63945e842ae33522cee9ce52c11ffcac1509e",
+      "RVSettingsNativeUI.inc": "2777ec8947c30aa8d3de3da492c1523dee57554a605ec46f71c1712cf813e143",
       "RVSettingsNavigation.inc": "f09a157644f44df46f885154f63f54584567a9b6a30240e5b8ba16553fe8e681",
       "RVSettingsRows.inc": "cc55d653625ae6ff0283b6ee8248fa07bbcaaae0a0b163d069e9084793d99a44",
       "RVSettingsUI.inc": "27e0c353593e429a7eca96cc1f97c9712a3a482cbd6e7429f305375c84a2a1eb",
@@ -121,7 +124,10 @@
       "RVVoteLayoutCompatibility.inc": "26ea55db7eefc2180e6ccad180850fc839808964d8ddd19ec72b27dd0014c2f2",
       "RVVoteLifecycle.inc": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
       "RVVoteModel.inc": "38301ebce7b52258be76deadd48d587553671b48d2ed81a9e29747955a5c9dea",
-      "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165"
+      "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "assets/settings/DearrowLogo.svg": "0991f379b022dd189e97c19df3c709492ff4e232d662047bb81b25d0c7f91b3d",
+      "assets/settings/LogoSponsorBlock256px.png": "36402dad32b85f6de52506e28ad23b5041e2f165c0a22533b92101b5a5caf3e9",
+      "assets/settings/ReturnYTDislike.png": "c309b0a665f45670a8c0219037180dd261ecf665761da2990f19c9211f7bc0e6"
     },
     "compiler_command": [
       "xcrun",
@@ -185,16 +191,16 @@
       "size": 5628
     },
     "build/RVPort.dylib": {
-      "sha256": "9d24efd518fedcdf907b7dbac6f215fb5f914c98558162205d9d5a5f44361a21",
-      "size": 1626360
+      "sha256": "654da66b4fda59afd13bb3c784e8d021563497b7d3e30841884f286b99abbc55",
+      "size": 1645928
     },
     "dist/YouTube-iOS-Patcher.exe": {
-      "sha256": "ae21db051bf3823bc0132833eabf59faa2b15818022bd65bda98e06575373135",
-      "size": 14723617
+      "sha256": "18f102a41bec4c04d31cd2f124eb8d852a158fb6411eeafca6018b7cd41dcade",
+      "size": 14755839
     },
     "build/build-manifest.json": {
-      "sha256": "b78308f0b98bf242459c13219a8627aa56e09e04e5a1af510384a76420690211",
-      "size": 7127
+      "sha256": "cdf545596f495f0173daba95fb004c9edaa0d71ddd55d246cee3581a2b9e8af6",
+      "size": 7762
     },
     "build/build.log": {
       "sha256": "180e5613a4988a3438a9a149b3611c65b6ed55beed673255fabc90b9583b192d",
@@ -269,16 +275,16 @@
       "size": 6577
     },
     "native/RVSettingsNativeUI.inc": {
-      "sha256": "5a4f9d49b48ee2a869c28e37bed63945e842ae33522cee9ce52c11ffcac1509e",
-      "size": 32073
+      "sha256": "2777ec8947c30aa8d3de3da492c1523dee57554a605ec46f71c1712cf813e143",
+      "size": 33653
     },
     "native/RVSettingsRows.inc": {
       "sha256": "cc55d653625ae6ff0283b6ee8248fa07bbcaaae0a0b163d069e9084793d99a44",
       "size": 8323
     },
     "native/RVSettingsIcon.inc": {
-      "sha256": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
-      "size": 3213
+      "sha256": "d506ea29dd44da86ce962bf4d7d2b409d4ee7f8af8b68dae02b1dbf263174111",
+      "size": 3337
     },
     "native/assets/ReVancedSettings.png": {
       "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
@@ -485,8 +491,8 @@
       "size": 1274
     },
     "output/YouTube-21.39.4-RVPort-0.3.36-unsigned.ipa": {
-      "sha256": "c46a86c465e68560e8143c30169e1c4b5dfea95390f443177c0f828d8a67250c",
-      "size": 140953091
+      "sha256": "861a5101a1c7cdac582428fef7fe8d1551fae771ee52ab7bedc90246cc8632ca",
+      "size": 140969299
     },
     "native/RVAds.inc": {
       "sha256": "4dd482bd4cf674493b88c18a18328b28e4d1a24ba7f71a103e94864fcd9ccc80",
@@ -585,7 +591,7 @@
       "size": 3807
     },
     "build/cloud-build.json": {
-      "sha256": "80a6bc79ba3f149b3b5634d445f566b05015f558bba181f1a7a7ef350c278c06",
+      "sha256": "a9ed9197b75a9b16dba24268aa40736cd51db56a413995eaf45fe0264866e8d5",
       "size": 461
     },
     "native/RVAdWatchOwnership.inc": {
@@ -655,6 +661,38 @@
     "profiles/dearrow-backend-contract.json": {
       "sha256": "8761eb79a73f817c3aeda67e57792a581178a7a95d199881fa92e82079a6ee8f",
       "size": 8761
+    },
+    "native/RVSettingsMenuIcons.inc": {
+      "sha256": "cf28298272fadab41b3b624707ec86867b5ec2cea61d1cdeab7df6571dda3ec1",
+      "size": 6488
+    },
+    "native/RVSettingsBrandIcons.inc": {
+      "sha256": "bcbfa39e1770d8db5d0aba4adf6e2571a7e87bee724463d365fac5fa2d59526a",
+      "size": 1248
+    },
+    "native/RVSettingsBrandIconData.h": {
+      "sha256": "f663b3136faa707bc60193800104a5fb81fb5785dd9834526379f53fd1d2c228",
+      "size": 22554
+    },
+    "native/assets/settings/DearrowLogo.svg": {
+      "sha256": "0991f379b022dd189e97c19df3c709492ff4e232d662047bb81b25d0c7f91b3d",
+      "size": 2329
+    },
+    "native/assets/settings/LogoSponsorBlock256px.png": {
+      "sha256": "36402dad32b85f6de52506e28ad23b5041e2f165c0a22533b92101b5a5caf3e9",
+      "size": 11165
+    },
+    "native/assets/settings/ReturnYTDislike.png": {
+      "sha256": "c309b0a665f45670a8c0219037180dd261ecf665761da2990f19c9211f7bc0e6",
+      "size": 899
+    },
+    "profiles/settings-menu-icons-evidence.json": {
+      "sha256": "bb34643a127292f291e29112cf1e45f6749dcceecb976d36fda79ff02cb196e8",
+      "size": 25552
+    },
+    "settings_brand_icons.py": {
+      "sha256": "ca8ebd6abc1e7278a2635fd9ab015c1b5d39a08ca541c59403fab943574ce14f",
+      "size": 6005
     }
   },
   "remaining_scope": "Device report 105 established rejection before service requests. URI normalization, owner-scoped section recovery, independent policies and repeated primary-image sources corrected. Settings and bounded local formatting/fallback/effects implemented. Unknown server templates retain originals. Contribution voting is unavailable; native upcoming-avatar support is limited to explicit legacy contracts. Original/preview actions are in DeArrow settings. Updated device confirmation pending. No tests run."

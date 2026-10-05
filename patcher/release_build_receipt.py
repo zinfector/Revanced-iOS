@@ -49,6 +49,9 @@ def main():
     names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json',
               'native/RVDeArrowBackend.h','native/RVDeArrowBackend.inc','native/RVDeArrowProjection.inc','native/RVDeArrowUI.inc','native/RVDeArrowDiagnostics.inc','native/RVDeArrowOptions.inc','native/RVDeArrowImages.inc',
               'profiles/dearrow-ui-contract.json','profiles/device-dearrow-report-105.json','profiles/dearrow-options-scheme.json','profiles/dearrow-diagnostics-contract.json','profiles/dearrow-backend-contract.json']
+    names += ['native/RVSettingsMenuIcons.inc','native/RVSettingsBrandIcons.inc','native/RVSettingsBrandIconData.h',
+              'native/assets/settings/DearrowLogo.svg','native/assets/settings/LogoSponsorBlock256px.png',
+              'native/assets/settings/ReturnYTDislike.png','profiles/settings-menu-icons-evidence.json','settings_brand_icons.py']
     artifacts = {}
     for name in names:
         path = ROOT/name
