@@ -1,0 +1,2450 @@
+Research batch: adblock-display-investigation
+
+===== requested 100d6e300: didBindSlotData:layoutData: @ 100d6e300 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTAdElementsCellExternallyManagedSlotAdapterImpl::didBindSlotData_layoutData_
+          (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ID IVar1;
+  ID IVar2;
+  ID IVar3;
+  
+  IVar1 = objc_stub::hasSlotData(param_3);
+  if ((IVar1 & 1) == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,0,0,
+               &
+               cf__YTAdElementsCellExternallyManagedSlotAdapter_Missingslotdatawhenreceivingbindingsignal_
+              );
+  }
+  else {
+    IVar1 = objc_stub::slotData(param_3);
+    IVar1 = objc_stub::type(IVar1);
+    IVar1 = objc_stub::isValidSlotType:(param_1,IVar1);
+    if ((int)IVar1 != 0) {
+      IVar1 = objc_stub::externallyManagedSlotFromSlotLoggingData:controlFlowLayer:(*(undefined8 *)(param_1 + _slotFactory),param_3,3);
+      objc_stub::didEnterExternallyManagedSlot:externalContext:(param_1,IVar1,0);
+      IVar2 = objc_stub::hasLayoutData(param_4);
+      if ((IVar2 & 1) == 0) {
+        objc_stub::sendLogWithSlot_layout_message_
+                  (PTR_YTECatcherAdsController_10c8e39c0,IVar1,0,
+                   &
+                   cf__YTAdElementsCellExternallyManagedSlotAdapter_Missinglayoutdatawhenreceivingbindingsignal_
+                  );
+      }
+      else {
+        IVar2 = objc_stub::externallyManagedLayoutFromLayoutLoggingData:controlFlowLayer:(*(undefined8 *)(param_1 + _layoutFactory),param_4,3);
+        IVar3 = objc_stub::iosEnableLayoutReceivedEventAtProcessingTimeInfeed(*(undefined8 *)(param_1 + _hotConfig));
+        if ((IVar3 & 1) == 0) {
+          objc_stub::didReceiveExternallyManagedLayout:slot:externalContext:(param_1,IVar2,IVar1,0);
+        }
+        objc_stub::didScheduleExternallyManagedLayout:slot:externalContext:(param_1,IVar2,IVar1,0);
+        objc_stub::didEnterExternallyManagedLayout:slot:externalContext:(param_1,IVar2,IVar1,0);
+      }
+    }
+  }
+  return 0;
+}
+
+
+
+===== requested 100d6e480: didDisposeSlotData:layoutData: @ 100d6e480 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTAdElementsCellExternallyManagedSlotAdapterImpl::didDisposeSlotData_layoutData_
+          (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ID IVar1;
+  ID IVar2;
+  ID IVar3;
+  undefined8 self;
+  
+  IVar1 = objc_stub::hasSlotData(param_3);
+  if ((IVar1 & 1) == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,0,0,
+               &
+               cf__YTAdElementsCellExternallyManagedSlotAdapter_Missingslotdatawhenreceivingdisposingsignal_
+              );
+  }
+  else {
+    IVar1 = objc_stub::slotData(param_3);
+    IVar1 = objc_stub::type(IVar1);
+    IVar1 = objc_stub::isValidSlotType:(param_1,IVar1);
+    if ((int)IVar1 != 0) {
+      IVar1 = objc_stub::externallyManagedSlotFromSlotLoggingData:controlFlowLayer:(*(undefined8 *)(param_1 + _slotFactory),param_3,3);
+      IVar2 = objc_stub::hasLayoutData(param_4);
+      if ((IVar2 & 1) == 0) {
+        objc_stub::sendLogWithSlot_layout_message_
+                  (PTR_YTECatcherAdsController_10c8e39c0,IVar1,0,
+                   &
+                   cf__YTAdElementsCellExternallyManagedSlotAdapter_Missinglayoutdatawhenreceivingdisposingsignal_
+                  );
+      }
+      else {
+        IVar2 = objc_stub::externallyManagedLayoutFromLayoutLoggingData:controlFlowLayer:(*(undefined8 *)(param_1 + _layoutFactory),param_4,3);
+        self = *(undefined8 *)(param_1 + _slotToPageMap);
+        IVar3 = objc_stub::slotID(IVar1);
+        IVar3 = objc_stub::objectForKey_(self,IVar3);
+        if (IVar3 != 0) {
+          objc_stub::didExitExternallyManagedLayout:slot:exitReason:externalContext:(param_1,IVar2,IVar1,0,0);
+          objc_stub::didUnscheduleExternallyManagedLayout:slot:externalContext:(param_1,IVar2,IVar1,0);
+          objc_stub::didExitExternallyManagedSlot:externalContext:(param_1,IVar1,0);
+          objc_stub::didUnscheduleExternallyManagedSlot:externalContext:(param_1,IVar1,0);
+        }
+        objc_stub::removeSlot:(param_1,IVar1);
+      }
+    }
+  }
+  return 0;
+}
+
+
+
+===== requested 100d6e644: canEnterSlot: @ 100d6e644 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+ID YTAdElementsCellExternallyManagedSlotAdapterImpl::canEnterSlot_
+             (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  undefined *self;
+  ID IVar1;
+  ID IVar2;
+  undefined8 self_00;
+  
+  self_00 = *(undefined8 *)(param_1 + _slotToPageMap);
+  IVar1 = objc_stub::slotID(param_3);
+  IVar1 = objc_stub::objectForKeyedSubscript_(self_00,IVar1);
+  if (IVar1 == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,param_3,0,
+               &
+               cf__YTAdElementsCellExternallyManagedSlotAdapter_Noviewcontrollerisassociatedwithcurrentslot_
+              );
+    IVar1 = 0;
+  }
+  else {
+    IVar1 = objc_stub::objectForKeyedSubscript_(*(undefined8 *)(param_1 + _pageToSlotsMap),IVar1);
+    self = PTR__OBJC_CLASS___NSNumber_10c8e1438;
+    IVar2 = objc_stub::slotPhysicalPosition(param_3);
+    IVar2 = objc_stub::numberWithInt_(self,IVar2);
+    IVar1 = objc_stub::objectForKeyedSubscript_(IVar1,IVar2);
+    if (IVar1 == 0) {
+      IVar1 = 1;
+    }
+    else {
+      IVar1 = objc_stub::slotID(IVar1);
+      IVar2 = objc_stub::slotID(param_3);
+      IVar1 = objc_stub::isEqual_(IVar1,IVar2);
+    }
+  }
+  return IVar1;
+}
+
+
+
+===== requested 100d6e7a8: isValidSlotType: @ 100d6e7a8 =====
+
+/* Function Stack Size: 0x14 bytes */
+
+uint YTAdElementsCellExternallyManagedSlotAdapterImpl::isValidSlotType_
+               (undefined8 param_1,undefined8 param_2,uint param_3)
+
+{
+  return (uint)(param_3 < 0x1a) & 0x2001040U >> (ulong)(param_3 & 0x1f);
+}
+
+
+
+===== requested 100d79f98: startCompanion:withLayoutID:interactionLoggingAdsClientData: @ 100d79f98 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x23 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_unsafeClaimAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* Function Stack Size: 0x28 bytes */
+
+undefined8
+YTBelowPlayerCompanionRenderingAPIImpl::startCompanion_withLayoutID_interactionLoggingAdsClientData_
+          (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,undefined8 param_5)
+
+{
+  ID IVar1;
+  undefined *puVar2;
+  undefined8 uVar3;
+  undefined *local_88;
+  undefined8 local_80;
+  code *local_78;
+  undefined *puStack_70;
+  undefined8 local_68;
+  undefined8 local_60;
+  undefined8 local_58;
+  undefined1 auStack_50 [8];
+  undefined1 auStack_48 [8];
+  
+  IVar1 = objc_stub::isCompanionRenderingSurfaceReady(param_1);
+  if ((int)IVar1 == 0) {
+    puVar2 = PTR_GPCPromise_10c8e1430;
+    _objc_alloc_init();
+    uVar3 = *(undefined8 *)(param_1 + 0x10);
+    *(undefined **)(param_1 + 0x10) = puVar2;
+    _objc_initWeak(uVar3,auStack_48,param_1);
+    puVar2 = PTR___dispatch_main_q_10b39a8f8;
+    uVar3 = *(undefined8 *)(param_1 + 0x10);
+    local_88 = PTR___NSConcreteStackBlock_10b39a7f8;
+    local_80 = DAT_10a28a108;
+    local_78 = FUN_100d7a110;
+    puStack_70 = &DAT_10b3eeca0;
+    _objc_copyWeak(auStack_50,auStack_48);
+    local_68 = param_3;
+    local_60 = param_4;
+    local_58 = param_5;
+    objc_stub::withQueue_onSuccess_(uVar3,puVar2,&local_88);
+    _objc_destroyWeak(local_68,auStack_50);
+    _objc_destroyWeak(auStack_48);
+  }
+  else {
+    objc_stub::startCompanion_withLayoutID_interactionLoggingAdsClientData_
+              (*(undefined8 *)(param_1 + 8),param_3,param_4,param_5);
+  }
+  return 0;
+}
+
+
+
+===== requested 100d7a174: clearCompanionWithLayoutID: @ 100d7a174 =====
+
+/* WARNING: Function: _objc_retain_x2 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+undefined8
+YTBelowPlayerCompanionRenderingAPIImpl::clearCompanionWithLayoutID_
+          (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  
+  IVar1 = objc_stub::isCompanionRenderingSurfaceReady(*(undefined8 *)(param_1 + 8));
+  if ((IVar1 & 1) == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,0,0,
+               &cf_CompanionrenderingAPIisnotreadywhenclearingcompanion_);
+  }
+  else {
+    objc_stub::clearCompanionWithLayoutID:(*(undefined8 *)(param_1 + 8),param_3);
+  }
+  return 0;
+}
+
+
+
+===== requested 1004fcfb4: setupHeaderWithModel:isLoadingMore:isRefreshingFromContinuation:shouldPreserveHeaderOnRefresh: @ 1004fcfb4 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x9 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x28 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x27 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x24 bytes */
+
+undefined8
+YTSectionListViewController::
+setupHeaderWithModel_isLoadingMore_isRefreshingFromContinuation_shouldPreserveHeaderOnRefresh_
+          (ID param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,uint param_5,
+          uint param_6)
+
+{
+  ID IVar1;
+  unsigned_long_long uVar2;
+  ID IVar3;
+  undefined **ppuVar4;
+  ulong uVar5;
+  undefined *puVar6;
+  SEL extraout_x1;
+  SEL extraout_x1_00;
+  SEL pcVar7;
+  SEL extraout_x1_01;
+  SEL extraout_x1_02;
+  SEL extraout_x1_03;
+  SEL extraout_x1_04;
+  SEL extraout_x1_05;
+  SEL extraout_x1_06;
+  SEL extraout_x1_07;
+  SEL extraout_x1_08;
+  uint uVar8;
+  long lVar9;
+  undefined *local_1c0;
+  undefined8 local_1b8;
+  code *local_1b0;
+  undefined *puStack_1a8;
+  undefined1 auStack_1a0 [8];
+  undefined *local_198;
+  undefined8 local_190;
+  code *local_188;
+  undefined *puStack_180;
+  undefined1 auStack_178 [8];
+  undefined *local_170;
+  undefined8 local_168;
+  code *local_160;
+  undefined *puStack_158;
+  undefined1 auStack_150 [8];
+  undefined *local_148;
+  undefined8 local_140;
+  code *local_138;
+  undefined *puStack_130;
+  undefined1 auStack_128 [8];
+  undefined *local_120;
+  undefined8 local_118;
+  code *local_110;
+  undefined *puStack_108;
+  undefined1 auStack_100 [8];
+  undefined *local_f8;
+  undefined8 local_f0;
+  code *local_e8;
+  undefined *puStack_e0;
+  undefined8 local_d8;
+  undefined1 auStack_d0 [8];
+  undefined *local_c8;
+  undefined8 local_c0;
+  code *local_b8;
+  undefined *puStack_b0;
+  undefined8 local_a8;
+  undefined *puStack_a0;
+  undefined *local_98;
+  undefined8 local_90;
+  code *local_88;
+  undefined *puStack_80;
+  undefined1 auStack_78 [8];
+  undefined1 auStack_70 [16];
+  
+  objc_stub::setupCarouselHeaderIfNeeded(param_1);
+  _objc_initWeak(auStack_70,param_1);
+  IVar1 = objc_stub::subMenu(param_3);
+  IVar1 = objc_stub::hasLinkSubMenuRenderer(IVar1);
+  if ((IVar1 & 1) == 0) {
+    IVar1 = objc_stub::subMenu(param_3);
+    IVar1 = objc_stub::hasChannelListSubMenuRenderer(IVar1);
+    if ((IVar1 & 1) == 0) {
+      IVar1 = objc_stub::subMenu(param_3);
+      IVar1 = objc_stub::hasElementRenderer(IVar1);
+      if ((IVar1 & 1) == 0) {
+        IVar1 = objc_stub::subMenu(param_3);
+        IVar1 = objc_stub::channelSubMenuRenderer(IVar1);
+        IVar1 = objc_stub::sortFilterSubMenuItemsArray_Count(IVar1);
+        if (IVar1 == 0) {
+          IVar1 = objc_stub::subMenu(param_3);
+          IVar1 = objc_stub::channelSubMenuRenderer(IVar1);
+          IVar1 = objc_stub::privacySetting(IVar1);
+          IVar1 = objc_stub::hasContentViewPrivacyLinkRenderer(IVar1);
+          if ((IVar1 & 1) == 0) {
+            IVar1 = objc_stub::subMenu(param_3);
+            IVar1 = objc_stub::hasSearchSubMenuRenderer(IVar1);
+            if ((IVar1 & 1) == 0) {
+              IVar1 = objc_stub::subMenu(param_3);
+              IVar1 = objc_stub::hasSearchBoxRenderer(IVar1);
+              uVar8 = (uint)IVar1;
+            }
+            else {
+              uVar8 = 1;
+            }
+          }
+          else {
+            uVar8 = 1;
+          }
+        }
+        else {
+          uVar8 = 1;
+        }
+      }
+      else {
+        uVar8 = 1;
+      }
+    }
+    else {
+      uVar8 = 1;
+    }
+  }
+  else {
+    uVar8 = 1;
+  }
+  if ((*(char *)(param_1 + (long)_enableSubheaderInSectionListView) == '\x01') &&
+     (IVar1 = objc_stub::hasHeader(param_3), ((uint)IVar1 & uVar8) == 1)) {
+    IVar1 = objc_stub::header(param_3);
+    IVar1 = objc_stub::rendererOneOfCase(IVar1);
+    pcVar7 = extraout_x1;
+    if ((int)IVar1 == 0x7dfe8b0) {
+      uVar2 = _objc_opt_class((ID)PTR_YTSearchBoxViewController_10c8ea208,extraout_x1);
+      IVar3 = objc_stub::header(param_3);
+      IVar3 = objc_stub::searchBoxRenderer(IVar3);
+      local_98 = PTR___NSConcreteStackBlock_10b39a7f8;
+      local_90 = DAT_10a28a108;
+      local_88 = FUN_10121c81c;
+      puStack_80 = &DAT_10b421828;
+      _objc_copyWeak(auStack_78,auStack_70);
+      objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar3,param_4,&local_98);
+      pcVar7 = extraout_x1_00;
+      _objc_destroyWeak(auStack_78);
+    }
+    uVar2 = _objc_opt_class((ID)PTR_YTSectionListSubMenuViewController_10c8ea210,pcVar7);
+    IVar3 = objc_stub::subMenu(param_3);
+    local_c8 = PTR___NSConcreteStackBlock_10b39a7f8;
+    local_c0 = DAT_10a28a108;
+    local_b8 = FUN_10121c86c;
+    puStack_b0 = &DAT_10b421858;
+    _objc_copyWeak(&puStack_a0,auStack_70);
+    local_a8 = param_3;
+    objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:isSubheader:factoryBlock:(param_1,uVar2,IVar3,param_4,(ulong)((int)IVar1 == 0x7dfe8b0),&local_c8)
+    ;
+    ppuVar4 = &puStack_a0;
+  }
+  else {
+    if (uVar8 != 0) {
+      IVar1 = objc_stub::subMenu(param_3);
+      uVar2 = _objc_opt_class((ID)PTR_YTSectionListSubMenuViewController_10c8ea210,extraout_x1_01);
+      local_f8 = PTR___NSConcreteStackBlock_10b39a7f8;
+      local_f0 = DAT_10a28a108;
+      local_e8 = FUN_10121c8f8;
+      puStack_e0 = &DAT_10b421858;
+      _objc_copyWeak(auStack_d0,auStack_70);
+      local_d8 = param_3;
+      objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_f8);
+      _objc_destroyWeak(local_d8,auStack_d0);
+      goto LAB_1004fd5dc;
+    }
+    IVar1 = objc_stub::header(param_3);
+    IVar1 = objc_stub::rendererOneOfCase(IVar1);
+    if ((int)IVar1 == 0xf459e50) {
+      uVar2 = _objc_opt_class((ID)PTR_YTMySubsFilterHeaderViewController_10c8ea218,extraout_x1_02);
+      IVar1 = objc_stub::header(param_3);
+      IVar1 = objc_stub::mySubsFilterHeaderRenderer(IVar1);
+      local_120 = PTR___NSConcreteStackBlock_10b39a7f8;
+      local_118 = DAT_10a28a108;
+      local_110 = FUN_10121c984;
+      puStack_108 = &DAT_10b421828;
+      ppuVar4 = &local_120;
+      _objc_copyWeak(auStack_100,auStack_70);
+      objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_120);
+    }
+    else {
+      IVar1 = objc_stub::header(param_3);
+      IVar1 = objc_stub::rendererOneOfCase(IVar1);
+      if ((int)IVar1 == 0x66fb73e) {
+        uVar2 = _objc_opt_class((ID)PTR_YTFeedChannelFilterHeaderViewController_10c8ea220,
+                                extraout_x1_03);
+        IVar1 = objc_stub::header(param_3);
+        IVar1 = objc_stub::feedChannelFilterHeaderRenderer(IVar1);
+        local_148 = PTR___NSConcreteStackBlock_10b39a7f8;
+        local_140 = DAT_10a28a108;
+        local_138 = FUN_10121c9f0;
+        puStack_130 = &DAT_10b421828;
+        ppuVar4 = &local_148;
+        _objc_copyWeak(auStack_128,auStack_70);
+        objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_148);
+      }
+      else {
+        IVar1 = objc_stub::header(param_3);
+        IVar1 = objc_stub::rendererOneOfCase(IVar1);
+        if ((int)IVar1 == 0xc589152) {
+          uVar2 = _objc_opt_class((ID)PTR_YTSortFilterHeaderViewController_10c8ea228,extraout_x1_04)
+          ;
+          IVar1 = objc_stub::header(param_3);
+          IVar1 = objc_stub::sortFilterHeaderRenderer(IVar1);
+          local_170 = PTR___NSConcreteStackBlock_10b39a7f8;
+          local_168 = DAT_10a28a108;
+          local_160 = FUN_10121ca34;
+          puStack_158 = &DAT_10b421828;
+          ppuVar4 = &local_170;
+          _objc_copyWeak(auStack_150,auStack_70);
+          objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_170);
+        }
+        else {
+          IVar1 = objc_stub::header(param_3);
+          IVar1 = objc_stub::rendererOneOfCase(IVar1);
+          if ((int)IVar1 == 0xa3a8275) {
+            puVar6 = PTR_YTSectionListContentHeaderController_10c8ea230;
+            _objc_alloc();
+            IVar1 = objc_stub::header(param_3);
+            IVar1 = objc_stub::initWithParentResponder:headerRenderer:contentCollectionViewController:
+                              (puVar6,param_1,IVar1,
+                               *(undefined8 *)(param_1 + (long)_collectionViewController));
+            *(ID *)(param_1 + (long)_sectionListContentHeaderController) = IVar1;
+            goto LAB_1004fd5dc;
+          }
+          IVar1 = objc_stub::header(param_3);
+          IVar1 = objc_stub::rendererOneOfCase(IVar1);
+          if ((int)IVar1 == 0x7dfe8b0) {
+            uVar2 = _objc_opt_class((ID)PTR_YTSearchBoxViewController_10c8ea208,extraout_x1_05);
+            IVar1 = objc_stub::header(param_3);
+            IVar1 = objc_stub::searchBoxRenderer(IVar1);
+            local_198 = PTR___NSConcreteStackBlock_10b39a7f8;
+            local_190 = DAT_10a28a108;
+            local_188 = FUN_10121ca78;
+            puStack_180 = &DAT_10b421828;
+            ppuVar4 = &local_198;
+            _objc_copyWeak(auStack_178,auStack_70);
+            objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_198);
+          }
+          else {
+            IVar1 = objc_stub::header(param_3);
+            IVar1 = objc_stub::rendererOneOfCase(IVar1);
+            if ((int)IVar1 != 0x190a7509) {
+              uVar2 = _objc_opt_class(param_1,extraout_x1_06);
+              IVar1 = objc_stub::searchBoxForModel:(uVar2,param_3);
+              if (IVar1 == 0) {
+                IVar1 = objc_stub::header(param_3);
+                IVar1 = objc_stub::rendererOneOfCase(IVar1);
+                if ((int)IVar1 == 0x9267492) {
+                  if (*(char *)(param_1 + (long)_fixElementsSectionListHeaderDoubleInit) == '\x01')
+                  {
+                    lVar9 = (long)_variableHeightHeaderViewController;
+                    uVar5 = objc_stub::headerViewController(*(undefined8 *)(param_1 + lVar9));
+                    uVar2 = _objc_opt_class((ID)PTR_YTELMViewController_10c8e7f98,extraout_x1_08);
+                    _objc_opt_isKindOfClass(uVar5,uVar2);
+                    if ((uVar5 & 1) != 0) {
+                      IVar1 = objc_stub::headerViewController(*(undefined8 *)(param_1 + lVar9));
+                      IVar1 = objc_stub::renderer(IVar1);
+                      IVar3 = objc_stub::header(param_3);
+                      IVar3 = objc_stub::elementRenderer(IVar3);
+                      if (IVar1 == IVar3) goto LAB_1004fd5dc;
+                    }
+                  }
+                  puVar6 = PTR_YTELMViewController_10c8e7f98;
+                  _objc_alloc();
+                  IVar1 = objc_stub::header(param_3);
+                  IVar1 = objc_stub::elementRenderer(IVar1);
+                  IVar3 = objc_stub::blockRegistryProvider(param_1);
+                  IVar1 = objc_stub::initWithRenderer:parentResponder:blockRegistry:blockRegistryProvider:(puVar6,IVar1,param_1,0,IVar3);
+                  objc_stub::setHeaderViewController:
+                            (*(undefined8 *)(param_1 + (long)_variableHeightHeaderViewController),
+                             IVar1);
+                }
+                else if ((((uint)param_4 | param_5 & param_6) & 1) == 0) {
+                  objc_stub::setHeaderViewController:
+                            (*(undefined8 *)(param_1 + (long)_variableHeightHeaderViewController),0)
+                  ;
+                }
+              }
+              else {
+                uVar2 = _objc_opt_class(param_1,extraout_x1_07);
+                IVar1 = objc_stub::searchBoxForModel:(uVar2,param_3);
+                puVar6 = PTR_YTSearchBoxViewController_10c8ea208;
+                _objc_alloc();
+                IVar3 = objc_stub::initWithParentResponder_(puVar6,param_1);
+                objc_stub::loadWithModel:(IVar3,IVar1);
+                objc_stub::setHeaderViewController:
+                          (*(undefined8 *)(param_1 + (long)_variableHeightHeaderViewController),
+                           IVar3);
+              }
+              goto LAB_1004fd5dc;
+            }
+            uVar2 = _objc_opt_class((ID)PTR_YTFilterChipBarViewController_10c8ea238,extraout_x1_06);
+            IVar1 = objc_stub::header(param_3);
+            IVar1 = objc_stub::filterChipBarElementRenderer(IVar1);
+            local_1c0 = PTR___NSConcreteStackBlock_10b39a7f8;
+            local_1b8 = DAT_10a28a108;
+            local_1b0 = FUN_10121cabc;
+            puStack_1a8 = &DAT_10b421828;
+            ppuVar4 = &local_1c0;
+            _objc_copyWeak(auStack_1a0,auStack_70);
+            objc_stub::buildOrUpdateHeader:withModel:isLoadingMore:factoryBlock:(param_1,uVar2,IVar1,param_4,&local_1c0);
+          }
+        }
+      }
+    }
+    ppuVar4 = ppuVar4 + 4;
+  }
+  _objc_destroyWeak(ppuVar4);
+LAB_1004fd5dc:
+  _objc_destroyWeak(auStack_70);
+  return 0;
+}
+
+
+
+===== requested 1015d394c: loadSectionController:withModel: @ 1015d394c =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTCompanionAdSectionBuilder::loadSectionController_withModel_
+          (undefined8 param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  undefined *puVar1;
+  ID IVar2;
+  ID self;
+  
+  puVar1 = PTR_YTArraySectionViewModel_10c8ea070;
+  _objc_alloc();
+  IVar2 = objc_stub::initWithEntries:(puVar1,0);
+  objc_stub::loadWithViewModel:(param_3,IVar2);
+  puVar1 = PTR_YTCompanionAdObserverBehavior_10c8ee198;
+  _objc_alloc();
+  IVar2 = objc_stub::initWithViewModel:(puVar1,IVar2);
+  objc_stub::setImplementation:forBehavior:(param_3,IVar2,PTR_YTCompanionAdResponderProviderObserver_10c8db610);
+  self = objc_stub::providerForProtocol:firstResponder:
+                   (PTR_YTResponderProvider_10c8e3590,PTR_YTCompanionAdResponderProvider_10c8db618,
+                    param_3);
+  objc_stub::addCompanionAdObserver:(self,IVar2);
+  return 0;
+}
+
+
+
+===== requested 1015d3a10: updateSectionController:withModel: @ 1015d3a10 =====
+
+/* Function Stack Size: 0x20 bytes */
+
+void YTCompanionAdSectionBuilder::updateSectionController_withModel_(void)
+
+{
+  return;
+}
+
+
+
+===== requested 101615e98: startRendering @ 101615e98 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTBelowPlayerCompanionLayoutRenderingAdapter::startRendering(long param_1)
+
+{
+  undefined *self;
+  ID IVar1;
+  ID IVar2;
+  ID IVar3;
+  long self_00;
+  
+  self = PTR_YTCompanionRenderersProvider_10c8e4060;
+  self_00 = *(long *)(param_1 + 0x20);
+  if (self_00 == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10),
+               &cf_Companionrenderingdelegateisnilwhenstartrendering_);
+    objc_stub::layoutRenderingAdapter:didFailForSlot:layout:errorType:errorMessage:
+              (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10),9,0x38);
+  }
+  else {
+    IVar1 = objc_stub::metadata(*(undefined8 *)(param_1 + 0x10));
+    IVar1 = objc_stub::dataFromMetadata:(self,IVar1);
+    IVar2 = objc_stub::layoutID(*(undefined8 *)(param_1 + 0x10));
+    IVar3 = objc_stub::interactionLoggingAdsClientData(*(undefined8 *)(param_1 + 0x10));
+    objc_stub::startCompanion_withLayoutID_interactionLoggingAdsClientData_
+              (self_00,IVar1,IVar2,IVar3);
+    objc_stub::layoutRenderingAdapter:didEnterLayoutForSlot:layout:
+              (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10));
+  }
+  return 0;
+}
+
+
+
+===== requested 101615fac: stopRenderingWithExitReason: @ 101615fac =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+undefined8
+YTBelowPlayerCompanionLayoutRenderingAdapter::stopRenderingWithExitReason_
+          (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  undefined8 self;
+  
+  self = *(undefined8 *)(param_1 + 0x20);
+  IVar1 = objc_stub::layoutID(*(undefined8 *)(param_1 + 0x10));
+  objc_stub::clearCompanionWithLayoutID:(self,IVar1);
+  objc_stub::layoutRenderingAdapter:didExitLayoutForSlot:layout:layoutExitReason:
+            (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+             *(undefined8 *)(param_1 + 0x10),param_3);
+  return 0;
+}
+
+
+
+===== requested 101616474: startRendering @ 101616474 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTBelowPlayerDiscoveryCompanionLayoutRenderingAdapter::startRendering(long param_1)
+
+{
+  undefined *self;
+  ID IVar1;
+  ID IVar2;
+  ID IVar3;
+  undefined8 self_00;
+  
+  self = PTR_YTPlayerCompanionRendererProvider_10c8e4078;
+  if (*(long *)(param_1 + 0x20) == 0) {
+    objc_stub::sendLogWithSlot_layout_message_
+              (PTR_YTECatcherAdsController_10c8e39c0,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10),
+               &cf_CompanionrenderingAPIisnilwhenstartrenderingdiscoverycompanion_);
+    objc_stub::layoutRenderingAdapter:didFailForSlot:layout:errorType:errorMessage:
+              (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10),9,0x38);
+  }
+  else {
+    IVar1 = objc_stub::metadata(*(undefined8 *)(param_1 + 0x10));
+    IVar1 = objc_stub::dataFromMetadata:(self,IVar1);
+    self_00 = *(undefined8 *)(param_1 + 0x20);
+    IVar2 = objc_stub::layoutID(*(undefined8 *)(param_1 + 0x10));
+    IVar3 = objc_stub::interactionLoggingAdsClientData(*(undefined8 *)(param_1 + 0x10));
+    objc_stub::startCompanion_withLayoutID_interactionLoggingAdsClientData_
+              (self_00,IVar1,IVar2,IVar3);
+    objc_stub::layoutRenderingAdapter:didEnterLayoutForSlot:layout:
+              (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+               *(undefined8 *)(param_1 + 0x10));
+  }
+  return 0;
+}
+
+
+
+===== requested 10035be20: sectionControllersForSectionRenderers:reloadingSectionControllerByRenderer: @ 10035be20 =====
+
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x28 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x27 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+ID YTInnerTubeCollectionViewController::
+   sectionControllersForSectionRenderers_reloadingSectionControllerByRenderer_
+             (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  uint uVar1;
+  undefined *puVar2;
+  undefined *puVar3;
+  undefined *puVar4;
+  undefined *puVar5;
+  ID self;
+  ID IVar6;
+  ID IVar7;
+  ID self_00;
+  ID IVar8;
+  ID IVar9;
+  unsigned_long_long uVar10;
+  SEL pcVar11;
+  SEL extraout_x1;
+  ID IVar12;
+  uint uVar13;
+  long lVar14;
+  undefined8 uVar15;
+  long lVar16;
+  uint local_134;
+  undefined8 local_130;
+  long lStack_128;
+  long *local_120;
+  undefined8 uStack_118;
+  undefined8 local_110;
+  undefined8 uStack_108;
+  undefined8 uStack_100;
+  undefined8 uStack_f8;
+  undefined1 auStack_f0 [128];
+  long local_70;
+  
+  local_70 = *(long *)PTR____stack_chk_guard_10b39a898;
+  self = NSMutableArray::array((ID)PTR__OBJC_CLASS___NSMutableArray_10c8e1428);
+  lStack_128 = 0;
+  local_130 = 0;
+  uStack_118 = 0;
+  local_120 = (long *)0x0;
+  uStack_108 = 0;
+  local_110 = 0;
+  uStack_f8 = 0;
+  uStack_100 = 0;
+  IVar6 = objc_stub::countByEnumeratingWithState_objects_count_(param_3,&local_130,auStack_f0,0x10);
+  if (IVar6 == 0) {
+    objc_stub::setUpGridLayoutWithSectionControllers:(param_1,self);
+  }
+  else {
+    local_134 = 0;
+    lVar16 = *local_120;
+    do {
+      puVar5 = PTR_s_supportsSectionListRendererBased_10c8784f0;
+      puVar4 = PTR_s_setBlockRegistryProvider__10c8429e8;
+      puVar3 = PTR_s_setBlockRegistry__10c8429e0;
+      puVar2 = PTR_s_restoreWithSelf__10c836e68;
+      IVar12 = 0;
+      do {
+        if (*local_120 != lVar16) {
+          _objc_enumerationMutation(param_3);
+        }
+        uVar15 = *(undefined8 *)(lStack_128 + IVar12 * 8);
+        IVar7 = objc_stub::valueWithPointer:(PTR__OBJC_CLASS___NSValue_10c8e1b28,uVar15);
+        lVar14 = (long)_sectionControllerByRenderer;
+        self_00 = objc_stub::objectForKeyedSubscript_(*(undefined8 *)(param_1 + lVar14),IVar7);
+        if (self_00 == 0) {
+          self_00 = objc_stub::sectionControllerForRenderer:service:parentResponder:
+                              (*(undefined8 *)(param_1 + _controllerFactory),uVar15,
+                               *(undefined8 *)(param_1 + _service),param_1);
+          if (self_00 != 0) {
+            IVar8 = self_00;
+            _objc_opt_respondsToSelector(self_00,puVar2);
+            if ((IVar8 & 1) != 0) {
+              IVar8 = objc_stub::objectForKeyedSubscript_(param_4,IVar7);
+              objc_stub::restoreWithSelf:(self_00,IVar8);
+            }
+            IVar8 = objc_stub::conformsToProtocol_
+                              (self_00,PTR_YTReorderableSectionControllerProtocol_10c8e0d30);
+            IVar9 = objc_stub::elementsClientXplatEnableDragAndDropApisInSectionList(*(undefined8 *)(param_1 + _coldConfig));
+            uVar1 = (uint)IVar9 ^ 1;
+            uVar13 = uVar1 & (uint)IVar8;
+            if (((uVar1 & 1) == 0) && ((IVar8 & 1) != 0)) {
+              IVar8 = self_00;
+              _objc_opt_respondsToSelector(self_00,puVar5);
+              if ((IVar8 & 1) == 0) {
+                uVar13 = 1;
+              }
+              else {
+                IVar8 = objc_stub::supportsSectionListRendererBasedDragAndDrop(self_00);
+                uVar13 = (uint)IVar8 ^ 1;
+              }
+            }
+            objc_stub::loadWithModel:(self_00,uVar15);
+            objc_stub::setObject_forKeyedSubscript_(*(undefined8 *)(param_1 + lVar14),self_00,IVar7)
+            ;
+            IVar7 = self_00;
+            pcVar11 = puVar3;
+            _objc_opt_respondsToSelector();
+            if (((IVar7 & 1) != 0) &&
+               (IVar7 = self_00, pcVar11 = puVar4, _objc_opt_respondsToSelector(), (IVar7 & 1) != 0)
+               ) {
+              objc_stub::setBlockRegistry:(self_00,*(undefined8 *)(param_1 + _blockRegistry));
+              objc_stub::setBlockRegistryProvider:
+                        (self_00,*(undefined8 *)(param_1 + _blockRegistryProvider));
+              pcVar11 = extraout_x1;
+            }
+            local_134 = local_134 | uVar13;
+            uVar10 = _objc_opt_class((ID)PTR_YTSectionController_10c8e9d50,pcVar11);
+            IVar7 = self_00;
+            _objc_opt_isKindOfClass(self_00,uVar10);
+            if (((IVar7 & 1) != 0) &&
+               (objc_stub::setUpClientSideResponsiveConfigUsingBlocksForSectionController:(param_1,self_00),
+               *(char *)(param_1 + _gridLayoutEnabled) == '\x01')) {
+              objc_stub::setUpClientDataAndColumnBehaviorForSectionController:(param_1,self_00);
+            }
+            goto LAB_10035bf48;
+          }
+        }
+        else {
+LAB_10035bf48:
+          NSMutableArray::addObject_(self,self_00);
+        }
+        IVar12 = IVar12 + 1;
+      } while (IVar6 != IVar12);
+      IVar6 = objc_stub::countByEnumeratingWithState_objects_count_
+                        (param_3,&local_130,auStack_f0,0x10);
+    } while (IVar6 != 0);
+    objc_stub::setUpGridLayoutWithSectionControllers:(param_1,self);
+    if ((local_134 & 1) != 0) {
+      objc_stub::enableGestureRecognizersForReordering:(param_1,1);
+    }
+  }
+  if (*(long *)PTR____stack_chk_guard_10b39a898 != local_70) {
+                    /* WARNING: Subroutine does not return */
+    ___stack_chk_fail(0);
+  }
+  return self;
+}
+
+
+
+===== requested 1042502f0: insertSections:byPosition:error: @ 1042502f0 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autorelease replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x24 bytes */
+
+uint YTInnerTubeCollectionViewController::insertSections_byPosition_error_
+               (long param_1,undefined8 param_2,undefined8 param_3,int param_4,ID *param_5)
+
+{
+  ID IVar1;
+  uint unaff_w23;
+  
+  if (param_4 == 0) {
+    if (param_5 == (ID *)0x0) {
+      unaff_w23 = 0;
+    }
+    else {
+      IVar1 = FUN_104250034(3,&cf_Unsetinsertionposition_,0);
+      unaff_w23 = 0;
+      *param_5 = IVar1;
+    }
+  }
+  else {
+    if (param_4 == 2) {
+      objc_stub::addObjectsFromArray_(*(undefined8 *)(param_1 + _sectionRenderers),param_3);
+    }
+    else {
+      if (param_4 != 1) goto LAB_1042503c4;
+      IVar1 = objc_stub::count(param_3);
+      IVar1 = objc_stub::indexSetWithIndexesInRange:(PTR__OBJC_CLASS___NSIndexSet_10c8e7b30,0,IVar1);
+      objc_stub::insertObjects:atIndexes:(*(undefined8 *)(param_1 + _sectionRenderers),param_3,IVar1);
+    }
+    unaff_w23 = 1;
+  }
+LAB_1042503c4:
+  return unaff_w23 & 1;
+}
+
+
+
+===== requested 1042509a8: insertContents:byPosition:inSection:error: @ 1042509a8 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_autorelease replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x2c bytes */
+
+undefined8
+YTInnerTubeCollectionViewController::insertContents_byPosition_inSection_error_
+          (undefined8 param_1,undefined8 param_2,undefined8 param_3,int param_4,undefined8 param_5,
+          ID *param_6)
+
+{
+  ID IVar1;
+  undefined8 unaff_x22;
+  
+  if (param_4 == 0) {
+    if (param_6 == (ID *)0x0) {
+      unaff_x22 = 0;
+    }
+    else {
+      IVar1 = FUN_104250034(3,&cf_Unsetinsertionposition_,0);
+      *param_6 = IVar1;
+      unaff_x22 = 0;
+    }
+  }
+  else if (param_4 == 2) {
+    objc_stub::appendEntries:(param_5,param_3);
+    unaff_x22 = param_5;
+  }
+  else if (param_4 == 1) {
+    objc_stub::prependEntries:(param_5,param_3);
+    unaff_x22 = param_5;
+  }
+  return unaff_x22;
+}
+
+
+
+===== requested 1042524f4: replaceEntry:withReplacementRenderer:inSectionController:undoKey:operation: @ 1042524f4 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x38 bytes */
+
+class_t * YTInnerTubeCollectionViewController::
+          replaceEntry_withReplacementRenderer_inSectionController_undoKey_operation_
+                    (undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,
+                    undefined8 param_5,long param_6,undefined8 param_7)
+
+{
+  ID IVar1;
+  class_t *self;
+  
+  if (param_6 != 0) {
+    objc_stub::recordReplaceItemUndo:sectionController:originalEntry:replacementEntry:operation:(param_1,param_6,param_5,param_3,param_4,param_7);
+  }
+  IVar1 = objc_stub::feedController(param_5);
+  IVar1 = objc_stub::model(IVar1);
+  objc_stub::replaceEntry:withEntry:(IVar1,param_3,param_4);
+  self = (class_t *)PTR_YTInnerTubeCollectionMutationResult_10c9038c8;
+  _objc_alloc_init();
+  IVar1 = objc_stub::setWithObject:(PTR__OBJC_CLASS___NSSet_10c8e14a0,IVar1);
+  objc_stub::setUpdatedFeedViewModels:(self,IVar1);
+  return self;
+}
+
+
+
+===== requested 100543810: templateURI @ 100543810 =====
+
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+ID ELMComponent::templateURI(long param_1)
+
+{
+  ulong uVar1;
+  long *plVar2;
+  undefined *self;
+  ID IVar3;
+  
+  uVar1 = *(ulong *)(param_1 + 0xd8);
+  plVar2 = (long *)*(long *)(param_1 + 0xd0);
+  if (-1 < (char)*(byte *)(param_1 + 0xe7)) {
+    uVar1 = (ulong)*(byte *)(param_1 + 0xe7);
+    plVar2 = (long *)(param_1 + 0xd0);
+  }
+  self = PTR__OBJC_CLASS___NSString_10c8e1550;
+  _objc_alloc();
+  IVar3 = objc_stub::initWithBytes_length_encoding_(self,plVar2,uVar1,4);
+  return IVar3;
+}
+
+
+
+===== requested 10466a018: key @ 10466a018 =====
+
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+ID ELMComponent::key(long param_1)
+
+{
+  undefined8 *puVar1;
+  ulong uVar2;
+  byte bVar3;
+  undefined **ppuVar4;
+  undefined *self;
+  ID IVar5;
+  int *piVar6;
+  undefined8 *puVar7;
+  
+  piVar6 = *(int **)(param_1 + 8);
+  FUN_100355d20(piVar6);
+  ppuVar4 = FUN_10050ffcc(*(long *)(param_1 + 0x100));
+  puVar7 = (undefined8 *)((ulong)ppuVar4[4] & 0xfffffffffffffffc);
+  bVar3 = *(byte *)((long)puVar7 + 0x17);
+  puVar1 = (undefined8 *)*puVar7;
+  uVar2 = puVar7[1];
+  self = PTR__OBJC_CLASS___NSString_10c8e1550;
+  _objc_alloc();
+  if (-1 < (char)bVar3) {
+    puVar1 = puVar7;
+    uVar2 = (ulong)bVar3;
+  }
+  IVar5 = objc_stub::initWithBytes_length_encoding_(self,puVar1,uVar2,4);
+  FUN_100358114(piVar6);
+  return IVar5;
+}
+
+
+
+===== requested 100510828: componentWithElement:context:treeLocalContext: @ 100510828 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x28 bytes */
+
+ID ELMComponentFactory::componentWithElement_context_treeLocalContext_
+             (undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,
+             undefined8 param_5)
+
+{
+  ID IVar1;
+  
+  IVar1 = objc_stub::blockForElement:(param_1,param_3);
+  if (IVar1 == 0) {
+    IVar1 = 0;
+  }
+  else {
+    (**(code **)(IVar1 + 0x10))(IVar1,param_3,param_4,param_5);
+  }
+  return IVar1;
+}
+
+
+
+===== requested 10041e868: descriptor @ 10041e868 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIItemSectionSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d24d518 == 0) {
+    DAT_10d24d518 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIItemSectionSupportedRenderers,
+                    &cf_ItemSectionSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce0f670,&PTR_s_suspenseViewModel_10ce0f680,0xd1,
+                    0x6a8);
+  }
+  return DAT_10d24d518;
+}
+
+
+
+===== requested 105044788: descriptor @ 105044788 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIAdSlotRenderer::descriptor(void)
+
+{
+  if (DAT_10d24f320 == 0) {
+    DAT_10d24f320 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIAdSlotRenderer,&cf_AdSlotRenderer
+                    ,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce26d60,
+                    &PTR_s_adSlotMetadata_10ce26c40,9,0x40);
+  }
+  return DAT_10d24f320;
+}
+
+
+
+===== requested 1050575f0: descriptor @ 1050575f0 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIPlayerResponse::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d252288 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIPlayerResponse,
+                      &cf_PlayerResponse,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce46190,
+                      &PTR_s_responseContext_10ce461a0,0x35,0x1a0);
+    objc_stub::setupExtensionRanges:count:(self,&DAT_10a95c918,1);
+    DAT_10d252288 = self;
+  }
+  return DAT_10d252288;
+}
+
+
+
+===== requested 10505c380: descriptor @ 10505c380 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIPlayerCompanionAdsSupportedRenderers::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d252a18 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,
+                      &objc::class_t::YTIPlayerCompanionAdsSupportedRenderers,
+                      &cf_PlayerCompanionAdsSupportedRenderers,&DAT_10a8e4750,
+                      &PTR_s_youtube_api_innertube_10ce4d110,&PTR_s_companionAdRenderer_10ce4d050,6,
+                      0x38);
+    objc_stub::setupOneofs:count:firstHasIndex:(self,&PTR_s_renderer_10ce4d120,1,0xffffffff);
+    DAT_10d252a18 = self;
+  }
+  return DAT_10d252a18;
+}
+
+
+
+===== requested 10505c5f8: descriptor @ 10505c5f8 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIBelowPlayerAdLayoutRenderer::descriptor(void)
+
+{
+  if (DAT_10d252af8 == 0) {
+    DAT_10d252af8 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIBelowPlayerAdLayoutRenderer,
+                    &cf_BelowPlayerAdLayoutRenderer,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce4dd98,&PTR_s_adLayoutMetadata_10ce4dd38,3,0x20)
+    ;
+  }
+  return DAT_10d252af8;
+}
+
+
+
+===== requested 10032ddec: descriptor @ 10032ddec =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTISectionListRenderer::descriptor(void)
+
+{
+  ID self;
+  unsigned_int in_stack_ffffffffffffffd8;
+  
+  if (DAT_10d255368 == 0) {
+    self = GPBDescriptor::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     ((ID)PTR_GPBDescriptor_10c907b58,0x10cb31598,0x10b9daa38,
+                      (const_int__)&DAT_10a8e4750,
+                      (GPBFilePackageAndPrefix *)&PTR_s_youtube_api_innertube_10ce6c448,
+                      &PTR_s_contentsArray_10ce6bf08,0x2a,0xf0,in_stack_ffffffffffffffd8);
+    objc_stub::setupOneofs:count:firstHasIndex:(self,&PTR_s_layoutStyle_10ce6c458,2,0xfffffffe);
+    DAT_10d255368 = self;
+  }
+  return DAT_10d255368;
+}
+
+
+
+===== requested 1004fdb98: descriptor @ 1004fdb98 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTISectionListHeaderSupportedRenderers::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d255380 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,
+                      &objc::class_t::YTISectionListHeaderSupportedRenderers,
+                      &cf_SectionListHeaderSupportedRenderers,&DAT_10a8e4750,
+                      &PTR_s_youtube_api_innertube_10ce6c448,
+                      &PTR_s_channelPostBulletinRenderer_10ce6c648,0x11,0x90);
+    objc_stub::setupOneofs:count:firstHasIndex:(self,&PTR_s_renderer_10ce6c868,1,0xffffffff);
+    DAT_10d255380 = self;
+  }
+  return DAT_10d255380;
+}
+
+
+
+===== requested 10041de68: descriptor @ 10041de68 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTISectionListSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d255568 == 0) {
+    DAT_10d255568 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTISectionListSupportedRenderers,
+                    &cf_SectionListSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce6e1d0,
+                    &PTR_s_sectionListPlaceholderRenderer_10ce6d710,0x56,0x2c0);
+  }
+  return DAT_10d255568;
+}
+
+
+
+===== requested 10507c790: descriptor @ 10507c790 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTICompanionAdSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d2572b8 == 0) {
+    DAT_10d2572b8 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTICompanionAdSupportedRenderers,
+                    &cf_CompanionAdSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce7d5e8,&PTR_s_companionAdRenderer_10ce7d4c8,9,
+                    0x50);
+  }
+  return DAT_10d2572b8;
+}
+
+
+
+===== requested 10507e008: descriptor @ 10507e008 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIBrowseMastheadAdSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d257568 == 0) {
+    DAT_10d257568 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,
+                    &objc::class_t::YTIBrowseMastheadAdSupportedRenderers,
+                    &cf_BrowseMastheadAdSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce807b8,&PTR_s_videoMastheadAdRenderer_10ce81df8,
+                    1,0x10);
+  }
+  return DAT_10d257568;
+}
+
+
+
+===== requested 1050d71d0: descriptor @ 1050d71d0 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIInFeedAdLayoutRenderer::descriptor(void)
+
+{
+  if (DAT_10d263330 == 0) {
+    DAT_10d263330 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIInFeedAdLayoutRenderer,
+                    &cf_InFeedAdLayoutRenderer,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10cee50f8
+                    ,&PTR_s_adLayoutMetadata_10cee5078,4,0x28);
+  }
+  return DAT_10d263330;
+}
+
+
+
+
+Research batch: adblock-display-consumer-investigation
+
+===== requested 101362bd4: startCompanion:withLayoutID:interactionLoggingAdsClientData: @ 101362bd4 =====
+
+/* Function Stack Size: 0x28 bytes */
+
+ID __objc_msgSend_stub
+YTWatchController::startCompanion_withLayoutID_interactionLoggingAdsClientData_(ID self,...)
+
+{
+  (*(code *)PTR__objc_msgSend_10b3a3868)(self,PTR_s_loadCompanionAd_layoutID_interac_10c807510);
+  return self;
+}
+
+
+
+===== requested 10136345c: loadCompanionAd:layoutID:interactionLoggingAdsClientData: @ 10136345c =====
+
+/* WARNING: Function: _objc_retain_x2 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x28 bytes */
+
+undefined8
+YTWatchController::loadCompanionAd_layoutID_interactionLoggingAdsClientData_
+          (undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,
+          undefined8 param_5)
+
+{
+  ID IVar1;
+  
+  IVar1 = FUN_100364f88(param_1);
+  IVar1 = objc_stub::isHintShowing(IVar1);
+  if ((IVar1 & 1) == 0) {
+    IVar1 = objc_stub::companionAdController(param_1);
+    objc_stub::setCompanionAd:layoutID:interactionLoggingAdsClientData:(IVar1,param_3,param_4,param_5);
+  }
+  return 0;
+}
+
+
+
+===== requested 101608d74: startRendering @ 101608d74 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x8 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_unsafeClaimAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTAdBelowPlayerLayoutRenderingAdapter::startRendering(ID param_1)
+
+{
+  undefined8 uVar1;
+  undefined *puVar2;
+  ID IVar3;
+  ID IVar4;
+  unsigned_long_long self;
+  ID IVar5;
+  undefined1 *puVar6;
+  SEL extraout_x1;
+  undefined *local_170;
+  undefined8 local_168;
+  code *local_160;
+  undefined *puStack_158;
+  ID local_150;
+  undefined *puStack_148;
+  undefined8 local_140;
+  code *local_138;
+  undefined *puStack_130;
+  ID local_128;
+  undefined *local_120;
+  undefined8 local_118;
+  code *local_110;
+  undefined *puStack_108;
+  ID local_100;
+  ID local_f8;
+  undefined1 auStack_f0 [8];
+  undefined *local_e8;
+  undefined8 local_e0;
+  code *local_d8;
+  undefined *puStack_d0;
+  undefined1 auStack_c8 [8];
+  undefined *local_c0;
+  undefined8 local_b8;
+  code *local_b0;
+  undefined *puStack_a8;
+  undefined1 auStack_a0 [8];
+  undefined *local_98;
+  undefined8 local_90;
+  code *local_88;
+  undefined *puStack_80;
+  ID local_78;
+  undefined1 auStack_70 [8];
+  undefined1 auStack_68 [8];
+  
+  IVar3 = FUN_1016463e4(param_1);
+  if (IVar3 != 0) {
+    IVar4 = objc_stub::slotType(*(undefined8 *)(param_1 + 8));
+    IVar3 = objc_stub::canEnterAdsSlotType:(IVar3,IVar4);
+    if ((IVar3 & 1) == 0) {
+      objc_stub::layoutRenderingAdapter:didFailForSlot:layout:errorType:errorMessage:
+                (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+                 *(undefined8 *)(param_1 + 0x10),9,0x86);
+      return 0;
+    }
+  }
+  puVar2 = PTR_YTIElementRendererProvider_10c8e4040;
+  IVar3 = objc_stub::metadata(*(undefined8 *)(param_1 + 0x10));
+  IVar3 = objc_stub::dataFromMetadata:(puVar2,IVar3);
+  self = _objc_opt_class(param_1,extraout_x1);
+  IVar4 = objc_stub::interactionLoggingAdsClientData(*(undefined8 *)(param_1 + 0x10));
+  objc_stub::attachAdsClientData:toRenderer:(self,IVar4,IVar3);
+  IVar4 = FUN_10161a43c(0);
+  IVar5 = objc_stub::companionSectionController(IVar4);
+  if (IVar5 == 0) {
+    IVar4 = objc_stub::controllerReadyPromise(IVar4);
+    puVar6 = auStack_68;
+    _objc_initWeak(puVar6,param_1);
+    IVar5 = FUN_1000e4e2c(puVar6);
+    IVar5 = objc_stub::appPerformanceClientIosBlockRetainCycleFixBitmask(IVar5);
+    puVar2 = PTR___NSConcreteStackBlock_10b39a7f8;
+    uVar1 = DAT_10a28a108;
+    if (((uint)IVar5 >> 5 & 1) == 0) {
+      local_120 = PTR___NSConcreteStackBlock_10b39a7f8;
+      local_118 = DAT_10a28a108;
+      local_110 = FUN_10160920c;
+      puStack_108 = &DAT_10b448d90;
+      local_100 = param_1;
+      _objc_copyWeak(auStack_f0,auStack_68);
+      puStack_148 = puVar2;
+      local_140 = uVar1;
+      local_138 = FUN_10160928c;
+      puStack_130 = &DAT_10b3d8470;
+      local_170 = puVar2;
+      local_168 = uVar1;
+      local_160 = FUN_1016092ac;
+      puStack_158 = &DAT_10b3b3090;
+      local_150 = param_1;
+      local_128 = param_1;
+      local_f8 = IVar3;
+      objc_stub::withQueue_onSuccess_onFailure_onCancel_
+                (IVar4,PTR___dispatch_main_q_10b39a8f8,&local_120,&puStack_148,&local_170);
+      puVar6 = auStack_f0;
+      IVar3 = local_f8;
+    }
+    else {
+      local_98 = PTR___NSConcreteStackBlock_10b39a7f8;
+      local_90 = DAT_10a28a108;
+      local_88 = FUN_101609114;
+      puStack_80 = &DAT_10b448d60;
+      _objc_copyWeak(auStack_70,auStack_68);
+      local_c0 = puVar2;
+      local_b8 = uVar1;
+      local_b0 = FUN_101609190;
+      puStack_a8 = &DAT_10b3d8c48;
+      local_78 = IVar3;
+      _objc_copyWeak(auStack_a0,auStack_68);
+      local_e8 = puVar2;
+      local_e0 = uVar1;
+      local_d8 = FUN_1016091dc;
+      puStack_d0 = &DAT_10b3b3020;
+      _objc_copyWeak(auStack_c8,auStack_68);
+      objc_stub::withQueue_onSuccess_onFailure_onCancel_
+                (IVar4,PTR___dispatch_main_q_10b39a8f8,&local_98,&local_c0,&local_e8);
+      _objc_destroyWeak(PTR___dispatch_main_q_10b39a8f8,auStack_c8);
+      _objc_destroyWeak(auStack_a0);
+      puVar6 = auStack_70;
+      IVar3 = local_78;
+    }
+    _objc_destroyWeak(IVar3,puVar6);
+    _objc_destroyWeak(auStack_68);
+  }
+  else {
+    IVar4 = objc_stub::companionSectionController(IVar4);
+    objc_stub::renderCompanionSection:withRenderer:(param_1,IVar4,IVar3);
+  }
+  return 0;
+}
+
+
+
+===== requested 101609458: renderCompanionSection:withRenderer: @ 101609458 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTAdBelowPlayerLayoutRenderingAdapter::renderCompanionSection_withRenderer_
+          (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ID self;
+  
+  objc_stub::renderSection:withRenderer:(PTR_YTAdElementsSectionViewRenderingAPI_10c8ee388,param_3,param_4);
+  self = objc_stub::providerForProtocol:firstResponder:
+                   (PTR_YTResponderProvider_10c8e3590,PTR_YTCompanionAdResponderProvider_10c8db618,
+                    param_3);
+  objc_stub::didUpdateBelowPlayerLayoutWithRenderer:(self,param_4);
+  objc_stub::layoutRenderingAdapter:didEnterLayoutForSlot:layout:
+            (*(undefined8 *)(param_1 + 0x18),param_1,*(undefined8 *)(param_1 + 8),
+             *(undefined8 *)(param_1 + 0x10));
+  return 0;
+}
+
+
+
+===== requested 10174fbe0: setCompanionAd:layoutID:interactionLoggingAdsClientData: @ 10174fbe0 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x9 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x28 bytes */
+
+undefined8
+YTWatchNextResultsViewController::setCompanionAd_layoutID_interactionLoggingAdsClientData_
+          (long param_1,SEL param_2,ulong param_3,undefined8 param_4,undefined8 param_5)
+
+{
+  unsigned_long_long uVar1;
+  ulong uVar2;
+  ID IVar3;
+  long lVar4;
+  
+  lVar4 = (long)_companionAd;
+  *(ulong *)(param_1 + lVar4) = param_3;
+  uVar1 = _objc_opt_class((ID)PTR_GPBMessage_10c8e3440,param_2);
+  uVar2 = param_3;
+  _objc_opt_isKindOfClass(param_3,uVar1);
+  if ((uVar2 & 1) != 0) {
+    objc_stub::attachResponse:(param_1,param_3);
+  }
+  objc_stub::notifyCompanionAdObserversAdDidChangeWithInteractionLoggingAdsClientData:(param_1,param_5);
+  objc_stub::updateContentInset(param_1);
+  if (*(long *)(param_1 + lVar4) == 0) {
+    IVar3 = 0;
+  }
+  else {
+    objc_stub::scrollToCompanionAd(param_1);
+    IVar3 = objc_stub::copy(param_4);
+  }
+  *(ID *)(param_1 + _companionLayoutID) = IVar3;
+  return 0;
+}
+
+
+
+===== requested 10174fe3c: hideCompanionAd @ 10174fe3c =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTWatchNextResultsViewController::hideCompanionAd(undefined8 param_1)
+
+{
+  ID IVar1;
+  ID self;
+  ulong uVar2;
+  unsigned_long_long uVar3;
+  SEL extraout_x1;
+  
+  IVar1 = objc_stub::collectionView(param_1);
+  IVar1 = objc_stub::indexPathsForVisibleItems(IVar1);
+  IVar1 = objc_stub::sortedArrayUsingSelector:(IVar1,PTR_s_compare__10c7aaa80);
+  IVar1 = objc_stub::firstObject(IVar1);
+  self = objc_stub::sectionControllerAtIndex:(param_1,0);
+  uVar2 = objc_stub::model(self);
+  uVar3 = _objc_opt_class((ID)PTR_YTICompanionAdRenderer_10c8e9e08,extraout_x1);
+  _objc_opt_isKindOfClass(uVar2,uVar3);
+  if (((uVar2 & 1) != 0) && (IVar1 = objc_stub::section(IVar1), IVar1 == 0)) {
+    objc_stub::scrollToModelMatchingBlock:animated:(param_1,&PTR___NSConcreteGlobalBlock_10b4529a8,1);
+  }
+  return 0;
+}
+
+
+
+===== requested 101752818: isCompanionAdRenderer: @ 101752818 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+ID YTWatchNextResultsViewController::isCompanionAdRenderer_
+             (undefined8 param_1,SEL param_2,undefined8 param_3)
+
+{
+  unsigned_long_long uVar1;
+  ID IVar2;
+  
+  uVar1 = _objc_opt_class((ID)PTR_YTICompanionAdRenderer_10c8e9e08,param_2);
+  IVar2 = objc_stub::isMemberOfClass:(param_3,uVar1);
+  return IVar2;
+}
+
+
+
+===== requested 1035480dc: didEnterExternallyManagedSlot:externalContext: @ 1035480dc =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTExternallyManagedSlotAdapterBase::didEnterExternallyManagedSlot_externalContext_
+          (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ID IVar1;
+  
+  objc_stub::logEventWithType:slot:unscheduledDueToError:externalContext:(*(undefined8 *)(param_1 + 8),0x13,param_3,0,param_4);
+  objc_stub::didEnterSlot:(*(undefined8 *)(param_1 + 0x18),param_3);
+  IVar1 = objc_stub::validateSlotRegistered:forMethod:
+                    (param_1,param_3,&cf_didEnterExternallyManagedSlot_externalContext_);
+  if (((int)IVar1 != 0) && (IVar1 = objc_stub::validateSlotEnter:(param_1,param_3), (int)IVar1 != 0)) {
+    IVar1 = objc_stub::slotStateFromSlot:(param_1,param_3);
+    objc_stub::setSlotLifecycleStatus:(IVar1,3);
+  }
+  return 0;
+}
+
+
+
+===== requested 1035489a0: validateSlotEnter: @ 1035489a0 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+ID YTExternallyManagedSlotAdapterBase::validateSlotEnter_
+             (ID param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  ID IVar2;
+  unsigned_long_long self;
+  SEL extraout_x1;
+  
+  IVar1 = objc_stub::slotStateFromSlot:(param_1,param_3);
+  IVar2 = objc_stub::slotLifecycleStatus(IVar1);
+  if (IVar2 != 1) {
+    self = _objc_opt_class(param_1,extraout_x1);
+    IVar1 = objc_stub::slotLifecycleStatus(IVar1);
+    objc_stub::reportWrongSlotLifecycle:forMethod:(self,IVar1,&cf_didEnterExternallyManagedSlot_externalContext_);
+  }
+  IVar1 = objc_stub::canEnterSlot:(param_1,param_3);
+  return IVar1;
+}
+
+
+
+===== requested 10503e120: descriptor @ 10503e120 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIGridRenderer::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d24e008 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIGridRenderer,&cf_GridRenderer,
+                      &DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce18670,
+                      &PTR_s_itemsArray_10ce18430,0x12,0x80);
+    objc_stub::setupOneofs:count:firstHasIndex:(self,&PTR_s_visibleCount_10ce18680,1,0xffffffff);
+    DAT_10d24e008 = self;
+  }
+  return DAT_10d24e008;
+}
+
+
+
+===== requested 10503e2fc: descriptor @ 10503e2fc =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIGridSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d24e028 == 0) {
+    DAT_10d24e028 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIGridSupportedRenderers,
+                    &cf_GridSupportedRenderers,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce18670
+                    ,&PTR_s_compactVideoRenderer_10ce18848,0x25,0x130);
+  }
+  return DAT_10d24e028;
+}
+
+
+
+===== requested 105044308: descriptor @ 105044308 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIHorizontalListRenderer::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d24f1d0 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIHorizontalListRenderer,
+                      &cf_HorizontalListRenderer,&DAT_10a8e4750,
+                      &PTR_s_youtube_api_innertube_10ce25b90,&PTR_s_itemsArray_10ce259b0,0xf,0x68);
+    objc_stub::setupExtraTextInfo:(self,&DAT_10a9590f4);
+    objc_stub::setupExtensionRanges:count:(self,&DAT_10a959100,1);
+    DAT_10d24f1d0 = self;
+  }
+  return DAT_10d24f1d0;
+}
+
+
+
+===== requested 1050443a0: descriptor @ 1050443a0 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIHorizontalListSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d24f1d8 == 0) {
+    DAT_10d24f1d8 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIHorizontalListSupportedRenderers,
+                    &cf_HorizontalListSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce25b90,&PTR_s_videoRenderer_10ce25ba0,0x47,0x248
+                   );
+  }
+  return DAT_10d24f1d8;
+}
+
+
+
+===== requested 1050447f8: descriptor @ 1050447f8 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIFulfillmentContent::descriptor(void)
+
+{
+  if (DAT_10d24f328 == 0) {
+    DAT_10d24f328 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIFulfillmentContent,
+                    &cf_FulfillmentContent,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce26d60,
+                    &PTR_s_fulfilledLayout_10ce26d70,1,0x10);
+  }
+  return DAT_10d24f328;
+}
+
+
+
+===== requested 10504487c: descriptor @ 10504487c =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIAdSlotMetadata::descriptor(void)
+
+{
+  if (DAT_10d24f330 == 0) {
+    DAT_10d24f330 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIAdSlotMetadata,&cf_AdSlotMetadata
+                    ,&DAT_10a8e4750,&PTR_s_youtube_api_innertube_10ce26e80,&DAT_10ce26d90,6,
+                    0x100000028);
+  }
+  return DAT_10d24f330;
+}
+
+
+
+===== requested 1003313c0: descriptor @ 1003313c0 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIShelfRenderer::descriptor(void)
+
+{
+  ID self;
+  unsigned_int in_stack_ffffffffffffffd8;
+  
+  if (DAT_10d250828 == 0) {
+    self = GPBDescriptor::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     ((ID)PTR_GPBDescriptor_10c907b58,0x10cb1e1c8,0x10b9d1ed8,
+                      (const_int__)&DAT_10a8e4750,
+                      (GPBFilePackageAndPrefix *)&PTR_s_youtube_api_innertube_10ce35d80,
+                      &PTR_s_title_10ce357a0,0x2f,0x150,in_stack_ffffffffffffffd8);
+    objc_stub::setupOneofs:count:firstHasIndex:(self,&PTR_s_columnConfig_10ce35d90,1,0xfffffffe);
+    objc_stub::setupExtraTextInfo:(self,&DAT_10a95b450);
+    objc_stub::setupExtensionRanges:count:(self,&DAT_10a95b434,1);
+    DAT_10d250828 = self;
+  }
+  return DAT_10d250828;
+}
+
+
+
+
+Research batch: adblock-display-section-investigation
+
+===== requested 10160b5f0: renderSection:withRenderer: @ 10160b5f0 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+undefined8
+YTAdElementsSectionViewRenderingAPI::renderSection_withRenderer_
+          (undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ulong uVar1;
+  unsigned_long_long uVar2;
+  ID IVar3;
+  ID IVar4;
+  SEL extraout_x1;
+  
+  uVar1 = objc_stub::viewModel(param_3);
+  uVar2 = _objc_opt_class((ID)PTR_YTArraySectionViewModel_10c8ea070,extraout_x1);
+  _objc_opt_isKindOfClass(uVar1,uVar2);
+  if ((uVar1 & 1) != 0) {
+    IVar3 = objc_stub::viewModel(param_3);
+    IVar4 = objc_stub::numberOfEntries(IVar3);
+    if (IVar4 == 0) {
+      IVar4 = 0;
+    }
+    else {
+      IVar4 = objc_stub::entryAtIndex:(IVar3,0);
+    }
+    IVar4 = objc_stub::isEqual_(param_4,IVar4);
+    if ((int)IVar4 == 0) {
+      objc_stub::clearEntries(IVar3);
+      objc_stub::appendEntry:(IVar3,param_4);
+      objc_stub::pushStagedChanges(IVar3);
+    }
+    else {
+      IVar3 = FUN_1002b371c(IVar4);
+      objc_stub::logExceptionType_errorLevel_message_
+                (IVar3,0x83,3,
+                 &cf__YTAdElementsSectionViewRenderingAPI_Duplicaterenderingactiondetected_);
+    }
+  }
+  return 0;
+}
+
+
+
+===== requested 10160b708: clearSection: @ 10160b708 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+undefined8
+YTAdElementsSectionViewRenderingAPI::clearSection_
+          (undefined8 param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ulong uVar1;
+  unsigned_long_long uVar2;
+  ID self;
+  SEL extraout_x1;
+  
+  uVar1 = objc_stub::viewModel(param_3);
+  uVar2 = _objc_opt_class((ID)PTR_YTArraySectionViewModel_10c8ea070,extraout_x1);
+  _objc_opt_isKindOfClass(uVar1,uVar2);
+  if ((uVar1 & 1) != 0) {
+    self = objc_stub::viewModel(param_3);
+    objc_stub::clearEntries(self);
+    objc_stub::pushStagedChanges(self);
+  }
+  return 0;
+}
+
+
+
+===== requested 100222c20: descriptor @ 100222c20 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIRenderer::descriptor(void)
+
+{
+  ID self;
+  
+  if (DAT_10d247990 == 0) {
+    self = objc_stub::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIRenderer,&cf_Renderer,
+                      &DAT_10a8e4750,&PTR_s_youtube_api_innertube_10cda92a8,&PTR_s_context_10cda9288
+                      ,1,0x10);
+    objc_stub::setupExtensionRanges:count:(self,&DAT_10a8f2a7c,1);
+    DAT_10d247990 = self;
+  }
+  return DAT_10d247990;
+}
+
+
+
+===== requested 10504d800: descriptor @ 10504d800 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIShelfSupportedRenderers::descriptor(void)
+
+{
+  if (DAT_10d250850 == 0) {
+    DAT_10d250850 =
+         objc_stub::
+         allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                   (PTR_GPBDescriptor_10c907b58,&objc::class_t::YTIShelfSupportedRenderers,
+                    &cf_ShelfSupportedRenderers,&DAT_10a8e4750,
+                    &PTR_s_youtube_api_innertube_10ce35d80,&PTR_s_horizontalListRenderer_10ce35f18,9
+                    ,0x50);
+  }
+  return DAT_10d250850;
+}
+
+
+
+===== requested 10032e758: descriptor @ 10032e758 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+ID YTIWatchNextResponse::descriptor(void)
+
+{
+  ID self;
+  unsigned_int in_stack_ffffffffffffffd8;
+  
+  if (DAT_10d259770 == 0) {
+    self = GPBDescriptor::
+           allocDescriptorForClass_messageName_runtimeSupport_fileDescription_fields_fieldCount_storageSize_flags_
+                     ((ID)PTR_GPBDescriptor_10c907b58,0x10cb432e8,0x10b9e2b18,
+                      (const_int__)&DAT_10a8e4750,
+                      (GPBFilePackageAndPrefix *)&PTR_s_youtube_api_innertube_10ce95ef0,
+                      &PTR_s_responseContext_10ce95f80,0x2d,0x168,in_stack_ffffffffffffffd8);
+    objc_stub::setupExtensionRanges:count:(self,&DAT_10a967288,1);
+    DAT_10d259770 = self;
+  }
+  return DAT_10d259770;
+}
+
+
+
+
+Research batch: adblock-display-observer-investigation
+
+===== requested 10161a3f8: insetWithInset: @ 10161a3f8 =====
+
+/* Function Stack Size: 0x30 bytes */
+
+undefined8 YTCompanionAdSectionController::insetWithInset_(undefined8 param_1)
+
+{
+  ID IVar1;
+  undefined8 uVar2;
+  
+  IVar1 = objc_stub::numberOfItems(param_1);
+  if (IVar1 == 0) {
+    uVar2 = *(undefined8 *)PTR__UIEdgeInsetsZero_10b3a3358;
+  }
+  else {
+    uVar2 = 0;
+  }
+  return uVar2;
+}
+
+
+
+===== requested 10161a434: hasBottomSeparator @ 10161a434 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTCompanionAdSectionController::hasBottomSeparator(void)
+
+{
+  return 0;
+}
+
+
+
+===== requested 1017500c8: didUpdateBelowPlayerLayoutWithRenderer: @ 1017500c8 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+void YTWatchNextResultsViewController::didUpdateBelowPlayerLayoutWithRenderer_
+               (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  SEL pcVar2;
+  ulong uVar3;
+  SEL extraout_x1;
+  SEL extraout_x1_00;
+  SEL extraout_x1_01;
+  undefined8 self;
+  ulong self_00;
+  long lVar4;
+  long lVar5;
+  ID IVar6;
+  undefined8 local_130;
+  long lStack_128;
+  long *local_120;
+  undefined8 uStack_118;
+  undefined8 local_110;
+  undefined8 uStack_108;
+  undefined8 uStack_100;
+  undefined8 uStack_f8;
+  undefined1 auStack_e8 [128];
+  long local_68;
+  
+  local_68 = *(long *)PTR____stack_chk_guard_10b39a898;
+  lVar4 = (long)_companionAd;
+  *(undefined8 *)(param_1 + lVar4) = param_3;
+  uStack_108 = 0;
+  local_110 = 0;
+  uStack_f8 = 0;
+  uStack_100 = 0;
+  lStack_128 = 0;
+  local_130 = 0;
+  uStack_118 = 0;
+  local_120 = (long *)0x0;
+  self = *(undefined8 *)(param_1 + _companionAdObservers);
+  IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(self,&local_130,auStack_e8,0x10);
+  if (IVar1 != 0) {
+    lVar5 = *local_120;
+    pcVar2 = extraout_x1;
+    do {
+      IVar6 = 0;
+      do {
+        if (*local_120 != lVar5) {
+          _objc_enumerationMutation(self);
+        }
+        self_00 = *(ulong *)(lStack_128 + IVar6 * 8);
+        pcVar2 = (SEL)_objc_opt_class((ID)PTR_YTCompanionAdObserverBehavior_10c8ee198,pcVar2);
+        uVar3 = self_00;
+        _objc_opt_isKindOfClass();
+        if ((uVar3 & 1) == 0) {
+          objc_stub::companionAdDidChange:interactionLoggingAdsClientData:(self_00,param_3,0);
+          pcVar2 = extraout_x1_00;
+        }
+        IVar6 = IVar6 + 1;
+      } while (IVar1 != IVar6);
+      IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(self,&local_130,auStack_e8,0x10)
+      ;
+      pcVar2 = extraout_x1_01;
+    } while (IVar1 != 0);
+  }
+  lVar5 = (long)_coldConfig;
+  IVar1 = objc_stub::mainAppCoreClientIosEnableModernTransitionsHero(*(undefined8 *)(param_1 + lVar5));
+  if ((IVar1 & 1) == 0) {
+    objc_stub::updateContentInset(param_1);
+  }
+  if (*(long *)(param_1 + lVar4) != 0) {
+    objc_stub::scrollToCompanionAd(param_1);
+    IVar1 = objc_stub::mainAppCoreClientIosEnableModernTransitionsHero(*(undefined8 *)(param_1 + lVar5));
+    if ((int)IVar1 != 0) {
+      objc_stub::removeFromSuperview(*(undefined8 *)(param_1 + _nonGhostCardSnapshotView));
+    }
+  }
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_68) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail(0);
+}
+
+
+
+===== requested 101752860: notifyCompanionAdObserversAdDidChangeWithInteractionLoggingAdsClientData: @ 101752860 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+void YTWatchNextResultsViewController::
+     notifyCompanionAdObserversAdDidChangeWithInteractionLoggingAdsClientData_
+               (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  undefined8 self;
+  long lVar2;
+  ID IVar3;
+  undefined8 local_120;
+  long lStack_118;
+  long *local_110;
+  undefined8 uStack_108;
+  undefined8 local_100;
+  undefined8 uStack_f8;
+  undefined8 uStack_f0;
+  undefined8 uStack_e8;
+  undefined1 auStack_d8 [128];
+  long local_58;
+  
+  local_58 = *(long *)PTR____stack_chk_guard_10b39a898;
+  lStack_118 = 0;
+  local_120 = 0;
+  uStack_108 = 0;
+  local_110 = (long *)0x0;
+  uStack_f8 = 0;
+  local_100 = 0;
+  uStack_e8 = 0;
+  uStack_f0 = 0;
+  self = *(undefined8 *)(param_1 + _companionAdObservers);
+  IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(self,&local_120,auStack_d8,0x10);
+  if (IVar1 != 0) {
+    lVar2 = *local_110;
+    do {
+      IVar3 = 0;
+      do {
+        if (*local_110 != lVar2) {
+          _objc_enumerationMutation(self);
+        }
+        objc_stub::companionAdDidChange:interactionLoggingAdsClientData:
+                  (*(undefined8 *)(lStack_118 + IVar3 * 8),*(undefined8 *)(param_1 + _companionAd),
+                   param_3);
+        IVar3 = IVar3 + 1;
+      } while (IVar1 != IVar3);
+      IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(self,&local_120,auStack_d8,0x10)
+      ;
+    } while (IVar1 != 0);
+  }
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_58) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail(0);
+}
+
+
+
+===== requested 10175bc10: companionAdDidChange:interactionLoggingAdsClientData: @ 10175bc10 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x27 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x20 bytes */
+
+void YTCompanionAdObserverBehavior::companionAdDidChange_interactionLoggingAdsClientData_
+               (long param_1,undefined8 param_2,undefined8 param_3,long param_4)
+
+{
+  ID IVar1;
+  ID IVar2;
+  SEL pcVar3;
+  undefined8 uVar4;
+  ID IVar5;
+  unsigned_long_long uVar6;
+  undefined *self;
+  SEL extraout_x1;
+  ID IVar7;
+  long lVar8;
+  undefined8 uVar9;
+  undefined8 self_00;
+  undefined8 local_130;
+  long lStack_128;
+  long *local_120;
+  undefined8 uStack_118;
+  undefined8 local_110;
+  undefined8 uStack_108;
+  undefined8 uStack_100;
+  undefined8 uStack_f8;
+  undefined1 auStack_f0 [128];
+  long local_70;
+  
+  local_70 = *(long *)PTR____stack_chk_guard_10b39a898;
+  IVar1 = objc_stub::companionAd(param_3);
+  IVar2 = objc_stub::currentAd(param_1);
+  IVar2 = objc_stub::isEqual_(IVar1,IVar2);
+  if ((IVar2 & 1) == 0) {
+    objc_stub::clearEntries(*(undefined8 *)(param_1 + 8));
+    if (IVar1 != 0) {
+      pcVar3 = (SEL)_objc_opt_class((ID)PTR_YTISuggestedVideosCompanionAdRenderer_10c8ef4e8,
+                                    extraout_x1);
+      IVar2 = IVar1;
+      _objc_opt_isKindOfClass();
+      if ((IVar2 & 1) == 0) {
+        uVar6 = _objc_opt_class((ID)PTR_YTIElementRenderer_10c8e3f70,pcVar3);
+        IVar2 = IVar1;
+        _objc_opt_isKindOfClass(IVar1,uVar6);
+        if ((param_4 == 0) || ((IVar2 & 1) == 0)) {
+          objc_stub::appendEntry:(*(undefined8 *)(param_1 + 8),IVar1);
+        }
+        else {
+          self = PTR_YTIInteractionLoggingClientData_10c8e3b58;
+          _objc_alloc_init();
+          objc_stub::setAdsClientData:(self,param_4);
+          objc_stub::yt_setClientData:(IVar1,self);
+          objc_stub::appendEntry:(*(undefined8 *)(param_1 + 8),IVar1);
+        }
+      }
+      else {
+        uVar4 = FUN_1050bd3f8();
+        IVar2 = objc_stub::header(IVar1);
+        IVar2 = objc_stub::hasExtension_(IVar2,uVar4);
+        if ((int)IVar2 != 0) {
+          uVar9 = *(undefined8 *)(param_1 + 8);
+          IVar2 = objc_stub::header(IVar1);
+          IVar2 = objc_stub::getExtension_(IVar2,uVar4);
+          objc_stub::appendEntry:(uVar9,IVar2);
+        }
+        IVar2 = objc_stub::suggestedVideosArray_Count(IVar1);
+        if (IVar2 != 0) {
+          uStack_108 = 0;
+          local_110 = 0;
+          uStack_f8 = 0;
+          uStack_100 = 0;
+          lStack_128 = 0;
+          local_130 = 0;
+          uStack_118 = 0;
+          local_120 = (long *)0x0;
+          IVar1 = objc_stub::suggestedVideosArray(IVar1);
+          IVar2 = objc_stub::countByEnumeratingWithState_objects_count_
+                            (IVar1,&local_130,auStack_f0,0x10);
+          if (IVar2 != 0) {
+            lVar8 = *local_120;
+            do {
+              IVar7 = 0;
+              do {
+                if (*local_120 != lVar8) {
+                  _objc_enumerationMutation(IVar1);
+                }
+                self_00 = *(undefined8 *)(lStack_128 + IVar7 * 8);
+                uVar9 = FUN_1050d6fa8();
+                uVar4 = FUN_1050d6fec();
+                IVar5 = objc_stub::hasExtension_(self_00,uVar4);
+                if (((IVar5 & 1) != 0) ||
+                   (IVar5 = objc_stub::hasExtension_(self_00,uVar9), uVar4 = uVar9, (int)IVar5 != 0)
+                   ) {
+                  uVar9 = *(undefined8 *)(param_1 + 8);
+                  IVar5 = objc_stub::getExtension_(self_00,uVar4);
+                  objc_stub::appendEntry:(uVar9,IVar5);
+                }
+                IVar7 = IVar7 + 1;
+              } while (IVar2 != IVar7);
+              IVar2 = objc_stub::countByEnumeratingWithState_objects_count_
+                                (IVar1,&local_130,auStack_f0,0x10);
+            } while (IVar2 != 0);
+          }
+        }
+      }
+    }
+    objc_stub::pushStagedChanges(*(undefined8 *)(param_1 + 8));
+  }
+  if (*(long *)PTR____stack_chk_guard_10b39a898 != local_70) {
+                    /* WARNING: Subroutine does not return */
+    ___stack_chk_fail(0);
+  }
+  return;
+}
+
+

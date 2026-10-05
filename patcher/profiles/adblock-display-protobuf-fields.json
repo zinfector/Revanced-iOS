@@ -1,0 +1,6932 @@
+{
+  "YTIAdSlotRenderer": {
+    "table": "0x10ce26c40",
+    "fields": [
+      {
+        "name": "adSlotMetadata",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdSlotMetadata"
+      },
+      {
+        "name": "fulfillmentContent",
+        "number": 2,
+        "has_index": 2,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFulfillmentContent"
+      },
+      {
+        "name": "enablePacfLoggingWeb",
+        "number": 3,
+        "has_index": 4,
+        "storage_offset": 5,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "slotEntryTrigger",
+        "number": 4,
+        "has_index": 3,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdsControlFlowTrigger"
+      },
+      {
+        "name": "slotFulfillmentTriggersArray",
+        "number": 5,
+        "has_index": 2147483647,
+        "storage_offset": 32,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIAdsControlFlowTrigger"
+      },
+      {
+        "name": "slotExpirationTriggersArray",
+        "number": 6,
+        "has_index": 2147483647,
+        "storage_offset": 40,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIAdsControlFlowTrigger"
+      },
+      {
+        "name": "trackingParams",
+        "number": 8,
+        "has_index": 6,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "isV2Enabled",
+        "number": 9,
+        "has_index": 7,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "opportunityId",
+        "number": 10,
+        "has_index": 1,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      }
+    ]
+  },
+  "YTIPlayerResponse": {
+    "table": "0x10ce461a0",
+    "fields": [
+      {
+        "name": "responseContext",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIResponseContext"
+      },
+      {
+        "name": "playabilityStatus",
+        "number": 2,
+        "has_index": 2,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayabilityStatus"
+      },
+      {
+        "name": "streamingData",
+        "number": 4,
+        "has_index": 4,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIStreamingData"
+      },
+      {
+        "name": "heartbeatParams",
+        "number": 6,
+        "has_index": 5,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHeartbeatParams"
+      },
+      {
+        "name": "playerAdsArray",
+        "number": 7,
+        "has_index": 2147483647,
+        "storage_offset": 40,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerAdsSupportedRenderers"
+      },
+      {
+        "name": "playbackTracking",
+        "number": 9,
+        "has_index": 6,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaybackTracking"
+      },
+      {
+        "name": "captions",
+        "number": 10,
+        "has_index": 8,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICaptionsSupportedRenderers"
+      },
+      {
+        "name": "videoDetails",
+        "number": 11,
+        "has_index": 3,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoDetails"
+      },
+      {
+        "name": "annotationsArray",
+        "number": 13,
+        "has_index": 2147483647,
+        "storage_offset": 72,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIAnnotationsSupportedRenderers"
+      },
+      {
+        "name": "offlineState",
+        "number": 14,
+        "has_index": 7,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIOfflineState"
+      },
+      {
+        "name": "playerConfig",
+        "number": 15,
+        "has_index": 1,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayerConfig"
+      },
+      {
+        "name": "storyboards",
+        "number": 16,
+        "has_index": 9,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIStoryboardsSupportedRenderers"
+      },
+      {
+        "name": "threed",
+        "number": 17,
+        "has_index": 10,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "cards",
+        "number": 20,
+        "has_index": 11,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInfoCardsSupportedRenderers"
+      },
+      {
+        "name": "trackingParams",
+        "number": 21,
+        "has_index": 13,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "attestation",
+        "number": 22,
+        "has_index": 12,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAttestationSupportedRenderers"
+      },
+      {
+        "name": "adParams",
+        "number": 23,
+        "has_index": 14,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "adNextParams",
+        "number": 25,
+        "has_index": 15,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "adBreakParams",
+        "number": 27,
+        "has_index": 16,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "messagesArray",
+        "number": 30,
+        "has_index": 2147483647,
+        "storage_offset": 160,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerMessageSupportedRenderers"
+      },
+      {
+        "name": "endscreen",
+        "number": 32,
+        "has_index": 18,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEndscreenSupportedRenderers"
+      },
+      {
+        "name": "ibaDebugInfo",
+        "number": 34,
+        "has_index": 19,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "survey",
+        "number": 35,
+        "has_index": 20,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISurveySupportedRenderers"
+      },
+      {
+        "name": "onResponseReceivedEndpointsArray",
+        "number": 36,
+        "has_index": 2147483647,
+        "storage_offset": 192,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "playerCompanionAd",
+        "number": 38,
+        "has_index": 21,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayerCompanionAdsSupportedRenderers"
+      },
+      {
+        "name": "hideAddtoButtonSmallScreen",
+        "number": 39,
+        "has_index": 22,
+        "storage_offset": 23,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "hideShareButtonSmallScreen",
+        "number": 40,
+        "has_index": 24,
+        "storage_offset": 25,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "paidContentOverlay",
+        "number": 41,
+        "has_index": 26,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPaidContentOverlaySupportedRenderers"
+      },
+      {
+        "name": "overlay",
+        "number": 42,
+        "has_index": 27,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayerControlsOverlaySupportedRenderers"
+      },
+      {
+        "name": "instreamPlayerCtaAd",
+        "number": 44,
+        "has_index": 28,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInStreamPlayerCtaAdsSupportedRenderers"
+      },
+      {
+        "name": "adPlacementsArray",
+        "number": 45,
+        "has_index": 2147483647,
+        "storage_offset": 232,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerAdsPlacementSupportedRenderers"
+      },
+      {
+        "name": "auxiliaryUi",
+        "number": 46,
+        "has_index": 29,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAuxiliaryUi"
+      },
+      {
+        "name": "prefetchedPrerollAdBreakResponse",
+        "number": 48,
+        "has_index": 30,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "onResponseReceivedActionsArray",
+        "number": 49,
+        "has_index": 2147483647,
+        "storage_offset": 256,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "interstitialPodsArray",
+        "number": 51,
+        "has_index": 2147483647,
+        "storage_offset": 264,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIInterstitialPod"
+      },
+      {
+        "name": "onesiePlayerServiceInfo",
+        "number": 53,
+        "has_index": 31,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "ctaOverlay",
+        "number": 54,
+        "has_index": 32,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "videoInteractions",
+        "number": 55,
+        "has_index": 33,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoInteractions"
+      },
+      {
+        "name": "clipConfig",
+        "number": 56,
+        "has_index": 34,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIClipConfig"
+      },
+      {
+        "name": "accountLinkingConfig",
+        "number": 58,
+        "has_index": 35,
+        "storage_offset": 304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAccountLinkingConfig"
+      },
+      {
+        "name": "playerOverlayLayerRenderersArray",
+        "number": 60,
+        "has_index": 2147483647,
+        "storage_offset": 312,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "miniPlayerByline",
+        "number": 61,
+        "has_index": 36,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "playerCueRangesArray",
+        "number": 62,
+        "has_index": 2147483647,
+        "storage_offset": 328,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerCueRange"
+      },
+      {
+        "name": "contextualPlaybackConfigsArray",
+        "number": 63,
+        "has_index": 2147483647,
+        "storage_offset": 336,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIContextualPlaybackConfig"
+      },
+      {
+        "name": "deferredPlayerData",
+        "number": 64,
+        "has_index": 37,
+        "storage_offset": 344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDeferredPlayerData"
+      },
+      {
+        "name": "clientParam",
+        "number": 66,
+        "has_index": 38,
+        "storage_offset": 352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "adSlotsArray",
+        "number": 68,
+        "has_index": 2147483647,
+        "storage_offset": 360,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "adBreakHeartbeatParams",
+        "number": 69,
+        "has_index": 17,
+        "storage_offset": 368,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "playerCueRangeSetArray",
+        "number": 71,
+        "has_index": 2147483647,
+        "storage_offset": 376,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerCueRangeSet"
+      },
+      {
+        "name": "heartbeatLoggingToken",
+        "number": 72,
+        "has_index": 40,
+        "storage_offset": 384,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "trackAlbumMetadata",
+        "number": 74,
+        "has_index": 41,
+        "storage_offset": 392,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITrackAlbumMetadata"
+      },
+      {
+        "name": "watchInitialContextToken",
+        "number": 75,
+        "has_index": 42,
+        "storage_offset": 400,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "frameworkUpdates",
+        "number": 777,
+        "has_index": 39,
+        "storage_offset": 408,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFrameworkUpdateTransport"
+      }
+    ]
+  },
+  "YTIPlayerCompanionAdsSupportedRenderers": {
+    "table": "0x10ce4d050",
+    "fields": [
+      {
+        "name": "companionAdRenderer",
+        "number": 55514441,
+        "has_index": -1,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompanionAdRenderer"
+      },
+      {
+        "name": "appPromoCompanionAdRenderer",
+        "number": 65002523,
+        "has_index": -1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAppPromoCompanionAdRenderer"
+      },
+      {
+        "name": "shoppingCompanionAdRenderer",
+        "number": 114449537,
+        "has_index": -1,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShoppingCompanionAdRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": -1,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "multiItemCompanionAdRenderer",
+        "number": 156112846,
+        "has_index": -1,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMultiItemCompanionAdRenderer"
+      },
+      {
+        "name": "belowPlayerAdLayoutRenderer",
+        "number": 361588638,
+        "has_index": -1,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBelowPlayerAdLayoutRenderer"
+      }
+    ]
+  },
+  "YTIBelowPlayerAdLayoutRenderer": {
+    "table": "0x10ce4dd38",
+    "fields": [
+      {
+        "name": "adLayoutMetadata",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdLayoutMetadata"
+      },
+      {
+        "name": "renderingContent",
+        "number": 2,
+        "has_index": 1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "layoutExitNormalTriggersArray",
+        "number": 3,
+        "has_index": 2147483647,
+        "storage_offset": 24,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIAdsControlFlowTrigger"
+      }
+    ]
+  },
+  "YTISectionListRenderer": {
+    "table": "0x10ce6bf08",
+    "fields": [
+      {
+        "name": "contentsArray",
+        "number": 1,
+        "has_index": 2147483647,
+        "storage_offset": 64,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTISectionListSupportedRenderers"
+      },
+      {
+        "name": "continuationsArray",
+        "number": 2,
+        "has_index": 2147483647,
+        "storage_offset": 72,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTISectionListSupportedContinuations"
+      },
+      {
+        "name": "trackingParams",
+        "number": 4,
+        "has_index": 11,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "subMenu",
+        "number": 5,
+        "has_index": 0,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListSubMenuSupportedRenderers"
+      },
+      {
+        "name": "header",
+        "number": 6,
+        "has_index": 1,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListHeaderSupportedRenderers"
+      },
+      {
+        "name": "fab",
+        "number": 7,
+        "has_index": 5,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListFabSupportedRenderers"
+      },
+      {
+        "name": "drawer",
+        "number": 8,
+        "has_index": 2,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListDrawerSupportedRenderers"
+      },
+      {
+        "name": "canHaveDrawer",
+        "number": 9,
+        "has_index": 3,
+        "storage_offset": 4,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "enableElements",
+        "number": 10,
+        "has_index": 12,
+        "storage_offset": 13,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "hideBottomSeparator",
+        "number": 11,
+        "has_index": 14,
+        "storage_offset": 15,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "disableSubMenuScroll",
+        "number": 12,
+        "has_index": 16,
+        "storage_offset": 17,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "targetId",
+        "number": 13,
+        "has_index": 9,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "hack",
+        "number": 14,
+        "has_index": 18,
+        "storage_offset": 19,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "floatingPillRenderers",
+        "number": 15,
+        "has_index": 20,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFloatingPillRenderers"
+      },
+      {
+        "name": "layoutOrder",
+        "number": 16,
+        "has_index": 21,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "syncModelEntityKey",
+        "number": 17,
+        "has_index": 22,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "selectedItemAlignPosition",
+        "number": 18,
+        "has_index": 24,
+        "storage_offset": 20,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "footer",
+        "number": 19,
+        "has_index": 6,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "listStyle",
+        "number": 20,
+        "has_index": -2,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListStylePaddedList"
+      },
+      {
+        "name": "screenVisualElement",
+        "number": 21,
+        "has_index": 26,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIScreenVisualElement"
+      },
+      {
+        "name": "contentOverlay",
+        "number": 22,
+        "has_index": 8,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "disablePullToRefresh",
+        "number": 23,
+        "has_index": 27,
+        "storage_offset": 28,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "selectedIndex",
+        "number": 24,
+        "has_index": 29,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "sectionListIdentifier",
+        "number": 25,
+        "has_index": 10,
+        "storage_offset": 28,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "scrollPositionIndex",
+        "number": 26,
+        "has_index": -3,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "defaultProminenceConfigurationArray",
+        "number": 28,
+        "has_index": 2147483647,
+        "storage_offset": 176,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIDefaultProminenceConfiguration"
+      },
+      {
+        "name": "scrollConfiguration",
+        "number": 29,
+        "has_index": 30,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIScrollConfiguration"
+      },
+      {
+        "name": "contentAlignment",
+        "number": 30,
+        "has_index": 25,
+        "storage_offset": 36,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "sectionListLayoutConfiguration",
+        "number": 31,
+        "has_index": 31,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListLayoutConfiguration"
+      },
+      {
+        "name": "mutationOperations",
+        "number": 32,
+        "has_index": 32,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListMutationOperations"
+      },
+      {
+        "name": "continuationLayoutMode",
+        "number": 33,
+        "has_index": 33,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "selectedItemAlignmentPercentOffset",
+        "number": 34,
+        "has_index": 23,
+        "storage_offset": 44,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 3,
+        "message_class": null
+      },
+      {
+        "name": "dragAndDropConfig",
+        "number": 35,
+        "has_index": 34,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListDragAndDropConfig"
+      },
+      {
+        "name": "backgroundStyle",
+        "number": 37,
+        "has_index": 35,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "backgroundAlphaValue",
+        "number": 38,
+        "has_index": 36,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 6,
+        "message_class": null
+      },
+      {
+        "name": "footerPosition",
+        "number": 39,
+        "has_index": 7,
+        "storage_offset": 52,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "initialScroll",
+        "number": 40,
+        "has_index": -3,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListScrollConfig"
+      },
+      {
+        "name": "enableStickyItemSectionHeaders",
+        "number": 41,
+        "has_index": 37,
+        "storage_offset": 38,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "disableIosVariableHeightHeaderCollapseBehavior",
+        "number": 42,
+        "has_index": 39,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "keyboardDismissMode",
+        "number": 44,
+        "has_index": 41,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "reuseCollectionViewOnReload",
+        "number": 45,
+        "has_index": 42,
+        "storage_offset": 43,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "background",
+        "number": 46,
+        "has_index": 44,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      }
+    ]
+  },
+  "YTISectionListHeaderSupportedRenderers": {
+    "table": "0x10ce6c648",
+    "fields": [
+      {
+        "name": "channelPostBulletinRenderer",
+        "number": 89991643,
+        "has_index": -1,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelPostBulletinRenderer"
+      },
+      {
+        "name": "chipCloudRenderer",
+        "number": 90823135,
+        "has_index": -1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChipCloudRenderer"
+      },
+      {
+        "name": "commentsHeaderRenderer",
+        "number": 105977417,
+        "has_index": -1,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentsHeaderRenderer"
+      },
+      {
+        "name": "feedChannelFilterHeaderRenderer",
+        "number": 107984702,
+        "has_index": -1,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFeedChannelFilterHeaderRenderer"
+      },
+      {
+        "name": "alertWithActionsRenderer",
+        "number": 117586727,
+        "has_index": -1,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAlertWithActionsRenderer"
+      },
+      {
+        "name": "richListHeaderRenderer",
+        "number": 120280839,
+        "has_index": -1,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRichListHeaderRenderer"
+      },
+      {
+        "name": "searchBoxRenderer",
+        "number": 132114608,
+        "has_index": -1,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISearchBoxRenderer"
+      },
+      {
+        "name": "browsySectionHeaderRenderer",
+        "number": 141910182,
+        "has_index": -1,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBrowsySectionHeaderRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": -1,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "episodesSectionHeaderRenderer",
+        "number": 171606645,
+        "has_index": -1,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEpisodesSectionHeaderRenderer"
+      },
+      {
+        "name": "sortFilterHeaderRenderer",
+        "number": 207130962,
+        "has_index": -1,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISortFilterHeaderRenderer"
+      },
+      {
+        "name": "feedFilterChipBarRenderer",
+        "number": 213380311,
+        "has_index": -1,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFeedFilterChipBarRenderer"
+      },
+      {
+        "name": "musicSideAlignedItemRenderer",
+        "number": 217934217,
+        "has_index": -1,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicSideAlignedItemRenderer"
+      },
+      {
+        "name": "getSuggestedPlaylistVideosHeaderRenderer",
+        "number": 222895468,
+        "has_index": -1,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGetSuggestedPlaylistVideosHeaderRenderer"
+      },
+      {
+        "name": "unpluggedBannerRenderer",
+        "number": 224687714,
+        "has_index": -1,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedBannerRenderer"
+      },
+      {
+        "name": "mySubsFilterHeaderRenderer",
+        "number": 256220752,
+        "has_index": -1,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMySubsFilterHeaderRenderer"
+      },
+      {
+        "name": "filterChipBarElementRenderer",
+        "number": 420115721,
+        "has_index": -1,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFilterChipBarElementRenderer"
+      }
+    ]
+  },
+  "YTISectionListSupportedRenderers": {
+    "table": "0x10ce6d710",
+    "fields": [
+      {
+        "name": "sectionListPlaceholderRenderer",
+        "number": 36937,
+        "has_index": 13,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListPlaceholderRenderer"
+      },
+      {
+        "name": "channelListRenderer",
+        "number": 48712286,
+        "has_index": 30,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelListRenderer"
+      },
+      {
+        "name": "itemSectionRenderer",
+        "number": 50195462,
+        "has_index": 4,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIItemSectionRenderer"
+      },
+      {
+        "name": "exploratoryResultsRenderer",
+        "number": 50302113,
+        "has_index": 3,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIExploratoryResultsRenderer"
+      },
+      {
+        "name": "playlistPanelRenderer",
+        "number": 50631000,
+        "has_index": 61,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistPanelRenderer"
+      },
+      {
+        "name": "horizontalListRenderer",
+        "number": 51431404,
+        "has_index": 27,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHorizontalListRenderer"
+      },
+      {
+        "name": "itemSectionPreviewRenderer",
+        "number": 51779670,
+        "has_index": 5,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIItemSectionPreviewRenderer"
+      },
+      {
+        "name": "gridRenderer",
+        "number": 51805506,
+        "has_index": 6,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridRenderer"
+      },
+      {
+        "name": "shelfRenderer",
+        "number": 51845067,
+        "has_index": 15,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfRenderer"
+      },
+      {
+        "name": "commentsRenderer",
+        "number": 51901115,
+        "has_index": 9,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentsRenderer"
+      },
+      {
+        "name": "channelSubMenuRenderer",
+        "number": 53577639,
+        "has_index": 80,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelSubMenuRenderer"
+      },
+      {
+        "name": "playlistVideoListRenderer",
+        "number": 54681060,
+        "has_index": 12,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistVideoListRenderer"
+      },
+      {
+        "name": "companionAdRenderer",
+        "number": 55514441,
+        "has_index": 11,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompanionAdRenderer"
+      },
+      {
+        "name": "didYouMeanRenderer",
+        "number": 55641975,
+        "has_index": 82,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDidYouMeanRenderer"
+      },
+      {
+        "name": "messageRenderer",
+        "number": 58508690,
+        "has_index": 60,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMessageRenderer"
+      },
+      {
+        "name": "offlineItemSectionRenderer",
+        "number": 60219593,
+        "has_index": 18,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIOfflineItemSectionRenderer"
+      },
+      {
+        "name": "offlinePlaylistVideoListRenderer",
+        "number": 60407923,
+        "has_index": 19,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIOfflinePlaylistVideoListRenderer"
+      },
+      {
+        "name": "commentSectionRenderer",
+        "number": 62241549,
+        "has_index": 7,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentSectionRenderer"
+      },
+      {
+        "name": "commentThreadRenderer",
+        "number": 62285833,
+        "has_index": 8,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentThreadRenderer"
+      },
+      {
+        "name": "pendingUploadsRenderer",
+        "number": 62309973,
+        "has_index": 20,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPendingUploadsRenderer"
+      },
+      {
+        "name": "accountItemSectionRenderer",
+        "number": 63434476,
+        "has_index": 21,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAccountItemSectionRenderer"
+      },
+      {
+        "name": "buttonRenderer",
+        "number": 65153809,
+        "has_index": 2,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIButtonRenderer"
+      },
+      {
+        "name": "settingCategoryCollectionRenderer",
+        "number": 66930374,
+        "has_index": 72,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISettingCategoryCollectionRenderer"
+      },
+      {
+        "name": "shelfEditorRenderer",
+        "number": 68396630,
+        "has_index": 14,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfEditorRenderer"
+      },
+      {
+        "name": "sortFilterSubMenuRenderer",
+        "number": 76818770,
+        "has_index": 81,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISortFilterSubMenuRenderer"
+      },
+      {
+        "name": "dashboardWidgetRenderer",
+        "number": 78317705,
+        "has_index": 23,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDashboardWidgetRenderer"
+      },
+      {
+        "name": "analyticsCardSectionRenderer",
+        "number": 83342222,
+        "has_index": 22,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAnalyticsCardSectionRenderer"
+      },
+      {
+        "name": "liveIngestionSettingsRenderer",
+        "number": 85479539,
+        "has_index": 24,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILiveIngestionSettingsRenderer"
+      },
+      {
+        "name": "liveInteractivitySettingsRenderer",
+        "number": 85693137,
+        "has_index": 26,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILiveInteractivitySettingsRenderer"
+      },
+      {
+        "name": "unpluggedVideoRenderer",
+        "number": 85732145,
+        "has_index": 52,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedVideoRenderer"
+      },
+      {
+        "name": "liveDashboardSharingRenderer",
+        "number": 86294750,
+        "has_index": 25,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILiveDashboardSharingRenderer"
+      },
+      {
+        "name": "unlimitedPageRenderer",
+        "number": 87736944,
+        "has_index": 28,
+        "storage_offset": 264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedPageRenderer"
+      },
+      {
+        "name": "offlineStubRenderer",
+        "number": 89421563,
+        "has_index": 29,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIOfflineStubRenderer"
+      },
+      {
+        "name": "chipCloudRenderer",
+        "number": 90823135,
+        "has_index": 45,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChipCloudRenderer"
+      },
+      {
+        "name": "musicShelfRenderer",
+        "number": 91303872,
+        "has_index": 33,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicShelfRenderer"
+      },
+      {
+        "name": "surveyShelfRenderer",
+        "number": 96023059,
+        "has_index": 17,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISurveyShelfRenderer"
+      },
+      {
+        "name": "unpluggedHomeItemRenderer",
+        "number": 96602836,
+        "has_index": 48,
+        "storage_offset": 304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHomeItemRenderer"
+      },
+      {
+        "name": "unpluggedContentDetailsHeaderRenderer",
+        "number": 97168018,
+        "has_index": 58,
+        "storage_offset": 312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedContentDetailsHeaderRenderer"
+      },
+      {
+        "name": "unpluggedVideoMetadataRenderer",
+        "number": 97169376,
+        "has_index": 51,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedVideoMetadataRenderer"
+      },
+      {
+        "name": "shelfComboboxRenderer",
+        "number": 97273213,
+        "has_index": 16,
+        "storage_offset": 328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfComboboxRenderer"
+      },
+      {
+        "name": "counterfactualRenderer",
+        "number": 98817457,
+        "has_index": 44,
+        "storage_offset": 336,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICounterfactualRenderer"
+      },
+      {
+        "name": "videoPrimaryInfoRenderer",
+        "number": 100048340,
+        "has_index": 0,
+        "storage_offset": 344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoPrimaryInfoRenderer"
+      },
+      {
+        "name": "videoSecondaryInfoRenderer",
+        "number": 102519231,
+        "has_index": 1,
+        "storage_offset": 352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoSecondaryInfoRenderer"
+      },
+      {
+        "name": "reportFormRenderer",
+        "number": 111078448,
+        "has_index": 62,
+        "storage_offset": 360,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIReportFormRenderer"
+      },
+      {
+        "name": "musicNotifierShelfRenderer",
+        "number": 113588396,
+        "has_index": 35,
+        "storage_offset": 368,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicNotifierShelfRenderer"
+      },
+      {
+        "name": "channelAgeGateRenderer",
+        "number": 114001023,
+        "has_index": 63,
+        "storage_offset": 376,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelAgeGateRenderer"
+      },
+      {
+        "name": "unpluggedAssistantShelfCardRenderer",
+        "number": 115600567,
+        "has_index": 46,
+        "storage_offset": 384,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedAssistantShelfCardRenderer"
+      },
+      {
+        "name": "musicCardShelfRenderer",
+        "number": 116824375,
+        "has_index": 31,
+        "storage_offset": 392,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicCardShelfRenderer"
+      },
+      {
+        "name": "mySubsContentFilterRenderer",
+        "number": 117271479,
+        "has_index": 64,
+        "storage_offset": 400,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMySubsContentFilterRenderer"
+      },
+      {
+        "name": "alertWithActionsRenderer",
+        "number": 117586727,
+        "has_index": 77,
+        "storage_offset": 408,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAlertWithActionsRenderer"
+      },
+      {
+        "name": "unpluggedContentDetailsRenderer",
+        "number": 118702303,
+        "has_index": 54,
+        "storage_offset": 416,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedContentDetailsRenderer"
+      },
+      {
+        "name": "unpluggedContentDetailsAboutRenderer",
+        "number": 118712362,
+        "has_index": 59,
+        "storage_offset": 424,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedContentDetailsAboutRenderer"
+      },
+      {
+        "name": "unpluggedTableSectionRenderer",
+        "number": 118821739,
+        "has_index": 53,
+        "storage_offset": 432,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedTableSectionRenderer"
+      },
+      {
+        "name": "universalWatchCardRenderer",
+        "number": 119956144,
+        "has_index": 65,
+        "storage_offset": 440,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUniversalWatchCardRenderer"
+      },
+      {
+        "name": "musicTastebuilderShelfRenderer",
+        "number": 121159044,
+        "has_index": 36,
+        "storage_offset": 448,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicTastebuilderShelfRenderer"
+      },
+      {
+        "name": "notificationMultiActionRenderer",
+        "number": 122645542,
+        "has_index": 85,
+        "storage_offset": 456,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTINotificationMultiActionRenderer"
+      },
+      {
+        "name": "emojiPickerRenderer",
+        "number": 126326492,
+        "has_index": 84,
+        "storage_offset": 464,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEmojiPickerRenderer"
+      },
+      {
+        "name": "unpluggedAssistantShelfSuggestionCardRenderer",
+        "number": 130704161,
+        "has_index": 47,
+        "storage_offset": 472,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedAssistantShelfSuggestionCardRenderer"
+      },
+      {
+        "name": "unpluggedEmptyStateRenderer",
+        "number": 135842323,
+        "has_index": 55,
+        "storage_offset": 480,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedEmptyStateRenderer"
+      },
+      {
+        "name": "ticketShelfRenderer",
+        "number": 136708432,
+        "has_index": 66,
+        "storage_offset": 488,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITicketShelfRenderer"
+      },
+      {
+        "name": "unpluggedLibraryItemRenderer",
+        "number": 136786442,
+        "has_index": 50,
+        "storage_offset": 496,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedLibraryItemRenderer"
+      },
+      {
+        "name": "unpluggedHomeShelfRenderer",
+        "number": 138239810,
+        "has_index": 49,
+        "storage_offset": 504,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHomeShelfRenderer"
+      },
+      {
+        "name": "clientSortingSectionRenderer",
+        "number": 140080732,
+        "has_index": 68,
+        "storage_offset": 512,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIClientSortingSectionRenderer"
+      },
+      {
+        "name": "merchandiseShelfRenderer",
+        "number": 140709391,
+        "has_index": 67,
+        "storage_offset": 520,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMerchandiseShelfRenderer"
+      },
+      {
+        "name": "connectionShelfRenderer",
+        "number": 143559815,
+        "has_index": 69,
+        "storage_offset": 528,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIConnectionShelfRenderer"
+      },
+      {
+        "name": "musicCollectionShelfRenderer",
+        "number": 152196432,
+        "has_index": 32,
+        "storage_offset": 536,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicCollectionShelfRenderer"
+      },
+      {
+        "name": "musicCarouselShelfRenderer",
+        "number": 161206564,
+        "has_index": 38,
+        "storage_offset": 544,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicCarouselShelfRenderer"
+      },
+      {
+        "name": "musicSingleItemShelfRenderer",
+        "number": 161233442,
+        "has_index": 34,
+        "storage_offset": 552,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicSingleItemShelfRenderer"
+      },
+      {
+        "name": "musicExpandableShelfRenderer",
+        "number": 161431708,
+        "has_index": 37,
+        "storage_offset": 560,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicExpandableShelfRenderer"
+      },
+      {
+        "name": "musicImmersiveCarouselShelfRenderer",
+        "number": 166392885,
+        "has_index": 39,
+        "storage_offset": 568,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicImmersiveCarouselShelfRenderer"
+      },
+      {
+        "name": "musicEditablePlaylistDetailHeaderRenderer",
+        "number": 173690432,
+        "has_index": 43,
+        "storage_offset": 576,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicEditablePlaylistDetailHeaderRenderer"
+      },
+      {
+        "name": "musicPlaylistShelfRenderer",
+        "number": 175617300,
+        "has_index": 70,
+        "storage_offset": 584,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicPlaylistShelfRenderer"
+      },
+      {
+        "name": "musicShelfPromoRenderer",
+        "number": 183715674,
+        "has_index": 40,
+        "storage_offset": 592,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicShelfPromoRenderer"
+      },
+      {
+        "name": "kidsErrorRenderer",
+        "number": 189222951,
+        "has_index": 83,
+        "storage_offset": 600,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsErrorRenderer"
+      },
+      {
+        "name": "donationShelfRenderer",
+        "number": 190379114,
+        "has_index": 71,
+        "storage_offset": 608,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDonationShelfRenderer"
+      },
+      {
+        "name": "commentVideoThumbnailHeaderRenderer",
+        "number": 207007878,
+        "has_index": 10,
+        "storage_offset": 616,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentVideoThumbnailHeaderRenderer"
+      },
+      {
+        "name": "unpluggedErrorStateRenderer",
+        "number": 208280511,
+        "has_index": 56,
+        "storage_offset": 624,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedErrorStateRenderer"
+      },
+      {
+        "name": "slimVideoMetadataSectionRenderer",
+        "number": 216561405,
+        "has_index": 75,
+        "storage_offset": 632,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISlimVideoMetadataSectionRenderer"
+      },
+      {
+        "name": "donationUnavailableRenderer",
+        "number": 216583000,
+        "has_index": 74,
+        "storage_offset": 640,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDonationUnavailableRenderer"
+      },
+      {
+        "name": "musicDescriptionShelfRenderer",
+        "number": 221496734,
+        "has_index": 41,
+        "storage_offset": 648,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicDescriptionShelfRenderer"
+      },
+      {
+        "name": "getSuggestedPlaylistVideosSelectionMetadataRenderer",
+        "number": 225613316,
+        "has_index": 76,
+        "storage_offset": 656,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGetSuggestedPlaylistVideosSelectionMetadataRenderer"
+      },
+      {
+        "name": "musicSpotlightShelfRenderer",
+        "number": 225627844,
+        "has_index": 42,
+        "storage_offset": 664,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicSpotlightShelfRenderer"
+      },
+      {
+        "name": "unpluggedFullScreenMessageRenderer",
+        "number": 360779931,
+        "has_index": 57,
+        "storage_offset": 672,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedFullScreenMessageRenderer"
+      },
+      {
+        "name": "flowRootRenderer",
+        "number": 371777145,
+        "has_index": 79,
+        "storage_offset": 680,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFlowRootRenderer"
+      },
+      {
+        "name": "minorMomentHeaderRenderer",
+        "number": 381336830,
+        "has_index": 78,
+        "storage_offset": 688,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMinorMomentHeaderRenderer"
+      },
+      {
+        "name": "adSlotRenderer",
+        "number": 424701016,
+        "has_index": 73,
+        "storage_offset": 696,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdSlotRenderer"
+      }
+    ]
+  },
+  "YTIItemSectionSupportedRenderers": {
+    "table": "0x10ce0f680",
+    "fields": [
+      {
+        "name": "suspenseViewModel",
+        "number": 37103,
+        "has_index": 208,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISuspenseViewModel"
+      },
+      {
+        "name": "compactListItemRenderer",
+        "number": 48602820,
+        "has_index": 12,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactListItemRenderer"
+      },
+      {
+        "name": "channelListItemRenderer",
+        "number": 48694381,
+        "has_index": 150,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelListItemRenderer"
+      },
+      {
+        "name": "exploratoryResultsRenderer",
+        "number": 50302113,
+        "has_index": 33,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIExploratoryResultsRenderer"
+      },
+      {
+        "name": "videoRenderer",
+        "number": 50577878,
+        "has_index": 16,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoRenderer"
+      },
+      {
+        "name": "channelRenderer",
+        "number": 50590275,
+        "has_index": 18,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelRenderer"
+      },
+      {
+        "name": "compactVideoRenderer",
+        "number": 50630979,
+        "has_index": 2,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactVideoRenderer"
+      },
+      {
+        "name": "playlistRenderer",
+        "number": 50732276,
+        "has_index": 19,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistRenderer"
+      },
+      {
+        "name": "compactPlaylistRenderer",
+        "number": 50742631,
+        "has_index": 6,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPlaylistRenderer"
+      },
+      {
+        "name": "feedEntryRenderer",
+        "number": 50779196,
+        "has_index": 47,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFeedEntryRenderer"
+      },
+      {
+        "name": "compactChannelRenderer",
+        "number": 50794305,
+        "has_index": 5,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactChannelRenderer"
+      },
+      {
+        "name": "horizontalListRenderer",
+        "number": 51431404,
+        "has_index": 196,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHorizontalListRenderer"
+      },
+      {
+        "name": "playlistPanelVideoRenderer",
+        "number": 51779701,
+        "has_index": 206,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistPanelVideoRenderer"
+      },
+      {
+        "name": "videoOwnerRenderer",
+        "number": 51779708,
+        "has_index": 36,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoOwnerRenderer"
+      },
+      {
+        "name": "videoMetadataRenderer",
+        "number": 51779720,
+        "has_index": 35,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoMetadataRenderer"
+      },
+      {
+        "name": "gridRenderer",
+        "number": 51805506,
+        "has_index": 51,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridRenderer"
+      },
+      {
+        "name": "shelfRenderer",
+        "number": 51845067,
+        "has_index": 52,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfRenderer"
+      },
+      {
+        "name": "commentsRenderer",
+        "number": 51901115,
+        "has_index": 39,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentsRenderer"
+      },
+      {
+        "name": "channelCustomGadgetRenderer",
+        "number": 52056691,
+        "has_index": 55,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelCustomGadgetRenderer"
+      },
+      {
+        "name": "channelAboutMetadataRenderer",
+        "number": 52191200,
+        "has_index": 53,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelAboutMetadataRenderer"
+      },
+      {
+        "name": "compactRadioRenderer",
+        "number": 53170873,
+        "has_index": 10,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactRadioRenderer"
+      },
+      {
+        "name": "videoMainContentRenderer",
+        "number": 53187922,
+        "has_index": 37,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoMainContentRenderer"
+      },
+      {
+        "name": "playlistVideoRenderer",
+        "number": 53330184,
+        "has_index": 199,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistVideoRenderer"
+      },
+      {
+        "name": "playlistVideoListRenderer",
+        "number": 54681060,
+        "has_index": 59,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistVideoListRenderer"
+      },
+      {
+        "name": "resultsWithoutQuotesRenderer",
+        "number": 54808605,
+        "has_index": 31,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIResultsWithoutQuotesRenderer"
+      },
+      {
+        "name": "subscribeButtonRenderer",
+        "number": 55419609,
+        "has_index": 99,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscribeButtonRenderer"
+      },
+      {
+        "name": "noResultsFoundShowingResultsForRenderer",
+        "number": 55496280,
+        "has_index": 30,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTINoResultsFoundShowingResultsForRenderer"
+      },
+      {
+        "name": "showingResultsForRenderer",
+        "number": 55504968,
+        "has_index": 28,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShowingResultsForRenderer"
+      },
+      {
+        "name": "includingResultsForRenderer",
+        "number": 55571012,
+        "has_index": 27,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIIncludingResultsForRenderer"
+      },
+      {
+        "name": "didYouMeanRenderer",
+        "number": 55641975,
+        "has_index": 26,
+        "storage_offset": 264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDidYouMeanRenderer"
+      },
+      {
+        "name": "compactMovieRenderer",
+        "number": 58485276,
+        "has_index": 64,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMovieRenderer"
+      },
+      {
+        "name": "messageRenderer",
+        "number": 58508690,
+        "has_index": 61,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMessageRenderer"
+      },
+      {
+        "name": "ypcOffersListRenderer",
+        "number": 58521717,
+        "has_index": 115,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIYpcOffersListRenderer"
+      },
+      {
+        "name": "gridPlaylistRenderer",
+        "number": 60373571,
+        "has_index": 207,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPlaylistRenderer"
+      },
+      {
+        "name": "channelVideoPlayerRenderer",
+        "number": 60408738,
+        "has_index": 66,
+        "storage_offset": 304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelVideoPlayerRenderer"
+      },
+      {
+        "name": "settingBooleanRenderer",
+        "number": 61331416,
+        "has_index": 148,
+        "storage_offset": 312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISettingBooleanRenderer"
+      },
+      {
+        "name": "commentThreadRenderer",
+        "number": 62285833,
+        "has_index": 40,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentThreadRenderer"
+      },
+      {
+        "name": "commentRenderer",
+        "number": 62285947,
+        "has_index": 41,
+        "storage_offset": 328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentRenderer"
+      },
+      {
+        "name": "musicPassSmallFeatureInfoRenderer",
+        "number": 62539050,
+        "has_index": 71,
+        "storage_offset": 336,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicPassSmallFeatureInfoRenderer"
+      },
+      {
+        "name": "promotedVideoRenderer",
+        "number": 62887855,
+        "has_index": 62,
+        "storage_offset": 344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedVideoRenderer"
+      },
+      {
+        "name": "radioRenderer",
+        "number": 62951200,
+        "has_index": 20,
+        "storage_offset": 352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRadioRenderer"
+      },
+      {
+        "name": "musicPassSubscribedInfoRenderer",
+        "number": 62971085,
+        "has_index": 70,
+        "storage_offset": 360,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicPassSubscribedInfoRenderer"
+      },
+      {
+        "name": "musicPassFeatureInfoRenderer",
+        "number": 62971408,
+        "has_index": 72,
+        "storage_offset": 368,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicPassFeatureInfoRenderer"
+      },
+      {
+        "name": "channelFeaturedContentRenderer",
+        "number": 63546828,
+        "has_index": 73,
+        "storage_offset": 376,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelFeaturedContentRenderer"
+      },
+      {
+        "name": "videoListEntryRenderer",
+        "number": 64370300,
+        "has_index": 87,
+        "storage_offset": 384,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoListEntryRenderer"
+      },
+      {
+        "name": "channelTipCardRenderer",
+        "number": 64792712,
+        "has_index": 76,
+        "storage_offset": 392,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelTipCardRenderer"
+      },
+      {
+        "name": "channelFeaturedVideoRenderer",
+        "number": 64997729,
+        "has_index": 67,
+        "storage_offset": 400,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelFeaturedVideoRenderer"
+      },
+      {
+        "name": "compactOfferModuleRenderer",
+        "number": 65082300,
+        "has_index": 80,
+        "storage_offset": 408,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactOfferModuleRenderer"
+      },
+      {
+        "name": "notificationRenderer",
+        "number": 65099882,
+        "has_index": 77,
+        "storage_offset": 416,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTINotificationRenderer"
+      },
+      {
+        "name": "autoplayVideoRenderer",
+        "number": 65121821,
+        "has_index": 74,
+        "storage_offset": 424,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAutoplayVideoRenderer"
+      },
+      {
+        "name": "buttonRenderer",
+        "number": 65153809,
+        "has_index": 163,
+        "storage_offset": 432,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIButtonRenderer"
+      },
+      {
+        "name": "channelSearchBoxRenderer",
+        "number": 65526376,
+        "has_index": 81,
+        "storage_offset": 440,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelSearchBoxRenderer"
+      },
+      {
+        "name": "queryRefinementsRenderer",
+        "number": 65563075,
+        "has_index": 82,
+        "storage_offset": 448,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIQueryRefinementsRenderer"
+      },
+      {
+        "name": "genericPromoRenderer",
+        "number": 65665980,
+        "has_index": 83,
+        "storage_offset": 456,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGenericPromoRenderer"
+      },
+      {
+        "name": "searchNoResultsRenderer",
+        "number": 66253809,
+        "has_index": 25,
+        "storage_offset": 464,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISearchNoResultsRenderer"
+      },
+      {
+        "name": "compactMessageRenderer",
+        "number": 67559358,
+        "has_index": 11,
+        "storage_offset": 472,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMessageRenderer"
+      },
+      {
+        "name": "searchSceneOneboxRenderer",
+        "number": 67617204,
+        "has_index": 32,
+        "storage_offset": 480,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISearchSceneOneboxRenderer"
+      },
+      {
+        "name": "creatorStudioOfferRenderer",
+        "number": 67865881,
+        "has_index": 68,
+        "storage_offset": 488,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICreatorStudioOfferRenderer"
+      },
+      {
+        "name": "videoDescriptionRenderer",
+        "number": 68422119,
+        "has_index": 38,
+        "storage_offset": 496,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoDescriptionRenderer"
+      },
+      {
+        "name": "channelCustomGadgetMessageRenderer",
+        "number": 69577198,
+        "has_index": 56,
+        "storage_offset": 504,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelCustomGadgetMessageRenderer"
+      },
+      {
+        "name": "searchHistoryQueryRenderer",
+        "number": 70027122,
+        "has_index": 86,
+        "storage_offset": 512,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISearchHistoryQueryRenderer"
+      },
+      {
+        "name": "gridButtonRenderer",
+        "number": 72566494,
+        "has_index": 88,
+        "storage_offset": 520,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridButtonRenderer"
+      },
+      {
+        "name": "compactPromotedVideoRenderer",
+        "number": 73920376,
+        "has_index": 4,
+        "storage_offset": 528,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPromotedVideoRenderer"
+      },
+      {
+        "name": "conversationBarRenderer",
+        "number": 74886276,
+        "has_index": 152,
+        "storage_offset": 536,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIConversationBarRenderer"
+      },
+      {
+        "name": "channelSpotlightEditorRenderer",
+        "number": 75219118,
+        "has_index": 50,
+        "storage_offset": 544,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelSpotlightEditorRenderer"
+      },
+      {
+        "name": "feedbackElicitationSingleQuestionRenderer",
+        "number": 76183856,
+        "has_index": 49,
+        "storage_offset": 552,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFeedbackElicitationSingleQuestionRenderer"
+      },
+      {
+        "name": "searchPyvRenderer",
+        "number": 77536014,
+        "has_index": 89,
+        "storage_offset": 560,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISearchPyvRenderer"
+      },
+      {
+        "name": "audioTracksOnDeviceRenderer",
+        "number": 78929647,
+        "has_index": 93,
+        "storage_offset": 568,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAudioTracksOnDeviceRenderer"
+      },
+      {
+        "name": "audioTrackRenderer",
+        "number": 78929821,
+        "has_index": 91,
+        "storage_offset": 576,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAudioTrackRenderer"
+      },
+      {
+        "name": "compactLinkRenderer",
+        "number": 79129962,
+        "has_index": 90,
+        "storage_offset": 584,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactLinkRenderer"
+      },
+      {
+        "name": "toggleButtonRenderer",
+        "number": 79971800,
+        "has_index": 164,
+        "storage_offset": 592,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIToggleButtonRenderer"
+      },
+      {
+        "name": "audioTracksCategoryRenderer",
+        "number": 83502165,
+        "has_index": 94,
+        "storage_offset": 600,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAudioTracksCategoryRenderer"
+      },
+      {
+        "name": "inlinePlaybackRenderer",
+        "number": 83537025,
+        "has_index": 75,
+        "storage_offset": 608,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInlinePlaybackRenderer"
+      },
+      {
+        "name": "signInPromoRenderer",
+        "number": 86058570,
+        "has_index": 96,
+        "storage_offset": 616,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISignInPromoRenderer"
+      },
+      {
+        "name": "unlimitedPageHeaderRenderer",
+        "number": 87825476,
+        "has_index": 118,
+        "storage_offset": 624,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedPageHeaderRenderer"
+      },
+      {
+        "name": "unlimitedPageFeatureInfoRenderer",
+        "number": 87825487,
+        "has_index": 146,
+        "storage_offset": 632,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedPageFeatureInfoRenderer"
+      },
+      {
+        "name": "audioTrackRowRenderer",
+        "number": 87992097,
+        "has_index": 92,
+        "storage_offset": 640,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAudioTrackRowRenderer"
+      },
+      {
+        "name": "horizontalCardListRenderer",
+        "number": 88962895,
+        "has_index": 101,
+        "storage_offset": 648,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHorizontalCardListRenderer"
+      },
+      {
+        "name": "videoWithContextRenderer",
+        "number": 89018663,
+        "has_index": 17,
+        "storage_offset": 656,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoWithContextRenderer"
+      },
+      {
+        "name": "musicWideVideoRenderer",
+        "number": 89161916,
+        "has_index": 104,
+        "storage_offset": 664,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicWideVideoRenderer"
+      },
+      {
+        "name": "musicNarrowVideoRenderer",
+        "number": 89165411,
+        "has_index": 105,
+        "storage_offset": 672,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicNarrowVideoRenderer"
+      },
+      {
+        "name": "musicListVideoRenderer",
+        "number": 89166951,
+        "has_index": 106,
+        "storage_offset": 680,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicListVideoRenderer"
+      },
+      {
+        "name": "purchaseItemRenderer",
+        "number": 89747139,
+        "has_index": 65,
+        "storage_offset": 688,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPurchaseItemRenderer"
+      },
+      {
+        "name": "musicListRadioRenderer",
+        "number": 90217689,
+        "has_index": 109,
+        "storage_offset": 696,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicListRadioRenderer"
+      },
+      {
+        "name": "musicWideRadioRenderer",
+        "number": 90218040,
+        "has_index": 107,
+        "storage_offset": 704,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicWideRadioRenderer"
+      },
+      {
+        "name": "musicNarrowRadioRenderer",
+        "number": 90219769,
+        "has_index": 108,
+        "storage_offset": 712,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicNarrowRadioRenderer"
+      },
+      {
+        "name": "chipCloudRenderer",
+        "number": 90823135,
+        "has_index": 193,
+        "storage_offset": 720,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChipCloudRenderer"
+      },
+      {
+        "name": "musicShelfRenderer",
+        "number": 91303872,
+        "has_index": 110,
+        "storage_offset": 728,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicShelfRenderer"
+      },
+      {
+        "name": "channelProfileEditorRenderer",
+        "number": 91338160,
+        "has_index": 112,
+        "storage_offset": 736,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelProfileEditorRenderer"
+      },
+      {
+        "name": "subscribePromoRenderer",
+        "number": 91635189,
+        "has_index": 98,
+        "storage_offset": 744,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscribePromoRenderer"
+      },
+      {
+        "name": "connectionRenderer",
+        "number": 91725347,
+        "has_index": 103,
+        "storage_offset": 752,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIConnectionRenderer"
+      },
+      {
+        "name": "pendingConnectionRenderer",
+        "number": 91743460,
+        "has_index": 102,
+        "storage_offset": 760,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPendingConnectionRenderer"
+      },
+      {
+        "name": "unlimitedManageSubscriptionPageRenderer",
+        "number": 91811524,
+        "has_index": 117,
+        "storage_offset": 768,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedManageSubscriptionPageRenderer"
+      },
+      {
+        "name": "compactAutoplayRenderer",
+        "number": 92156382,
+        "has_index": 153,
+        "storage_offset": 776,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactAutoplayRenderer"
+      },
+      {
+        "name": "compactPromotedBannerRenderer",
+        "number": 92377611,
+        "has_index": 84,
+        "storage_offset": 784,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPromotedBannerRenderer"
+      },
+      {
+        "name": "playlistNotificationRenderer",
+        "number": 92406643,
+        "has_index": 57,
+        "storage_offset": 792,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistNotificationRenderer"
+      },
+      {
+        "name": "compactPromotedItemRenderer",
+        "number": 92511086,
+        "has_index": 85,
+        "storage_offset": 800,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPromotedItemRenderer"
+      },
+      {
+        "name": "playlistListEntryRenderer",
+        "number": 92683517,
+        "has_index": 114,
+        "storage_offset": 808,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistListEntryRenderer"
+      },
+      {
+        "name": "backgroundPromoRenderer",
+        "number": 94317419,
+        "has_index": 116,
+        "storage_offset": 816,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBackgroundPromoRenderer"
+      },
+      {
+        "name": "fixedEscapeHatchShowingResultsForRenderer",
+        "number": 95010287,
+        "has_index": 29,
+        "storage_offset": 824,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFixedEscapeHatchShowingResultsForRenderer"
+      },
+      {
+        "name": "unpluggedHomeItemRenderer",
+        "number": 96602836,
+        "has_index": 142,
+        "storage_offset": 832,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHomeItemRenderer"
+      },
+      {
+        "name": "playlistDetailHeaderRenderer",
+        "number": 96706488,
+        "has_index": 113,
+        "storage_offset": 840,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistDetailHeaderRenderer"
+      },
+      {
+        "name": "simpleTextSectionRenderer",
+        "number": 96821952,
+        "has_index": 97,
+        "storage_offset": 848,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISimpleTextSectionRenderer"
+      },
+      {
+        "name": "unpluggedGridVideoRenderer",
+        "number": 97141704,
+        "has_index": 143,
+        "storage_offset": 856,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGridVideoRenderer"
+      },
+      {
+        "name": "emergencyOneboxRenderer",
+        "number": 97260406,
+        "has_index": 69,
+        "storage_offset": 864,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEmergencyOneboxRenderer"
+      },
+      {
+        "name": "counterfactualRenderer",
+        "number": 98817457,
+        "has_index": 3,
+        "storage_offset": 872,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICounterfactualRenderer"
+      },
+      {
+        "name": "promotedAppInstallRenderer",
+        "number": 99845384,
+        "has_index": 137,
+        "storage_offset": 880,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedAppInstallRenderer"
+      },
+      {
+        "name": "unlimitedPageEmbedVideoRenderer",
+        "number": 103558991,
+        "has_index": 147,
+        "storage_offset": 888,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedPageEmbedVideoRenderer"
+      },
+      {
+        "name": "promotedTextBannerRenderer",
+        "number": 105649908,
+        "has_index": 138,
+        "storage_offset": 896,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedTextBannerRenderer"
+      },
+      {
+        "name": "audioTracksCategoryRowRenderer",
+        "number": 106089325,
+        "has_index": 95,
+        "storage_offset": 904,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAudioTracksCategoryRowRenderer"
+      },
+      {
+        "name": "compactShowRenderer",
+        "number": 106862445,
+        "has_index": 8,
+        "storage_offset": 912,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactShowRenderer"
+      },
+      {
+        "name": "showRenderer",
+        "number": 107011484,
+        "has_index": 21,
+        "storage_offset": 920,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShowRenderer"
+      },
+      {
+        "name": "channelAboutFullMetadataRenderer",
+        "number": 111159722,
+        "has_index": 54,
+        "storage_offset": 928,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelAboutFullMetadataRenderer"
+      },
+      {
+        "name": "mdeEditCustomThumbnailRenderer",
+        "number": 113780970,
+        "has_index": 195,
+        "storage_offset": 936,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMdeEditCustomThumbnailRenderer"
+      },
+      {
+        "name": "unlimitedUserNotificationRenderer",
+        "number": 116074546,
+        "has_index": 119,
+        "storage_offset": 944,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnlimitedUserNotificationRenderer"
+      },
+      {
+        "name": "liveChatRenderer",
+        "number": 117294427,
+        "has_index": 149,
+        "storage_offset": 952,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILiveChatRenderer"
+      },
+      {
+        "name": "slimVideoMetadataRenderer",
+        "number": 119167901,
+        "has_index": 22,
+        "storage_offset": 960,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISlimVideoMetadataRenderer"
+      },
+      {
+        "name": "slimOwnerRenderer",
+        "number": 119170535,
+        "has_index": 188,
+        "storage_offset": 968,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISlimOwnerRenderer"
+      },
+      {
+        "name": "universalWatchCardRenderer",
+        "number": 119956144,
+        "has_index": 34,
+        "storage_offset": 976,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUniversalWatchCardRenderer"
+      },
+      {
+        "name": "doubleItemRenderer",
+        "number": 123387213,
+        "has_index": 151,
+        "storage_offset": 984,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDoubleItemRenderer"
+      },
+      {
+        "name": "inlineSurveyRenderer",
+        "number": 125105119,
+        "has_index": 48,
+        "storage_offset": 992,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInlineSurveyRenderer"
+      },
+      {
+        "name": "unpluggedSearchShowingResultsForRenderer",
+        "number": 128420987,
+        "has_index": 144,
+        "storage_offset": 1000,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedSearchShowingResultsForRenderer"
+      },
+      {
+        "name": "commentHistoryEntryRenderer",
+        "number": 135834874,
+        "has_index": 43,
+        "storage_offset": 1008,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentHistoryEntryRenderer"
+      },
+      {
+        "name": "subscriptionNotificationToggleButtonRenderer",
+        "number": 136076983,
+        "has_index": 100,
+        "storage_offset": 1016,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscriptionNotificationToggleButtonRenderer"
+      },
+      {
+        "name": "ticketEventRenderer",
+        "number": 136346452,
+        "has_index": 154,
+        "storage_offset": 1024,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITicketEventRenderer"
+      },
+      {
+        "name": "commentHistoryBlockHeaderRenderer",
+        "number": 137335718,
+        "has_index": 42,
+        "storage_offset": 1032,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentHistoryBlockHeaderRenderer"
+      },
+      {
+        "name": "promoted15ClickTextWatchRenderer",
+        "number": 137341759,
+        "has_index": 123,
+        "storage_offset": 1040,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickTextWatchRenderer"
+      },
+      {
+        "name": "promoted15ClickTextCtdWatchRenderer",
+        "number": 137341794,
+        "has_index": 122,
+        "storage_offset": 1048,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickTextCtdWatchRenderer"
+      },
+      {
+        "name": "compactMultiOfferRenderer",
+        "number": 137954693,
+        "has_index": 79,
+        "storage_offset": 1056,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMultiOfferRenderer"
+      },
+      {
+        "name": "redCarpetShelfRenderer",
+        "number": 138457959,
+        "has_index": 156,
+        "storage_offset": 1064,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRedCarpetShelfRenderer"
+      },
+      {
+        "name": "merchandiseItemRenderer",
+        "number": 140456942,
+        "has_index": 155,
+        "storage_offset": 1072,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMerchandiseItemRenderer"
+      },
+      {
+        "name": "horizontalButtonListRenderer",
+        "number": 141960765,
+        "has_index": 157,
+        "storage_offset": 1080,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHorizontalButtonListRenderer"
+      },
+      {
+        "name": "connectionShelfRenderer",
+        "number": 143559815,
+        "has_index": 162,
+        "storage_offset": 1088,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIConnectionShelfRenderer"
+      },
+      {
+        "name": "compactMovieUpsellRenderer",
+        "number": 143960304,
+        "has_index": 78,
+        "storage_offset": 1096,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMovieUpsellRenderer"
+      },
+      {
+        "name": "carouselItemRenderer",
+        "number": 144757704,
+        "has_index": 158,
+        "storage_offset": 1104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICarouselItemRenderer"
+      },
+      {
+        "name": "ghostCardRenderer",
+        "number": 145440959,
+        "has_index": 159,
+        "storage_offset": 1112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGhostCardRenderer"
+      },
+      {
+        "name": "channelRecommendationRenderer",
+        "number": 146012302,
+        "has_index": 161,
+        "storage_offset": 1120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIChannelRecommendationRenderer"
+      },
+      {
+        "name": "promoted15ClickPtTextWatchRenderer",
+        "number": 150805198,
+        "has_index": 121,
+        "storage_offset": 1128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickPtTextWatchRenderer"
+      },
+      {
+        "name": "promoted15ClickPtTextCtdWatchRenderer",
+        "number": 150805689,
+        "has_index": 120,
+        "storage_offset": 1136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickPtTextCtdWatchRenderer"
+      },
+      {
+        "name": "compactPremiumShowRenderer",
+        "number": 152801473,
+        "has_index": 9,
+        "storage_offset": 1144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPremiumShowRenderer"
+      },
+      {
+        "name": "tileButtonRenderer",
+        "number": 152850892,
+        "has_index": 167,
+        "storage_offset": 1152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITileButtonRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": 168,
+        "storage_offset": 1160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "offlinePromoMessageRenderer",
+        "number": 154438652,
+        "has_index": 169,
+        "storage_offset": 1168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIOfflinePromoMessageRenderer"
+      },
+      {
+        "name": "clarificationRenderer",
+        "number": 154900756,
+        "has_index": 173,
+        "storage_offset": 1176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIClarificationRenderer"
+      },
+      {
+        "name": "kidsContentGroupHeroRenderer",
+        "number": 154971701,
+        "has_index": 171,
+        "storage_offset": 1184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsContentGroupHeroRenderer"
+      },
+      {
+        "name": "commentInlineFeedbackRenderer",
+        "number": 154974721,
+        "has_index": 44,
+        "storage_offset": 1192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentInlineFeedbackRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatch15ClickRenderer",
+        "number": 157152263,
+        "has_index": 125,
+        "storage_offset": 1200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatch15ClickRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatchGridFormRenderer",
+        "number": 157152273,
+        "has_index": 126,
+        "storage_offset": 1208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatchGridFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatchWideFormRenderer",
+        "number": 157152280,
+        "has_index": 127,
+        "storage_offset": 1216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatchWideFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatch15ClickRenderer",
+        "number": 157152285,
+        "has_index": 128,
+        "storage_offset": 1224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatch15ClickRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatchGridFormRenderer",
+        "number": 157152291,
+        "has_index": 129,
+        "storage_offset": 1232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatchGridFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatchWideFormRenderer",
+        "number": 157152292,
+        "has_index": 130,
+        "storage_offset": 1240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatchWideFormRenderer"
+      },
+      {
+        "name": "playlistShowMetadataRenderer",
+        "number": 157874902,
+        "has_index": 58,
+        "storage_offset": 1248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistShowMetadataRenderer"
+      },
+      {
+        "name": "reelItemRenderer",
+        "number": 158884182,
+        "has_index": 166,
+        "storage_offset": 1256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIReelItemRenderer"
+      },
+      {
+        "name": "limitedStateMessageRenderer",
+        "number": 159763862,
+        "has_index": 175,
+        "storage_offset": 1264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILimitedStateMessageRenderer"
+      },
+      {
+        "name": "musicTwoRowItemRenderer",
+        "number": 161205744,
+        "has_index": 192,
+        "storage_offset": 1272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicTwoRowItemRenderer"
+      },
+      {
+        "name": "attributedRenderer",
+        "number": 162031871,
+        "has_index": 182,
+        "storage_offset": 1280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAttributedRenderer"
+      },
+      {
+        "name": "backstageZeroStateRenderer",
+        "number": 164807218,
+        "has_index": 176,
+        "storage_offset": 1288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBackstageZeroStateRenderer"
+      },
+      {
+        "name": "promotedVideoInlineMutedRenderer",
+        "number": 166487981,
+        "has_index": 63,
+        "storage_offset": 1296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedVideoInlineMutedRenderer"
+      },
+      {
+        "name": "kidsSlimOwnerRenderer",
+        "number": 166492654,
+        "has_index": 178,
+        "storage_offset": 1304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsSlimOwnerRenderer"
+      },
+      {
+        "name": "promotedSparklesTextProductWatchRenderer",
+        "number": 171071888,
+        "has_index": 135,
+        "storage_offset": 1312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextProductWatchRenderer"
+      },
+      {
+        "name": "epgPaginationRenderer",
+        "number": 171740502,
+        "has_index": 205,
+        "storage_offset": 1320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEpgPaginationRenderer"
+      },
+      {
+        "name": "reelGridRenderer",
+        "number": 172383010,
+        "has_index": 165,
+        "storage_offset": 1328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIReelGridRenderer"
+      },
+      {
+        "name": "subscriptionProductRenderer",
+        "number": 173714495,
+        "has_index": 140,
+        "storage_offset": 1336,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscriptionProductRenderer"
+      },
+      {
+        "name": "subscriptionProductUpsellOfferRenderer",
+        "number": 173727398,
+        "has_index": 141,
+        "storage_offset": 1344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscriptionProductUpsellOfferRenderer"
+      },
+      {
+        "name": "promotedSparklesTextHomeRenderer",
+        "number": 175333548,
+        "has_index": 131,
+        "storage_offset": 1352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextHomeRenderer"
+      },
+      {
+        "name": "promotedSparklesTextSearchRenderer",
+        "number": 175608736,
+        "has_index": 136,
+        "storage_offset": 1360,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextSearchRenderer"
+      },
+      {
+        "name": "unpluggedSmallTeamsScoreRenderer",
+        "number": 178853284,
+        "has_index": 145,
+        "storage_offset": 1368,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedSmallTeamsScoreRenderer"
+      },
+      {
+        "name": "compactTvfilmEntryPointRenderer",
+        "number": 179527700,
+        "has_index": 13,
+        "storage_offset": 1376,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactTvfilmEntryPointRenderer"
+      },
+      {
+        "name": "compactStationRenderer",
+        "number": 181505635,
+        "has_index": 7,
+        "storage_offset": 1384,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactStationRenderer"
+      },
+      {
+        "name": "formfillFormRenderer",
+        "number": 182124579,
+        "has_index": 179,
+        "storage_offset": 1392,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormfillFormRenderer"
+      },
+      {
+        "name": "musicResponsiveListItemRenderer",
+        "number": 182604430,
+        "has_index": 111,
+        "storage_offset": 1400,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicResponsiveListItemRenderer"
+      },
+      {
+        "name": "adsWebViewRenderer",
+        "number": 186384161,
+        "has_index": 180,
+        "storage_offset": 1408,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdsWebViewRenderer"
+      },
+      {
+        "name": "relatedChipCloudRenderer",
+        "number": 188360221,
+        "has_index": 201,
+        "storage_offset": 1416,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRelatedChipCloudRenderer"
+      },
+      {
+        "name": "watchBreakRenderer",
+        "number": 189993098,
+        "has_index": 181,
+        "storage_offset": 1424,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchBreakRenderer"
+      },
+      {
+        "name": "donationShelfRenderer",
+        "number": 190379114,
+        "has_index": 186,
+        "storage_offset": 1432,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDonationShelfRenderer"
+      },
+      {
+        "name": "promotedSparklesTextProductHomeRenderer",
+        "number": 191960355,
+        "has_index": 132,
+        "storage_offset": 1440,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextProductHomeRenderer"
+      },
+      {
+        "name": "kidsCuratedCollectionTileRenderer",
+        "number": 192150761,
+        "has_index": 172,
+        "storage_offset": 1448,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsCuratedCollectionTileRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdHomeRenderer",
+        "number": 194442374,
+        "has_index": 133,
+        "storage_offset": 1456,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdHomeRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdHomeCompactFormRenderer",
+        "number": 194442375,
+        "has_index": 134,
+        "storage_offset": 1464,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdHomeCompactFormRenderer"
+      },
+      {
+        "name": "statRowRenderer",
+        "number": 194859058,
+        "has_index": 24,
+        "storage_offset": 1472,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIStatRowRenderer"
+      },
+      {
+        "name": "promotedDiscoveryAppPromoCompactFormRenderer",
+        "number": 196922251,
+        "has_index": 124,
+        "storage_offset": 1480,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedDiscoveryAppPromoCompactFormRenderer"
+      },
+      {
+        "name": "kidsCompactPromoEventTileRenderer",
+        "number": 197942133,
+        "has_index": 170,
+        "storage_offset": 1488,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsCompactPromoEventTileRenderer"
+      },
+      {
+        "name": "eomSettingsDisclaimerRenderer",
+        "number": 198854564,
+        "has_index": 197,
+        "storage_offset": 1496,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEomSettingsDisclaimerRenderer"
+      },
+      {
+        "name": "topicChannelDetailsRenderer",
+        "number": 199827299,
+        "has_index": 183,
+        "storage_offset": 1504,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITopicChannelDetailsRenderer"
+      },
+      {
+        "name": "playlistSegmentRenderer",
+        "number": 206381747,
+        "has_index": 60,
+        "storage_offset": 1512,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistSegmentRenderer"
+      },
+      {
+        "name": "commentVideoThumbnailHeaderRenderer",
+        "number": 207007878,
+        "has_index": 45,
+        "storage_offset": 1520,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentVideoThumbnailHeaderRenderer"
+      },
+      {
+        "name": "arCampaignRenderer",
+        "number": 216407860,
+        "has_index": 184,
+        "storage_offset": 1528,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIArCampaignRenderer"
+      },
+      {
+        "name": "slimVideoMetadataSectionRenderer",
+        "number": 216561405,
+        "has_index": 23,
+        "storage_offset": 1536,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISlimVideoMetadataSectionRenderer"
+      },
+      {
+        "name": "commuteShelfRenderer",
+        "number": 217806814,
+        "has_index": 185,
+        "storage_offset": 1544,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommuteShelfRenderer"
+      },
+      {
+        "name": "factCheckRenderer",
+        "number": 221791671,
+        "has_index": 174,
+        "storage_offset": 1552,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFactCheckRenderer"
+      },
+      {
+        "name": "commentZeroStateRenderer",
+        "number": 223052164,
+        "has_index": 46,
+        "storage_offset": 1560,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentZeroStateRenderer"
+      },
+      {
+        "name": "watchMetadataAppPromoRenderer",
+        "number": 240664969,
+        "has_index": 187,
+        "storage_offset": 1568,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchMetadataAppPromoRenderer"
+      },
+      {
+        "name": "kidsSearchPromoTileRenderer",
+        "number": 242936693,
+        "has_index": 177,
+        "storage_offset": 1576,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsSearchPromoTileRenderer"
+      },
+      {
+        "name": "commentsEntryPointUserEduRenderer",
+        "number": 263257152,
+        "has_index": 189,
+        "storage_offset": 1584,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentsEntryPointUserEduRenderer"
+      },
+      {
+        "name": "hintAnchorRenderer",
+        "number": 263600437,
+        "has_index": 190,
+        "storage_offset": 1592,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHintAnchorRenderer"
+      },
+      {
+        "name": "kidsTopChannelRenderer",
+        "number": 269436293,
+        "has_index": 0,
+        "storage_offset": 1600,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsTopChannelRenderer"
+      },
+      {
+        "name": "accountLinkSettingItemRenderer",
+        "number": 317894163,
+        "has_index": 191,
+        "storage_offset": 1608,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAccountLinkSettingItemRenderer"
+      },
+      {
+        "name": "expandableVideoDescriptionBodyRenderer",
+        "number": 332574303,
+        "has_index": 203,
+        "storage_offset": 1616,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIExpandableVideoDescriptionBodyRenderer"
+      },
+      {
+        "name": "sectionListGhostCardRenderer",
+        "number": 333401022,
+        "has_index": 160,
+        "storage_offset": 1624,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListGhostCardRenderer"
+      },
+      {
+        "name": "clipReturnRenderer",
+        "number": 346837665,
+        "has_index": 194,
+        "storage_offset": 1632,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIClipReturnRenderer"
+      },
+      {
+        "name": "kidsSeeAllSharedTileRenderer",
+        "number": 369765711,
+        "has_index": 1,
+        "storage_offset": 1640,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsSeeAllSharedTileRenderer"
+      },
+      {
+        "name": "videoDescriptionInfocardsSectionRenderer",
+        "number": 370471195,
+        "has_index": 202,
+        "storage_offset": 1648,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoDescriptionInfocardsSectionRenderer"
+      },
+      {
+        "name": "compactPlaceholderRenderer",
+        "number": 374231493,
+        "has_index": 14,
+        "storage_offset": 1656,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPlaceholderRenderer"
+      },
+      {
+        "name": "adSlotRenderer",
+        "number": 424701016,
+        "has_index": 198,
+        "storage_offset": 1664,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdSlotRenderer"
+      },
+      {
+        "name": "smartDownloadsErrorMessageRenderer",
+        "number": 446289076,
+        "has_index": 139,
+        "storage_offset": 1672,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISmartDownloadsErrorMessageRenderer"
+      },
+      {
+        "name": "downloadsPageEntryPointRenderer",
+        "number": 474376530,
+        "has_index": 15,
+        "storage_offset": 1680,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIDownloadsPageEntryPointRenderer"
+      },
+      {
+        "name": "musicImmersiveVideoRenderer",
+        "number": 495046957,
+        "has_index": 200,
+        "storage_offset": 1688,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicImmersiveVideoRenderer"
+      },
+      {
+        "name": "avatarStackViewModel",
+        "number": 513888437,
+        "has_index": 204,
+        "storage_offset": 1696,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAvatarStackViewModel"
+      }
+    ]
+  },
+  "YTICompanionAdSupportedRenderers": {
+    "table": "0x10ce7d4c8",
+    "fields": [
+      {
+        "name": "companionAdRenderer",
+        "number": 55514441,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompanionAdRenderer"
+      },
+      {
+        "name": "appPromoCompanionAdRenderer",
+        "number": 65002523,
+        "has_index": 1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAppPromoCompanionAdRenderer"
+      },
+      {
+        "name": "shoppingCompanionAdRenderer",
+        "number": 114449537,
+        "has_index": 2,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShoppingCompanionAdRenderer"
+      },
+      {
+        "name": "compactCompanionAdRenderer",
+        "number": 153405107,
+        "has_index": 3,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactCompanionAdRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": 5,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "multiItemCompanionAdRenderer",
+        "number": 156112846,
+        "has_index": 4,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMultiItemCompanionAdRenderer"
+      },
+      {
+        "name": "suggestedVideosCompanionAdRenderer",
+        "number": 177484939,
+        "has_index": 6,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISuggestedVideosCompanionAdRenderer"
+      },
+      {
+        "name": "adLayoutLoggingDataRenderer",
+        "number": 266042006,
+        "has_index": 7,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdLayoutLoggingDataRenderer"
+      },
+      {
+        "name": "belowPlayerAdLayoutRenderer",
+        "number": 361588638,
+        "has_index": 8,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBelowPlayerAdLayoutRenderer"
+      }
+    ]
+  },
+  "YTIBrowseMastheadAdSupportedRenderers": {
+    "table": "0x10ce81df8",
+    "fields": [
+      {
+        "name": "videoMastheadAdRenderer",
+        "number": 49665642,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoMastheadAdRenderer"
+      }
+    ]
+  },
+  "YTIInFeedAdLayoutRenderer": {
+    "table": "0x10cee5078",
+    "fields": [
+      {
+        "name": "adLayoutMetadata",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdLayoutMetadata"
+      },
+      {
+        "name": "renderingContent",
+        "number": 2,
+        "has_index": 2,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "layoutExitNormalTriggersArray",
+        "number": 3,
+        "has_index": 2147483647,
+        "storage_offset": 24,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIAdsControlFlowTrigger"
+      },
+      {
+        "name": "loggingDirectives",
+        "number": 999,
+        "has_index": 1,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILoggingDirectives"
+      }
+    ]
+  },
+  "YTIGridRenderer": {
+    "table": "0x10ce18430",
+    "fields": [
+      {
+        "name": "itemsArray",
+        "number": 1,
+        "has_index": 2147483647,
+        "storage_offset": 32,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIGridSupportedRenderers"
+      },
+      {
+        "name": "continuationsArray",
+        "number": 2,
+        "has_index": 2147483647,
+        "storage_offset": 40,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIGridSupportedContinuations"
+      },
+      {
+        "name": "viewAllText",
+        "number": 3,
+        "has_index": 1,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "isCollapsible",
+        "number": 4,
+        "has_index": 2,
+        "storage_offset": 3,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "viewAllEndpoint",
+        "number": 5,
+        "has_index": 4,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "showMoreText",
+        "number": 6,
+        "has_index": 5,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "showFewerText",
+        "number": 7,
+        "has_index": 6,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "numSpansHint",
+        "number": 8,
+        "has_index": 7,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "style",
+        "number": 9,
+        "has_index": 8,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridStyle"
+      },
+      {
+        "name": "trackingParams",
+        "number": 10,
+        "has_index": 9,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "gridColumnOverrideData",
+        "number": 12,
+        "has_index": 10,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridColumnOverrideData"
+      },
+      {
+        "name": "itemSize",
+        "number": 13,
+        "has_index": 12,
+        "storage_offset": 12,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "visibleItemCount",
+        "number": 14,
+        "has_index": -1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "visibleRowCount",
+        "number": 15,
+        "has_index": -1,
+        "storage_offset": 20,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "gridSpacingOverrideData",
+        "number": 16,
+        "has_index": 11,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridSpacingOverrideData"
+      },
+      {
+        "name": "header",
+        "number": 17,
+        "has_index": 0,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "targetId",
+        "number": 19,
+        "has_index": 13,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "selectedIndex",
+        "number": 20,
+        "has_index": 14,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      }
+    ]
+  },
+  "YTIGridSupportedRenderers": {
+    "table": "0x10ce18848",
+    "fields": [
+      {
+        "name": "compactVideoRenderer",
+        "number": 50630979,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactVideoRenderer"
+      },
+      {
+        "name": "compactPlaylistRenderer",
+        "number": 50742631,
+        "has_index": 3,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPlaylistRenderer"
+      },
+      {
+        "name": "compactChannelRenderer",
+        "number": 50794305,
+        "has_index": 2,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactChannelRenderer"
+      },
+      {
+        "name": "compactMovieRenderer",
+        "number": 58485276,
+        "has_index": 5,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMovieRenderer"
+      },
+      {
+        "name": "gridChannelRenderer",
+        "number": 60373547,
+        "has_index": 7,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridChannelRenderer"
+      },
+      {
+        "name": "gridMovieRenderer",
+        "number": 60373556,
+        "has_index": 9,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridMovieRenderer"
+      },
+      {
+        "name": "gridPlaylistRenderer",
+        "number": 60373571,
+        "has_index": 13,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPlaylistRenderer"
+      },
+      {
+        "name": "gridRadioRenderer",
+        "number": 60373578,
+        "has_index": 16,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridRadioRenderer"
+      },
+      {
+        "name": "gridVideoRenderer",
+        "number": 60373625,
+        "has_index": 18,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridVideoRenderer"
+      },
+      {
+        "name": "musicPassSmallFeatureInfoRenderer",
+        "number": 62539050,
+        "has_index": 19,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicPassSmallFeatureInfoRenderer"
+      },
+      {
+        "name": "gridMoviePlaylistRenderer",
+        "number": 66549263,
+        "has_index": 8,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridMoviePlaylistRenderer"
+      },
+      {
+        "name": "videoSceneRenderer",
+        "number": 80244106,
+        "has_index": 6,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoSceneRenderer"
+      },
+      {
+        "name": "gridPromotedVideoRenderer",
+        "number": 82182324,
+        "has_index": 15,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPromotedVideoRenderer"
+      },
+      {
+        "name": "unpluggedVideoRenderer",
+        "number": 85732145,
+        "has_index": 23,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedVideoRenderer"
+      },
+      {
+        "name": "gridPromotedBannerRenderer",
+        "number": 93065129,
+        "has_index": 14,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPromotedBannerRenderer"
+      },
+      {
+        "name": "unpluggedHomeItemRenderer",
+        "number": 96602836,
+        "has_index": 28,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHomeItemRenderer"
+      },
+      {
+        "name": "unpluggedGridVideoRenderer",
+        "number": 97141704,
+        "has_index": 27,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGridVideoRenderer"
+      },
+      {
+        "name": "unpluggedPersonRenderer",
+        "number": 97273257,
+        "has_index": 29,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedPersonRenderer"
+      },
+      {
+        "name": "counterfactualRenderer",
+        "number": 98817457,
+        "has_index": 1,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICounterfactualRenderer"
+      },
+      {
+        "name": "unpluggedBrowseItemRenderer",
+        "number": 99952498,
+        "has_index": 24,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedBrowseItemRenderer"
+      },
+      {
+        "name": "gridShowRenderer",
+        "number": 105544041,
+        "has_index": 17,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridShowRenderer"
+      },
+      {
+        "name": "unpluggedGridChannelRenderer",
+        "number": 116174946,
+        "has_index": 26,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGridChannelRenderer"
+      },
+      {
+        "name": "redCarpetVideoRenderer",
+        "number": 138945852,
+        "has_index": 31,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRedCarpetVideoRenderer"
+      },
+      {
+        "name": "gridNarrowVideoRenderer",
+        "number": 145467693,
+        "has_index": 12,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridNarrowVideoRenderer"
+      },
+      {
+        "name": "posterRenderer",
+        "number": 145603515,
+        "has_index": 30,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPosterRenderer"
+      },
+      {
+        "name": "gridNarrowPlaylistRenderer",
+        "number": 145831208,
+        "has_index": 10,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridNarrowPlaylistRenderer"
+      },
+      {
+        "name": "gridNarrowRadioRenderer",
+        "number": 145844540,
+        "has_index": 11,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridNarrowRadioRenderer"
+      },
+      {
+        "name": "compactPremiumShowRenderer",
+        "number": 152801473,
+        "has_index": 4,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPremiumShowRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": 36,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatchGridFormRenderer",
+        "number": 157152273,
+        "has_index": 20,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatchGridFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatchGridFormRenderer",
+        "number": 157152291,
+        "has_index": 21,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatchGridFormRenderer"
+      },
+      {
+        "name": "reelItemRenderer",
+        "number": 158884182,
+        "has_index": 22,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIReelItemRenderer"
+      },
+      {
+        "name": "musicTwoRowItemRenderer",
+        "number": 161205744,
+        "has_index": 32,
+        "storage_offset": 264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicTwoRowItemRenderer"
+      },
+      {
+        "name": "unpluggedIntentChipRenderer",
+        "number": 174798783,
+        "has_index": 34,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedIntentChipRenderer"
+      },
+      {
+        "name": "gameCardRenderer",
+        "number": 194137132,
+        "has_index": 33,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGameCardRenderer"
+      },
+      {
+        "name": "unpluggedDvrPickerItemRenderer",
+        "number": 220023542,
+        "has_index": 25,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedDvrPickerItemRenderer"
+      },
+      {
+        "name": "musicNavigationButtonRenderer",
+        "number": 281342896,
+        "has_index": 35,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicNavigationButtonRenderer"
+      }
+    ]
+  },
+  "YTIHorizontalListRenderer": {
+    "table": "0x10ce259b0",
+    "fields": [
+      {
+        "name": "itemsArray",
+        "number": 1,
+        "has_index": 2147483647,
+        "storage_offset": 24,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIHorizontalListSupportedRenderers"
+      },
+      {
+        "name": "viewAllText",
+        "number": 3,
+        "has_index": 3,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "trackingParams",
+        "number": 4,
+        "has_index": 13,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "continuationsArray",
+        "number": 5,
+        "has_index": 2147483647,
+        "storage_offset": 48,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIHorizontalListSupportedContinuations"
+      },
+      {
+        "name": "collapsedItemCount",
+        "number": 6,
+        "has_index": 0,
+        "storage_offset": 4,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "visibleItemCount",
+        "number": 7,
+        "has_index": 1,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "viewAllEndpoint",
+        "number": 8,
+        "has_index": 4,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "selectedIndex",
+        "number": 9,
+        "has_index": 5,
+        "storage_offset": 12,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "nextButton",
+        "number": 11,
+        "has_index": 7,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "previousButton",
+        "number": 12,
+        "has_index": 8,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "activeStateDescriptor",
+        "number": 13,
+        "has_index": 6,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIActiveStateDescriptor"
+      },
+      {
+        "name": "itemSize",
+        "number": 15,
+        "has_index": 2,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "force16By9ThumbnailAspectRatio",
+        "number": 16,
+        "has_index": 9,
+        "storage_offset": 10,
+        "flags": "0x40",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "responsiveContainerConfiguration",
+        "number": 17,
+        "has_index": 11,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIResponsiveContainerConfiguration"
+      },
+      {
+        "name": "loggingDirectives",
+        "number": 999,
+        "has_index": 12,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILoggingDirectives"
+      }
+    ]
+  },
+  "YTIHorizontalListSupportedRenderers": {
+    "table": "0x10ce25ba0",
+    "fields": [
+      {
+        "name": "videoRenderer",
+        "number": 50577878,
+        "has_index": 42,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoRenderer"
+      },
+      {
+        "name": "compactVideoRenderer",
+        "number": 50630979,
+        "has_index": 6,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactVideoRenderer"
+      },
+      {
+        "name": "compactPlaylistRenderer",
+        "number": 50742631,
+        "has_index": 4,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactPlaylistRenderer"
+      },
+      {
+        "name": "compactChannelRenderer",
+        "number": 50794305,
+        "has_index": 2,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactChannelRenderer"
+      },
+      {
+        "name": "playlistPanelVideoRenderer",
+        "number": 51779701,
+        "has_index": 67,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistPanelVideoRenderer"
+      },
+      {
+        "name": "compactRadioRenderer",
+        "number": 53170873,
+        "has_index": 5,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactRadioRenderer"
+      },
+      {
+        "name": "compactMovieRenderer",
+        "number": 58485276,
+        "has_index": 7,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactMovieRenderer"
+      },
+      {
+        "name": "gridChannelRenderer",
+        "number": 60373547,
+        "has_index": 12,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridChannelRenderer"
+      },
+      {
+        "name": "gridPlaylistRenderer",
+        "number": 60373571,
+        "has_index": 14,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPlaylistRenderer"
+      },
+      {
+        "name": "gridRadioRenderer",
+        "number": 60373578,
+        "has_index": 17,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridRadioRenderer"
+      },
+      {
+        "name": "gridVideoRenderer",
+        "number": 60373625,
+        "has_index": 19,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridVideoRenderer"
+      },
+      {
+        "name": "commentRenderer",
+        "number": 62285947,
+        "has_index": 1,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommentRenderer"
+      },
+      {
+        "name": "radioRenderer",
+        "number": 62951200,
+        "has_index": 40,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRadioRenderer"
+      },
+      {
+        "name": "buttonRenderer",
+        "number": 65153809,
+        "has_index": 62,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIButtonRenderer"
+      },
+      {
+        "name": "gridMoviePlaylistRenderer",
+        "number": 66549263,
+        "has_index": 13,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridMoviePlaylistRenderer"
+      },
+      {
+        "name": "gridButtonRenderer",
+        "number": 72566494,
+        "has_index": 11,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridButtonRenderer"
+      },
+      {
+        "name": "compactLinkRenderer",
+        "number": 79129962,
+        "has_index": 3,
+        "storage_offset": 144,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactLinkRenderer"
+      },
+      {
+        "name": "gridPromotedVideoRenderer",
+        "number": 82182324,
+        "has_index": 16,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPromotedVideoRenderer"
+      },
+      {
+        "name": "unpluggedVideoRenderer",
+        "number": 85732145,
+        "has_index": 48,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedVideoRenderer"
+      },
+      {
+        "name": "playerOverlayAutoplayRenderer",
+        "number": 92155347,
+        "has_index": 69,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayerOverlayAutoplayRenderer"
+      },
+      {
+        "name": "gridPromotedBannerRenderer",
+        "number": 93065129,
+        "has_index": 15,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridPromotedBannerRenderer"
+      },
+      {
+        "name": "backgroundPromoRenderer",
+        "number": 94317419,
+        "has_index": 0,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIBackgroundPromoRenderer"
+      },
+      {
+        "name": "unpluggedHomeItemRenderer",
+        "number": 96602836,
+        "has_index": 47,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHomeItemRenderer"
+      },
+      {
+        "name": "simpleTextSectionRenderer",
+        "number": 96821952,
+        "has_index": 70,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISimpleTextSectionRenderer"
+      },
+      {
+        "name": "unpluggedGridVideoRenderer",
+        "number": 97141704,
+        "has_index": 46,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGridVideoRenderer"
+      },
+      {
+        "name": "unpluggedPersonRenderer",
+        "number": 97273257,
+        "has_index": 49,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedPersonRenderer"
+      },
+      {
+        "name": "counterfactualRenderer",
+        "number": 98817457,
+        "has_index": 9,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICounterfactualRenderer"
+      },
+      {
+        "name": "unpluggedBrowseItemRenderer",
+        "number": 99952498,
+        "has_index": 50,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedBrowseItemRenderer"
+      },
+      {
+        "name": "topicRenderer",
+        "number": 102283498,
+        "has_index": 60,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITopicRenderer"
+      },
+      {
+        "name": "pivotRadioRenderer",
+        "number": 104532000,
+        "has_index": 22,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPivotRadioRenderer"
+      },
+      {
+        "name": "gridShowRenderer",
+        "number": 105544041,
+        "has_index": 18,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridShowRenderer"
+      },
+      {
+        "name": "musicNarrowAlbumRenderer",
+        "number": 111740543,
+        "has_index": 56,
+        "storage_offset": 264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicNarrowAlbumRenderer"
+      },
+      {
+        "name": "musicWideAlbumRenderer",
+        "number": 112429840,
+        "has_index": 57,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicWideAlbumRenderer"
+      },
+      {
+        "name": "musicWideArtistRadioRenderer",
+        "number": 114376755,
+        "has_index": 58,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMusicWideArtistRadioRenderer"
+      },
+      {
+        "name": "unpluggedSearchOneboxRenderer",
+        "number": 115017721,
+        "has_index": 54,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedSearchOneboxRenderer"
+      },
+      {
+        "name": "unpluggedSearchNoResultRenderer",
+        "number": 115494525,
+        "has_index": 53,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedSearchNoResultRenderer"
+      },
+      {
+        "name": "unpluggedAssistantSuggestionCardRenderer",
+        "number": 115613693,
+        "has_index": 52,
+        "storage_offset": 304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedAssistantSuggestionCardRenderer"
+      },
+      {
+        "name": "unpluggedGridChannelRenderer",
+        "number": 116174946,
+        "has_index": 45,
+        "storage_offset": 312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGridChannelRenderer"
+      },
+      {
+        "name": "unpluggedTableSectionRenderer",
+        "number": 118821739,
+        "has_index": 55,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedTableSectionRenderer"
+      },
+      {
+        "name": "inlineSurveyRenderer",
+        "number": 125105119,
+        "has_index": 65,
+        "storage_offset": 328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInlineSurveyRenderer"
+      },
+      {
+        "name": "compactChannelRecommendationCardRenderer",
+        "number": 137097475,
+        "has_index": 61,
+        "storage_offset": 336,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactChannelRecommendationCardRenderer"
+      },
+      {
+        "name": "promoted15ClickTextWatchRenderer",
+        "number": 137341759,
+        "has_index": 26,
+        "storage_offset": 344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickTextWatchRenderer"
+      },
+      {
+        "name": "promoted15ClickTextCtdWatchRenderer",
+        "number": 137341794,
+        "has_index": 25,
+        "storage_offset": 352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickTextCtdWatchRenderer"
+      },
+      {
+        "name": "promoted15ClickPtTextWatchRenderer",
+        "number": 150805198,
+        "has_index": 24,
+        "storage_offset": 360,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickPtTextWatchRenderer"
+      },
+      {
+        "name": "promoted15ClickPtTextCtdWatchRenderer",
+        "number": 150805689,
+        "has_index": 23,
+        "storage_offset": 368,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromoted15ClickPtTextCtdWatchRenderer"
+      },
+      {
+        "name": "tileButtonRenderer",
+        "number": 152850892,
+        "has_index": 63,
+        "storage_offset": 376,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITileButtonRenderer"
+      },
+      {
+        "name": "elementRenderer",
+        "number": 153515154,
+        "has_index": 10,
+        "storage_offset": 384,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIElementRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatch15ClickRenderer",
+        "number": 157152263,
+        "has_index": 28,
+        "storage_offset": 392,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatch15ClickRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatchGridFormRenderer",
+        "number": 157152273,
+        "has_index": 29,
+        "storage_offset": 400,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatchGridFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdWatchWideFormRenderer",
+        "number": 157152280,
+        "has_index": 30,
+        "storage_offset": 408,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdWatchWideFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatch15ClickRenderer",
+        "number": 157152285,
+        "has_index": 35,
+        "storage_offset": 416,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatch15ClickRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatchGridFormRenderer",
+        "number": 157152291,
+        "has_index": 36,
+        "storage_offset": 424,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatchGridFormRenderer"
+      },
+      {
+        "name": "promotedSparklesTextWatchWideFormRenderer",
+        "number": 157152292,
+        "has_index": 37,
+        "storage_offset": 432,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextWatchWideFormRenderer"
+      },
+      {
+        "name": "reelItemRenderer",
+        "number": 158884182,
+        "has_index": 41,
+        "storage_offset": 440,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIReelItemRenderer"
+      },
+      {
+        "name": "promotedSparklesTextProductWatchRenderer",
+        "number": 171071888,
+        "has_index": 38,
+        "storage_offset": 448,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextProductWatchRenderer"
+      },
+      {
+        "name": "unpluggedChipRenderer",
+        "number": 173171611,
+        "has_index": 51,
+        "storage_offset": 456,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedChipRenderer"
+      },
+      {
+        "name": "promotedSparklesTextHomeRenderer",
+        "number": 175333548,
+        "has_index": 31,
+        "storage_offset": 464,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextHomeRenderer"
+      },
+      {
+        "name": "promotedSparklesTextSearchRenderer",
+        "number": 175608736,
+        "has_index": 39,
+        "storage_offset": 472,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextSearchRenderer"
+      },
+      {
+        "name": "compactStationRenderer",
+        "number": 181505635,
+        "has_index": 8,
+        "storage_offset": 480,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompactStationRenderer"
+      },
+      {
+        "name": "autoNavToggleRenderer",
+        "number": 189191301,
+        "has_index": 59,
+        "storage_offset": 488,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAutoNavToggleRenderer"
+      },
+      {
+        "name": "promotedSparklesTextProductHomeRenderer",
+        "number": 191960355,
+        "has_index": 32,
+        "storage_offset": 496,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextProductHomeRenderer"
+      },
+      {
+        "name": "kidsCuratedCollectionTileRenderer",
+        "number": 192150761,
+        "has_index": 20,
+        "storage_offset": 504,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsCuratedCollectionTileRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdHomeRenderer",
+        "number": 194442374,
+        "has_index": 33,
+        "storage_offset": 512,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdHomeRenderer"
+      },
+      {
+        "name": "promotedSparklesTextCtdHomeCompactFormRenderer",
+        "number": 194442375,
+        "has_index": 34,
+        "storage_offset": 520,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedSparklesTextCtdHomeCompactFormRenderer"
+      },
+      {
+        "name": "promotedDiscoveryAppPromoCompactFormRenderer",
+        "number": 196922251,
+        "has_index": 27,
+        "storage_offset": 528,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPromotedDiscoveryAppPromoCompactFormRenderer"
+      },
+      {
+        "name": "playlistPanelVideoWrapperRenderer",
+        "number": 206848145,
+        "has_index": 66,
+        "storage_offset": 536,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlaylistPanelVideoWrapperRenderer"
+      },
+      {
+        "name": "unpluggedGameCardRenderer",
+        "number": 252432062,
+        "has_index": 44,
+        "storage_offset": 544,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedGameCardRenderer"
+      },
+      {
+        "name": "sectionListGhostCardRenderer",
+        "number": 333401022,
+        "has_index": 68,
+        "storage_offset": 552,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISectionListGhostCardRenderer"
+      },
+      {
+        "name": "kidsSeeAllSharedTileRenderer",
+        "number": 369765711,
+        "has_index": 21,
+        "storage_offset": 560,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIKidsSeeAllSharedTileRenderer"
+      },
+      {
+        "name": "adSlotRenderer",
+        "number": 424701016,
+        "has_index": 43,
+        "storage_offset": 568,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAdSlotRenderer"
+      },
+      {
+        "name": "toggleButtonRenderer",
+        "number": 474618859,
+        "has_index": 64,
+        "storage_offset": 576,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIToggleButtonRenderer"
+      }
+    ]
+  },
+  "YTIShelfRenderer": {
+    "table": "0x10ce357a0",
+    "fields": [
+      {
+        "name": "title",
+        "number": 1,
+        "has_index": 2,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "thumbnail",
+        "number": 2,
+        "has_index": 9,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIThumbnailDetails"
+      },
+      {
+        "name": "endpoint",
+        "number": 3,
+        "has_index": 18,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "playEndpoint",
+        "number": 4,
+        "has_index": 19,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "content",
+        "number": 5,
+        "has_index": 26,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfSupportedRenderers"
+      },
+      {
+        "name": "subscribeButtonRenderer",
+        "number": 6,
+        "has_index": 22,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISubscribeButtonRenderer"
+      },
+      {
+        "name": "dismissal",
+        "number": 7,
+        "has_index": 24,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "contextualItems",
+        "number": 8,
+        "has_index": 28,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfContextualItemsSupportedRenderers"
+      },
+      {
+        "name": "subtitle",
+        "number": 9,
+        "has_index": 8,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "titleAnnotation",
+        "number": 12,
+        "has_index": 3,
+        "storage_offset": 112,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "debugHtml",
+        "number": 13,
+        "has_index": 31,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "actionAnnotation",
+        "number": 14,
+        "has_index": 7,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "trackingParams",
+        "number": 15,
+        "has_index": 30,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "serviceEndpointsArray",
+        "number": 16,
+        "has_index": 2147483647,
+        "storage_offset": 144,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "shelfFeedbackEndpoint",
+        "number": 17,
+        "has_index": 29,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "menu",
+        "number": 19,
+        "has_index": 25,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfMenuSupportedRenderers"
+      },
+      {
+        "name": "icon",
+        "number": 22,
+        "has_index": 12,
+        "storage_offset": 168,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIIcon"
+      },
+      {
+        "name": "hideHeader",
+        "number": 23,
+        "has_index": 13,
+        "storage_offset": 14,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "privacySetting",
+        "number": 24,
+        "has_index": 32,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfPrivacySupportedRenderers"
+      },
+      {
+        "name": "associatedGame",
+        "number": 25,
+        "has_index": 33,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIAssociatedGameSupportedRenderers"
+      },
+      {
+        "name": "badgesArray",
+        "number": 26,
+        "has_index": 2147483647,
+        "storage_offset": 192,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIShelfBadgeSupportedRenderers"
+      },
+      {
+        "name": "headerStyle",
+        "number": 27,
+        "has_index": 4,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfHeaderStyle"
+      },
+      {
+        "name": "impressionEndpointsArray",
+        "number": 28,
+        "has_index": 2147483647,
+        "storage_offset": 208,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "subscribeButton",
+        "number": 29,
+        "has_index": 23,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfSubscribeButtonSupportedRenderers"
+      },
+      {
+        "name": "autonavToggle",
+        "number": 30,
+        "has_index": 17,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfAutoNavToggleSupportedRenderers"
+      },
+      {
+        "name": "playAllButton",
+        "number": 31,
+        "has_index": 20,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfPlayAllButtonSupportedRenderers"
+      },
+      {
+        "name": "p13NDebugData",
+        "number": 32,
+        "has_index": 35,
+        "storage_offset": 240,
+        "flags": "0x40",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "screenBasedVisibilityCondition",
+        "number": 34,
+        "has_index": 34,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIScreenBasedVisibilityCondition"
+      },
+      {
+        "name": "unpluggedShelfRendererType",
+        "number": 35,
+        "has_index": 36,
+        "storage_offset": 12,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "headerRenderer",
+        "number": 36,
+        "has_index": 5,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "thumbnailSecondary",
+        "number": 38,
+        "has_index": 10,
+        "storage_offset": 264,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIThumbnailDetails"
+      },
+      {
+        "name": "sortFilter",
+        "number": 39,
+        "has_index": 21,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "thumbnailStyle",
+        "number": 40,
+        "has_index": 11,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "separator",
+        "number": 41,
+        "has_index": 37,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTISeparatorDetails"
+      },
+      {
+        "name": "shelfPaddingStyle",
+        "number": 43,
+        "has_index": 27,
+        "storage_offset": 20,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "columnCount",
+        "number": 45,
+        "has_index": -2,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 11,
+        "message_class": null
+      },
+      {
+        "name": "minColumnCount",
+        "number": 46,
+        "has_index": -2,
+        "storage_offset": 28,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 11,
+        "message_class": null
+      },
+      {
+        "name": "focusContent",
+        "number": 47,
+        "has_index": 15,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "windowSizeColumnConfig",
+        "number": 48,
+        "has_index": -2,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIShelfWindowSizeColumnConfig"
+      },
+      {
+        "name": "targetId",
+        "number": 49,
+        "has_index": 0,
+        "storage_offset": 296,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "footerRenderer",
+        "number": 50,
+        "has_index": 6,
+        "storage_offset": 304,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "targetingContext",
+        "number": 52,
+        "has_index": 1,
+        "storage_offset": 312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTITargetingContext"
+      },
+      {
+        "name": "relativeFeedPosition",
+        "number": 53,
+        "has_index": 38,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      },
+      {
+        "name": "layoutConfiguration",
+        "number": 54,
+        "has_index": -2,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTILayoutConfiguration"
+      },
+      {
+        "name": "expandButtonText",
+        "number": 55,
+        "has_index": 39,
+        "storage_offset": 328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFormattedString"
+      },
+      {
+        "name": "useWideScreenExpandButton",
+        "number": 56,
+        "has_index": 40,
+        "storage_offset": 41,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "feedRedesignInset",
+        "number": 57,
+        "has_index": 42,
+        "storage_offset": 36,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 7,
+        "message_class": null
+      }
+    ]
+  },
+  "YTIFulfillmentContent": {
+    "table": "0x10ce26d70",
+    "fields": [
+      {
+        "name": "fulfilledLayout",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      }
+    ]
+  },
+  "YTIShelfSupportedRenderers": {
+    "table": "0x10ce35f18",
+    "fields": [
+      {
+        "name": "horizontalListRenderer",
+        "number": 51431404,
+        "has_index": 2,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIHorizontalListRenderer"
+      },
+      {
+        "name": "gridRenderer",
+        "number": 51805506,
+        "has_index": 1,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGridRenderer"
+      },
+      {
+        "name": "expandedShelfContentsRenderer",
+        "number": 55636665,
+        "has_index": 4,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIExpandedShelfContentsRenderer"
+      },
+      {
+        "name": "verticalListRenderer",
+        "number": 57988071,
+        "has_index": 3,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVerticalListRenderer"
+      },
+      {
+        "name": "messageRenderer",
+        "number": 58508690,
+        "has_index": 5,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIMessageRenderer"
+      },
+      {
+        "name": "genericPromoRenderer",
+        "number": 65665980,
+        "has_index": 0,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIGenericPromoRenderer"
+      },
+      {
+        "name": "unpluggedTableSectionRenderer",
+        "number": 118821739,
+        "has_index": 7,
+        "storage_offset": 56,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedTableSectionRenderer"
+      },
+      {
+        "name": "epgPaginationRenderer",
+        "number": 171740502,
+        "has_index": 8,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEpgPaginationRenderer"
+      },
+      {
+        "name": "unpluggedHorizontalChipListRenderer",
+        "number": 174532213,
+        "has_index": 6,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIUnpluggedHorizontalChipListRenderer"
+      }
+    ]
+  },
+  "YTIWatchNextResponse": {
+    "table": "0x10ce95f80",
+    "fields": [
+      {
+        "name": "responseContext",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 16,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIResponseContext"
+      },
+      {
+        "name": "contents",
+        "number": 7,
+        "has_index": 1,
+        "storage_offset": 24,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchNextSupportedRenderers"
+      },
+      {
+        "name": "continuationContents",
+        "number": 8,
+        "has_index": 2,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIContinuationSupportedRenderers"
+      },
+      {
+        "name": "currentVideoEndpoint",
+        "number": 9,
+        "has_index": 11,
+        "storage_offset": 40,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "editContents",
+        "number": 10,
+        "has_index": 3,
+        "storage_offset": 48,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIEditOnWatchSupportedRenderers"
+      },
+      {
+        "name": "alertsArray",
+        "number": 12,
+        "has_index": 2147483647,
+        "storage_offset": 56,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIWatchNextAlertsSupportedRenderers"
+      },
+      {
+        "name": "trackingParams",
+        "number": 13,
+        "has_index": 15,
+        "storage_offset": 64,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "playerOverlays",
+        "number": 14,
+        "has_index": 4,
+        "storage_offset": 72,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIPlayerOverlaySupportedRenderers"
+      },
+      {
+        "name": "companionAds",
+        "number": 15,
+        "has_index": 5,
+        "storage_offset": 80,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompanionAdSupportedRenderers"
+      },
+      {
+        "name": "videoReporting",
+        "number": 16,
+        "has_index": 9,
+        "storage_offset": 88,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIVideoReportingSupportedRenderers"
+      },
+      {
+        "name": "survey",
+        "number": 17,
+        "has_index": 10,
+        "storage_offset": 96,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchNextSurveyTriggerSupportedRenderers"
+      },
+      {
+        "name": "overlay",
+        "number": 20,
+        "has_index": 8,
+        "storage_offset": 104,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchNextOverlaySupportedRenderers"
+      },
+      {
+        "name": "onResponseReceivedEndpointsArray",
+        "number": 21,
+        "has_index": 2147483647,
+        "storage_offset": 112,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "sidebarDebugHtml",
+        "number": 22,
+        "has_index": 20,
+        "storage_offset": 120,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "debugHtml",
+        "number": 23,
+        "has_index": 21,
+        "storage_offset": 128,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 14,
+        "message_class": null
+      },
+      {
+        "name": "lockScreen",
+        "number": 24,
+        "has_index": 13,
+        "storage_offset": 136,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchNextLockScreenSupportedRenderers"
+      },
+      {
+        "name": "engagementPanelsArray",
+        "number": 25,
+        "has_index": 2147483647,
+        "storage_offset": 144,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIEngagementPanelSupportedRenderers"
+      },
+      {
+        "name": "onUiReady",
+        "number": 26,
+        "has_index": 16,
+        "storage_offset": 152,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "currentVideoThumbnail",
+        "number": 29,
+        "has_index": 12,
+        "storage_offset": 160,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIThumbnailDetails"
+      },
+      {
+        "name": "adEngagementPanelsArray",
+        "number": 30,
+        "has_index": 2147483647,
+        "storage_offset": 168,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIEngagementPanelSupportedRenderers"
+      },
+      {
+        "name": "onWatchBreakTriggeredCommand",
+        "number": 32,
+        "has_index": 17,
+        "storage_offset": 176,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "topbar",
+        "number": 33,
+        "has_index": 22,
+        "storage_offset": 184,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "unpluggedReportDvrIssue",
+        "number": 34,
+        "has_index": 24,
+        "storage_offset": 192,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "transportControls",
+        "number": 35,
+        "has_index": 25,
+        "storage_offset": 200,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "autoplayOffDialogRenderer",
+        "number": 36,
+        "has_index": 26,
+        "storage_offset": 208,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "fullscreenCompanionAdLayout",
+        "number": 37,
+        "has_index": 7,
+        "storage_offset": 216,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "castUserActionsRenderer",
+        "number": 39,
+        "has_index": 27,
+        "storage_offset": 224,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "contentVideoCompanionAds",
+        "number": 40,
+        "has_index": 6,
+        "storage_offset": 232,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICompanionAdSupportedRenderers"
+      },
+      {
+        "name": "cards",
+        "number": 41,
+        "has_index": 28,
+        "storage_offset": 240,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIInfoCardsSupportedRenderers"
+      },
+      {
+        "name": "belowPlayerImmersiveLayout",
+        "number": 42,
+        "has_index": 14,
+        "storage_offset": 248,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "queueContextParams",
+        "number": 43,
+        "has_index": 29,
+        "storage_offset": 256,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 13,
+        "message_class": null
+      },
+      {
+        "name": "pageVisualEffectsArray",
+        "number": 44,
+        "has_index": 2147483647,
+        "storage_offset": 264,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "queueMode",
+        "number": 45,
+        "has_index": 30,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 17,
+        "message_class": null
+      },
+      {
+        "name": "isAdPlayback",
+        "number": 47,
+        "has_index": 31,
+        "storage_offset": 32,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 0,
+        "message_class": null
+      },
+      {
+        "name": "statusBar",
+        "number": 48,
+        "has_index": 33,
+        "storage_offset": 272,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "onDismissMiniplayerAction",
+        "number": 49,
+        "has_index": 34,
+        "storage_offset": 280,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "onRecordPress",
+        "number": 50,
+        "has_index": 35,
+        "storage_offset": 288,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "playerCueRangeSetArray",
+        "number": 52,
+        "has_index": 2147483647,
+        "storage_offset": 296,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIPlayerCueRangeSet"
+      },
+      {
+        "name": "adSlotsArray",
+        "number": 53,
+        "has_index": 2147483647,
+        "storage_offset": 304,
+        "flags": "0x2",
+        "repeated": true,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "onMultiviewButtonCommand",
+        "number": 54,
+        "has_index": 18,
+        "storage_offset": 312,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "onScreenshotTakenCommand",
+        "number": 55,
+        "has_index": 19,
+        "storage_offset": 320,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "watchSequence",
+        "number": 56,
+        "has_index": 36,
+        "storage_offset": 328,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIWatchSequence"
+      },
+      {
+        "name": "microformat",
+        "number": 57,
+        "has_index": 37,
+        "storage_offset": 336,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRenderer"
+      },
+      {
+        "name": "onFullscreenExitCommand",
+        "number": 58,
+        "has_index": 38,
+        "storage_offset": 344,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTICommand"
+      },
+      {
+        "name": "frameworkUpdates",
+        "number": 777,
+        "has_index": 23,
+        "storage_offset": 352,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIFrameworkUpdateTransport"
+      }
+    ]
+  },
+  "YTIRenderer": {
+    "table": "0x10cda9288",
+    "fields": [
+      {
+        "name": "context",
+        "number": 1,
+        "has_index": 0,
+        "storage_offset": 8,
+        "flags": "0x0",
+        "repeated": false,
+        "data_type": 15,
+        "message_class": "YTIRendererContext"
+      }
+    ]
+  }
+}

@@ -1,0 +1,467 @@
+{
+  "schema": 1,
+  "scheme_only": true,
+  "base_commit": "4469c1982dd9ffec0bea6dadac28ecde30901b77",
+  "target_youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "read_only_ghidra": true,
+  "tests_run": false,
+  "runtime_changes": false,
+  "new_ipa_built": false,
+  "device_banner_route_verified": false,
+  "user_observation": {
+    "video_ads": "User thinks they are gone after 0.3.24; no new checkpoint report supplied.",
+    "banner_locations": [
+      "below videos",
+      "home"
+    ]
+  },
+  "baseline_source_sha256": {
+    "patcher/native/RVAdFeed.inc": "67725bac16c70fb2f59136723e3d0435710bbf40d782f0ee6c48bd70a7eb13f5",
+    "patcher/native/RVAds.inc": "6fabef484a57c2b216b562b56ab0526e9aaf092e83b96b215e862e8e195d8d26",
+    "patcher/configs/sideload-auth.json": "9456022ae5e9f41733c81e7f77317891b21acbe9ef208272a7b57ae2ce3b84fd",
+    "patcher/configs/adblock-native.json": "038133c2955d13eb53eceed4ad05513f2ca247140a00cfe9478d5f3311917502"
+  },
+  "android_source": {
+    "path": "revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\litho\\AdsFilter.java",
+    "sha256": "79e3da13455ab7dc4666b65cbcf1053d57b0952c7871e9305ec5670b9ddf1a04"
+  },
+  "confirmed_code_gaps": [
+    "playerCompanionAd/WatchNext companion fields are not filtered by the three player-ad-array hooks",
+    "watch companion setters and direct Elements section render/clear bypass current feed load and append hooks",
+    "grid/horizontal list/shelf traversal and corresponding promoted renderer unions are absent",
+    "command insertion and replacement mutate section/feed model independently of load/addSections hooks",
+    "raw ElementData compatibility matches lack per-cell structural identity and parent context"
+  ],
+  "native_cautions": [
+    "hideCompanionAd scrolls; it is not a model-clearing operation",
+    "canEnterSlot is not a complete cancellation gate: native slot notification happens before validation and didBind then continues layout notifications",
+    "YTIRenderer descriptor contains only context plus extension range; generic ad accessor assumptions are not established",
+    "didUpdateBelowPlayerLayoutWithRenderer writes companion state and notifies additional observers independently of legacy setter"
+  ],
+  "native_methods": [
+    {
+      "class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "kind": "-",
+      "selector": "didBindSlotData:layoutData:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x100d6e300"
+    },
+    {
+      "class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "kind": "-",
+      "selector": "didDisposeSlotData:layoutData:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x100d6e480"
+    },
+    {
+      "class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "kind": "-",
+      "selector": "canEnterSlot:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x100d6e644"
+    },
+    {
+      "class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "kind": "-",
+      "selector": "isValidSlotType:",
+      "encoding": "B20@0:8i16",
+      "imp": "0x100d6e7a8"
+    },
+    {
+      "class": "YTBelowPlayerCompanionRenderingAPIImpl",
+      "kind": "-",
+      "selector": "startCompanion:withLayoutID:interactionLoggingAdsClientData:",
+      "encoding": "v40@0:8@16@24@32",
+      "imp": "0x100d79f98"
+    },
+    {
+      "class": "YTBelowPlayerCompanionRenderingAPIImpl",
+      "kind": "-",
+      "selector": "clearCompanionWithLayoutID:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x100d7a174"
+    },
+    {
+      "class": "YTSectionListViewController",
+      "kind": "-",
+      "selector": "setupHeaderWithModel:isLoadingMore:isRefreshingFromContinuation:shouldPreserveHeaderOnRefresh:",
+      "encoding": "v36@0:8@16B24B28B32",
+      "imp": "0x1004fcfb4"
+    },
+    {
+      "class": "YTCompanionAdSectionBuilder",
+      "kind": "-",
+      "selector": "loadSectionController:withModel:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1015d394c"
+    },
+    {
+      "class": "YTCompanionAdSectionBuilder",
+      "kind": "-",
+      "selector": "updateSectionController:withModel:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1015d3a10"
+    },
+    {
+      "class": "YTBelowPlayerCompanionLayoutRenderingAdapter",
+      "kind": "-",
+      "selector": "startRendering",
+      "encoding": "v16@0:8",
+      "imp": "0x101615e98"
+    },
+    {
+      "class": "YTBelowPlayerCompanionLayoutRenderingAdapter",
+      "kind": "-",
+      "selector": "stopRenderingWithExitReason:",
+      "encoding": "v24@0:8Q16",
+      "imp": "0x101615fac"
+    },
+    {
+      "class": "YTBelowPlayerDiscoveryCompanionLayoutRenderingAdapter",
+      "kind": "-",
+      "selector": "startRendering",
+      "encoding": "v16@0:8",
+      "imp": "0x101616474"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "sectionControllersForSectionRenderers:reloadingSectionControllerByRenderer:",
+      "encoding": "@32@0:8@16@24",
+      "imp": "0x10035be20"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "insertSections:byPosition:error:",
+      "encoding": "B36@0:8@16i24^@28",
+      "imp": "0x1042502f0"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "insertContents:byPosition:inSection:error:",
+      "encoding": "@44@0:8@16i24@28^@36",
+      "imp": "0x1042509a8"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "replaceEntry:withReplacementRenderer:inSectionController:undoKey:operation:",
+      "encoding": "@56@0:8@16@24@32@40@48",
+      "imp": "0x1042524f4"
+    },
+    {
+      "class": "ELMComponent",
+      "kind": "-",
+      "selector": "templateURI",
+      "encoding": "@16@0:8",
+      "imp": "0x100543810"
+    },
+    {
+      "class": "ELMComponent",
+      "kind": "-",
+      "selector": "key",
+      "encoding": "@16@0:8",
+      "imp": "0x10466a018"
+    },
+    {
+      "class": "ELMComponentFactory",
+      "kind": "-",
+      "selector": "componentWithElement:context:treeLocalContext:",
+      "encoding": "@40@0:8@16@24@32",
+      "imp": "0x100510828"
+    },
+    {
+      "class": "YTIItemSectionSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10041e868"
+    },
+    {
+      "class": "YTIAdSlotRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x105044788"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1050575f0"
+    },
+    {
+      "class": "YTIPlayerCompanionAdsSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10505c380"
+    },
+    {
+      "class": "YTIBelowPlayerAdLayoutRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10505c5f8"
+    },
+    {
+      "class": "YTISectionListRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10032ddec"
+    },
+    {
+      "class": "YTISectionListHeaderSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1004fdb98"
+    },
+    {
+      "class": "YTISectionListSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10041de68"
+    },
+    {
+      "class": "YTICompanionAdSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10507c790"
+    },
+    {
+      "class": "YTIBrowseMastheadAdSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10507e008"
+    },
+    {
+      "class": "YTIInFeedAdLayoutRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1050d71d0"
+    },
+    {
+      "class": "YTWatchController",
+      "kind": "-",
+      "selector": "startCompanion:withLayoutID:interactionLoggingAdsClientData:",
+      "encoding": "v40@0:8@16@24@32",
+      "imp": "0x101362bd4"
+    },
+    {
+      "class": "YTWatchController",
+      "kind": "-",
+      "selector": "loadCompanionAd:layoutID:interactionLoggingAdsClientData:",
+      "encoding": "v40@0:8@16@24@32",
+      "imp": "0x10136345c"
+    },
+    {
+      "class": "YTAdBelowPlayerLayoutRenderingAdapter",
+      "kind": "-",
+      "selector": "startRendering",
+      "encoding": "v16@0:8",
+      "imp": "0x101608d74"
+    },
+    {
+      "class": "YTAdBelowPlayerLayoutRenderingAdapter",
+      "kind": "-",
+      "selector": "renderCompanionSection:withRenderer:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x101609458"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "setCompanionAd:layoutID:interactionLoggingAdsClientData:",
+      "encoding": "v40@0:8@16@24@32",
+      "imp": "0x10174fbe0"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "hideCompanionAd",
+      "encoding": "v16@0:8",
+      "imp": "0x10174fe3c"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "isCompanionAdRenderer:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x101752818"
+    },
+    {
+      "class": "YTExternallyManagedSlotAdapterBase",
+      "kind": "-",
+      "selector": "didEnterExternallyManagedSlot:externalContext:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1035480dc"
+    },
+    {
+      "class": "YTExternallyManagedSlotAdapterBase",
+      "kind": "-",
+      "selector": "validateSlotEnter:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1035489a0"
+    },
+    {
+      "class": "YTIGridRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10503e120"
+    },
+    {
+      "class": "YTIGridSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10503e2fc"
+    },
+    {
+      "class": "YTIHorizontalListRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x105044308"
+    },
+    {
+      "class": "YTIHorizontalListSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1050443a0"
+    },
+    {
+      "class": "YTIFulfillmentContent",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1050447f8"
+    },
+    {
+      "class": "YTIAdSlotMetadata",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10504487c"
+    },
+    {
+      "class": "YTIShelfRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x1003313c0"
+    },
+    {
+      "class": "YTAdElementsSectionViewRenderingAPI",
+      "kind": "+",
+      "selector": "renderSection:withRenderer:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x10160b5f0"
+    },
+    {
+      "class": "YTAdElementsSectionViewRenderingAPI",
+      "kind": "+",
+      "selector": "clearSection:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x10160b708"
+    },
+    {
+      "class": "YTIRenderer",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x100222c20"
+    },
+    {
+      "class": "YTIShelfSupportedRenderers",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10504d800"
+    },
+    {
+      "class": "YTIWatchNextResponse",
+      "kind": "+",
+      "selector": "descriptor",
+      "encoding": "@16@0:8",
+      "imp": "0x10032e758"
+    },
+    {
+      "class": "YTCompanionAdSectionController",
+      "kind": "-",
+      "selector": "insetWithInset:",
+      "encoding": "{UIEdgeInsets=dddd}48@0:8{UIEdgeInsets=dddd}16",
+      "imp": "0x10161a3f8"
+    },
+    {
+      "class": "YTCompanionAdSectionController",
+      "kind": "-",
+      "selector": "hasBottomSeparator",
+      "encoding": "B16@0:8",
+      "imp": "0x10161a434"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "didUpdateBelowPlayerLayoutWithRenderer:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1017500c8"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "notifyCompanionAdObserversAdDidChangeWithInteractionLoggingAdsClientData:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x101752860"
+    },
+    {
+      "class": "YTCompanionAdObserverBehavior",
+      "kind": "-",
+      "selector": "companionAdDidChange:interactionLoggingAdsClientData:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x10175bc10"
+    }
+  ],
+  "ghidra_batches": [
+    {
+      "batch": "adblock-display-investigation",
+      "program_identity": "program=/com.google.ios.youtube_21.39.4_und3fined.ipa/Payload/YouTube.app/YouTube\nlanguage=AARCH64:LE:64:AppleSilicon\nimage_base=100000000\nsha256=ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf\nmd5=c78ac43782ec18b06c12c7efb2573690\nfunctions=1021660\n",
+      "decompilation_sha256": "61df67e4d69b5cbb1cd66fbf61e4fd6202e6546288dd7a38417a43a729a855aa"
+    },
+    {
+      "batch": "adblock-display-consumer-investigation",
+      "program_identity": "program=/com.google.ios.youtube_21.39.4_und3fined.ipa/Payload/YouTube.app/YouTube\nlanguage=AARCH64:LE:64:AppleSilicon\nimage_base=100000000\nsha256=ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf\nmd5=c78ac43782ec18b06c12c7efb2573690\nfunctions=1021660\n",
+      "decompilation_sha256": "692d6a8882c85c1fd6e03b3eac3025c08222d5d0401312e9f7a2de42079856ff"
+    },
+    {
+      "batch": "adblock-display-section-investigation",
+      "program_identity": "program=/com.google.ios.youtube_21.39.4_und3fined.ipa/Payload/YouTube.app/YouTube\nlanguage=AARCH64:LE:64:AppleSilicon\nimage_base=100000000\nsha256=ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf\nmd5=c78ac43782ec18b06c12c7efb2573690\nfunctions=1021660\n",
+      "decompilation_sha256": "e4b80099772fc8df5c1c4b343ff3a2f5689de24773a19747688f85cfc4079644"
+    },
+    {
+      "batch": "adblock-display-observer-investigation",
+      "program_identity": "program=/com.google.ios.youtube_21.39.4_und3fined.ipa/Payload/YouTube.app/YouTube\nlanguage=AARCH64:LE:64:AppleSilicon\nimage_base=100000000\nsha256=ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf\nmd5=c78ac43782ec18b06c12c7efb2573690\nfunctions=1021660\n",
+      "decompilation_sha256": "89dccf85033a3961297212116a760a07189430b6ae3d95e90ad63729177b168b"
+    }
+  ],
+  "category_inventory": {
+    "categories": 196,
+    "parse_errors": 0,
+    "additional_companion_or_masthead_methods_found": 0
+  },
+  "field_tables": "adblock-display-protobuf-fields.json",
+  "decompilation": "adblock-display-decompiled.txt",
+  "analyzed_addresses_are_provenance_only": true,
+  "device_specific_banner_identity": "unknown pending display checkpoints"
+}
