@@ -97,7 +97,7 @@ int main(void) { @autoreleasepool {
     Method defaults=class_getClassMethod(NSUserDefaults.class,@selector(standardUserDefaults));
     IMP originalDefaults=method_setImplementation(defaults,(IMP)FixtureDefaults);
     NSMutableDictionary *config=[NSMutableDictionary dictionary];
-    NSDictionary *catalog=RVPreferencesCatalog();assert([catalog[@"groups"] count]==13 && [catalog[@"settings"] count]==114);
+    NSDictionary *catalog=RVPreferencesCatalog();assert([catalog[@"groups"] count]==13 && [catalog[@"settings"] count]==115);
     for (NSString *key in catalog[@"settings"]) { NSDictionary *rule=RVPreferenceDescriptor(key);assert(RVPreferenceValid(rule[@"default"],rule));config[key]=rule[@"default"]; }
     config[@"schema"]=@1;config[@"app_name"]=@"Original app";RVConfig=config;
     FixtureIcon=[NSObject new];

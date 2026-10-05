@@ -1,16 +1,43 @@
+Latest: **0.3.21** replaces unused experiment overrides with native watch model normalization. The setting **Return YouTube Dislike > Paired vote buttons** defaults on. Reopen the video after changing it. Login, SponsorBlock and native speed behavior are preserved. No tests were run; device behavior remains unverified.
+
+## New model and restart checkpoints
+
+Capture one report after deleting/reinstalling and another after force-quitting/reopening the same installed app. Use the same ordinary video and capture its row before opening Settings. The delivered IPA is `YouTube-21.39.4-RVPort-0.3.21-SideStore-auth-unsigned.ipa`; diagnostic revision is `ryd-checkpoints-8`. Confirm the build fingerprint against `profiles/release-0.3.21.json`.
+
+Read `return_youtube_dislike.vote_model` in full diagnostics, or `last_visible_watch.vote_model` in the dedicated report. Model observations are the latest supported model in the process; rendering snapshots remain video-bound.
+
+| Stage | Expected evidence | Failure explanation |
+|---|---|---|
+| Producer hook | `producer_hook` installed; `producer_returned` or `native_serialization_normalized` events | The active native boundary may differ; serialization events appear only when a projection changed |
+| Native action model | `action_model_observed` and `button_types` containing 3/4 or 15 | `action_model_not_observed`: the native model route was not reached |
+| Pair conversion | `pair_normalized` or `existing_pair`; `pair_model_ready=true` | Check `normalization_gate`; unsupported models preserve the original controls |
+| Native like entity | `native_like_entity_resolved=true` | Missing count entity prevents standalone-to-pair conversion; no invented like count is inserted |
+| Native styling | `native_pill_style`, target styles 1/1 when ELM model is covered | Unsupported style/model boundary retains native styling |
+| Template construction | `paired_template_materialized` and rising `composition_revision` | Model converted but native template did not materialize through observed components |
+| Render geometry | Existing count mount/raster/clip checkpoints, `font_source`, `font_point_size`, `outer_edge_gate` | Distinguishes typography, missing native like geometry and clipping |
+| Miniplayer return | `vote_lifecycle.transition` start/visible times and composition revisions | `count_visible=false` means a matching rasterized, unclipped label has not yet been observed |
+
+`first_blocked_model_checkpoint` summarizes the model stages separately from the existing `first_blocked_checkpoint` for rendered text. Important gates include `native_like_count_unavailable`, `native_state_contract_mismatch`, `visibility_contract_unsupported`, `nonadjacent_vote_entries`, `ambiguous_renderer_contract`, `existing_pair_contract_unsupported`, `shared_component_contract_opaque` and `native_parse_rejected`.
+
+`vote_model.startup` and `startup_history` record cold configuration loaded/saved, request configuration and Elements serving-context fingerprints. Only hashes/presence/lengths are recorded. The launch number resets when the app data is deleted. A saved configuration may become active on the next process; these observations do not identify a specific server experiment as the cause. No raw protobufs, cookies, account identity or request URLs are logged.
+
+For spacing, `native_outer_edges_balanced` is the expected measured gate, with actual native font inheritance rather than a second Dynamic Type scale. Animated/Rive like icons are accepted inside a semantically identified native pair. An unsupported pair uses independent dislike rendering and records why edge matching could not be measured.
+
+## Historical rendering checkpoints
+
 # Return YouTube Dislike checkpoints
 
-Latest: 0.3.20 adds native-pair and native-like-text detection plus per-launch experiment read diagnostics. Report 823 passed dislike rendering while showing a different native row. See [VOTE_LAYOUT_SCHEME.md](VOTE_LAYOUT_SCHEME.md) for the restart capture procedure and exact flag checkpoints. Historical findings below describe earlier rendering repairs.
+Historical 0.3.20 added native-pair and native-like-text detection plus per-launch experiment read diagnostics. Report 823 passed dislike rendering while showing a different native row. See [VOTE_LAYOUT_SCHEME.md](VOTE_LAYOUT_SCHEME.md) for the restart capture procedure and exact flag checkpoints. Historical findings below describe earlier rendering repairs.
 
 Report 635 and the screenshot confirm the 0.3.15 count mounts and draws. Its history captures transient player detachment, node removal and delayed recreation after miniplayer return. Version 0.3.16 reserves the missing icon gap and adds lifecycle refreshes. Spacing and restoration still require device confirmation.
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-7`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-8`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-7**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-8**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.

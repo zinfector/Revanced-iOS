@@ -1,3 +1,5 @@
+Latest vote counter implementation: [0.3.21 native model scheme](VOTE_COUNTER_FIX_SCHEME.md). 0.3.21 requires device confirmation on clean install and subsequent launches. Opaque shared models, absent native like entities and unsupported visibility/state contracts retain original native controls. Automatic service voting stays disabled.
+
 # YouTube iOS port coverage - 0.3.15
 
 All implemented entries are **experimental and untested on an iPhone**. Static ABI matches and archive verification do not establish runtime behavior or full ReVanced parity.

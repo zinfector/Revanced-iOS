@@ -1,3 +1,5 @@
+Implementation status: **0.3.21 is implemented; device confirmation pending.** See [RYD checkpoints](RYD_CHECKPOINTS.md). Native GPB presentation copies and class-local serialization projections cover the recovered watch bar contracts. Shared cached component pointers/hashes remain opaque and are reported without modification. Pill/size-to-content styles apply to the supported native watch action bar; unrelated entries retain their models and ordering.
+
 # Stable native like/dislike counters
 
 Proposed implementation for YouTube 21.39.4, based on Report 931 and the supplied

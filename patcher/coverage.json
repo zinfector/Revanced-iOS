@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.18",
+  "patcher_version": "0.3.21",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -856,10 +856,11 @@
       "status": "partial",
       "config_keys": [
         "return_dislikes",
+        "paired_vote_buttons",
         "ryd_voting"
       ],
-      "implementation": "Cached RYD estimates in verified slim labels/main-video entities and an inline accessory on identified slim element actions; a guarded native Yoga text adapter for video-bound segmented element pairs; manual RYD registration and voting in Settings Video tools.",
-      "limits": "The 0.3.12 report binds and lays out count text but it remains invisible. 0.3.13 enables native view flattening and inherits native typography; actual render layer and clipping diagnostics distinguish layout from rendering. Device confirmation remains outstanding. Native vote confirmation, horizontal scroll/clipping, reuse and online Shorts remain unverified; automatic service voting stays disabled.",
+      "implementation": "Cached RYD estimates with native count rendering; supported standalone watch vote models normalized to complete native paired controls, preserving native like entities and commands; semantic animated-icon pair binding and native-font inheritance; component-driven transition refresh; manual RYD service votes.",
+      "limits": "0.3.21 requires device confirmation on clean install and subsequent launches. Opaque shared models, absent native like entities and unsupported visibility/state contracts retain original native controls. Automatic service voting stays disabled.",
       "parent": null,
       "device_validated": false
     },

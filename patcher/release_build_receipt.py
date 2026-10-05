@@ -1,11 +1,11 @@
-"""Record 0.3.20 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.21 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.20'
+VERSION = '0.3.21'
 
 
 def main():
@@ -32,6 +32,7 @@ def main():
              'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc', 'native/RVSettingsNavigation.inc', 'native/RVDislikesDiagnostics.inc', 'RYD_CHECKPOINTS.md', 'profiles/ryd-checkpoints-evidence.json', 'profiles/device-report-541-ryd-render.json', 'profiles/device-report-615-ryd-mount.json', 'profiles/device-report-635-ryd-lifecycle.json', 'profiles/ryd-lifecycle-evidence.json', 'profiles/ryd-speed-polish-evidence.json', 'native/RVSpeed.inc', 'native/RVSpeedBridge.inc', 'profiles/device-report-728-startup.json', 'profiles/startup-bridge-evidence.json', 'PLAYBACK_SPEED_SCHEME.md', 'profiles/parallel-ui-snapshot-0.3.14.json', 'profiles/device-0.3.12-ryd-render-failure.json']
     names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
     names += ['native/RVVoteLayoutCompatibility.inc', 'VOTE_LAYOUT_SCHEME.md', 'profiles/vote-layout-compatibility-evidence.json', 'profiles/device-report-823-vote-layout.json']
+    names += ['native/RVVoteModel.inc', 'native/RVVoteLifecycle.inc', 'VOTE_COUNTER_FIX_SCHEME.md', 'VOTE_STARTUP_INVESTIGATION.md', 'profiles/vote-model-implementation-evidence.json', 'profiles/vote-startup-investigation.json', 'profiles/vote-counter-fix-scheme.json']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}
@@ -42,7 +43,7 @@ def main():
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 80, 'runtime_preferences': 114,
+        'feature_switches': 81, 'runtime_preferences': 115,
         'build_only': True, 'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
@@ -58,7 +59,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.20 limits native watch UX/action-style experiments while RYD is enabled and adds per-launch flag-read and native pair/like-text checkpoints. This targets the layout change in Report 823; device confirmation remains pending. Speed behavior from user-confirmed 0.3.19, authentication and SponsorBlock are preserved. No tests run.'}
+        'remaining_scope': '0.3.21 normalizes supported watch vote presentation models to native paired controls, preserves native like entities/commands, binds native typography, and refreshes after component recreation. Opaque/shared templates and missing native count contracts retain original controls with explicit diagnostic gates. Device confirmation remains pending. Authentication, SponsorBlock and the user-confirmed speed implementation are preserved. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

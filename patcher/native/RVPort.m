@@ -24,6 +24,7 @@ static void RVExtraObserve(id controller);
 static void RVExtraSetPlayer(id player,id controller);
 static BOOL RVExtraReject(NSData *data);
 static void RVSegmentsChanged(void);
+static NSData *RVVoteNormalizeElementData(NSData *data);
 static BOOL RVOrdinaryContent(id controller);
 static NSString *RVContentGate(id controller);
 static BOOL RVEnabled(NSString *key);
@@ -381,7 +382,7 @@ static void RVInstallFeed(void) {
             BOOL reject=(RVEnabled(@"feed_ads") && RVDataMatches(data,RVSetting(@"feed_patterns"))) ||
                 (RVEnabled(@"hide_shorts") && RVDataMatches(data,RVSetting(@"shorts_patterns"))) || RVExtraReject(data);
             static _Thread_local BOOL makingEmpty;
-            if (!reject || makingEmpty) return data;
+            if (!reject || makingEmpty) return RVVoteNormalizeElementData(data);
             makingEmpty=YES;
             id empty=RVObject(NSClassFromString(@"YTIElementRenderer"),"emptyCellElementRenderer");
             id result=RVObject(empty,"elementData");
@@ -554,7 +555,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
         RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
-        if (RVCompatible) { RVInstallVoteLayoutCompatibility();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
+        if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             [[NSNotificationCenter defaultCenter] addObserver:entrance selector:@selector(attach) name:UIApplicationDidBecomeActiveNotification object:nil];

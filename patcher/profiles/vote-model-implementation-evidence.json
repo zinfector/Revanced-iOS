@@ -1,0 +1,50 @@
+{
+  "version": "0.3.21",
+  "base_commit": "22342dc",
+  "device_verified": false,
+  "tests_run": false,
+  "test_skip_reason": "User explicitly instructed: Do not run tests.",
+  "model_contracts": {
+    "button_types": {
+      "like": 3,
+      "dislike": 4,
+      "segmented": 15
+    },
+    "renderer_extensions": {
+      "like": 484585818,
+      "dislike": 484590786,
+      "segmented": 484586709,
+      "compactify": 2185,
+      "video_action_bar": 37057
+    },
+    "element_model_extension": 389155117,
+    "component_extension": 168777401,
+    "native_styles": {
+      "Pill": 1,
+      "SizeButtonsToContent": 1
+    },
+    "like_count_field": 16,
+    "segmented_like_count_field": 7
+  },
+  "boundaries": [
+    "YTBAWatchPageFillerBlock getVideoActionBarElement:error:",
+    "YTBAWatchPageFillerBlock getCompactifyVideoActionBarElement:error:",
+    "Class-local data serialization on five verified GPB presentation classes",
+    "YTIElementRenderer elementData"
+  ],
+  "fallbacks": [
+    "Missing native like-count entity",
+    "Mismatched visibility keys or native status entities",
+    "Nonadjacent or ambiguous vote entries",
+    "Opaque shared component contract",
+    "Unrecognized/malformed protobuf contract"
+  ],
+  "preserved": [
+    "Native vote submodels and commands",
+    "Unknown fields",
+    "Authentication",
+    "SponsorBlock",
+    "Native speed picker implementation"
+  ],
+  "scope": "Supported native watch vote presentation models only; no shared C++ arena mutation, raw experiment override or synthesized like count. Serialization projection can be observed wherever these presentation classes are serialized. The diagnostics do not prove the device uses a covered boundary."
+}

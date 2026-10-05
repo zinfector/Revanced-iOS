@@ -169,5 +169,6 @@
   "cellular_quality": -1,
   "miniplayer_min_dimension_points": 0,
   "miniplayer_overlay_opacity": 1.0,
-  "miniplayer_hide_overlay_buttons": false
+  "miniplayer_hide_overlay_buttons": false,
+  "paired_vote_buttons": true
 }

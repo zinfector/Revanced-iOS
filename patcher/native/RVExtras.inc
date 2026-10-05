@@ -322,7 +322,9 @@ static void RVExtraObserve(id controller) {
 #include "RVDislikesUI.inc"
 #include "RVSpeedBridge.inc"
 #include "RVVoteLayoutCompatibility.inc"
+#include "RVVoteModel.inc"
 #include "RVElementDislikes.inc"
+#include "RVVoteLifecycle.inc"
 #include "RVNativeDislikes.inc"
 #include "RVDislikesDiagnostics.inc"
 
@@ -773,4 +775,4 @@ static void RVInstallLayout(void) {
     });
 }
 static void RVInstallExtras(void) {
-    RVInstallSpeedBridge();RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
+    RVInstallSpeedBridge();RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallVoteLifecycle();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }

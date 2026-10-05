@@ -12,7 +12,7 @@ GROUPS = [
     ('layout','Layout and appearance','Reopen the affected screen after changing layout or theme.', 'hide_cast_button hide_captions_button hide_autoplay_button hide_previous_next hide_watermark hide_end_cards hide_autoplay_preview hide_info_cards hide_related_overlay disable_ambient disable_popup_panels hide_action_buttons hide_flyout_items hide_comments hide_layout_components disable_haptics disable_rolling_numbers custom_header'),
     ('thumbnails','Thumbnails','Already loaded thumbnails may need a feed refresh. Per-screen modes override the global thumbnail options.', 'alternative_thumbnails dearrow_thumbnails fast_thumbnail_stills thumbnail_proxy'),
     ('links','Links and downloads','Downloads open a share sheet and require a compatible downloader.', 'copy_video_url external_downloads bypass_redirects open_links_external sanitize_sharing_links'),
-    ('ryd','Return YouTube Dislike','Estimates and service votes are separate from YouTube account votes. Voting is available in Video tools.', 'return_dislikes ryd_voting'),
+    ('ryd','Return YouTube Dislike','Estimates and service votes are separate from YouTube account votes. Voting is available in Video tools.', 'return_dislikes paired_vote_buttons ryd_voting'),
     ('sponsorblock','SponsorBlock','Reopen the video after changing categories. Votes and submissions are available in Video tools.', 'sponsorblock sponsorblock_manual sponsorblock_contribute sponsorblock_markers'),
     ('authentication','Authentication','Keep these enabled for the tested SideStore sign-in path. Restart after changing either switch.', 'sideload_auth_identity sideload_auth_keychain'),
     ('advanced','Advanced','Request overrides do not replace the media stream. Branding images and the installed app name require rebuilding the IPA.', 'spoof_app_version spoof_dimensions spoof_form_factor disable_tv_popup remove_discretion_dialog announcements watch_history_dns'),
@@ -54,6 +54,7 @@ for key,title,group in [('feed_patterns','Feed ad filters','ads'),('shorts_patte
     PARAMETERS[key]=(group,title,'string_list',dict(list_min=0,list_max=64,max_length=128,hint='One positive component pattern per line. Empty lists match nothing.'))
 
 DESCRIPTIONS = {
+    'paired_vote_buttons':'Use native paired like/dislike controls when their model is supported. Reopen the video after changing this setting.',
     'sideload_auth_identity':'Uses the original YouTube identity only in the verified native sign-in flow.',
     'sideload_auth_keychain':'Uses native private-keychain storage for the installed signing identity.',
     'custom_header':'Uses the header image supplied when this IPA was built.',

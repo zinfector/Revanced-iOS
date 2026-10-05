@@ -71,7 +71,7 @@ jobs:
           $smoke = Start-Process -FilePath '.\dist\YouTube-iOS-Patcher.exe' -ArgumentList @('--self-test','build\ci-packaged-smoke.json') -WindowStyle Hidden -Wait -PassThru
           if ($smoke.ExitCode -ne 0) { throw 'Packaged GUI smoke test failed' }
           $report = Get-Content build/ci-packaged-smoke.json -Raw | ConvertFrom-Json
-          if ($report.status -ne 'ok' -or $report.feature_switches -ne 80) { throw 'Unexpected GUI report' }
+          if ($report.status -ne 'ok' -or $report.feature_switches -ne 81) { throw 'Unexpected GUI report' }
       - name: Upload Windows patcher
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
