@@ -1,4 +1,4 @@
-# Display-ad implementation — 0.3.25
+# Display-ad implementation — 0.3.26
 
 The patcher now filters the proven Home/feed container and below-player companion paths identified in [the scheme](ADBLOCK_DISPLAY_SCHEME.md). These changes use the existing feed-ads switch, now labelled **Hide feed ads and below-video banners**. Video coordinator policy, authentication, SponsorBlock, playback speed and vote-counter implementations are unchanged.
 
@@ -45,4 +45,4 @@ For useful device evidence, include where the banner appears (Home or below the 
 
 No regression tests, static-hook test, packaged GUI smoke test, or standalone archive test were run, as instructed. The native source is compiled and the IPAs are made using the production patcher and its normal input/payload checks. The release receipt records the exact cloud source commit and artifact hashes. Banner behavior remains device-unverified until the updated IPA is tried.
 
-For the existing native video-ad strategy, use `YouTube-21.39.4-RVPort-0.3.25-SideStore-auth-native-ads-unsigned.ipa`. Sign and install it with SideStore; it retains the expanded authentication preset and removes extensions.
+For the existing native video-ad strategy, use `YouTube-21.39.4-RVPort-0.3.26-SideStore-auth-native-ads-unsigned.ipa`. Sign and install it with SideStore; it retains the expanded authentication preset and removes extensions.

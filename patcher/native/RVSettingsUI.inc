@@ -191,7 +191,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":@"0.3.25",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
+        NSDictionary *report=@{@"patcher_version":@"0.3.26",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -228,7 +228,7 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
             [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
         if (tool==4) { [self diagnostics];return; }
-        [self message:@"ReVanced iOS 0.3.25" text:[NSString stringWithFormat:@"YouTube %@\n82 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
+        [self message:@"ReVanced iOS 0.3.26" text:[NSString stringWithFormat:@"YouTube %@\n82 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
     }
     if (!RVCompatible || [row[@"disabled"] boolValue] || [row[@"toggle"] boolValue]) return;
     NSString *key=row[@"key"];if (!key) return;

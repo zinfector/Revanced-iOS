@@ -1,11 +1,11 @@
-"""Record 0.3.25 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.26 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.25'
+VERSION = '0.3.26'
 
 
 def main():
@@ -64,7 +64,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.25 adds typed grid/horizontal-list/shelf filtering, native feed insertion boundaries, legacy companion argument clearing and scoped below-player Elements section clearing/provider updates. Ad checkpoint revision 3 records display routes and unsupported cases. Opaque Home/header roots and direct advertising replacement removal remain conservative passthrough with diagnostics. No device banner validation or tests run; existing video coordinator/auth/SponsorBlock/speed/vote code preserved.'}
+        'remaining_scope': '0.3.26 adds typed grid/horizontal-list/shelf filtering, native feed insertion boundaries, legacy companion argument clearing and scoped below-player Elements section clearing/provider updates. Ad checkpoint revision 3 records display routes and unsupported cases. Opaque Home/header roots and direct advertising replacement removal remain conservative passthrough with diagnostics. No device banner validation or tests run; existing video coordinator/auth/SponsorBlock/speed/vote code preserved.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):
