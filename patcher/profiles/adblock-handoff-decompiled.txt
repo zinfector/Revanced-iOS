@@ -1,0 +1,1088 @@
+
+===== requested 1015bb8c0: supportsPlaybackForContentPlayerResponse: @ 1015bb8c0 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+uint YTAdsControlFlowPlaybackCoordinator::supportsPlaybackForContentPlayerResponse_
+               (long param_1,undefined8 param_2,long param_3)
+
+{
+  ID IVar1;
+  int iVar2;
+  
+  IVar1 = objc_stub::playerData(param_3);
+  IVar1 = objc_stub::playerConfig(IVar1);
+  IVar1 = objc_stub::iosPlayerConfig(IVar1);
+  IVar1 = objc_stub::forceGaplessAdsCompatibility(IVar1);
+  if ((IVar1 & 1) == 0) {
+    IVar1 = FUN_100196a1c(IVar1);
+    IVar1 = objc_stub::iosPlayerClientSharedConfigEnableGaplessAdsCoordinator(IVar1);
+    iVar2 = (int)IVar1;
+  }
+  else {
+    iVar2 = 1;
+  }
+  IVar1 = FUN_100196a1c(0);
+  IVar1 = objc_stub::iosPlayerClientSharedConfigDisableLegacyAdsCoordinatorWhenPossible(IVar1);
+  if (((int)IVar1 != 0) && (iVar2 != 0)) {
+    IVar1 = FUN_100196a1c(IVar1);
+    IVar1 = objc_stub::iosDisableGapless(IVar1);
+    if ((IVar1 == 0) && ((param_3 != 0 && ((*(byte *)(param_1 + 0xa0) & 1) == 0)))) {
+      IVar1 = objc_stub::playerData(param_3);
+      IVar1 = objc_stub::containsDiscoverySlotsOpportunity(IVar1);
+      if ((int)IVar1 == 0) {
+        IVar1 = objc_stub::playerData(param_3);
+        IVar1 = objc_stub::isLivePlayback(IVar1);
+        if ((IVar1 & 1) == 0) {
+          return 0;
+        }
+      }
+    }
+  }
+  IVar1 = objc_stub::isDAICompatible(param_3);
+  return (uint)IVar1 ^ 1;
+}
+
+
+
+===== requested 1015bc624: reset @ 1015bc624 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+void YTAdsControlFlowPlaybackCoordinator::reset(long param_1)
+
+{
+  ID IVar1;
+  ID IVar2;
+  undefined8 uVar3;
+  undefined8 self;
+  
+  if (*(long *)(param_1 + 0x90) != 0) {
+    uVar3 = *(undefined8 *)(param_1 + 0xa8);
+    IVar1 = objc_stub::ad(*(undefined8 *)(param_1 + 0x118));
+    objc_stub::didFinishMediaLayout:completeType:(uVar3,IVar1,4);
+  }
+  *(undefined8 *)(param_1 + 0x68) = 0;
+  *(undefined8 *)(param_1 + 0x70) = 0;
+  IVar1 = objc_stub::array(PTR__OBJC_CLASS___NSMutableArray_10c8e1428);
+  *(ID *)(param_1 + 0x78) = IVar1;
+  uVar3 = *(undefined8 *)(param_1 + 0x80);
+  *(undefined8 *)(param_1 + 0x80) = 0;
+  self = *(undefined8 *)(param_1 + 0x18);
+  IVar1 = objc_stub::currentContentCPN(param_1,uVar3);
+  objc_stub::handleContentPlaybackResetFromContentCPN:(self,IVar1);
+  if (*(char *)(param_1 + 0x109) == '\x01') {
+    uVar3 = *(undefined8 *)(param_1 + 0x28);
+    IVar1 = objc_stub::currentContentCPN(param_1);
+    objc_stub::handleContentPlaybackResetFromContentCPN:(uVar3,IVar1);
+  }
+  IVar1 = FUN_1004c2d4c(0);
+  IVar2 = objc_stub::currentContentCPN(param_1);
+  objc_stub::resetFromContentCPN:(IVar1,IVar2);
+  IVar1 = FUN_10163bb98(0);
+  IVar2 = objc_stub::currentContentCPN(param_1);
+  objc_stub::clearCacheForContentCPN:(IVar1,IVar2);
+  if (((*(byte *)(param_1 + 0xa0) & 1) == 0) && (*(char *)(param_1 + 0xf8) == '\x01')) {
+    objc_stub::reset(*(undefined8 *)(param_1 + 0x58));
+    objc_stub::reset(*(undefined8 *)(param_1 + 0x60));
+  }
+  *(undefined8 *)(param_1 + 0x110) = 0;
+  *(undefined8 *)(param_1 + 0x118) = 0;
+  *(undefined8 *)(param_1 + 0x100) = 0;
+  uVar3 = *(undefined8 *)(param_1 + 0xf0);
+  *(undefined8 *)(param_1 + 0xf0) = 0;
+  objc_stub::deactivateOverlayCoordinator(param_1,uVar3);
+  return;
+}
+
+
+
+===== requested 1080555f8: supportsPlaybackForContentPlayerResponse: @ 1080555f8 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+uint YTGaplessPlaybackCoordinator::supportsPlaybackForContentPlayerResponse_
+               (undefined8 param_1,undefined8 param_2,long param_3)
+
+{
+  ID IVar1;
+  ID IVar2;
+  uint uVar3;
+  uint unaff_w22;
+  
+  if (param_3 == 0) {
+    uVar3 = 1;
+  }
+  else {
+    IVar1 = objc_stub::playerData(param_3);
+    IVar2 = objc_stub::isLivePlayback(IVar1);
+    if (((IVar2 & 1) == 0) && (IVar2 = objc_stub::containsDiscoverySlotsOpportunity(IVar1), (IVar2 & 1) == 0)) {
+      IVar1 = objc_stub::playerConfig(IVar1);
+      IVar1 = objc_stub::iosPlayerConfig(IVar1);
+      objc_stub::useNoOpAdsCoordinator(IVar1);
+      FUN_1015c32f8();
+      uVar3 = unaff_w22 ^ 1;
+    }
+    else {
+      uVar3 = 0;
+    }
+  }
+  return uVar3;
+}
+
+
+
+===== requested 1015c1bbc: reset @ 1015c1bbc =====
+
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+void YTGaplessPlaybackCoordinator::reset(long param_1)
+
+{
+  ID IVar1;
+  ID IVar2;
+  undefined8 uVar3;
+  undefined8 self;
+  long lVar4;
+  ID IVar5;
+  undefined8 local_120;
+  long lStack_118;
+  long *local_110;
+  undefined8 uStack_108;
+  undefined8 local_100;
+  undefined8 uStack_f8;
+  undefined8 uStack_f0;
+  undefined8 uStack_e8;
+  undefined1 auStack_d8 [128];
+  long local_58;
+  
+  local_58 = *(long *)PTR____stack_chk_guard_10b39a898;
+  if (*(char *)(param_1 + 0xe8) == '\x01') {
+    uStack_f8 = 0;
+    local_100 = 0;
+    uStack_e8 = 0;
+    uStack_f0 = 0;
+    lStack_118 = 0;
+    local_120 = 0;
+    uStack_108 = 0;
+    local_110 = (long *)0x0;
+    uVar3 = *(undefined8 *)(param_1 + 0xe0);
+    IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(uVar3,&local_120,auStack_d8,0x10);
+    if (IVar1 != 0) {
+      lVar4 = *local_110;
+      do {
+        IVar5 = 0;
+        do {
+          if (*local_110 != lVar4) {
+            _objc_enumerationMutation(uVar3);
+          }
+          self = *(undefined8 *)(lStack_118 + IVar5 * 8);
+          IVar2 = objc_stub::eventCenter(self);
+          objc_stub::removeSingleVideoMediaStateSideEffectfulObserver:(IVar2,param_1);
+          IVar2 = objc_stub::eventCenter(self);
+          objc_stub::removeSingleVideoLifecycleStateObserver:(IVar2,param_1);
+          IVar5 = IVar5 + 1;
+        } while (IVar1 != IVar5);
+        IVar1 = objc_stub::countByEnumeratingWithState_objects_count_
+                          (uVar3,&local_120,auStack_d8,0x10);
+      } while (IVar1 != 0);
+    }
+    objc_stub::removeAllObjects(*(undefined8 *)(param_1 + 0xe0));
+  }
+  IVar1 = objc_stub::currentContentCPN(param_1);
+  uVar3 = *(undefined8 *)(param_1 + 0xa0);
+  IVar5 = objc_stub::currentContentCPN(param_1);
+  objc_stub::handleContentPlaybackResetFromContentCPN:(uVar3,IVar5);
+  if (*(char *)(param_1 + 0xea) == '\x01') {
+    uVar3 = *(undefined8 *)(param_1 + 0xb0);
+    IVar5 = objc_stub::currentContentCPN(param_1);
+    objc_stub::handleContentPlaybackResetFromContentCPN:(uVar3,IVar5);
+  }
+  if (*(char *)(param_1 + 0xd0) == '\x01') {
+    objc_stub::reset(*(undefined8 *)(param_1 + 0x90));
+    objc_stub::reset(*(undefined8 *)(param_1 + 0x98));
+  }
+  else {
+    objc_stub::resetForNewPlayback(*(undefined8 *)(param_1 + 0x88));
+  }
+  objc_stub::stopObservingContentSingleVideo:forContentCPN:(*(undefined8 *)(param_1 + 0x70),*(undefined8 *)(param_1 + 0x28),IVar1);
+  IVar5 = objc_stub::eventCenter(*(undefined8 *)(param_1 + 0x28));
+  IVar2 = FUN_101641908(IVar5);
+  objc_stub::removeSingleVideoCurrentTimeSideEffectfulObserver:(IVar5,IVar2);
+  objc_stub::cleanUpTimelineForContentCPN:(*(undefined8 *)(param_1 + 0x78),IVar1);
+  IVar5 = objc_stub::removeAdsPlaybackSurfaceForContentCPN:(*(undefined8 *)(param_1 + 0x80),IVar1);
+  IVar5 = FUN_10163bb98(IVar5);
+  objc_stub::clearCacheForContentCPN:(IVar5,IVar1);
+  *(undefined8 *)(param_1 + 0x30) = 0;
+  *(undefined8 *)(param_1 + 0x50) = 0;
+  *(undefined8 *)(param_1 + 0x58) = 0;
+  *(undefined1 *)(param_1 + 0x60) = 0;
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_58) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail(0);
+}
+
+
+
+===== requested 1015c3914: supportsPlaybackForContentPlayerResponse: @ 1015c3914 =====
+
+/* Function Stack Size: 0x18 bytes */
+
+undefined8 YTNoOpAdsPlaybackCoordinator::supportsPlaybackForContentPlayerResponse_(void)
+
+{
+  return 0;
+}
+
+
+
+===== requested 1015c39d0: reset @ 1015c39d0 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+void YTNoOpAdsPlaybackCoordinator::reset(void)
+
+{
+  return;
+}
+
+
+
+===== requested 1004c0568: initWithParentResponder:overlayFactory:playerView:playbackControllerDelegate:viewportSizeProvider:recompositeProvider:shouldDelayAdsPlaybackCoordinatorCreation:shouldEnableMediaDrivenPrefetch:enablePictureInPictureSupport: @ 1004c0568 =====
+
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x22 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x23 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x24 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_storeWeak replaced with injection: _objc_store_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x27 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x4c bytes */
+
+ID YTLocalPlaybackController::
+   initWithParentResponder_overlayFactory_playerView_playbackControllerDelegate_viewportSizeProvider_recompositeProvider_shouldDelayAdsPlaybackCoordinatorCreation_shouldEnableMediaDrivenPrefetch_enablePictureInPictureSupport_
+             (ID param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4,undefined8 param_5
+             ,undefined8 param_6,undefined8 param_7,undefined8 param_8,uint param_9)
+
+{
+  char cVar1;
+  bool bVar2;
+  ID self;
+  undefined8 uVar3;
+  ID IVar4;
+  undefined *puVar5;
+  undefined8 self_00;
+  objc_super local_70;
+  
+  local_70.super_class = (class_t *)PTR_YTLocalPlaybackController_10c91a018;
+  local_70.receiver = param_1;
+  self = _objc_msgSendSuper2(&local_70,PTR_s_init_10c7e8558);
+  if (self != 0) {
+    do {
+      cVar1 = '\x01';
+      bVar2 = (bool)ExclusiveMonitorPass(0x10d363d40,0x10);
+      if (bVar2) {
+        cVar1 = ExclusiveMonitorsStatus();
+        DAT_10d363d40 = DAT_10d363d40 + 1;
+      }
+    } while (cVar1 != '\0');
+    uVar3 = FUN_1000e2edc();
+    *(undefined8 *)(self + 8) = uVar3;
+    IVar4 = FUN_10048bff8(0);
+    *(ID *)(self + 0x78) = IVar4;
+    IVar4 = FUN_10049da9c(0);
+    *(ID *)(self + 0x58) = IVar4;
+    *(undefined8 *)(self + 0x38) = param_4;
+    IVar4 = FUN_1004c0a30(0);
+    *(ID *)(self + 0x70) = IVar4;
+    *(undefined8 *)(self + 0x10) = param_6;
+    *(undefined8 *)(self + 0x130) = param_7;
+    *(undefined8 *)(self + 0x138) = param_8;
+    IVar4 = FUN_1004c0fdc(0);
+    uVar3 = *(undefined8 *)(self + 0x60);
+    *(ID *)(self + 0x60) = IVar4;
+    objc_stub::addRouteChangeObserver:(*(undefined8 *)(self + 0x60),uVar3,self);
+    *(undefined4 *)(self + 0x1c0) = 0;
+    *(undefined8 *)(self + 0x1d8) = param_3;
+    *(undefined8 *)(self + 0x40) = param_5;
+    IVar4 = FUN_1004c1048(0);
+    *(ID *)(self + 0x50) = IVar4;
+    IVar4 = FUN_1000e4e2c(0);
+    uVar3 = *(undefined8 *)(self + 0x18);
+    *(ID *)(self + 0x18) = IVar4;
+    IVar4 = objc_stub::iosClientGlobalConfigIosEnablePipNavigationFromPlayerViewController(*(undefined8 *)(self + 0x18),uVar3);
+    *(char *)(self + 0x198) = (char)IVar4;
+    *(undefined1 *)(self + 0x199) = param_9._1_1_;
+    IVar4 = FUN_1001e0b6c(IVar4);
+    objc_stub::addSystemNotificationsObserver_(IVar4,self);
+    IVar4 = 0;
+    if ((param_9 & 1) == 0) {
+      IVar4 = objc_stub::createAdsPlaybackCoordinator(self);
+      uVar3 = *(undefined8 *)(self + 0x1f0);
+      *(ID *)(self + 0x1f0) = IVar4;
+      self_00 = *(undefined8 *)(self + 0x1f0);
+      IVar4 = objc_stub::shouldUseNewOverlaysAPI(self,uVar3);
+      IVar4 = objc_stub::setAdsManageOverlayLifecycleEnabled:(self_00,IVar4);
+    }
+    IVar4 = FUN_1004c49a4(IVar4);
+    objc_stub::setPlayerVisibilityProvider:(IVar4,self);
+    objc_stub::setPlayerViewLayout:(*(undefined8 *)(self + 0x40),2);
+    puVar5 = PTR_YTPlaybackBackgroundTaskController_10c903110;
+    _objc_alloc_init();
+    uVar3 = *(undefined8 *)(self + 0xf0);
+    *(undefined **)(self + 0xf0) = puVar5;
+    objc_stub::setDelegate_(*(undefined8 *)(self + 0xf0),uVar3,self);
+    puVar5 = PTR_YTPlaybackHeartbeatController_10c903118;
+    _objc_alloc_init();
+    uVar3 = *(undefined8 *)(self + 0x48);
+    *(undefined **)(self + 0x48) = puVar5;
+    objc_stub::setDelegate_(*(undefined8 *)(self + 0x48),uVar3,self);
+    IVar4 = objc_stub::heartbeatEventCenter(self);
+    objc_stub::addHandler:(IVar4,self);
+    *(undefined1 *)(self + 0xd1) = 1;
+    IVar4 = objc_stub::disablePlaybackLockScreenController(*(undefined8 *)(self + 0x18));
+    if ((IVar4 & 1) == 0) {
+      IVar4 = FUN_1004c4e50(IVar4);
+      *(ID *)(self + 0x68) = IVar4;
+    }
+    IVar4 = objc_stub::weakObjectsHashTable(PTR__OBJC_CLASS___NSHashTable_10c8e1688);
+    uVar3 = *(undefined8 *)(self + 0x118);
+    *(ID *)(self + 0x118) = IVar4;
+    IVar4 = objc_stub::weakObjectsHashTable(PTR__OBJC_CLASS___NSHashTable_10c8e1688,uVar3);
+    *(ID *)(self + 0x120) = IVar4;
+    puVar5 = PTR_YTPlayerPIPController_10c903120;
+    _objc_alloc();
+    IVar4 = objc_stub::initWithDelegate:(puVar5,self);
+    *(ID *)(self + 0x110) = IVar4;
+    puVar5 = PTR_MLMediaPlayerResources_10c8e6e50;
+    _objc_alloc_init();
+    *(undefined **)(self + 0x1f8) = puVar5;
+    puVar5 = PTR_YTLoudnessTargetProvider_10c903128;
+    _objc_alloc();
+    IVar4 = objc_stub::loudnessData(*(undefined8 *)(self + 0x1f8));
+    IVar4 = objc_stub::initWithLoudnessData:(puVar5,IVar4);
+    uVar3 = *(undefined8 *)(self + 0x30);
+    *(ID *)(self + 0x30) = IVar4;
+    objc_stub::setLoudnessTargetProvider:(*(undefined8 *)(self + 0x1f8),uVar3,*(undefined8 *)(self + 0x30))
+    ;
+    IVar4 = objc_stub::dictionary(PTR__OBJC_CLASS___NSMutableDictionary_10c8e1818);
+    uVar3 = *(undefined8 *)(self + 0x160);
+    *(ID *)(self + 0x160) = IVar4;
+    IVar4 = objc_stub::dictionary(PTR__OBJC_CLASS___NSMutableDictionary_10c8e1818,uVar3);
+    *(ID *)(self + 0x168) = IVar4;
+    IVar4 = objc_stub::defaultModel(PTR_YTActivePlaybackRateModel_10c8fe590);
+    uVar3 = *(undefined8 *)(self + 0x170);
+    *(ID *)(self + 0x170) = IVar4;
+    IVar4 = objc_stub::offlineClientConfigEnableClientBasedOnlinePlaybackPositionTracking(*(undefined8 *)(self + 0x18),uVar3);
+    *(char *)(self + 0x1a4) = (char)IVar4;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigEnableContentOverlayResetLogicFix(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1a5) = (char)IVar4;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigEnableContentOverlayResetLogicFixExtraReset(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1a6) = (char)IVar4;
+    IVar4 = objc_stub::mediaFetchColdConfig(*(undefined8 *)(self + 0x18));
+    IVar4 = objc_stub::enableEntireVideoSequencerUpdatePlayerStatus(IVar4);
+    *(char *)(self + 0x1a7) = (char)IVar4;
+    IVar4 = objc_stub::iosClientGlobalConfigEnablePipDisabledFlag(*(undefined8 *)(self + 0x18));
+    *(byte *)(self + 0x1a8) = param_9._2_1_ | (byte)IVar4 ^ 1;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigEnableCrossfade(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1a9) = (char)IVar4;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigIosUserIntentToPlaytimeCaptureForOnlyActivePlayback(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1aa) = (char)IVar4;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigIosUserIntentUserActionRequiredFix(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1b8) = (char)IVar4;
+    IVar4 = objc_stub::iosPlayerClientSharedConfigUsePlaybackIntentAsUserIntent(*(undefined8 *)(self + 0x18));
+    *(char *)(self + 0x1b9) = (char)IVar4;
+    if ((int)IVar4 != 0) {
+      puVar5 = PTR_YTPlaybackIntentState_10c903130;
+      _objc_alloc_init();
+      *(undefined **)(self + 0x1b0) = puVar5;
+    }
+  }
+  return self;
+}
+
+
+
+===== requested 104180200: videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData: @ 104180200 =====
+
+/* WARNING: Function: _objc_retain_x2 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_unsafeClaimAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* Function Stack Size: 0x30 bytes */
+
+undefined8
+YTLocalPlaybackController::
+videoSequencer_willTransitionToNextContentSequenceWithPlayerTransition_playbackConfig_playbackData_
+          (long param_1,undefined8 param_2,undefined8 param_3,ID param_4,ID param_5,ID param_6)
+
+{
+  ID IVar1;
+  ID IVar2;
+  undefined8 uVar3;
+  
+  if (*(char *)(param_1 + 0x20) == '\x01') {
+    *(undefined1 *)(param_1 + 0x20) = 0;
+    IVar1 = objc_stub::mediaFetchColdConfig(*(undefined8 *)(param_1 + 0x18));
+    IVar1 = objc_stub::iosEnableOverrideDelayPingThreshold(IVar1);
+    if ((int)IVar1 != 0) {
+      param_4 = objc_stub::copyWithAutoplay:autonav:(param_4,0,0);
+    }
+  }
+  IVar1 = objc_stub::latencyLoggerWrapper(param_4);
+  IVar1 = objc_stub::latencyLogger(IVar1);
+  objc_stub::startLatencyActionWithLatencyLogger:playerTransition:(param_1,IVar1,param_4);
+  objc_stub::resetWithCurrentVideoSequencer(param_1);
+  *(ID *)(param_1 + 0x1e8) = param_4;
+  *(ID *)(param_1 + 0x1e0) = param_5;
+  IVar1 = objc_stub::zero(PTR_YTSingleVideoTime_10c8e7fb0);
+  *(ID *)(param_1 + 0x80) = IVar1;
+  uVar3 = *(undefined8 *)(param_1 + 0x1c8);
+  *(ID *)(param_1 + 0x1c8) = param_6;
+  IVar1 = objc_stub::setContentPlaybackData:(*(undefined8 *)(param_1 + 0x30),uVar3,param_6);
+  if (*(char *)(param_1 + 0x199) == '\x01') {
+    IVar1 = objc_stub::nextPlayerPlayback(*(undefined8 *)(param_1 + 0x158));
+    IVar2 = objc_stub::playerTransition(IVar1);
+    if (((IVar2 == param_4) && (IVar2 = objc_stub::playbackConfig(IVar1), IVar2 == param_5)) &&
+       (IVar1 = objc_stub::playbackData(IVar1), IVar1 == param_6)) {
+      objc_stub::claimNextVideoResolverWithDelegate:(*(undefined8 *)(param_1 + 0x158),param_1);
+    }
+    IVar1 = 0;
+  }
+  IVar1 = FUN_100196a1c(IVar1);
+  IVar1 = objc_stub::iosClientGlobalConfigEnableReportingAutoplayToAdsCoordinatorForQueuedPlaybacks(IVar1);
+  if ((int)IVar1 != 0) {
+    uVar3 = *(undefined8 *)(param_1 + 0x1f0);
+    IVar1 = objc_stub::autoplay(*(undefined8 *)(param_1 + 0x1e8));
+    objc_stub::willPlayNewVideoWithAutoplay:(uVar3,IVar1);
+  }
+  return 0;
+}
+
+
+
+===== requested 104180430: didTransitionToContentSequenceForVideoSequencer: @ 104180430 =====
+
+/* WARNING: Function: _objc_retain replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+undefined8
+YTLocalPlaybackController::didTransitionToContentSequenceForVideoSequencer_
+          (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  ID IVar1;
+  undefined *self;
+  ID IVar2;
+  ulong uVar3;
+  undefined8 self_00;
+  
+  IVar1 = objc_stub::playbackTimeline(param_3);
+  if (IVar1 != 0) {
+    self = PTR_YTPlayerMidrollsTimeRangeManager_10c903148;
+    _objc_alloc();
+    IVar1 = objc_stub::playbackTimeline(param_3);
+    IVar1 = objc_stub::initWithPlaybackTimeline:(self,IVar1);
+    *(ID *)(param_1 + 0x178) = IVar1;
+  }
+  self_00 = *(undefined8 *)(param_1 + 0x1f0);
+  IVar1 = objc_stub::contentVideo(param_3);
+  IVar2 = objc_stub::playbackTimeline(param_3);
+  objc_stub::setContentSingleVideo:playbackTimeline:(self_00,IVar1,IVar2);
+  uVar3 = *(ulong *)(param_1 + 0x10);
+  _objc_opt_respondsToSelector(uVar3,PTR_s_playbackControllerDidTransitionI_10c823bd8);
+  if ((uVar3 & 1) != 0) {
+    objc_stub::playbackControllerDidTransitionInternallyToNextPlayback:(*(undefined8 *)(param_1 + 0x10),param_1);
+  }
+  uVar3 = *(ulong *)(param_1 + 0x10);
+  _objc_opt_respondsToSelector(uVar3,PTR_s_playbackController_didLoadConten_10c823a58);
+  if ((uVar3 & 1) != 0) {
+    objc_stub::playbackController:didLoadContentPlaybackData:
+              (*(undefined8 *)(param_1 + 0x10),param_1,*(undefined8 *)(param_1 + 0x1c8));
+  }
+  IVar1 = objc_stub::contentVideo(param_1);
+  uVar3 = *(ulong *)(param_1 + 0x10);
+  _objc_opt_respondsToSelector(uVar3,PTR_s_playbackController_didActivateNe_10c823a20);
+  if ((uVar3 & 1) != 0) {
+    objc_stub::playbackController:didActivateNewPlaybackWithContentVideo:(*(undefined8 *)(param_1 + 0x10),param_1,IVar1);
+  }
+  return 0;
+}
+
+
+
+===== requested 104180684: resetWithCurrentVideoSequencer @ 104180684 =====
+
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+void YTLocalPlaybackController::resetWithCurrentVideoSequencer(long param_1)
+
+{
+  ulong uVar1;
+  ID IVar2;
+  undefined8 uVar3;
+  undefined8 self;
+  long lVar4;
+  ID IVar5;
+  undefined8 local_110;
+  long lStack_108;
+  long *local_100;
+  undefined8 uStack_f8;
+  undefined8 local_f0;
+  undefined8 uStack_e8;
+  undefined8 uStack_e0;
+  undefined8 uStack_d8;
+  undefined1 auStack_c8 [128];
+  long local_48;
+  
+  local_48 = *(long *)PTR____stack_chk_guard_10b39a898;
+  if (*(char *)(param_1 + 0x1a5) == '\x01') {
+    uVar1 = *(ulong *)(param_1 + 0x10);
+    _objc_opt_respondsToSelector(uVar1,PTR_s_playbackController_willResetToSt_10c823ab8);
+    if ((uVar1 & 1) != 0) {
+      objc_stub::playbackController:willResetToState:(*(undefined8 *)(param_1 + 0x10),param_1,6);
+    }
+    if ((*(byte *)(param_1 + 0x1a6) & 1) == 0) {
+      objc_stub::reset(*(undefined8 *)(param_1 + 0x1f0));
+    }
+  }
+  *(undefined1 *)(param_1 + 0x128) = 0;
+  objc_stub::setActiveSingleVideo:(*(undefined8 *)(param_1 + 0x110),0);
+  objc_stub::setActiveVideo:(*(undefined8 *)(param_1 + 0x48),0);
+  if ((*(byte *)(param_1 + 0x1a5) & 1) == 0) {
+    uVar1 = *(ulong *)(param_1 + 0x10);
+    _objc_opt_respondsToSelector(uVar1,PTR_s_playbackController_willResetToSt_10c823ab8);
+    if ((uVar1 & 1) != 0) {
+      objc_stub::playbackController:willResetToState:(*(undefined8 *)(param_1 + 0x10),param_1,6);
+    }
+  }
+  IVar2 = objc_stub::latencyLoggerWrapper(*(undefined8 *)(param_1 + 0x1e8));
+  objc_stub::playbackControllerDidReset(IVar2);
+  *(undefined8 *)(param_1 + 0x1e8) = 0;
+  *(undefined8 *)(param_1 + 0x1e0) = 0;
+  *(undefined8 *)(param_1 + 0x98) = 0;
+  *(undefined8 *)(param_1 + 0xa8) = 0;
+  *(undefined8 *)(param_1 + 0xb0) = 0;
+  uVar3 = *(undefined8 *)(param_1 + 0x1c8);
+  *(undefined8 *)(param_1 + 0x1c8) = 0;
+  objc_stub::setContentPlaybackData:(*(undefined8 *)(param_1 + 0x30),uVar3,0);
+  *(undefined8 *)(param_1 + 0x140) = 0;
+  *(undefined8 *)(param_1 + 0x150) = 0;
+  uVar3 = *(undefined8 *)(param_1 + 0x1d0);
+  *(undefined8 *)(param_1 + 0x1d0) = 0;
+  uStack_e8 = 0;
+  local_f0 = 0;
+  uStack_d8 = 0;
+  uStack_e0 = 0;
+  lStack_108 = 0;
+  local_110 = 0;
+  uStack_f8 = 0;
+  local_100 = (long *)0x0;
+  self = *(undefined8 *)(param_1 + 0x108);
+  IVar2 = objc_stub::countByEnumeratingWithState_objects_count_
+                    (self,uVar3,&local_110,auStack_c8,0x10);
+  if (IVar2 != 0) {
+    lVar4 = *local_100;
+    do {
+      IVar5 = 0;
+      do {
+        if (*local_100 != lVar4) {
+          _objc_enumerationMutation(self);
+        }
+        objc_stub::cancelTransition(*(undefined8 *)(lStack_108 + IVar5 * 8));
+        IVar5 = IVar5 + 1;
+      } while (IVar2 != IVar5);
+      IVar2 = objc_stub::countByEnumeratingWithState_objects_count_(self,&local_110,auStack_c8,0x10)
+      ;
+    } while (IVar2 != 0);
+  }
+  *(undefined8 *)(param_1 + 0x108) = 0;
+  IVar2 = FUN_100218774(0);
+  objc_stub::clearCrashReportPlaybackParameters(IVar2);
+  objc_stub::playerStateDidChangeToState:(*(undefined8 *)(param_1 + 0xf0),0);
+  *(undefined1 *)(param_1 + 0x180) = 0;
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_48) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail();
+}
+
+
+
+===== requested 104184118: startPlaybackWithVideoResolver: @ 104184118 =====
+
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x19 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x22 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x25 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x26 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x27 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x23 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x24 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x20 replaced with injection: _objc_release_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+void YTLocalPlaybackController::startPlaybackWithVideoResolver_
+               (long param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  undefined *self;
+  ID IVar1;
+  ID IVar2;
+  undefined *puVar3;
+  ID IVar4;
+  ulong uVar5;
+  ID IVar6;
+  ID IVar7;
+  ID IVar8;
+  ID IVar9;
+  ID IVar10;
+  undefined8 uVar11;
+  ID IVar12;
+  undefined8 uVar13;
+  long lVar14;
+  double extraout_d0;
+  undefined8 local_130;
+  long lStack_128;
+  long *local_120;
+  undefined8 uStack_118;
+  undefined8 local_110;
+  undefined8 uStack_108;
+  undefined8 uStack_100;
+  undefined8 uStack_f8;
+  undefined1 auStack_f0 [128];
+  long local_70;
+  
+  local_70 = *(long *)PTR____stack_chk_guard_10b39a898;
+  IVar1 = objc_stub::playbackData(param_3);
+  uVar11 = *(undefined8 *)(param_1 + 0x1c8);
+  *(ID *)(param_1 + 0x1c8) = IVar1;
+  objc_stub::setContentPlaybackData:(*(undefined8 *)(param_1 + 0x30),uVar11,*(undefined8 *)(param_1 + 0x1c8));
+  IVar1 = objc_stub::playerCompatibilityWithPlaybackData:(param_1,*(undefined8 *)(param_1 + 0x1c8));
+  IVar2 = objc_stub::playerResponse(*(undefined8 *)(param_1 + 0x1c8));
+  objc_stub::setPlayerCompatibility:(IVar2,IVar1);
+  puVar3 = PTR_YTSingleVideoSequencer_10c903160;
+  _objc_alloc();
+  IVar1 = objc_stub::initWithDelegate:videoControllerDelegate:playerView:viewportSizeProvider:recompositeProvider:mediaPlayerResources:shouldEnableMediaDrivenPrefetch:
+                    (puVar3,param_1,param_1,*(undefined8 *)(param_1 + 0x40),
+                     *(undefined8 *)(param_1 + 0x130),*(undefined8 *)(param_1 + 0x138),
+                     *(undefined8 *)(param_1 + 0x1f8),*(undefined1 *)(param_1 + 0x199));
+  uVar11 = *(undefined8 *)(param_1 + 0x28);
+  *(ID *)(param_1 + 0x28) = IVar1;
+  uVar13 = *(undefined8 *)(param_1 + 0x28);
+  IVar1 = objc_stub::isExternalPlaybackAllowed(param_1,uVar11);
+  objc_stub::setExternalPlaybackAllowed:(uVar13,IVar1);
+  objc_stub::disableIntraPlaybackGaplessTransitions:(*(undefined8 *)(param_1 + 0x28),(ulong)*(byte *)(param_1 + 0x181));
+  if ((*(char *)(param_1 + 0x1aa) != '\x01') || (0.0 < *(double *)(param_1 + 0x140))) {
+    objc_stub::recordUserIntentToPlayAtTime:withPlaybackData:(param_1,*(undefined8 *)(param_1 + 0x1c8));
+  }
+  IVar1 = objc_stub::playerResponse(*(undefined8 *)(param_1 + 0x1c8));
+  IVar2 = objc_stub::playerData(IVar1);
+  IVar1 = objc_stub::videoDetails(IVar2);
+  IVar4 = objc_stub::videoId(IVar1);
+  IVar1 = *(ID *)(param_1 + 0x80);
+  if (((*(char *)(param_1 + 0x1a4) == '\x01') &&
+      (objc_stub::time(IVar1), extraout_d0 == 0.0)) &&
+     (IVar4 = objc_stub::cachedInitialContentTimeForVideoID:playerData:(param_1,IVar4,IVar2), IVar4 != 0)) {
+    IVar1 = IVar4;
+  }
+  objc_stub::setContentPlaybackData:initialContentTime:playerTransition:playbackConfig:
+            (*(undefined8 *)(param_1 + 0x28),*(undefined8 *)(param_1 + 0x1c8),IVar1,
+             *(undefined8 *)(param_1 + 0x1e8),*(undefined8 *)(param_1 + 0x1e0));
+  IVar1 = objc_stub::contentVideo(param_1);
+  uVar5 = *(ulong *)(param_1 + 0x10);
+  _objc_opt_respondsToSelector(uVar5,PTR_s_playbackController_didActivateNe_10c823a20);
+  if ((uVar5 & 1) != 0) {
+    objc_stub::playbackController:didActivateNewPlaybackWithContentVideo:(*(undefined8 *)(param_1 + 0x10),param_1,IVar1);
+  }
+  IVar4 = objc_stub::adsPlaybackCoordinatorForNewPlayback(param_1);
+  uVar11 = *(undefined8 *)(param_1 + 0x1f0);
+  *(ID *)(param_1 + 0x1f0) = IVar4;
+  uVar13 = *(undefined8 *)(param_1 + 0x1f0);
+  IVar4 = objc_stub::shouldUseNewOverlaysAPI(param_1,uVar11);
+  objc_stub::setAdsManageOverlayLifecycleEnabled:(uVar13,IVar4);
+  IVar4 = objc_stub::playbackTimeline(*(undefined8 *)(param_1 + 0x28));
+  if (IVar4 != 0) {
+    puVar3 = PTR_YTPlayerMidrollsTimeRangeManager_10c903148;
+    _objc_alloc();
+    IVar4 = objc_stub::playbackTimeline(*(undefined8 *)(param_1 + 0x28));
+    IVar4 = objc_stub::initWithPlaybackTimeline:(puVar3,IVar4);
+    *(ID *)(param_1 + 0x178) = IVar4;
+  }
+  uVar11 = *(undefined8 *)(param_1 + 0x1f0);
+  IVar4 = objc_stub::contentVideo(*(undefined8 *)(param_1 + 0x28));
+  IVar6 = objc_stub::playbackTimeline(*(undefined8 *)(param_1 + 0x28));
+  objc_stub::setContentSingleVideo:playbackTimeline:(uVar11,IVar4,IVar6);
+  IVar4 = objc_stub::isLivePlayback(IVar2);
+  if ((int)IVar4 != 0) {
+    IVar4 = objc_stub::adsCuepointObserver(*(undefined8 *)(param_1 + 0x1f0));
+    objc_stub::addContentCuepointObserver:(param_1,IVar4);
+  }
+  uVar5 = *(ulong *)(param_1 + 0x10);
+  _objc_opt_respondsToSelector(uVar5,PTR_s_playbackController_didLoadConten_10c823a58);
+  if ((uVar5 & 1) != 0) {
+    objc_stub::playbackController:didLoadContentPlaybackData:
+              (*(undefined8 *)(param_1 + 0x10),param_1,*(undefined8 *)(param_1 + 0x1c8));
+  }
+  if ((*(byte *)(param_1 + 0x149) & 1) == 0) {
+    *(undefined1 *)(param_1 + 0x149) = 0;
+    uVar11 = *(undefined8 *)(param_1 + 0x1e8);
+    IVar4 = objc_stub::originalPlaybackData(param_3);
+    IVar4 = objc_stub::playerResponse(IVar4);
+    IVar4 = objc_stub::playerData(IVar4);
+    objc_stub::logPlaybackForInteractionLoggingWithPlayerTransition:playerResponse:(param_1,uVar11,IVar4);
+  }
+  IVar4 = objc_stub::playerCueRangeSetArray_Count(IVar2);
+  if (IVar4 == 0) {
+    IVar4 = objc_stub::playerCueRangesArray_Count(IVar2);
+    if ((IVar4 != 0) &&
+       (IVar4 = objc_stub::playerCueRangesArray(IVar2), puVar3 = PTR_YTCueRangeUtil_10c8eb900, IVar4 != 0))
+    {
+      IVar6 = objc_stub::cueRangeManagerForVideo:(param_1,IVar1);
+      IVar12 = objc_stub::eventBlockFactoryForVideo:(param_1,IVar1);
+      objc_stub::processPlayerCueRanges:cueRangeSetIdentifier:forVideo:withCueRangeManager:withEventBlockFactory:
+                (puVar3,IVar4,&PTR__OBJC_CLASS___NSConstantIntegerNumber_10babd308,IVar1,IVar6,
+                 IVar12);
+    }
+  }
+  else {
+    IVar4 = objc_stub::playerCueRangeSetArray(IVar2);
+    lStack_128 = 0;
+    local_130 = 0;
+    uStack_118 = 0;
+    local_120 = (long *)0x0;
+    uStack_108 = 0;
+    local_110 = 0;
+    uStack_f8 = 0;
+    uStack_100 = 0;
+    IVar6 = objc_stub::countByEnumeratingWithState_objects_count_(IVar4,&local_130,auStack_f0,0x10);
+    if (IVar6 != 0) {
+      lVar14 = *local_120;
+      do {
+        IVar12 = 0;
+        do {
+          if (*local_120 != lVar14) {
+            _objc_enumerationMutation(IVar4);
+          }
+          uVar11 = *(undefined8 *)(lStack_128 + IVar12 * 8);
+          IVar7 = objc_stub::cueRangeSetIdentifier(uVar11);
+          if ((int)IVar7 == 0) {
+            FUN_1041649b8(0x10b9891f8,0x10b988898);
+          }
+          IVar7 = objc_stub::yt_usesDeferredScheduling(uVar11);
+          puVar3 = PTR_YTCueRangeUtil_10c8eb900;
+          if ((IVar7 & 1) == 0) {
+            IVar7 = objc_stub::playerCueRangesArray(uVar11);
+            self = PTR__OBJC_CLASS___NSNumber_10c8e1438;
+            IVar8 = objc_stub::cueRangeSetIdentifier(uVar11);
+            IVar8 = objc_stub::numberWithInt_(self,IVar8);
+            IVar9 = objc_stub::cueRangeManagerForVideo:(param_1,IVar1);
+            IVar10 = objc_stub::eventBlockFactoryForVideo:(param_1,IVar1);
+            objc_stub::processPlayerCueRanges:cueRangeSetIdentifier:forVideo:withCueRangeManager:withEventBlockFactory:(puVar3,IVar7,IVar8,IVar1,IVar9,IVar10);
+          }
+          IVar12 = IVar12 + 1;
+        } while (IVar6 != IVar12);
+        IVar6 = objc_stub::countByEnumeratingWithState_objects_count_
+                          (IVar4,&local_130,auStack_f0,0x10);
+      } while (IVar6 != 0);
+    }
+  }
+  IVar1 = objc_stub::isPlayableInBackground(*(undefined8 *)(param_1 + 0x1c8));
+  if ((int)IVar1 == 0) {
+    IVar1 = objc_stub::playerResponse(*(undefined8 *)(param_1 + 0x1c8));
+    IVar1 = objc_stub::isPlayableInPictureInPicture(IVar1);
+    objc_stub::setContentPlayableInBackground:(*(undefined8 *)(param_1 + 0xf0),IVar1);
+  }
+  else {
+    objc_stub::setContentPlayableInBackground:(*(undefined8 *)(param_1 + 0xf0),1);
+  }
+  IVar1 = objc_stub::playerConfig(IVar2);
+  IVar1 = objc_stub::playbackStartConfig(IVar1);
+  IVar1 = objc_stub::startPaused(IVar1);
+  if ((int)IVar1 != 0) {
+    *(undefined1 *)(param_1 + 0xb9) = 0;
+  }
+  IVar1 = objc_stub::trailer(*(undefined8 *)(param_1 + 0x1c8));
+  IVar2 = objc_stub::playabilityStatus(IVar2);
+  IVar2 = objc_stub::liveStreamability(IVar2);
+  IVar2 = objc_stub::liveStreamabilityRenderer(IVar2);
+  IVar2 = objc_stub::hasOfflineSlate(IVar2);
+  IVar4 = objc_stub::resolvedReason(param_3);
+  if ((long)IVar4 < 2) {
+    if (IVar4 == 0) {
+      IVar1 = objc_stub::playbackErrorWithCode:(PTR__OBJC_CLASS___NSError_10c8e1d98,0);
+      objc_stub::failWithError:(param_1,IVar1);
+      goto LAB_10418488c;
+    }
+    if (IVar4 != 1) goto LAB_10418488c;
+LAB_104184820:
+    objc_stub::initializePlayback(param_1);
+  }
+  else {
+    if (IVar4 == 2) {
+      if (IVar1 != 0) goto LAB_104184820;
+      if ((int)IVar2 == 0) {
+        objc_stub::failPlaybackDueToUnplayableVideo(param_1);
+        goto LAB_10418488c;
+      }
+    }
+    else {
+      if (IVar4 == 3) {
+        objc_stub::playbackControllerDidCancelPlayabilityResolution:(*(undefined8 *)(param_1 + 0x10),param_1);
+        goto LAB_10418488c;
+      }
+      if (IVar4 != 4) goto LAB_10418488c;
+      if (IVar1 != 0) goto LAB_104184820;
+    }
+    objc_stub::initializeOrFailForOfflineLiveStream(param_1);
+  }
+LAB_10418488c:
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_70) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail(0);
+}
+
+
+
+===== requested 1041848e4: adsPlaybackCoordinatorForNewPlayback @ 1041848e4 =====
+
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_retain_x20 replaced with injection: _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x19 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_autoreleaseReturnValue replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x10 bytes */
+
+ID YTLocalPlaybackController::adsPlaybackCoordinatorForNewPlayback(long param_1)
+
+{
+  ID IVar1;
+  
+  IVar1 = objc_stub::playerResponse(*(undefined8 *)(param_1 + 0x1c8));
+  IVar1 = objc_stub::supportsPlaybackForContentPlayerResponse:(*(undefined8 *)(param_1 + 0x1f0),IVar1);
+  if ((int)IVar1 == 0) {
+    IVar1 = objc_stub::createAdsPlaybackCoordinator(param_1);
+  }
+  else {
+    IVar1 = *(ID *)(param_1 + 0x1f0);
+  }
+  return IVar1;
+}
+
+
+
+===== requested 104184988: resetToState:stoppageReason: @ 104184988 =====
+
+/* WARNING: Function: _objc_loadWeakRetained replaced with injection: _objc_load_fixup */
+/* WARNING: Function: _objc_release_x22 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retainAutoreleasedReturnValue replaced with injection:
+   _objc_retain_fixup */
+/* WARNING: Function: _objc_release_x8 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_release_x21 replaced with injection: _objc_release_fixup */
+/* WARNING: Function: _objc_retain_x21 replaced with injection: _objc_retain_fixup */
+/* Function Stack Size: 0x18 bytes */
+
+void YTLocalPlaybackController::resetToState_stoppageReason_
+               (long param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
+
+{
+  ID IVar1;
+  ulong uVar2;
+  undefined8 uVar3;
+  long lVar4;
+  ID IVar5;
+  undefined8 local_120;
+  long lStack_118;
+  long *local_110;
+  undefined8 uStack_108;
+  undefined8 local_100;
+  undefined8 uStack_f8;
+  undefined8 uStack_f0;
+  undefined8 uStack_e8;
+  undefined1 auStack_d8 [128];
+  long local_58;
+  
+  local_58 = *(long *)PTR____stack_chk_guard_10b39a898;
+  if (*(char *)(param_1 + 0x1a5) == '\x01') {
+    uVar2 = *(ulong *)(param_1 + 0x10);
+    _objc_opt_respondsToSelector(uVar2,PTR_s_playbackController_willResetToSt_10c823ab8);
+    if ((uVar2 & 1) != 0) {
+      objc_stub::playbackController:willResetToState:(*(undefined8 *)(param_1 + 0x10),param_1,param_3);
+    }
+  }
+  IVar1 = objc_stub::adsCuepointObserver(*(undefined8 *)(param_1 + 0x1f0));
+  objc_stub::removeContentCuepointObserver:(param_1,IVar1);
+  objc_stub::reset(*(undefined8 *)(param_1 + 0x1f0));
+  *(undefined1 *)(param_1 + 0x128) = 0;
+  objc_stub::cancelVideoResolution(*(undefined8 *)(param_1 + 0xf8));
+  objc_stub::setDelegate_(*(undefined8 *)(param_1 + 0xf8),0);
+  uVar3 = *(undefined8 *)(param_1 + 0xf8);
+  *(undefined8 *)(param_1 + 0xf8) = 0;
+  *(undefined1 *)(param_1 + 0x148) = 0;
+  *(undefined1 *)(param_1 + 0x20) = 0;
+  objc_stub::shutDownWithStoppageReason:(*(undefined8 *)(param_1 + 0x28),uVar3,param_4);
+  uVar3 = *(undefined8 *)(param_1 + 0x28);
+  *(undefined8 *)(param_1 + 0x28) = 0;
+  *(undefined1 *)(param_1 + 0x180) = 0;
+  objc_stub::setActiveSingleVideo:(*(undefined8 *)(param_1 + 0x110),uVar3,0);
+  objc_stub::setActiveVideo:(*(undefined8 *)(param_1 + 0x48),0);
+  if ((*(byte *)(param_1 + 0x1a5) & 1) == 0) {
+    uVar2 = *(ulong *)(param_1 + 0x10);
+    _objc_opt_respondsToSelector(uVar2,PTR_s_playbackController_willResetToSt_10c823ab8);
+    if ((uVar2 & 1) != 0) {
+      objc_stub::playbackController:willResetToState:(*(undefined8 *)(param_1 + 0x10),param_1,param_3);
+    }
+  }
+  IVar1 = objc_stub::latencyLoggerWrapper(*(undefined8 *)(param_1 + 0x1e8));
+  objc_stub::playbackControllerDidReset(IVar1);
+  *(undefined8 *)(param_1 + 0x1e8) = 0;
+  *(undefined8 *)(param_1 + 0x1e0) = 0;
+  *(undefined8 *)(param_1 + 0x98) = 0;
+  *(undefined8 *)(param_1 + 0xa8) = 0;
+  uVar3 = *(undefined8 *)(param_1 + 0x1c8);
+  *(undefined8 *)(param_1 + 0x1c8) = 0;
+  objc_stub::setContentPlaybackData:(*(undefined8 *)(param_1 + 0x30),uVar3,0);
+  *(undefined8 *)(param_1 + 0x140) = 0;
+  if (*(char *)(param_1 + 0x1b9) == '\x01') {
+    objc_stub::markAsSuspendedPrefetch(*(undefined8 *)(param_1 + 0x1b0));
+  }
+  *(undefined8 *)(param_1 + 0x150) = 0;
+  *(undefined8 *)(param_1 + 0x158) = 0;
+  uVar2 = *(ulong *)(param_1 + 0x58);
+  _objc_opt_respondsToSelector(uVar2,PTR_s_enableCompositeVideoSupport_10c7c2718);
+  if (((uVar2 & 1) != 0) &&
+     (IVar1 = objc_stub::enableCompositeVideoSupport(*(undefined8 *)(param_1 + 0x58)), (int)IVar1 != 0)) {
+    *(undefined8 *)(param_1 + 200) = 0;
+  }
+  uStack_f8 = 0;
+  local_100 = 0;
+  uStack_e8 = 0;
+  uStack_f0 = 0;
+  lStack_118 = 0;
+  local_120 = 0;
+  uStack_108 = 0;
+  local_110 = (long *)0x0;
+  uVar3 = *(undefined8 *)(param_1 + 0x108);
+  IVar1 = objc_stub::countByEnumeratingWithState_objects_count_(uVar3,&local_120,auStack_d8,0x10);
+  if (IVar1 != 0) {
+    lVar4 = *local_110;
+    do {
+      IVar5 = 0;
+      do {
+        if (*local_110 != lVar4) {
+          _objc_enumerationMutation(uVar3);
+        }
+        objc_stub::cancelTransition(*(undefined8 *)(lStack_118 + IVar5 * 8));
+        IVar5 = IVar5 + 1;
+      } while (IVar1 != IVar5);
+      IVar1 = objc_stub::countByEnumeratingWithState_objects_count_
+                        (uVar3,&local_120,auStack_d8,0x10);
+    } while (IVar1 != 0);
+  }
+  *(undefined8 *)(param_1 + 0x108) = 0;
+  if ((int)param_3 != 7) {
+    *(undefined8 *)(param_1 + 0x1d0) = 0;
+  }
+  IVar1 = FUN_100218774(0);
+  objc_stub::clearCrashReportPlaybackParameters(IVar1);
+  objc_stub::setPlaybackControllerState:(param_1,param_3);
+  objc_stub::playerStateDidChangeToState:(*(undefined8 *)(param_1 + 0xf0),0);
+  objc_stub::setActivePlayback:(param_1,0);
+  if (*(long *)PTR____stack_chk_guard_10b39a898 == local_58) {
+    return;
+  }
+                    /* WARNING: Subroutine does not return */
+  ___stack_chk_fail();
+}
+
+
+
+===== requested 104187170: adsPlaybackCoordinator @ 104187170 =====
+
+/* Function Stack Size: 0x10 bytes */
+
+undefined8 YTLocalPlaybackController::adsPlaybackCoordinator(long param_1)
+
+{
+  return *(undefined8 *)(param_1 + 0x1f0);
+}
+
+

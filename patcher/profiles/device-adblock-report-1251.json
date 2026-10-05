@@ -1,0 +1,86 @@
+{
+  "session_events": {
+    "feed_append_input": 32,
+    "factory_entered": 3,
+    "feed_presence_accessors_resolved": 28,
+    "feed_append_surviving": 32,
+    "feed_initial_load": 12,
+    "preroll_completed": 2,
+    "feed_append_completed": 7,
+    "feed_ad_input": 1,
+    "feed_removed_companionAdRenderer": 1,
+    "feed_initial_load_completed": 12,
+    "feed_removed": 1,
+    "feed_model_copied": 1,
+    "response_array_read": 43,
+    "trigger_activation_native_passthrough": 16,
+    "response_count_read": 7
+  },
+  "checkpoint_history": [],
+  "shorts_ads_enabled": true,
+  "build_source_sha256": "29d743c6a4dfc1957e716608d0fccd12fdcce6acd49f3a5c8cef83115dad7d3a",
+  "profile_accepted": true,
+  "live_DAI_coverage": "native_passthrough",
+  "current_factory_binding_matches_playback": false,
+  "requested_strategy": "coordinator",
+  "last_visible_watch_age_seconds": null,
+  "first_blocked_checkpoint": "factory_binding_missing",
+  "element_rules": "compatibility_patterns_with_protected_contexts; broad Android rules require native structural mapping",
+  "device_validated": false,
+  "diagnostics_enabled": true,
+  "schema": 1,
+  "video_ads_enabled": true,
+  "hooks": {
+    "YTSectionListViewController loadWithModel:": true,
+    "YTIPlayerResponse adSlotsArray_Count": true,
+    "YTReelContentModel makeContentModelForEntry:": true,
+    "YTIPlayerResponse playerAdsArray_Count": true,
+    "YTIPlayerResponse adSlotsArray": true,
+    "YTAdsControlFlowManagerImpl handleActivationForTriggerBundles:": true,
+    "feed_fields YTISectionListSupportedRenderers": {
+      "expected": 2,
+      "resolved": 2
+    },
+    "feed_fields YTIItemSectionSupportedRenderers": {
+      "expected": 26,
+      "resolved": 26
+    },
+    "YTInnerTubeCollectionViewController loadWithModel:": true,
+    "YTIPlayerResponse adPlacementsArray": true,
+    "YTInnerTubeCollectionViewController addSectionsFromArray:": true,
+    "YTRealAdsPlayerServices adsPlaybackCoordinatorWithOverlayManager:delegate:parentResponder:contentPlayerResponse:": true,
+    "YTIPlayerResponse playerAdsArray": true,
+    "YTIPlayerResponse adPlacementsArray_Count": true,
+    "YTIIosPlayerConfig useNoOpAdsCoordinator": true,
+    "YTLocalPlaybackController adsPlaybackCoordinator:didFinishBreakWithBreakType:": true,
+    "YTIElementRenderer elementData": true
+  },
+  "inspection_is_passive": true,
+  "last_visible_watch": {},
+  "feed_ads_enabled": true,
+  "last_visible_watch_matches_current_playback": false,
+  "current_playback": {
+    "state": {
+      "trigger_strategy_falls_back_to_response": false,
+      "returned_coordinator_class": "YTGaplessPlaybackCoordinator",
+      "native_no_op_selected": false,
+      "coordinator_fallback_to_response": 0
+    },
+    "first_blocked_checkpoint": "response_unavailable",
+    "unexpected_ad_playback": 0,
+    "captured_at_epoch": 1791175872.312828,
+    "trigger": "report_copy",
+    "eligibility_gate": "response_unavailable",
+    "suppression_observed": false,
+    "positive_response_ad_input": false,
+    "content_clock_progressed": false,
+    "requested_strategy": "coordinator",
+    "video_generation": 3,
+    "actual_strategy": "native",
+    "events": {
+      "factory_entered": 1
+    }
+  },
+  "diagnostics_revision": "adblock-checkpoints-1",
+  "event_counter_scope": "session_totals; playback events reset at native factory binding"
+}

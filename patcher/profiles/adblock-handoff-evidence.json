@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "scheme_only": true,
+  "target_youtube_version": "21.39.4",
+  "base_commit": "814149c071af1874f0d20157fdf99a54d8f9082b",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "read_only_ghidra": true,
+  "tests_run": false,
+  "runtime_changes": false,
+  "new_ipa_built": false,
+  "device_handoff_verified": false,
+  "report_sha256": "c37465637dc4be8ab3c2aa1bdfd121335937d9140f126059723fc6f1b9bc24db",
+  "report_payload_build_source_sha256": "29d743c6a4dfc1957e716608d0fccd12fdcce6acd49f3a5c8cef83115dad7d3a",
+  "confirmed_report_gate": "response_unavailable",
+  "report_does_not_prove_nil_factory_argument": true,
+  "coordinator_ivar": {
+    "name": "_adsPlaybackCoordinator",
+    "encoding": "@\"<YTAdsPlaybackCoordinator>\"",
+    "offset": 496,
+    "alignment": 3,
+    "size": 8,
+    "strong_ownership_proven": true,
+    "weak_ownership": false,
+    "strong_layout_hex": "01111f032112171226612214",
+    "weak_layout_hex": "11f0f0f0b1",
+    "instance_start": 8,
+    "runtime_resolution": "named ivar and runtime ARC layout; no fixed offset"
+  },
+  "methods": [
+    {
+      "class": "YTAdsControlFlowPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1015bb8c0"
+    },
+    {
+      "class": "YTAdsControlFlowPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015bc624"
+    },
+    {
+      "class": "YTGaplessPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1080555f8"
+    },
+    {
+      "class": "YTGaplessPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015c1bbc"
+    },
+    {
+      "class": "YTNoOpAdsPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1015c3914"
+    },
+    {
+      "class": "YTNoOpAdsPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015c39d0"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "initWithParentResponder:overlayFactory:playerView:playbackControllerDelegate:viewportSizeProvider:recompositeProvider:shouldDelayAdsPlaybackCoordinatorCreation:shouldEnableMediaDrivenPrefetch:enablePictureInPictureSupport:",
+      "encoding": "@76@0:8@16@24@32@40@48@56B64B68B72",
+      "imp": "0x1004c0568"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData:",
+      "encoding": "v48@0:8@16@24@32@40",
+      "imp": "0x104180200"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "didTransitionToContentSequenceForVideoSequencer:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x104180430"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "resetWithCurrentVideoSequencer",
+      "encoding": "v16@0:8",
+      "imp": "0x104180684"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "startPlaybackWithVideoResolver:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x104184118"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "adsPlaybackCoordinatorForNewPlayback",
+      "encoding": "@16@0:8",
+      "imp": "0x1041848e4"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "resetToState:stoppageReason:",
+      "encoding": "v24@0:8i16i20",
+      "imp": "0x104184988"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "adsPlaybackCoordinator",
+      "encoding": "@16@0:8",
+      "imp": "0x104187170"
+    }
+  ],
+  "confirmed_native_paths": [
+    "Eager constructor can create/store coordinator before content response exists.",
+    "Initial start resolves content, selects/reuses coordinator, stores it, applies lifecycle option and attaches content/timeline.",
+    "Internal transition updates response without invoking the new-playback selection method.",
+    "Native reset during an internal transition is conditional; cleanup must be observed, not assumed.",
+    "Stored coordinator is read directly by native consumers as well as by getter.",
+    "Native no-op coordinator compatibility returns NO and reset is empty.",
+    "Gapless reset has observer, timeline, surface and cache cleanup side effects."
+  ],
+  "decompiler_limits": [
+    "Retain/release fixups and register recovery warnings appear in output. Gapless compatibility helper result is not sufficiently recovered to infer its full truth table. Native selection is preserved and scoped override preconditions remain explicit."
+  ],
+  "proposed_paths": [
+    "Request accepted at any time; replacement requires a proved phase.",
+    "Scoped native recreation at initial selection/reuse, letting native caller own assignment.",
+    "Ownership-aware named-field assignment before didTransition only after observed cleanup and full preflight."
+  ],
+  "unproven_paths": [
+    "Immediate active-ad replacement",
+    "Arbitrary active-content replacement with timeline migration",
+    "Dropping retired callbacks without a proven stale-callback contract"
+  ],
+  "research_artifacts_sha256": {
+    "metadata.json": "78261a7bbe86997964030a03be7bac52a5046ac6bbd3b70e95cde34a7819026d",
+    "identity.txt": "4a82ce363ce9e0a846ccb599acb65ba81352f7ed344edc762a2b380cf17d0b8e",
+    "decompiled.txt": "02a2bae870778b2d420de4352af501895a3e68cb44183327eb6272975eb68204",
+    "decompiled-annotated.txt": "90fd9a69bb609d902c169bd56afade074e5f66256c8df252baef59333580023e"
+  },
+  "checked_in_artifacts_sha256": {
+    "ADBLOCK_HANDOFF_SCHEME.md": "7c8941608b06a68cc85a62bc462e338e3bab265bba7a0d101f5f55cf7d357f60",
+    "profiles/device-adblock-report-1251.json": "8f451462ed96924929c5ef965674fcaf1478dffaaa5267888c4fc033cddcda3f",
+    "profiles/adblock-handoff-decompiled.txt": "90fd9a69bb609d902c169bd56afade074e5f66256c8df252baef59333580023e"
+  }
+}
