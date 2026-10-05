@@ -96,3 +96,5 @@ Version 0.3.17 adds outer_leading_inset, outer_trailing_inset, owned_end_margin 
 Delivered build: `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Expected `build_source_sha256`: `39b45371c1e727d0279e843c14c6b561bfc6493e4d3a3359578c1ce1a96b05d1`. Source commit: `d27b904dfabae3a62fc83a9b3644e48889a5ce04`.
 
 Version 0.3.18 adds semantic_binding_probe. If text_node_created is zero with semantic_role_missing, the probe distinguishes an uninitialized proto from a missing parent/component chain or unsupported role identifier. The full report includes playback_speed.command_bridge. Capture full diagnostics immediately after choosing 1.25 in the native slider on a fresh launch, and again after reload if the behavior differs. Copy RYD diagnostics while the watch row is visible for missing counts. Native like counts are never replaced by invented values.
+
+Delivered 0.3.21 source commit: `e110d5f12aa05d5953d7b3fc63bcdbe5bda8c8d5`. Expected `build_source_sha256`: `1aca11a2062a30a199ab16efee7890eb47eeff7f26f66b18e1a69bab0d894db2`. Cloud build: https://github.com/zinfector/Revanced-iOS/actions/runs/37256199361. No tests run.
