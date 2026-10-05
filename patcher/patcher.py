@@ -135,7 +135,7 @@ def validate_config(config):
     if not isinstance(modes,dict) or set(modes)-{'home','subscriptions','library','player','search'} or any(v not in ('original','stills','dearrow','dearrow-stills') for v in modes.values()):
         raise PatchError('thumbnail_modes must map home/subscriptions/library/player/search to original, stills, dearrow or dearrow-stills')
     if c['theme'] not in ('system','dark','light'): raise PatchError('Invalid theme')
-    if c['start_page'] not in ('','FEwhat_to_watch','FEsubscriptions','FElibrary'): raise PatchError('Unsupported start_page')
+    if c['start_page'] not in ('','FEwhat_to_watch','FEsubscriptions','FElibrary','FEshorts'): raise PatchError('Unsupported start_page')
     if type(c['thumbnail_frame']) is not int or c['thumbnail_frame'] not in (1,2,3): raise PatchError('thumbnail_frame must be 1, 2 or 3')
     if not isinstance(c['app_name'],str) or len(c['app_name'])>60 or any(ord(x)<32 for x in c['app_name']): raise PatchError('app_name must be up to 60 printable characters')
     if not isinstance(c['client_version'],str) or not re.fullmatch(r'\d{1,3}\.\d{1,3}\.\d{1,3}',c['client_version']): raise PatchError('client_version must be a three-part numeric version')
@@ -183,7 +183,7 @@ def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
         if info.get('CFBundleIdentifier')!=p['bundle'] or info.get('CFBundleShortVersionString')!=p['version'] or image.uuid!=p['uuid'] or sha(binary)!=p['executable_sha256']:
             raise PatchError('Unsupported app version or executable hash; no output produced')
         binary = inject_library(binary, LOAD_PATH)
-        marker = {'patcher_version': '0.3.31', 'release_flavor': 'merged-elements-inline-adblock', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
+        marker = {'patcher_version': '0.3.32', 'release_flavor': 'merged-navigation-options', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
                   'uuid': p['uuid'], 'input_ipa_sha256': file_sha(ipa),
                   'original_executable_sha256': p['executable_sha256'], 'patched_executable_sha256': sha(binary),
                   'payload_sha256': sha(library), 'config': c, 'signing_required': True,

@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.23",
+  "patcher_version": "0.3.32",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -403,11 +403,15 @@
       "factory": "bytecodePatch",
       "status": "partial",
       "config_keys": [
+        "hide_home_navigation",
         "hide_shorts_navigation",
+        "hide_subscriptions_navigation",
+        "hide_library_navigation",
+        "hide_navigation_labels",
         "start_page"
       ],
-      "implementation": "Shorts pivot hiding and initial pivot selection.",
-      "limits": "Other Android navigation options are not mapped; pivot identifiers/layout need device checks.",
+      "implementation": "Native pivot model compaction for Home/Shorts/Subscriptions/You, reversible icon-only tab labels, immediate preference refresh and surviving-content-tab selection.",
+      "limits": "Create/Notifications toolbar relocation, button animations, narrow buttons and Android translucency options remain unported. New navigation options require device confirmation.",
       "parent": null,
       "device_validated": false
     },
@@ -987,8 +991,8 @@
       "config_keys": [
         "start_page"
       ],
-      "implementation": "Overrides initial native pivot with supported Home/Subscriptions/Library identifier.",
-      "limits": "Other Android destinations and later route restorations are not mapped.",
+      "implementation": "Selects a supported Home/Subscriptions/You/Shorts initial pivot and recovers hidden or unavailable tabs using actual surviving renderer items.",
+      "limits": "Other Android browse destinations and force-on-every-launch behavior remain unported.",
       "parent": null,
       "device_validated": false
     },

@@ -1,16 +1,16 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 82 feature switches. Current packaged candidate: **0.3.31**, `YouTube-21.39.4-RVPort-0.3.31-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 86 feature switches. Current packaged candidate: **0.3.32**, `YouTube-21.39.4-RVPort-0.3.32-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
-Structural Elements ad filtering and inline-player suppression are included alongside the completed speed and Shorts work. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
+Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
 On October 5, 2026, the user reported that the adblocker is now working with the latest delivery. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
 ## Porting progress
 
-Status reflects the merged 0.3.31 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.32 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
@@ -46,7 +46,7 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | Swipe controls | Fullscreen brightness/volume gestures implemented; gesture arbitration and preference parity remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Disable auto captions | Automatic-caption gates adapted; server-selected caption defaults remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Hide video action buttons | Configured native Elements identifiers filtered; additional action layouts remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
-| Navigation bar | Shorts removed from the native pivot model and remaining tabs relaid out; other navigation options remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| Navigation bar | Home/Shorts/Subscriptions/You tab hiding, reversible native icon-only labels and selection recovery implemented; other navigation options remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Hide player overlay buttons | Selected native controls/watermark hidden; additional Android options remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Change form factor | Phone/tablet request-field override implemented; alternate layouts are not guaranteed. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Disable fullscreen ambient mode | Native ambient gates and Metal strength adapted; alternate renderers remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
@@ -63,7 +63,7 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | Open Shorts in regular player | Identified Shorts links/commands routed to watch endpoints; other reel navigation remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | SponsorBlock | Category policies, markers, native skip/undo prompts and contribution tools implemented; complete parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Spoof app version | Copied request client-version override implemented; executable/header/stream spoofing remains separate. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
-| Change start page | Home/Subscriptions/Library initial pivot selection implemented; other destinations/restores remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| Change start page | Home/Subscriptions/You/Shorts initial pivot selection and surviving-tab recovery implemented; other destinations/restores remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Alternative thumbnails | Frame/DeArrow/faster still variants and per-screen probes implemented; lifecycle/service behavior needs confirmation. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Bypass image region restrictions | Configurable HTTPS thumbnail proxy implemented; requires a compatible user-supplied service. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Announcements | Manual announcements reader implemented; service availability and notification scheduling remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
@@ -116,7 +116,7 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | `gmsCoreSupportPatch` | Native SSO/keychain equivalent implemented; login reported working, refresh/relaunch persistence remains unconfirmed. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | `cronetImageURLHookPatch` | Selected native thumbnail URL accessors adapted; global image interception remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | `lithoFilterPatch` | Positive native Elements filtering adapted; Android Litho infrastructure is not transplanted. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
-| `navigationBarHookPatch` | Native pivot model compaction and selection restoration integrated; other navigation options remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| `navigationBarHookPatch` | Native pivot model compaction, live preference refresh, label layout and selection restoration integrated; other navigation options remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | `playerControlsOverlayVisibilityPatch` | Native control visibility hooks adapted; Video tools lives in settings. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | `playerControlsPatch` | Native Video tools/settings replace injected Android overlay controls; complete control parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | `playerTypeHookPatch` | Guarded native ordinary/live/ad and fullscreen checks. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
@@ -152,11 +152,13 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 |---|---|:---:|
 | Keep first-launch UI | Native paired-layout startup policy implemented; preserves native speed/registry settings, with remaining device/layout confirmation. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 
-The patch catalog maps the 82 feature switches to the entries above. The first-launch UI policy is tracked separately because it is an iOS integration feature rather than an Android patch declaration. Per-category SponsorBlock behavior, native skip/undo prompts, inline RYD counts, settings presentation and Shorts toolbar compaction are included in their parent entries.
+The patch catalog maps the 86 feature switches to the entries above. The first-launch UI policy is tracked separately because it is an iOS integration feature rather than an Android patch declaration. Per-category SponsorBlock behavior, native skip/undo prompts, inline RYD counts, settings presentation and Shorts toolbar compaction are included in their parent entries.
 
 ## Build and diagnostics
 
 Production payloads use **Apple Xcode 16.4 / iPhoneOS 18.5 SDK**, targeting `arm64-apple-ios17.0`, with signing header padding. Current delivery was compiled and packaged without tests; compilation does not confirm feature behavior on a device. Source IPAs, SDKs, tools, credentials and generated artifacts are excluded from Git.
+
+New options are under **Settings > ReVanced > Navigation** and are off by default. At least one content tab stays available. Their device behavior is pending confirmation.
 
 In YouTube, open **Settings > ReVanced > Hook diagnostics** for full and feature-specific reports. Saved app preferences override bundled presets. Reopen the video or restart for settings that affect startup/player configuration.
 

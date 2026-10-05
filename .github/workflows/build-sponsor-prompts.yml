@@ -1,8 +1,8 @@
-name: Build Elements and inline adblock payload with Xcode
+name: Build combined navigation payload with Xcode
 
 on:
   push:
-    branches: [fix/elements-inline-adblock-0.3.31]
+    branches: [fix/navigation-options-0.3.32]
 
 permissions:
   contents: read

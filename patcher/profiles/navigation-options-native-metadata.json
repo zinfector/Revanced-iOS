@@ -1,0 +1,119 @@
+{
+  "read_only": true,
+  "tests_run": false,
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "classes": [
+    {
+      "name": "YTAppPivotBarController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "defaultSelectedPivotIdentifier",
+          "encoding": "@16@0:8",
+          "imp": "0x100300db0"
+        }
+      ]
+    },
+    {
+      "name": "YTPivotBarViewController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "updateViewsWithSelectedPivotIdentifier:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x100300ef4"
+        }
+      ]
+    },
+    {
+      "name": "YTPivotBarView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setRenderer:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x1002fc268"
+        }
+      ]
+    },
+    {
+      "name": "YTPivotBarItemView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setupNavigationButton",
+          "encoding": "v16@0:8",
+          "imp": "0x1002fa3a8"
+        },
+        {
+          "kind": "-",
+          "selector": "updateTitleAndLayoutForRenderer",
+          "encoding": "v16@0:8",
+          "imp": "0x10351e7c4"
+        },
+        {
+          "kind": "-",
+          "selector": "layoutNavigationButtonAndBackgroundImage",
+          "encoding": "v16@0:8",
+          "imp": "0x10351e994"
+        },
+        {
+          "kind": "-",
+          "selector": "pivotIdentifier",
+          "encoding": "@16@0:8",
+          "imp": "0x10351f820"
+        },
+        {
+          "kind": "-",
+          "selector": "navigationButton",
+          "encoding": "@16@0:8",
+          "imp": "0x10351f908"
+        }
+      ]
+    },
+    {
+      "name": "YTQTMButton",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setButtonLayoutStyle:",
+          "encoding": "v24@0:8q16",
+          "imp": "0x1002fdbf8"
+        },
+        {
+          "kind": "-",
+          "selector": "setButtonImageTitlePadding:",
+          "encoding": "v24@0:8d16",
+          "imp": "0x100283110"
+        }
+      ]
+    },
+    {
+      "name": "YTIPivotBarSupportedRenderers",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "yt_pivotBarItem",
+          "encoding": "@16@0:8",
+          "imp": "0x103518964"
+        }
+      ]
+    }
+  ],
+  "identifier_literals": {
+    "FEwhat_to_watch": [
+      "0x109b2a7bd"
+    ],
+    "FEsubscriptions": [
+      "0x109b559df"
+    ],
+    "FElibrary": [
+      "0x109b6fba2"
+    ],
+    "FEyou": [],
+    "FEshorts": [
+      "0x109b49ce0"
+    ],
+    "FEshorts_tab": []
+  }
+}

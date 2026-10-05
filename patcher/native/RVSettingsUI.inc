@@ -191,7 +191,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"merged-adblock-ownership",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
+        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"merged-navigation-options",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -212,7 +212,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
         NSData *data=[NSJSONSerialization dataWithJSONObject:RVSPReport() options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Copy Shorts layout checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alert addAction:[UIAlertAction actionWithTitle:@"Copy navigation and Shorts checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSData *data=[NSJSONSerialization dataWithJSONObject:RVShortsReport() options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -236,7 +236,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
             [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
         if (tool==4) { [self diagnostics];return; }
-        [self message:@"ReVanced iOS 0.3.30" text:[NSString stringWithFormat:@"YouTube %@\n82 patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
+        [self message:[@"ReVanced iOS " stringByAppendingString:RV_PORT_VERSION] text:[NSString stringWithFormat:@"YouTube %@\n%lu patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",(unsigned long)RVFeatureKeys.count,RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
     }
     if (!RVCompatible || [row[@"disabled"] boolValue] || [row[@"toggle"] boolValue]) return;
     NSString *key=row[@"key"];if (!key) return;

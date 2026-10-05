@@ -119,6 +119,7 @@ static NSString *RVShortsPivotID(id item) {
     id identifier=RVObject(native,"pivotIdentifier");
     return [identifier isKindOfClass:NSString.class] ? identifier : nil;
 }
+#include "RVNavigation.inc"
 static BOOL RVShortsPreparePivot(id renderer) {
     if (!NSThread.isMainThread || ![renderer isKindOfClass:NSClassFromString(@"YTIPivotBarRenderer")]) return NO;
     NSArray *current=RVAdResolvedObject(renderer,"itemsArray");
@@ -130,18 +131,27 @@ static BOOL RVShortsPreparePivot(id renderer) {
         objc_setAssociatedObject(renderer,RVShortsPivotLeaseKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         lease=nil;RVShortsEvent(@"pivot_lease_conflict");
     }
-    if (!RVEnabled(@"hide_shorts_navigation")) {
+    if (!RVNavigationFilteringEnabled()) {
         if (!lease) return NO;
         RVSetObject(renderer,"setItemsArray:",[lease.original mutableCopy]);
         objc_setAssociatedObject(renderer,RVShortsPivotLeaseKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         RVShortsEvent(@"pivot_restored");RVShortsValue(@"pivot_checkpoint",@"restored");return YES;
     }
-    if (lease) return NO;
+    // Rebuild from the owned original when settings change; never filter an
+    // already-compacted array and lose tabs needed for later restoration.
+    NSArray *source=lease ? lease.original : current;
     NSMutableArray *filtered=[NSMutableArray array];
-    for (id item in current) if (!RVShortsIdentifier(RVShortsPivotID(item))) [filtered addObject:item];
-    if (filtered.count==current.count) { RVShortsValue(@"pivot_checkpoint",@"no_shorts_entry");return NO; }
+    for (id item in source) if (!RVNavigationIdentifierHidden(RVShortsPivotID(item))) [filtered addObject:item];
+    // Icon-only creation entries are actions, not navigable content tabs.
+    if (!RVNavigationContentIdentifiers(filtered).count && RVNavigationContentIdentifiers(source).count) {
+        NSString *fallback=RVNavigationFallback(RVNavigationContentIdentifiers(source));
+        [filtered removeAllObjects];
+        for (id item in source) if (!RVNavigationIdentifierHidden(RVShortsPivotID(item)) || [RVShortsPivotID(item) isEqual:fallback]) [filtered addObject:item];
+        RVShortsEvent(@"last_content_tab_retained");RVShortsValue(@"safety_retained_pivot",fallback);
+    }
+    if ([filtered isEqual:current]) { RVShortsValue(@"pivot_checkpoint",lease ? @"native_model_already_compacted" : @"no_matching_hidden_tab");return NO; }
     if (!filtered.count) { RVShortsValue(@"pivot_checkpoint",@"no_surviving_tab");return NO; }
-    lease=[RVShortsPivotLease new];lease.original=current.copy;
+    lease=[RVShortsPivotLease new];lease.original=source.copy;
     RVSetObject(renderer,"setItemsArray:",filtered);
     lease.installed=RVAdResolvedObject(renderer,"itemsArray");lease.snapshot=lease.installed.copy;
     if (![lease.installed isKindOfClass:NSArray.class] || ![lease.installed isEqual:filtered]) {
@@ -149,7 +159,8 @@ static BOOL RVShortsPreparePivot(id renderer) {
     }
     objc_setAssociatedObject(renderer,RVShortsPivotLeaseKey,lease,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     RVShortsEvent(@"pivot_compacted");RVShortsValue(@"pivot_input_count",@(current.count));
-    RVShortsValue(@"pivot_output_count",@(filtered.count));RVShortsValue(@"pivot_checkpoint",@"native_model_compacted");return YES;
+    RVShortsValue(@"pivot_output_count",@(filtered.count));RVShortsValue(@"retained_pivots",RVNavigationIdentifiers(filtered));
+    RVShortsValue(@"pivot_checkpoint",@"native_model_compacted");return YES;
 }
 static void RVShortsRestoreSelection(UIView *view) {
     id controller=RVObject(view,"delegate");
@@ -161,9 +172,9 @@ static void RVShortsRestoreSelection(UIView *view) {
     for (id item in entries) { NSString *value=RVShortsPivotID(item);if (value.length) [identifiers addObject:value]; }
     if (selected.length && [identifiers containsObject:selected]) {
         RVSetObject(view,"selectItemWithPivotIdentifier:",selected);RVShortsEvent(@"pivot_selection_preserved");
-    } else if (RVEnabled(@"hide_shorts_navigation") && RVShortsIdentifier(selected)) {
-        NSString *fallback=[identifiers containsObject:@"FEwhat_to_watch"] ? @"FEwhat_to_watch" : identifiers.firstObject;
-        if (fallback && !RVShortsIdentifier(fallback) && RVCan(controller,"selectItemWithPivotIdentifier:",@"v@:@")) {
+    } else if (selected.length && (RVNavigationFilteringEnabled() || [RVSetting(@"start_page") length])) {
+        NSString *fallback=RVNavigationFallback(identifiers);
+        if (fallback && RVCan(controller,"selectItemWithPivotIdentifier:",@"v@:@")) {
             RVSetObject(controller,"selectItemWithPivotIdentifier:",fallback);RVShortsEvent(@"pivot_removed_selection_recovered");
         }
     }
@@ -181,10 +192,13 @@ static void RVShortsRefreshNavigation(void) {
     for (UIView *view in views) {
         id renderer=RVObject(view,"renderer");
         if ([changed containsObject:renderer]) RVSetObject(view,"setRenderer:",renderer);
+        RVShortsRestoreSelection(view);
     }
+    RVNavigationRefreshLabels();
 }
 static void RVShortsInstall(void) {
     RVShortsHooks=[NSMutableDictionary dictionary];RVShortsPivotViews=[NSHashTable weakObjectsHashTable];
+    RVNavigationInstallLabels();
     RVShortsHooks[@"pivot_renderer"]=@(RVHook(@"YTPivotBarView",@"setRenderer:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id object,id renderer) {
             if (NSThread.isMainThread && [object isKindOfClass:UIView.class]) RVShortsPreparePivot(renderer);
@@ -206,7 +220,7 @@ static void RVShortsInstall(void) {
     RVShortsHooks[@"pivot_layout_observation"]=@(RVHook(@"YTPivotBarView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id object) {
             ((void(*)(id,SEL))original)(object,sel);
-            if (!NSThread.isMainThread || !RVEnabled(@"diagnostics") || !RVEnabled(@"hide_shorts_navigation")) return;
+            if (!NSThread.isMainThread || !RVEnabled(@"diagnostics") || (!RVNavigationFilteringEnabled() && !RVEnabled(@"hide_navigation_labels"))) return;
             NSArray *views=RVObject(object,"itemViews");if (![views isKindOfClass:NSArray.class] || views.count>6) return;
             NSMutableArray *visible=[NSMutableArray array];
             for (UIView *view in views) if ([view isKindOfClass:UIView.class] && !view.hidden) {
@@ -220,7 +234,10 @@ static void RVShortsInstall(void) {
 }
 static NSDictionary *RVShortsReport(void) {
     @synchronized(NSClassFromString(@"YTIPivotBarRenderer")) {
-        return @{@"schema":@1,@"diagnostics_revision":@"shorts-layout-1",@"hide_feed_shorts":@(RVEnabled(@"hide_shorts")),
+        return @{@"schema":@2,@"diagnostics_revision":@"navigation-options-2",@"hide_feed_shorts":@(RVEnabled(@"hide_shorts")),
+            @"hide_navigation_home":@(RVEnabled(@"hide_home_navigation")),@"hide_navigation_subscriptions":@(RVEnabled(@"hide_subscriptions_navigation")),
+            @"hide_navigation_library":@(RVEnabled(@"hide_library_navigation")),@"hide_navigation_labels":@(RVEnabled(@"hide_navigation_labels")),
+            @"configured_start_page":RVSetting(@"start_page") ?: @"",
             @"hide_navigation_shorts":@(RVEnabled(@"hide_shorts_navigation")),@"hooks":RVShortsHooks.copy ?: @{},
             @"counts":RVShortsCounts.copy ?: @{},@"state":RVShortsState.copy ?: @{},@"device_validated":@NO};
     }

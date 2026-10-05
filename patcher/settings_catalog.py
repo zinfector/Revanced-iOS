@@ -6,7 +6,8 @@ GROUPS = [
     ('ads','Ads','Feed ads also controls sponsored cards and below-video banners. Reopen the affected screen after changing filters.', 'video_ads feed_ads shorts_ads'),
     ('player','Player','Playback changes apply when the next video is opened.', 'background_playback picture_in_picture loop_video pause_on_interrupt disable_auto_captions force_original_audio open_videos_fullscreen exit_fullscreen_end custom_speed_menu remember_speed'),
     ('video','Video quality','Resolution caps filter available formats. Reopen the video to apply them.', 'advanced_quality_menu hide_premium_quality remember_quality disable_hdr disable_vp9'),
-    ('shorts','Shorts','Navigation changes may need a relaunch. The app-icon shortcut can be cached by iOS.', 'hide_shorts hide_shorts_navigation disable_shorts_resume shorts_autoplay open_shorts_regular hide_shorts_shortcut'),
+    ('shorts','Shorts','The app-icon shortcut can be cached by iOS.', 'hide_shorts disable_shorts_resume shorts_autoplay open_shorts_regular hide_shorts_shortcut'),
+    ('navigation','Navigation','Tab changes apply immediately. At least one content tab is kept available. The start page applies when the app opens.', 'hide_home_navigation hide_shorts_navigation hide_subscriptions_navigation hide_library_navigation hide_navigation_labels'),
     ('miniplayer','Miniplayer','Reopen the miniplayer after changing size or layout. Background opacity preserves native fades. Hiding overlay buttons retains video taps and ad-skip controls.', 'classic_miniplayer miniplayer_disable_drag miniplayer_disable_horizontal_drag miniplayer_disable_double_tap miniplayer_hide_subtext miniplayer_square_corners miniplayer_hide_overlay_buttons'),
     ('seekbar','Seekbar and gestures','Gesture options apply to the native player. Custom swipes require fullscreen.', 'hide_timestamp hide_seekbar disable_double_tap disable_chapter_skip disable_precise_seeking tap_to_seek swipe_controls'),
     ('layout','Layout and appearance','Reopen the affected screen after changing layout or theme.', 'hide_cast_button hide_captions_button hide_autoplay_button hide_previous_next hide_watermark hide_end_cards hide_autoplay_preview hide_info_cards hide_related_overlay disable_ambient disable_popup_panels hide_action_buttons hide_flyout_items hide_comments hide_layout_components disable_haptics disable_rolling_numbers custom_header'),
@@ -33,7 +34,7 @@ PARAMETERS = {
     'theme':('layout','Theme','choice',dict(choices=['system','dark','light'],choice_labels=['System','Dark','Light'])),
     'theme_light_background':('layout','Light background color','string',dict(pattern=r'^#[0-9A-Fa-f]{6}$',allow_empty=True,hint='Use #RRGGBB, or leave empty for the native color.')),
     'theme_dark_background':('layout','Dark background color','string',dict(pattern=r'^#[0-9A-Fa-f]{6}$',allow_empty=True,hint='Use #RRGGBB, or leave empty for the native color.')),
-    'start_page':('layout','Start page','choice',dict(choices=['','FEwhat_to_watch','FEsubscriptions','FElibrary'],choice_labels=['Native','Home','Subscriptions','Library'])),
+    'start_page':('navigation','Start page','choice',dict(choices=['','FEwhat_to_watch','FEsubscriptions','FElibrary','FEshorts'],choice_labels=['Native','Home','Subscriptions','You / Library','Shorts'])),
     'thumbnail_frame':('thumbnails','Video-frame thumbnail','choice',dict(choices=[1,2,3],integer=True,choice_labels=['First frame','Middle frame','Last frame'])),
     'thumbnail_modes':('thumbnails','Per-screen thumbnail modes','map',dict(map_keys=['home','subscriptions','library','player','search'],choices=['original','stills','dearrow','dearrow-stills'],choice_labels=['Original','Video frame','DeArrow','DeArrow with frame fallback'])),
     'thumbnail_proxy_url':('thumbnails','Thumbnail proxy URL','string',dict(url=True,allow_empty=True,max_length=1024,hint='An HTTPS endpoint that accepts a url query parameter. Empty disables the configured endpoint.')),
@@ -54,6 +55,8 @@ for key,title,group in [('feed_patterns','Feed ad filters','ads'),('shorts_patte
     PARAMETERS[key]=(group,title,'string_list',dict(list_min=0,list_max=64,max_length=128,hint='One positive component pattern per line. Empty lists match nothing.'))
 
 DESCRIPTIONS = {
+    'hide_navigation_labels':'Keeps the tab icons and their accessible names.',
+    'hide_library_navigation':'Hides the You tab, also called Library in some layouts.',
     'first_launch_ui':'Use YouTube default cold configuration on every launch. Affects native experiment defaults throughout the app. Keeps saved configuration on disk. Restart after changing this switch.',
     'paired_vote_buttons':'Use native paired like/dislike controls when their model is supported. Reopen the video after changing this setting.',
     'sideload_auth_identity':'Uses the original YouTube identity only in the verified native sign-in flow.',
