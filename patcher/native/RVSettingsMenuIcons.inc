@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // YouTube 21.39.4: verified YTIIcon enums, YTUIResources factories and catalog names.
 // See profiles/settings-menu-icons-evidence.json. Resolver IDs are not iconType values.
+#include "RVSettingsBrandIcons.inc"
 typedef struct {
     const char *key;
     int iconType; // 0 means no verified enum route; use the native resource instead.
@@ -96,8 +97,9 @@ static id RVSettingsMenuIcon(NSDictionary *row) {
     dispatch_once(&once,^{ icons=[NSMutableDictionary dictionary]; });
     // Settings rendering and measurement run on the main thread. Cache successes and misses.
     if (!icons[key]) {
-        id icon=nil;
-        for (NSUInteger index=0;index<sizeof(RVSettingsMenuGlyphs)/sizeof(*RVSettingsMenuGlyphs);index++) {
+        id icon=RVSettingsBrandIconForMenu(key);
+        // Prefer the supplied service logo, retaining the native glyph as a decode fallback.
+        for (NSUInteger index=0;!icon && index<sizeof(RVSettingsMenuGlyphs)/sizeof(*RVSettingsMenuGlyphs);index++) {
             const RVSettingsMenuGlyph *glyph=&RVSettingsMenuGlyphs[index];
             if (![key isEqualToString:@(glyph->key)]) continue;
             icon=RVSettingsCreateMenuIcon(glyph);

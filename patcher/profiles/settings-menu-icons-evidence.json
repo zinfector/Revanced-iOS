@@ -7,12 +7,12 @@
   "device_rendering_verified": false,
   "asset_verification": "Exact catalog names found in the supplied IPA; runtime loading remains subject to the installed app and feature flags.",
   "implementation": {
-    "scope": "15 root patch groups and 6 tool actions; preference and search rows do not have menu icons.",
+    "scope": "15 root patch groups and 6 tool actions; supplied logos for DeArrow, Return YouTube Dislike and SponsorBlock, existing supplied ReVanced logo at the settings entry. Preference and search rows do not have menu icons.",
     "native_path": "YTSettingsSectionItem.settingIcon is assigned before native section measurement and binding.",
     "enum_path": "YTIIcon.message, resolved and ABI-checked setIconType:, with iconImageWithColor: image validation.",
     "fallback_path": "ABI-checked YTUIResources factory, then UIImage imageNamed:inBundle:compatibleWithTraitCollection: in the YTResources class bundle (main bundle if unavailable).",
     "bundle_ownership": "YTUIResources initializes the Innertube_Resources loader. YTAppIconSupportProviderImpl delhiIconBundle uses bundleForClass:YTResources.",
-    "image_protocol": "24-point monochrome adapter with hasIconType=NO; preserves native template/palette tinting. The multicolor root logo adapter remains separate.",
+    "image_protocol": "Native resource adapters remain monochrome. Supplied brand adapters use original-color images and the existing root logo multicolor contract. PNGs share the root logo transparent-padding normalization; the DeArrow SVG retains its viewBox and original fills.",
     "missing_contract": "Missing icon, factory or item setter leaves native settings functional. No fixed addresses or private binary symbol linkage.",
     "header_padding": "Preserve the zero customEdgePadding from native updateHeader:, removing the port override of 16.",
     "uikit_fallback": "24-point decorative image, 8-point text gap, matching text-width measurement, native iconActive tint, disabled alpha and reuse clearing."
@@ -378,7 +378,7 @@
     {
       "key": "dearrow",
       "title": "DeArrow",
-      "recommended_glyph": "Pencil",
+      "recommended_glyph": "Supplied DeArrow logo",
       "asset_name": "youtube_outline/pencil_24pt",
       "asset_catalogs": [
         "Payload/YouTube.app/Assets.car"
@@ -408,7 +408,9 @@
           "catalog_name_present": true
         }
       ],
-      "device_rendering_verified": false
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Pencil",
+      "preferred_brand_asset": "native/assets/settings/DearrowLogo.svg"
     },
     {
       "key": "links",
@@ -449,7 +451,7 @@
     {
       "key": "ryd",
       "title": "Return YouTube Dislike",
-      "recommended_glyph": "Outline thumbs down",
+      "recommended_glyph": "Supplied Return YouTube Dislike logo",
       "asset_name": "youtube_outline/thumb_down_24pt",
       "asset_catalogs": [
         "Payload/YouTube.app/Assets.car",
@@ -480,12 +482,14 @@
           "catalog_name_present": true
         }
       ],
-      "device_rendering_verified": false
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Outline thumbs down",
+      "preferred_brand_asset": "native/assets/settings/ReturnYTDislike.png"
     },
     {
       "key": "sponsorblock",
       "title": "SponsorBlock",
-      "recommended_glyph": "Skip next",
+      "recommended_glyph": "Supplied SponsorBlock logo",
       "asset_name": "yt_fill_skip_next_24pt",
       "asset_catalogs": [
         "Payload/YouTube.app/Assets.car",
@@ -516,7 +520,9 @@
           "catalog_name_present": true
         }
       ],
-      "device_rendering_verified": false
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Skip next",
+      "preferred_brand_asset": "native/assets/settings/LogoSponsorBlock256px.png"
     },
     {
       "key": "authentication",
@@ -732,6 +738,43 @@
       "mismatch": 0,
       "runtime_resolution_required": 31
     },
-    "device_validated": false
+    "device_validated": false,
+    "brand_assets": "PNG base64 decodes byte-for-byte to both source files. All copied SVG/PNG files match Icons-folder sources; original root logo also matches. Generated header --check passes. DeArrow SVG preview visually inspected.",
+    "brand_icons_build_run": false,
+    "brand_icons_device_validated": false
+  },
+  "brand_logos": {
+    "precedence": "Supplied logos override the native glyph for their matching root menu. The verified native glyph remains a decode fallback.",
+    "logos": [
+      {
+        "key": "dearrow",
+        "supplied_filename": "DearrowLogo.svg",
+        "tracked_asset": "native/assets/settings/DearrowLogo.svg",
+        "sha256": "0991f379b022dd189e97c19df3c709492ff4e232d662047bb81b25d0c7f91b3d",
+        "representation": "Original SVG paths and CSS fill colors translated to UIKit cubic paths"
+      },
+      {
+        "key": "ryd",
+        "supplied_filename": "ReturnYTDislike.png",
+        "tracked_asset": "native/assets/settings/ReturnYTDislike.png",
+        "sha256": "c309b0a665f45670a8c0219037180dd261ecf665761da2990f19c9211f7bc0e6",
+        "representation": "Original PNG bytes embedded as base64"
+      },
+      {
+        "key": "sponsorblock",
+        "supplied_filename": "LogoSponsorBlock256px.png",
+        "tracked_asset": "native/assets/settings/LogoSponsorBlock256px.png",
+        "sha256": "36402dad32b85f6de52506e28ad23b5041e2f165c0a22533b92101b5a5caf3e9",
+        "representation": "Original PNG bytes embedded as base64"
+      }
+    ],
+    "revanced_entry": {
+      "tracked_asset": "native/assets/ReVancedSettings.png",
+      "supplied_filename": "ReVanced Logo.png",
+      "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "status": "Already exactly matches the supplied ReVanced logo."
+    },
+    "native_color_contract": "The branded adapter inherits RVSettingsLogoIcon hasIconType=YES, iconType=0x415. In 21.39.4 this selects the native multicolor path, which calls the adapter image method rather than forcing a template. It does not invoke YTIIcon resolution.",
+    "generation": "settings_brand_icons.py writes the checked-in RVSettingsBrandIconData.h; --check verifies it against the original assets without invoking a build."
   }
 }
