@@ -10,9 +10,9 @@ Structural Elements ad filtering and inline-player suppression are included alon
 
 Status reflects the merged 0.3.31 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
-- <img src="assets/progress/done.svg" width="20" height="12" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
-- <img src="assets/progress/in-progress.svg" width="20" height="12" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
-- <img src="assets/progress/not-started.svg" width="20" height="12" alt="not started"> **not started**: no working iOS implementation; Android-only mechanisms are identified explicitly.
+- <img src="assets/progress/done.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
+- <img src="assets/progress/in-progress.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
+- <img src="assets/progress/not-started.svg" width="16" height="16" alt="not started"> **not started**: no working iOS implementation; Android-only mechanisms are identified explicitly.
 
 **27 done - 81 in-progress - 6 not started** across the entries below.
 
