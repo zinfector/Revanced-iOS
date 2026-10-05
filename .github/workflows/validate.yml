@@ -12,6 +12,8 @@ permissions:
 jobs:
   native:
     runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     timeout-minutes: 20
     defaults:
       run:
@@ -25,6 +27,21 @@ jobs:
           python-version: '3.14'
       - name: Build ARM64 iOS payload using Xcode
         run: python build.py
+      - name: Record pinned Xcode build provenance
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          provenance = {
+              'head_sha': os.environ['GITHUB_SHA'],
+              'run_id': os.environ['GITHUB_RUN_ID'],
+              'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+              'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
+              'clang': subprocess.check_output(['xcrun', '--sdk', 'iphoneos', 'clang', '--version'], text=True).strip(),
+              'tests_run': False,
+          }
+          Path('build/cloud-build.json').write_text(json.dumps(provenance, indent=2)+'\n')
+          PY
       - name: Run patcher and signing regression tests
         if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip tests]')
         run: python -m unittest discover -s tests -v
@@ -39,6 +56,7 @@ jobs:
             patcher/build/RVPort.dylib
             patcher/build/build-manifest.json
             patcher/build/build.log
+            patcher/build/cloud-build.json
             patcher/build/hook-check.json
           if-no-files-found: error
           retention-days: 7

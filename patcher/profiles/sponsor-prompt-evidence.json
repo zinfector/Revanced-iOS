@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-10-05T05:46:30.140891+00:00",
+  "status": "investigation_and_scheme_only",
+  "tests_run": false,
+  "app_executed": false,
+  "runtime_sources_modified": false,
+  "ipa_built": false,
+  "device_validated": false,
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "other_implementation": {
+    "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher",
+    "version": "0.3.24",
+    "kind": "separate_release_checkout; only main repository currently registered as a Git worktree",
+    "sources": [
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVPort.m",
+        "sha256": "dba1880eb4fa7e494dd20287c7153048936a13a354c587ae93adbeabd80af7d7",
+        "bytes": 29799
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVServices.inc",
+        "sha256": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+        "bytes": 26422
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVExtras.inc",
+        "sha256": "7565f867843c480c7a314e01934981ae173685077f7f49d8790f3cd89600cc4f",
+        "bytes": 56065
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVAds.inc",
+        "sha256": "6fabef484a57c2b216b562b56ab0526e9aaf092e83b96b215e862e8e195d8d26",
+        "bytes": 16154
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVAdsDiagnostics.inc",
+        "sha256": "64f59c9deae3df1936993004a91c1963d4d90657b6d02d87cf1ceaf999e3d5a4",
+        "bytes": 9023
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\adblock-handoff-release-0.3.24\\patcher\\native\\RVSettingsUI.inc",
+        "sha256": "76f10ff62fe0b2d7ac2ae2c5c131a202dfc9409ca59a5f4362f6a92dbe333a16",
+        "bytes": 21712
+      }
+    ]
+  },
+  "android_behavior_sources": [
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\ui\\SkipSponsorButton.java",
+      "sha256": "28e43b976c4a4b13e69bae3697425479c652956bd1e0bca4b41fffb3d514f70b",
+      "bytes": 6318
+    },
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\ui\\SponsorBlockViewController.java",
+      "sha256": "779bcce6fc892f5c6e99a01f4780e01709a6f31b6494111603e97b07df8f6d21",
+      "bytes": 12965
+    },
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\SegmentPlaybackController.java",
+      "sha256": "34e433658aa3cd284579cff773f8afcc85f879cf1d7b60708df2abfc2f35e868",
+      "bytes": 46875
+    },
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\objects\\SponsorSegment.java",
+      "sha256": "1b8975f065a41c5332afc32fb1911a54e83beb54d31e1dcda58326103a7db796",
+      "bytes": 5497
+    }
+  ],
+  "native_research": {
+    "read_only": true,
+    "noanalysis": true,
+    "decompiled_method_count": 36,
+    "artifacts": [
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\sponsor-prompt-investigation\\metadata.json",
+        "sha256": "fc546f774192606ce7d9bd82a10421decd6a0c468c2bcfd8031040903673b7ca",
+        "bytes": 105413
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\sponsor-prompt-investigation\\decompiled-annotated.txt",
+        "sha256": "84e365c1c600d2638f0819523bc25ae7b437c1a7e92a5deab29532dfbd3e8c13",
+        "bytes": 115502
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\sponsor-prompt-investigation\\assembly.txt",
+        "sha256": "d438bf09be1036a3f794ce66856fcd632538efeda641f6704521d97dbbb99d46",
+        "bytes": 2158
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\sponsor-prompt-investigation\\presentation-contracts.json",
+        "sha256": "c0edfc6e75d5e4596c0e415d54914cf1c8d0ed80d12dd8a719d3076141184d24",
+        "bytes": 4607
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\sponsor-prompt-investigation\\identity.txt",
+        "sha256": "4a82ce363ce9e0a846ccb599acb65ba81352f7ed344edc762a2b380cf17d0b8e",
+        "bytes": 272
+      }
+    ],
+    "reproduction_scripts": [
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\analysis\\scripts\\investigate_sponsor_prompts.py",
+        "sha256": "79474064c0205c954f0bb2cc7769209201f42f18ceb29eab7827ddcc6e74a24f",
+        "bytes": 5224
+      },
+      {
+        "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\analysis\\scripts\\InspectSponsorPromptAssembly.java",
+        "sha256": "3ad4b7204a7f3059a5374bae0c75d481efb189552bac997028131dcd3f785d53",
+        "bytes": 849
+      }
+    ]
+  },
+  "confirmed_findings": [
+    "Baseline has tools-menu manual/undo actions but no in-player segment prompt.",
+    "Native skip wrapper creates YTQTMAdSkipButton and has scoped target/action routing.",
+    "Renderer-based native setup can register responder targets; native ad press callback invokes ad delegate/click logging.",
+    "ARM64 cornerRadius selects 16 points for modern variant and zero otherwise; decompiler alone loses this return value.",
+    "Native wrapper hitTargetBounds expands toward 48-point minimum.",
+    "Current skip bookkeeping records native seek requests without confirming arrival.",
+    "Current merged intervals lose category/member identity; scalar undo suppression has no start bound."
+  ],
+  "proposed_design": [
+    "Fresh owned YTAdSkipView/native button with SponsorBlock-only actions",
+    "Content overlay with owned presentation rectangle and narrow hit testing",
+    "Manual/undo shared transaction helper and clock confirmation",
+    "Token-bound replay suppression before undo dispatch",
+    "Timed undo and bounded redacted checkpoints"
+  ],
+  "unresolved_native_adapters": [
+    "Content-overlay child hit-test behavior under all experiments",
+    "Frosted style provider for private control",
+    "Runtime availability and coordinate contract of render rectangles across layouts"
+  ],
+  "scheme": {
+    "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\Revanced-iOS\\patcher\\SPONSORBLOCK_NATIVE_PROMPTS_SCHEME.md",
+    "sha256": "8561c2a46ec95ba7d2943e2e5c69c6bd18b509cb7f0dcac2b00391d1983e9de2",
+    "bytes": 25141
+  }
+}

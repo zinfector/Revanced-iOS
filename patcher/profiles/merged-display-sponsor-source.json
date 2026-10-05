@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "version": "0.3.28",
+  "display_parent": "25607ee2bfa40d5d9c657fefd7835b999f42fb31",
+  "sponsor_parent": "207ac3e26a7783f480f992ab31a42d0eb941b1f1",
+  "merge_base": "e0a6197d593953ece3a4665bb9b15bea39236494",
+  "sponsor_worktree": "sponsor-prompts-xcode-release-0.3.26",
+  "display_worktree": "adblock-display-release-0.3.25",
+  "pending_worktree_excluded": "shorts-layout-release-0.3.27",
+  "resolution": "Both implementations retained; full report includes sponsorblock_prompts and adblock.display_ads; pinned Xcode 16.4 toolchain; merged native build required.",
+  "tests_run": false,
+  "device_validated": false
+}

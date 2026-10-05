@@ -105,7 +105,9 @@ static id RVContentResponse(id controller) {
 
 #include "RVAds.inc"
 
+@class RVSponsorPromptState;
 @interface RVPlaybackSession : NSObject
+@property(nonatomic,strong) RVSponsorPromptState *promptState;
 @property(nonatomic,copy) NSString *videoID;
 @property(nonatomic) NSUInteger generation;
 @property(nonatomic,strong) NSArray<NSDictionary *> *segments;
@@ -117,7 +119,6 @@ static id RVContentResponse(id controller) {
 @property(nonatomic) double lastSkippedStart;
 @property(nonatomic) double lastSkippedEnd;
 @property(nonatomic) BOOL hasLastSkip;
-@property(nonatomic) double ignoreSegmentEnd;
 @property(nonatomic,strong) NSURLSessionDataTask *task;
 @property(nonatomic) NSTimeInterval lastRequest;
 @property(nonatomic) NSTimeInterval lastSeekWallTime;
@@ -146,45 +147,29 @@ static NSString *RVSegmentKey(NSDictionary *segment) {
     NSString *uuid=segment[@"UUID"];
     return uuid.length ? uuid : [NSString stringWithFormat:@"%@/%@/%@",segment[@"category"],segment[@"start"],segment[@"end"]];
 }
+static NSArray *RVSPRanges(RVPlaybackSession *session,BOOL automatic,BOOL allForTools);
 static NSArray<NSDictionary *> *RVSponsorRanges(RVPlaybackSession *session,BOOL automatic) {
-    size_t capacity=MIN(session.rawSegments.count,512),count=0;
-    RVInterval *input=calloc(capacity ?: 1,sizeof(RVInterval)),*output=calloc(capacity ?: 1,sizeof(RVInterval));
-    if (!input || !output) { free(input);free(output);return @[]; }
-    for (NSDictionary *range in session.rawSegments) {
-        if (![range[@"action"] isEqual:@"skip"]) continue;
-        NSString *behavior=RVSponsorBehavior(range[@"category"]);
-        if ([behavior isEqual:@"ignore"] || [behavior isEqual:@"seekbar-only"]) continue;
-        if (automatic && ![@[@"skip",@"skip-once"] containsObject:behavior]) continue;
-        if (automatic && [behavior isEqual:@"skip-once"] && [session.skippedOnce containsObject:RVSegmentKey(range)]) continue;
-        if (count>=capacity) break;
-        input[count++]=(RVInterval){[range[@"start"] doubleValue],[range[@"end"] doubleValue]};
-    }
-    size_t merged=RVMergeIntervals(input,count,output,capacity);
-    NSMutableArray *result=[NSMutableArray arrayWithCapacity:merged];
-    for (size_t i=0;i<merged;i++) [result addObject:@{@"start":@(output[i].start),@"end":@(output[i].end)}];
-    free(input);free(output);return result;
+    return RVSPRanges(session,automatic,!automatic);
 }
 static void RVRecordSponsorSkip(RVPlaybackSession *session,double start,double end) {
-    if (!session.skippedOnce) session.skippedOnce=[NSMutableSet set];
-    for (NSDictionary *range in session.rawSegments) if ([range[@"action"] isEqual:@"skip"] &&
-        [RVSponsorBehavior(range[@"category"]) isEqual:@"skip-once"] && [range[@"start"] doubleValue]>=start && [range[@"end"] doubleValue]<=end)
-        [session.skippedOnce addObject:RVSegmentKey(range)];
     NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
     [defaults setInteger:[defaults integerForKey:@"RVPort.SB.skipRequests"]+1 forKey:@"RVPort.SB.skipRequests"];
     double previous=[defaults doubleForKey:@"RVPort.SB.requestedSkipSeconds"];
     if (isfinite(start) && isfinite(end) && end>start) [defaults setDouble:(isfinite(previous) ? previous : 0)+end-start forKey:@"RVPort.SB.requestedSkipSeconds"];
 }
 
+#include "RVSponsorPrompt.inc"
+
 static void RVFetchSegments(RVPlaybackSession *session) {
     NSTimeInterval now=[NSDate timeIntervalSinceReferenceDate];
-    if (!RVEnabled(@"sponsorblock")) { if (session.task) { [session.task cancel];session.task=nil;session.generation++; } return; }
+    if (!RVEnabled(@"sponsorblock")) { RVSPReset(session,@"feature_disabled");if (session.task) { [session.task cancel];session.task=nil;session.generation++; } return; }
     NSMutableArray *categories=[NSMutableArray array];
     for (NSString *category in RVSetting(@"sponsor_categories")) if (![RVSponsorBehavior(category) isEqual:@"ignore"]) [categories addObject:category];
     NSData *categoryData=[NSJSONSerialization dataWithJSONObject:categories options:0 error:nil];
     NSString *key=[NSString stringWithFormat:@"%@/%@",[[NSString alloc] initWithData:categoryData encoding:NSUTF8StringEncoding],RVSetting(@"sponsor_min_duration")];
     if (![session.categoryKey isEqual:key]) {
         [session.task cancel];session.task=nil;session.rawSegments=@[];session.segments=@[];session.segmentsFetched=NO;session.categoryKey=key;session.generation++;session.lastRequest=0;
-        RVSegmentsChanged();
+        RVSPReset(session,@"categories_changed");RVSegmentsChanged();
     }
     if (!categories.count || session.task || session.segmentsFetched || now-session.lastRequest<30) return;
     session.lastRequest=now;
@@ -229,8 +214,8 @@ static void RVFetchSegments(RVPlaybackSession *session) {
             RVSponsorValue(@"fetch_state",error ? @"network_error" : status==404 ? @"no_segments" : [json isKindOfClass:NSArray.class] ? @"loaded" : @"invalid_response");
             RVSponsorValue(@"accepted_segments",@(accepted.count));
             live.segmentsFetched=!error && (status==404 || [json isKindOfClass:NSArray.class]);
-            live.task=nil;live.rawSegments=accepted;live.segments=RVSponsorRanges(live,NO);
-            RVSegmentsChanged();
+            RVSPSegmentsReplaced(live);live.task=nil;live.rawSegments=accepted;live.segments=RVSponsorRanges(live,NO);
+            RVSegmentsChanged();RVSPRefreshUI();
         });
     }];
     [session.task resume];
@@ -250,14 +235,14 @@ static void RVObservePlayback(id controller,id timeObject,NSString *source) {
     RVAdObserveClock(controller,timeObject);
     NSString *videoID=RVObject(controller,"contentVideoID");
     NSString *gate=RVContentGate(controller);
-    if (gate) { RVSponsorValue(@"playback_gate",gate);return; }
+    if (gate) { RVSponsorValue(@"playback_gate",gate);RVSPRefreshUI();return; }
     RVPlaybackSession *session=RVSession(controller);
     id contentTime=RVObject(controller,"contentVideoCurrentTime");
     NSString *cpn=RVObject(contentTime,"CPN") ?: RVObject(controller,"contentVideoCPN");
     if (![session.videoID isEqual:videoID] || (cpn && ![session.cpn isEqual:cpn])) {
         [session.task cancel];session.task=nil;session.videoID=videoID;session.cpn=cpn;session.generation++;
         session.segments=@[];session.lastRequest=0;session.lastSeekWallTime=0;session.speedApplied=NO;
-        session.rawSegments=@[];session.segmentsFetched=NO;session.lastSkippedEnd=0;session.hasLastSkip=NO;session.ignoreSegmentEnd=0;
+        session.rawSegments=@[];session.segmentsFetched=NO;session.lastSkippedEnd=0;session.hasLastSkip=NO;RVSPReset(session,@"video_changed");
         session.skippedOnce=[NSMutableSet set];session.highlightApplied=NO;
         RVSponsorCount(@"video_changed");RVSponsorValue(@"fetch_state",@"not_requested");
         RVSponsorValue(@"accepted_segments",@0);RVSegmentsChanged();
@@ -270,40 +255,8 @@ static void RVObservePlayback(id controller,id timeObject,NSString *source) {
     if (!isfinite(seconds) || seconds<0) { RVSponsorValue(@"playback_gate",@"invalid_time");return; }
     RVSponsorValue(@"content_time_seconds",@(seconds));
     RVSponsorValue(@"playback_gate",RVBool(controller,"isPlayingContentVideo") ? @"ready" : @"not_playing");
-    // Fetch/paint while paused or buffering; only an active content clock seeks.
-    if (!RVBool(controller,"isPlayingContentVideo")) return;
-    if (RVEnabled(@"sponsorblock") && !RVEnabled(@"sponsorblock_manual") && !session.seeking) {
-        if (!session.highlightApplied) for (NSDictionary *point in session.rawSegments) {
-            if (![point[@"action"] isEqual:@"poi"] || ![@[@"skip",@"skip-once"] containsObject:RVSponsorBehavior(point[@"category"])]) continue;
-            double targetSeconds=[point[@"start"] doubleValue];
-            if (seconds>=targetSeconds) { session.highlightApplied=YES;break; }
-            Class times=NSClassFromString(@"YTSingleVideoTime");
-            if (!RVCan(times,"timeWithTime:CPN:",@"@@:d@") || !RVCan(controller,"seekToTime:toleranceBefore:toleranceAfter:seekSource:",@"v@:@ddi")) break;
-            id target=((id(*)(id,SEL,double,id))objc_msgSend)(times,sel_registerName("timeWithTime:CPN:"),targetSeconds,session.cpn);
-            if (!target) break;
-            session.highlightApplied=YES;session.lastSkippedStart=seconds;session.lastSkippedEnd=targetSeconds;session.hasLastSkip=YES;
-            RVSponsorCount(@"seek_requested");RVSponsorValue(@"seek_target_seconds",@(targetSeconds));
-            ((void(*)(id,SEL,id,double,double,int))objc_msgSend)(controller,sel_registerName("seekToTime:toleranceBefore:toleranceAfter:seekSource:"),target,0,0,0);return;
-        }
-        for (NSDictionary *segment in RVSponsorRanges(session,YES)) {
-            double start=[segment[@"start"] doubleValue],end=[segment[@"end"] doubleValue];
-            if (seconds<start || seconds>=end-0.08) continue;
-            if (seconds<session.ignoreSegmentEnd && end<=session.ignoreSegmentEnd) continue;
-            NSTimeInterval wall=[NSDate timeIntervalSinceReferenceDate];
-            if (wall-session.lastSeekWallTime<2 && fabs(end-session.lastSeekTarget)<0.1) break;
-            Class timeClass=NSClassFromString(@"YTSingleVideoTime");
-            if (!RVCan(timeClass,"timeWithTime:CPN:",@"@@:d@") || !RVCan(controller,"seekToTime:toleranceBefore:toleranceAfter:seekSource:",@"v@:@ddi")) break;
-            id target=((id(*)(id,SEL,double,id))objc_msgSend)(timeClass,sel_registerName("timeWithTime:CPN:"),end,session.cpn);
-            if (!target) break;
-            session.seeking=YES;session.lastSeekWallTime=wall;session.lastSeekTarget=end;
-            session.lastSkippedStart=start;session.lastSkippedEnd=end;
-            session.hasLastSkip=YES;
-            RVRecordSponsorSkip(session,start,end);
-            RVSponsorCount(@"seek_requested");RVSponsorValue(@"seek_target_seconds",@(end));
-            ((void(*)(id,SEL,id,double,double,int))objc_msgSend)(controller,sel_registerName("seekToTime:toleranceBefore:toleranceAfter:seekSource:"),target,0,0,0);
-            session.seeking=NO;break;
-        }
-    }
+    // Confirm paused manual seeks as well as active automatic content seeks.
+    RVSPClock(session,seconds);
 }
 
 static void RVObservePlayerClock(id player,id time) {
@@ -414,7 +367,7 @@ static NSDictionary *RVSponsorReport(void) {
         @"seek_abi_matches":@(RVCan(controller,"seekToTime:toleranceBefore:toleranceAfter:seekSource:",@"v@:@ddi")),
         @"request_in_flight":@(session.task!=nil),@"response_cached":@(session.segmentsFetched),
         @"segment_count":@(session.rawSegments.count),@"automatic_range_count":@(RVSponsorRanges(session,YES).count),
-        @"counts":RVSponsorCounts.copy ?: @{},@"state":RVSponsorState.copy ?: @{},@"device_playback_verified":@NO};
+        @"native_prompts":RVSPReport(),@"counts":RVSponsorCounts.copy ?: @{},@"state":RVSponsorState.copy ?: @{},@"device_playback_verified":@NO};
 }
 
 #include "RVSettingsIcon.inc"
@@ -478,7 +431,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
         RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
-        if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras(); }
+        if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             [[NSNotificationCenter defaultCenter] addObserver:entrance selector:@selector(attach) name:UIApplicationDidBecomeActiveNotification object:nil];
