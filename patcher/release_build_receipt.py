@@ -1,11 +1,11 @@
-"""Record 0.3.31 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.32 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.31'
+VERSION = '0.3.32'
 
 
 def main():
@@ -45,6 +45,7 @@ def main():
     names += ['native/RVAdWatchOwnership.inc', 'ADBLOCK_OWNERSHIP_FIX.md', 'profiles/device-adblock-report-348.json', 'profiles/adblock-ownership-evidence.json']
     # Internal Markdown stays local and is excluded from public release receipts.
     names = [name for name in names if Path(name).suffix.lower() != '.md']
+    names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -69,7 +70,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
+        'remaining_scope': 'Regular native 3x option and configured limits implemented; device confirmation pending. Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

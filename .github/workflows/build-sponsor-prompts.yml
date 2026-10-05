@@ -1,8 +1,8 @@
-name: Build Elements and inline adblock payload with Xcode
+name: Build regular native 3x speed payload with Xcode
 
 on:
   push:
-    branches: [fix/elements-inline-adblock-0.3.31]
+    branches: [fix/native-three-x-0.3.32]
 
 permissions:
   contents: read

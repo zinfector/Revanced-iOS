@@ -57,6 +57,7 @@ static BOOL RVSpeedCurrent(id player,NSString *video) {
         [RVObject(core,"contentVideoID") isEqual:video] && core==RVCurrentPlayback && player==RVCurrentPlayer;
 }
 #include "RVSpeedDiagnostics.inc"
+#include "RVSpeedThreeX.inc"
 #include "RVSpeedContext.inc"
 static id RVSpeedOwnerPlayer(id manager) {
     RVSpeedOwner *owner=objc_getAssociatedObject(manager,RVSpeedOwnerKey);id player=owner.player;
@@ -140,7 +141,7 @@ static void RVSpeedContentReady(id player,NSString *trigger) {
 static NSDictionary *RVSpeedReport(void) {
     RVSpeedState *state=objc_getAssociatedObject(RVCurrentPlayer,RVSpeedKey);
     float observed=RVSpeedObserved(RVCurrentPlayer);
-    return @{@"schema":@3,@"checkpoints":RVSpeedCheckpointReport(),@"current_snapshot":RVSpeedSnapshot(RVCurrentPlayer),@"sheet_context":RVSpeedContextReport(),@"command_bridge":RVSpeedBridgeReport(),@"current_player_bound":@(RVCurrentPlayer!=nil),
+    return @{@"schema":@3,@"checkpoints":RVSpeedCheckpointReport(),@"current_snapshot":RVSpeedSnapshot(RVCurrentPlayer),@"three_x_option":RVSpeedThreeXReport(),@"sheet_context":RVSpeedContextReport(),@"command_bridge":RVSpeedBridgeReport(),@"current_player_bound":@(RVCurrentPlayer!=nil),
         @"content_matches":@(RVSpeedCurrent(RVCurrentPlayer,state.video)),@"source":state.source ?: @"not_observed",
         @"gate":state.gate ?: @"not_observed",@"gate_describes":state.explicitChoice ? @"explicit_user_selection" : @"startup_restoration",@"explicit_native_choice":@(state.explicitChoice),
         @"native_choice_count":@(state.nativeChoices),@"apply_attempts":@(state.attempts),
@@ -148,9 +149,10 @@ static NSDictionary *RVSpeedReport(void) {
         @"native_rate_available":@(isfinite(observed)),@"native_observed_rate":@(isfinite(observed) ? observed : 0),
         @"native_managers_bound":@(atomic_load(&RVSpeedManagersBound)),
         @"native_rate_menu_callbacks":@(atomic_load(&RVSpeedRateMenuCalls)),@"native_model_menu_callbacks":@(atomic_load(&RVSpeedModelMenuCalls)),
-        @"menu_owner_missing":@(atomic_load(&RVSpeedOwnerMissing)),@"native_limits_preserved":@YES,@"device_verified":@NO};
+        @"menu_owner_missing":@(atomic_load(&RVSpeedOwnerMissing)),@"native_limits_preserved":@(!RVEnabled(@"custom_speed_menu")),@"native_engine_limits_preserved":@YES,@"device_verified":@NO};
 }
 static void RVInstallSpeedChoices(void) {
+    RVInstallSpeedThreeX();
     RVInstallSpeedContext();
     RVSpeedSessionID=NSUUID.UUID.UUIDString;
     RVSpeedLaunchNumber=[NSUserDefaults.standardUserDefaults integerForKey:@"RVPort.speedLaunchNumber"]+1;

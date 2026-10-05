@@ -1,0 +1,51 @@
+{
+  "supported_youtube": "21.39.4",
+  "read_only_static_analysis": true,
+  "tests_run": false,
+  "device_verified": false,
+  "reported_symptom": "Native 3x chip is a Premium-only option; user requests a regular speed button.",
+  "native_contracts": {
+    "config": "YTIGranularVariableSpeedConfig: minimumPlaybackRate, maximumPlaybackRate, stepSize are int32 percent values; defaultPlaybackRateOptionsArray holds PlaybackRateOption messages.",
+    "option": "PlaybackRateOption: value int32, isPremiumUpsell BOOL, label string, priority int32. Only value == 300 is converted.",
+    "sheet": "YTIPlaybackRateSelectorMenuSheetViewModel: maximumPlaybackRate float; defaultPlaybackRateOptionsArray and defaultPlaybackRateChipLabelsArray are YTIRenderer arrays.",
+    "selection": "YTIPlaybackRateOptionViewModel: optionValue YTISelectionValue, onTap ELMPBCommand, optionText attributed string. Native regular builder sets floatValue but leaves onTap absent.",
+    "overflow": "YTBAGetPlaybackRateOverflowMenuRequest.viewModel carries the typed sheet.",
+    "core": "YTLocalPlaybackController.setupPlaybackRateClampingBoundariesAndMaybeSetPlaybackRate divides granular maximum by 100 and intersects it with engine maximumSupportedPlaybackRate.",
+    "abi_checks": "Every runtime hook and dynamic GPB accessor uses the class-local RVHook/RVCan signature guards."
+  },
+  "verified_methods": {
+    "sheet_builder": {
+      "class": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "playbackRateSelectorMenuSheetViewModelWithConfig:",
+      "encoding": "@24@0:8@16",
+      "imp": "0x10346c3dc"
+    },
+    "default_config": {
+      "class": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "defaultGranularVariableSpeedConfig",
+      "encoding": "@16@0:8",
+      "imp": "0x10346c860"
+    },
+    "plain_option_factory": {
+      "class": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "playbackRateOptionWithRate:displayName:",
+      "encoding": "@28@0:8i16@20",
+      "imp": "0x10346cc58"
+    },
+    "hot_maximum": {
+      "class": "YTHotConfig",
+      "selector": "maximumPlaybackRate",
+      "encoding": "f16@0:8",
+      "imp": "0x104233118"
+    }
+  },
+  "behavior": "Enabled by custom_speed_menu. Copies speed configurations and sheet messages; clears only the 300-percent option upsell flag and its special onTap/custom upsell text. Adds a normal 3x option to native fallback config. Raises valid configured maxima below 3x to 3x; preserves higher maxima, minimum/step and backend capability limits. Normalizes serialized storage for C++ block consumers. Original messages and feature-disabled behavior retained.",
+  "diagnostics": "playback_speed.three_x_option: config/option/sheet/serialization counts; current_snapshot and existing native selection readbacks show requested/observed rate.",
+  "decompilation_sha256": {
+    "speed-three-x-model-annotated.txt": "73d3f9e242ac5af8c5eb05683952e3c318a503c1b22de7c56205614b334e0a4f",
+    "speed-three-x-config-annotated.txt": "5480fa2339955e5883335a4951855a8521c76468b7ae4e1cde8888bcacd00fea",
+    "speed-three-x-filler-annotated.txt": "afa6a0f3bdc540a99df6da0abacad5960ad1c895b17b8171bc4108b37fcdc3ae",
+    "speed-three-x-fill-annotated.txt": "00bc097e2401986e877257732a68ff4d27d45717937ac14432a98eb6d57877e1",
+    "speed-three-x-request-annotated.txt": "ddc3638706c6b271ab7cc4ec729eff4090be4d386ccbde581c37f0fcdf250457"
+  }
+}

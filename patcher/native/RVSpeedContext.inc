@@ -87,7 +87,8 @@ static void RVInstallSpeedContext(void) {
             return ^id(id filler,id args,NSError **error) {
                 RVSpeedContextValue(@"speed_sheet_command_entered",@{@"sheet_method":name});
                 NSError *nativeError=nil;
-                id result=((id(*)(id,SEL,id,NSError **))original)(filler,sel,args,error ? &nativeError : NULL);
+                id input=[name isEqual:@"getShowPlaybackRateSelectorMenuCommand:error:"] ? RVSpeedThreeXSheet(args) : RVSpeedThreeXOverflow(args);
+                id result=((id(*)(id,SEL,id,NSError **))original)(filler,sel,input,error ? &nativeError : NULL);
                 if (error && nativeError) *error=nativeError;
                 RVSpeedContextValue(@"speed_sheet_command_returned",@{@"sheet_result_present":@(result!=nil),
                     @"sheet_error_observable":@(error!=NULL),@"sheet_error_present":@(nativeError!=nil),@"sheet_error_code":@(nativeError.code)});
