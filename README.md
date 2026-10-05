@@ -6,7 +6,7 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the latest delivery. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.32. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
 ## Porting progress
 
