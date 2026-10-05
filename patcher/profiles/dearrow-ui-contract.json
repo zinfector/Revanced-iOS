@@ -82,6 +82,12 @@
       "title_field": 1,
       "title_message_class": "YTIFormattedString",
       "identity": "Explicit owning metadata/cell controller videoID; matching ordinary current playback only for legacy watch eligibility."
+    },
+    "legacy_configuration": {
+      "setCell": "YTCellController.setCell:0x100481f20 synchronously sets the owning responder and then the original entry on its native cell before returning. The scoped configuration binding covers that call.",
+      "set_parent_responder_stub": "0x1085c9920",
+      "set_entry_stub": "0x108593a20",
+      "abi": "setCell: v24@0:8@16; cell setEntry: v24@0:8@16"
     }
   },
   "integration_scheme": [
@@ -90,14 +96,15 @@
     "Trusted custom title updates only an isolated typed title value; incompatible ranges are discarded while component styling remains native.",
     "Decoded custom image is encoded into bounded ImageSource.imageData2 in the copied static thumbnail; no downloader callback/signature assumptions or remote-original cache collision.",
     "Keep native original immutable; update generation/revisions on reuse/settings/foreground; asynchronously reload only a still-matching row.",
-    "Unknown, ad, live, Shorts, multi-video, shared raw-pointer and unverified template roots pass through with bounded checkpoints.",
+    "Unknown, ad, Shorts, multi-video, shared raw-pointer and unverified template roots pass through with bounded checkpoints.",
     "Compare original serialized source snapshot as well as entry, owner, index, generation, settings and backend revision before accepting callbacks or native refreshes."
   ],
   "limitations": [
     "Runtime/server template versions outside the pinned bundle still require a separate profile.",
     "SharedComponentType raw-pointer instances are not writable serialized models; no raw C++ pointer mutation.",
     "Static template evidence establishes roles, not device-visible success.",
-    "Downloaded/entity-only roots need an explicit item identity contract."
+    "Downloaded/entity-only roots need an explicit item identity contract.",
+    "Static thumbnail roles exclude animated previews and composites. A static-role match alone is not proof of live-video classification."
   ],
   "backend_commit": "d4ab390",
   "implementation": [
