@@ -12,6 +12,12 @@
   "standalone_archive_test_run": false,
   "packaging": "IPAs created by the production patcher with its normal source/config/payload validation; no regression or integration test suite executed.",
   "device_playback_verified": false,
+  "adblock_user_feedback": {
+    "date": "2026-10-05",
+    "reported_working": true,
+    "statement": "Also the adblocker is now working",
+    "scope": "User-reported behavior with the latest delivery; no additional tests or exhaustive ad-format verification performed."
+  },
   "signing_required": true,
   "authentication_login": "Previously user-reported working; authentication implementation unchanged.",
   "source_commit": "15c2baaedd41e6dcfbcd959f5601be7f4afbd9f1",

@@ -6,6 +6,8 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Structural Elements ad filtering and inline-player suppression are included alongside the completed speed and Shorts work. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
+On October 5, 2026, the user reported that the adblocker is now working with the latest delivery. This confirms the reported device behavior; coverage of every ad format remains unverified.
+
 ## Porting progress
 
 Status reflects the merged 0.3.31 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
@@ -35,8 +37,8 @@ Status reflects the merged 0.3.31 source. This report covers every declaration i
 | Remove background playback restrictions | Native background gates and capability-checked PiP action implemented. | ![done](assets/progress/done.svg "done") |
 | Bypass URL redirects | Public redirect targets validated and unwrapped on the mapped endpoint path. | ![done](assets/progress/done.svg "done") |
 | Loop video | Native seek-to-start and repeat playback for ordinary completed videos implemented. | ![done](assets/progress/done.svg "done") |
-| Hide ads | Typed filtering, structural Elements ad logging, native empty-renderer/cell fallbacks and companion clearing implemented; unidentified routes and device confirmation remain. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
-| Video ads | Native ad coordinator with verified Watch and inline-preview ownership implemented; device behavior still needs confirmation. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
+| Hide ads | Typed filtering, structural Elements ad logging, native empty-renderer/cell fallbacks and companion clearing implemented; user reports adblocking working, with unidentified routes still unverified. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
+| Video ads | Native ad coordinator with verified Watch and inline-preview ownership implemented; user reports adblocking working, with exhaustive playback-route coverage still unverified. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | Remove viewer discretion dialog | Ordinary warning confirmation implemented; age, login and purchase verification stays native. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | Downloads | External downloader share handoff implemented; internal download/offline management remains unported. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
 | Disable haptic feedback | Selected native semantic haptics suppressed; other haptic producers remain. | ![in-progress](assets/progress/in-progress.svg "in-progress") |
