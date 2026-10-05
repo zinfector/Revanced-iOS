@@ -2,7 +2,7 @@
 
 Open **Actions → Sign IPA → Run workflow**. This uses a GitHub-hosted macOS runner, not an Apple certificate issued by GitHub. The workflow needs your code-signing certificate/private key and provisioning profile; none are configured automatically. It follows GitHub's [Apple certificate installation guidance](https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/sign-xcode-applications).
 
-For SideStore, use **`YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa`** and let SideStore sign it. Version 0.3.4 adds the dedicated ReVanced settings pane and retains the authentication implementation that now permits login according to the user. All six extensions are removed.
+For SideStore, use the latest unsigned IPA listed in [README.md](README.md) and let SideStore sign it. Use an extension-free IPA to avoid extension bundle-ID and provisioning-profile conflicts.
 
 ## Configure repository secrets
 
@@ -36,44 +36,26 @@ Paste each clipboard value into its corresponding GitHub secret. Clear the clipb
 | `bundle_id` | Optional new main app bundle ID. Empty derives the exact ID from the main profile. A wildcard profile requires an explicit matching bundle ID. |
 | `strip_extensions` | Defaults to `true`. Set `false` only with matching profiles for every retained extension. |
 
-Find a local IPA hash with `Get-FileHash -Algorithm SHA256 path\to\app.ipa`. For the locally generated 0.3 expanded artifact, the hash is recorded in `patcher/build/release-manifest.json` in the original workspace. Upload the IPA to storage you control and use its direct download URL; the workflow does not publish it to repository commits or Releases.
+Find a local IPA hash with `Get-FileHash -Algorithm SHA256 path\to\app.ipa`. Upload the IPA to storage you control and use its direct download URL; the signing workflow does not publish it to repository commits or Releases.
 
 The certificate must be authorized by each profile, and all profiles must belong to the same team and be unexpired. For development/Ad Hoc installation, the profile must include your **iPhone's UDID**; a model name is insufficient. App Store profiles are refused by this direct-install workflow. Apple describes profile authorization and signed entitlements in [TN3125](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles) and [TN2415](https://developer.apple.com/library/archive/technotes/tn2415/_index.html).
 
 Retained extension IDs are mapped from the original main prefix to the new main ID while preserving their suffixes. Each gets a matching profile and its own signature. Entitlements are derived from those profiles; original Google capabilities are not carried over. Unresolved wildcard capabilities stop signing instead of being guessed. Custom Google groups, push, account integration and extension behavior may need additional porting for your own identifiers; stripping extensions avoids their profile requirement.
 
-## Download and test
+## Download and install
 
 After success, download **signed-ipa** from the run's **Artifacts** section. It contains `signed.ipa` and a hash/signature report. The artifact retention is three days. Provisioning profiles are embedded in the IPA, as required for installation, so treat the artifact as containing your profile/device metadata. The `.p12` and its private key are never included in the artifact.
 
 Install using your existing sideloading workflow, then check cold launch, login, playback and the enabled features on your device. `codesign --verify --deep --strict` and ZIP CRC checks establish host signature/archive validity; iOS installation authorization and runtime behavior remain device checks. The unsigned patch-manifest verifier is not a signed-IPA verifier because signing changes the executable and bundle identity.
 
-This repository's signing workflow has been implemented and its host-side checks tested. End-to-end signing requires the secrets and source IPA URL above; it cannot be verified without them.
-
-The user previously reported Google rejecting sign-in, and now reports login success after the authentication revision. Cloud signing alone does not implement account-authentication compatibility. The authentication adapters use native request/keychain paths. Select `sideload-auth` when patching an original IPA to enable both authentication switches. Refresh and persistence remain device checks; older payloads are unchanged.
-
 ## Extension-prefix installation failure
 
-`IXErrorDomain Code=8` with `AppMigrationExtension` and a required prefix such as `com.google.ios.youtube.<team>.` means the sideloader renamed the main app while an extension retained its old ID. The ordinary 0.3.1 expanded IPA retains six extensions, including the migration extension under `Extensions/`, so removing only `PlugIns/` is insufficient.
+`IXErrorDomain Code=8` with `AppMigrationExtension` and a required prefix such as `com.google.ios.youtube.<team>.` indicates that the sideloader renamed the main app while an extension retained its old ID. Extensions can be under both `Extensions/` and `PlugIns/`, so removing only `PlugIns/` is insufficient.
 
-For SideStore, select `YouTube-21.39.4-RVPort-0.3.1-SideStore-auth-unsigned.ipa` and let SideStore sign that file. This artifact removes all six extensions and includes the expanded preset plus the experimental authentication adapters. Its SHA-256 is `1481372967024a657c94381324b36a6f90148245adc9b0d80407de63d719bb70`. Rebuilding from the original uses:
+Use an extension-free IPA, or keep `strip_extensions` enabled in the cloud workflow. To create an extension-free IPA from the original, run this from the repository root:
 
 ```powershell
-python patcher.py patch original.ipa -o sideload-auth-unsigned.ipa --config configs/sideload-auth.json --strip-extensions
+python patcher/patcher.py patch original.ipa -o sideload-auth-unsigned.ipa --config patcher/configs/sideload-auth.json --strip-extensions
 ```
 
-The GUI now removes extensions by default. Extension removal addresses this placeholder failure; installation and Google login still need device verification. Retaining extensions requires remapping their IDs and re-signing them with compatible profiles, as the cloud workflow already does.
-
-## 0.3.2 authentication revision
-
-The user installed the extension-free 0.3.1 auth IPA and supplied diagnostics confirming its identity hook ran, but its keychain probe failed and repeated SSO reads returned missing-entitlement errors. The new 0.3.2 auth artifact uses native private-keychain storage and scoped SSO request-user-agent identity, with redacted auth-advice diagnostics. Select `sideload-auth` for a new source build. Successful login remains a device acceptance test; cloud signatures alone do not prove it.
-
-Previous SideStore experiment: `YouTube-21.39.4-RVPort-0.3.2-SideStore-auth-unsigned.ipa`, SHA-256 `f1b3e2c752e3187d72b48eb365260cc414bd9921cc19d6a6137f0daae9a59fa0`. All six extensions are removed. See [the 0.3.2 receipt](patcher/profiles/release-0.3.2.json); old artifacts are preserved.
-
-## 0.3.3 miniplayer and shortcut release
-
-The previous extension-free SideStore artifact is `YouTube-21.39.4-RVPort-0.3.3-SideStore-auth-unsigned.ipa`, SHA-256 `2728c87e903c310af89dd87866f768cd44d1c43096985d4fd0b0e7ab158e1dd4`. It preserves the 0.3.2 authentication implementation and adds optional miniplayer and app-shortcut controls; the new options retain native defaults in this preset. All six extensions are removed. [Release receipt](patcher/profiles/release-0.3.3.json). At publication, login and the new UI behavior were unverified; the user subsequently reported login success.
-
-## 0.3.4 dedicated ReVanced settings
-
-The latest SideStore IPA is `YouTube-21.39.4-RVPort-0.3.4-SideStore-auth-unsigned.ipa`, SHA-256 `ea90a0543758404ce9bfe993a523f76f4902275880e67d04ea10dc7f257d45ab`. It includes the expanded preset and both authentication adapters. Existing `RVPort` preferences carry over. Open **YouTube Settings → ReVanced** for grouped controls, search, import/export, reset, Video tools and diagnostics. The three-finger hold remains a fallback. [Release receipt](patcher/profiles/release-0.3.4.json). User-reported login success is recorded separately from host tests; the new settings UI still requires device checks.
+The GUI removes extensions by default. Retaining extensions requires remapping their IDs and re-signing them with compatible profiles, as the cloud workflow does.
