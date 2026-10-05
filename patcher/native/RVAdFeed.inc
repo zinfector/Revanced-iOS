@@ -147,7 +147,7 @@ static void RVInstallFeed(void) {
         RVAdEvent(nil,@"feed_presence_accessors_resolved",resolved);
         @synchronized(RVAdPlaybackState.class) { RVAdHooks[[@"feed_fields " stringByAppendingString:name]]=@{ @"resolved":@(resolved),@"expected":@([RVAdFeedFields()[name] count])}; }
     }
-    RVAdFieldAccessors=accessors.copy;RVInstallDisplayAds();RVInstallShortsNavigation();
+    RVAdFieldAccessors=accessors.copy;RVInstallDisplayAds();
     RVAdHook(@"YTIElementRenderer",@"elementData",@"@@:",NO,^id(IMP original,SEL sel) {
         RVShortsElementDataOriginal=original;
         return ^id(id object) {

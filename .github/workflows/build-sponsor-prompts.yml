@@ -1,8 +1,8 @@
-name: Build Shorts layout payload with Xcode
+name: Build merged speed and Shorts payload with Xcode
 
 on:
   push:
-    branches: [build/shorts-layout-xcode-0.3.27]
+    branches: [build/speed-shorts-merged-0.3.30]
 
 permissions:
   contents: read

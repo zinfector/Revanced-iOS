@@ -5,6 +5,7 @@ static _Thread_local NSUInteger RVSpeedBridgeScope;
 static atomic_uint RVSpeedBridgeCreated,RVSpeedBridgeInitMissing,RVSpeedBridgeGets,RVSpeedBridgeSets;
 static atomic_uint RVSpeedBridgeRetrievals,RVSpeedBridgeMissing,RVSpeedBridgeRecovered,RVSpeedBridgeRejected;
 static atomic_uint RVSpeedBridgeSubscriptions,RVSpeedBridgeEventVideoMissing;
+static atomic_uint RVSpeedBridgeOffMainGets,RVSpeedBridgeOffMainSets;
 static NSString *RVSpeedBridgeGate=@"not_observed";
 static NSString *RVSpeedBridgeLastCall=@"not_observed";
 static float RVSpeedBridgeArgumentRate,RVSpeedBridgeArgumentScalar,RVSpeedBridgeResultRate;
@@ -17,7 +18,7 @@ static id RVSpeedVisiblePlayer(void) {
     return RVSpeedCurrent(player,video) ? player : nil;
 }
 static NSDictionary *RVSpeedBridgeReport(void) {
-    return @{@"schema":@1,@"gate":RVSpeedBridgeGate ?: @"not_observed",
+    return @{@"schema":@2,@"off_main_getter_calls":@(atomic_load(&RVSpeedBridgeOffMainGets)),@"off_main_selection_calls":@(atomic_load(&RVSpeedBridgeOffMainSets)),@"gate":RVSpeedBridgeGate ?: @"not_observed",
         @"blocks_created":@(atomic_load(&RVSpeedBridgeCreated)),@"initial_player_missing":@(atomic_load(&RVSpeedBridgeInitMissing)),
         @"getter_calls":@(atomic_load(&RVSpeedBridgeGets)),@"selection_calls":@(atomic_load(&RVSpeedBridgeSets)),
         @"player_retrieval_calls":@(atomic_load(&RVSpeedBridgeRetrievals)),@"native_player_missing":@(atomic_load(&RVSpeedBridgeMissing)),
@@ -56,7 +57,10 @@ static void RVInstallSpeedBridge(void) {
         BOOL selection=[name hasPrefix:@"setPlaybackRate"];
         RVHook(@"YTPlayerBlockImpl",name,@"@@:@^@",NO,^id(IMP original,SEL sel) {
             return ^id(id block,id args,NSError **error) {
-                if (!NSThread.isMainThread) return ((id(*)(id,SEL,id,NSError **))original)(block,sel,args,error);
+                if (!NSThread.isMainThread) {
+                    atomic_fetch_add(selection ? &RVSpeedBridgeOffMainSets : &RVSpeedBridgeOffMainGets,1);
+                    return ((id(*)(id,SEL,id,NSError **))original)(block,sel,args,error);
+                }
                 if (selection) atomic_fetch_add(&RVSpeedBridgeSets,1);else atomic_fetch_add(&RVSpeedBridgeGets,1);
                 RVSpeedBridgeLastCall=name;
                 if (selection) {
@@ -78,7 +82,7 @@ static void RVInstallSpeedBridge(void) {
                     RVSpeedBridgeResultRate=RVSpeedFloat(result,"activeRate");
                     RVSpeedBridgeResultHasRate=RVBool(result,"hasActiveRate") && isfinite(RVSpeedBridgeResultRate);
                 }
-                RVSpeedCheckpoint(@"bridge_call_returned",RVCurrentPlayer,@{@"method":name,@"native_error":@(nativeError!=nil),
+                RVSpeedCheckpoint(@"bridge_call_returned",RVCurrentPlayer,@{@"method":name,@"result_present":@(result!=nil),@"error_observable":@(error!=NULL),@"native_error":@(nativeError!=nil),@"native_error_code":@(nativeError.code),
                     @"result_rate_available":@(RVSpeedBridgeResultHasRate),@"result_rate":@(isfinite(RVSpeedBridgeResultRate) ? RVSpeedBridgeResultRate : 0)});
                 return result;
             };

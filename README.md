@@ -1,3 +1,5 @@
+Merged runtime release **0.3.30** preserves native speed/registry configuration under the first-launch UI policy and adds command-context diagnostics. Includes 0.3.29 ad ownership/display-ad fixes and 0.3.27 Shorts header and native toolbar layout fixes. Apple Xcode production build only; no tests run. See [speed context implementation](patcher/SPEED_CONTEXT_IMPLEMENTATION.md).
+
 # ReVanced iOS
 
 Latest release: **0.3.29**, one comprehensive SideStore-compatible IPA: `YouTube-21.39.4-RVPort-0.3.29-unsigned.ipa`. It corrects the observed Watch-ownership eligibility failure and adds ownership/managed-slot checkpoints. Opaque banners remain unresolved; see [ownership correction](patcher/ADBLOCK_OWNERSHIP_FIX.md). Older variant descriptions below document historical releases.

@@ -1,3 +1,5 @@
+As of 0.3.30, three native speed/registry infrastructure settings preserve their saved native configuration through both getter interfaces. The remaining UI-default/request/template policy below is retained. See [SPEED_CONTEXT_IMPLEMENTATION.md](SPEED_CONTEXT_IMPLEMENTATION.md).
+
 # Keep the first-launch startup path (0.3.22)
 
 The user asked to retain the native paired like/dislike row seen on the first launch after deleting and reinstalling YouTube. Report 1046 is a later launch of 0.3.21: RYD renders its estimate, but the observed components are separate `like_button` / `dislike_button_vm` templates. Its GPB producer hooks did not return an action model. The previous model-only repair therefore did not select the clean-install presentation on this device.

@@ -313,6 +313,7 @@ static void RVInstallVoteStartup(void) {
     BOOL loadInstalled=RVHook(@"YTColdConfigStorage",@"loadColdConfigGroupFromBlobStorage:dataKey:",@"@@:@@",YES,^id(IMP original,SEL sel) {
         return ^id(id cls,id store,id key) {
             id group=((id(*)(id,SEL,id,id))original)(cls,sel,store,key);
+            RVSpeedCaptureColdGroup(group,NO);
             if (RVEnabled(@"diagnostics")) {
                 NSData *bytes=RVObject(group,"data");
                 NSData *effective=RVVoteFirstLaunchReady ? RVObject(RVVoteFirstLaunchGroup,"data") : bytes;
@@ -326,6 +327,7 @@ static void RVInstallVoteStartup(void) {
     RVHook(@"YTColdConfigStorage",@"saveToBlobStoreColdConfig:hash:error:",@"B@:@@^@",NO,^id(IMP original,SEL sel) {
         return ^BOOL(id store,id group,id hash,NSError **error) {
             BOOL saved=((BOOL(*)(id,SEL,id,id,NSError **))original)(store,sel,group,hash,error);
+            if (saved) RVSpeedCaptureColdGroup(group,YES);
             if (RVEnabled(@"diagnostics")) RVVoteStartup(@"cold_config_saved",@{@"save_succeeded":@(saved),@"group_present":@(group!=nil),@"group_fingerprint":RVVoteDigest(RVObject(group,"data")),@"hash_fingerprint":RVVoteDigest(hash)});
             return saved;
         };
