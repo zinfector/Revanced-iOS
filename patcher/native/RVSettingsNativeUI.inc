@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Own the content layout; reuse YouTube's title, back control, cells and headers.
+#include "RVSettingsMenuIcons.inc"
 // Declarations only: runtime ABI checks precede these calls. The init family
 // tells ARC to consume the allocated receiver and adopt the retained result.
 @interface NSObject (RVSettingsInitializers)
@@ -80,6 +81,7 @@ static UIColor *RVSettingsColor(UIViewController *content,const char *token) {
     BOOL dark=RVSettingsPageStyle(content)==1;
     if (!strcmp(token,"textSecondary")) return dark ? [UIColor colorWithWhite:.65 alpha:1] : [UIColor colorWithWhite:.4 alpha:1];
     if (!strcmp(token,"textPrimary")) return dark ? UIColor.whiteColor : UIColor.blackColor;
+    if (!strcmp(token,"iconActive")) return dark ? [UIColor colorWithWhite:.85 alpha:1] : [UIColor colorWithWhite:.2 alpha:1];
     if (!strcmp(token,"outline")) return [UIColor colorWithWhite:dark ? .25 : .85 alpha:1];
     return dark ? [UIColor colorWithWhite:15.0/255 alpha:1] : UIColor.whiteColor;
 }
@@ -225,6 +227,7 @@ static void RVSettingsPop(UIViewController *content) {
 @end
 @interface RVSettingsFallbackCell : UICollectionViewCell
 @property(nonatomic,strong) UILabel *titleLabel,*hintLabel,*valueLabel;
+@property(nonatomic,strong) UIImageView *menuIcon;
 @property(nonatomic,strong) UISwitch *toggle;
 @property(nonatomic,copy) BOOL (^changed)(BOOL);
 @end
@@ -232,11 +235,17 @@ static void RVSettingsPop(UIViewController *content) {
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self=[super initWithFrame:frame])) {
         self.titleLabel=[UILabel new];self.hintLabel=[UILabel new];self.valueLabel=[UILabel new];self.toggle=[UISwitch new];
+        self.menuIcon=[UIImageView new];self.menuIcon.contentMode=UIViewContentModeScaleAspectFit;
+        self.menuIcon.isAccessibilityElement=NO;self.menuIcon.hidden=YES;
         self.titleLabel.font=[UIFont preferredFontForTextStyle:UIFontTextStyleBody];self.hintLabel.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
         self.valueLabel.font=[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
         for (UILabel *label in @[self.titleLabel,self.hintLabel,self.valueLabel]) { label.numberOfLines=0;label.adjustsFontForContentSizeCategory=YES; }
         UIStackView *text=[[UIStackView alloc] initWithArrangedSubviews:@[self.titleLabel,self.hintLabel]];text.axis=UILayoutConstraintAxisVertical;text.spacing=8;
-        UIStackView *line=[[UIStackView alloc] initWithArrangedSubviews:@[text,self.valueLabel,self.toggle]];line.spacing=16;line.alignment=UIStackViewAlignmentCenter;
+        UIStackView *line=[[UIStackView alloc] initWithArrangedSubviews:@[self.menuIcon,text,self.valueLabel,self.toggle]];line.spacing=16;line.alignment=UIStackViewAlignmentCenter;
+        [line setCustomSpacing:8 afterView:self.menuIcon];
+        // A hidden arranged image collapses its width; avoid a required-width conflict.
+        NSLayoutConstraint *iconWidth=[self.menuIcon.widthAnchor constraintEqualToConstant:24];iconWidth.priority=UILayoutPriorityDefaultHigh;
+        [NSLayoutConstraint activateConstraints:@[iconWidth,[self.menuIcon.heightAnchor constraintEqualToConstant:24]]];
         [self.valueLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
         [text setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
         line.translatesAutoresizingMaskIntoConstraints=NO;[self.contentView addSubview:line];
@@ -248,7 +257,7 @@ static void RVSettingsPop(UIViewController *content) {
     }return self;
 }
 - (void)toggled:(UISwitch *)toggle { if (!self.changed || !self.changed(toggle.on)) [toggle setOn:!toggle.on animated:YES]; }
-- (void)prepareForReuse { [super prepareForReuse];self.changed=nil; }
+- (void)prepareForReuse { [super prepareForReuse];self.changed=nil;self.menuIcon.image=nil;self.menuIcon.hidden=YES; }
 @end
 
 @interface RVSettingsListController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
@@ -295,6 +304,9 @@ static void RVSettingsPop(UIViewController *content) {
                 item=((id(*)(id,SEL,id,id,id,id,id))objc_msgSend)(cls,sel_registerName("itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:"),row[@"title"],row[@"hint"],row[@"identifier"],detail,select);
             }
             if (![item isKindOfClass:cls]) { self.nativeRows=NO;break; }
+            // Set before sizeForItemAtIndex: so native measurement includes its 24-point slot.
+            // A missing icon/setter must not disable native settings rows or their actions.
+            RVSetObject(item,"setSettingIcon:",RVSettingsMenuIcon(row));
             ((void(*)(id,SEL,BOOL))objc_msgSend)(item,sel_registerName("setEnabled:"),RVCompatible && ![row[@"disabled"] boolValue]);[items addObject:item];
         }
         if (!self.nativeRows) break;
@@ -323,6 +335,10 @@ static void RVSettingsPop(UIViewController *content) {
         fallback.toggle.on=[row[@"on"] boolValue];fallback.toggle.enabled=RVCompatible;
         fallback.titleLabel.textColor=RVSettingsColor(self.parentViewController ?: self,"textPrimary");
         fallback.hintLabel.textColor=fallback.valueLabel.textColor=RVSettingsColor(self.parentViewController ?: self,"textSecondary");
+        UIColor *iconColor=RVSettingsColor(self.parentViewController ?: self,"iconActive");
+        fallback.menuIcon.image=RVSettingsMenuIconImage(RVSettingsMenuIcon(row),iconColor);
+        fallback.menuIcon.tintColor=iconColor;fallback.menuIcon.hidden=!fallback.menuIcon.image;
+        fallback.menuIcon.alpha=RVCompatible && ![row[@"disabled"] boolValue] ? 1 : .5;
         fallback.toggle.accessibilityLabel=row[@"title"];__weak typeof(self) weakSelf=self;
         fallback.changed=^BOOL(BOOL on) { return weakSelf.changed ? weakSelf.changed(row,on) : NO; };
     }return cell;
@@ -334,6 +350,7 @@ static void RVSettingsPop(UIViewController *content) {
         if (isfinite(size.height) && size.height>0) return CGSizeMake(width,size.height);
     }
     NSDictionary *row=[self row:index];CGFloat textWidth=MAX(40,width-32-([row[@"toggle"] boolValue] ? 67 : [row[@"detail"] length] ? width*.3+16 : 0));
+    if (RVSettingsMenuIconImage(RVSettingsMenuIcon(row),UIColor.blackColor)) textWidth=MAX(40,textWidth-32);
     CGFloat height=[row[@"title"] boundingRectWithSize:CGSizeMake(textWidth,CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]} context:nil].size.height;
     if ([row[@"hint"] length]) height+=8+[row[@"hint"] boundingRectWithSize:CGSizeMake(textWidth,CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote]} context:nil].size.height;
     return CGSizeMake(width,MAX(52,ceil(height)+26));
@@ -374,7 +391,7 @@ static void RVSettingsPop(UIViewController *content) {
         ((void(*)(id,SEL,id))objc_msgSend)(self.nativeSections[index.section],sel_registerName("updateHeader:"),supplement);
         ((void(*)(id,SEL,id,id,NSUInteger,id,NSUInteger))objc_msgSend)(self.formatter,
             sel_registerName("updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:"),supplement,kind,index.section,self.nativeSections[index.section],self.sections.count);
-        ((void(*)(id,SEL,double))objc_msgSend)(supplement,sel_registerName("setCustomEdgePadding:"),16);
+        // updateHeader: supplies the native zero custom edge padding. Preserve it.
         if (RVCan(supplement,"pageStyleDidChange:",@"v@:q")) ((void(*)(id,SEL,NSInteger))objc_msgSend)(supplement,sel_registerName("pageStyleDidChange:"),self.pageStyle);
     } else {
         RVSettingsSupplement *label=(id)supplement;label.label.text=self.sections[index.section][header ? @"title" : @"footer"];

@@ -2,33 +2,37 @@
 // Embedded source logo; no filesystem/bundle lookup is needed after injection.
 #include "../build/RVSettingsIconData.h"
 
+// Shared with the supplied service logos: crop transparent padding, preserve color,
+// and fit the original aspect ratio into YouTube's 24-point settings icon slot.
+static UIImage *RVSettingsSizedIconImage(UIImage *source) {
+    CGImageRef image=source.CGImage;if (!image) return nil;
+    size_t width=CGImageGetWidth(image),height=CGImageGetHeight(image);
+    if (!width || !height || width>4096 || height>4096) return nil;
+    NSMutableData *pixels=[NSMutableData dataWithLength:width*height*4];
+    CGColorSpaceRef space=CGColorSpaceCreateDeviceRGB();
+    CGContextRef context=CGBitmapContextCreate(pixels.mutableBytes,width,height,8,width*4,space,kCGImageAlphaPremultipliedLast|kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(space);if (!context) return nil;
+    CGContextDrawImage(context,CGRectMake(0,0,width,height),image);
+    CGImageRef raster=CGBitmapContextCreateImage(context);CGContextRelease(context);if (!raster) return nil;
+    const unsigned char *bytes=pixels.bytes;size_t left=width,top=height,right=0,bottom=0;
+    for (size_t y=0;y<height;y++) for (size_t x=0;x<width;x++) if (bytes[(y*width+x)*4+3]>16) {
+        left=MIN(left,x);right=MAX(right,x);top=MIN(top,y);bottom=MAX(bottom,y);
+    }
+    if (left>right || top>bottom) { CGImageRelease(raster);return nil; }
+    // Crop the exact raster inspected above, including its row orientation.
+    CGImageRef cropped=CGImageCreateWithImageInRect(raster,CGRectMake(left,top,right-left+1,bottom-top+1));CGImageRelease(raster);
+    if (!cropped) return nil;UIImage *glyph=[UIImage imageWithCGImage:cropped];CGImageRelease(cropped);
+    CGFloat scale=MIN(24/glyph.size.width,24/glyph.size.height);CGSize size=CGSizeMake(glyph.size.width*scale,glyph.size.height*scale);
+    UIGraphicsImageRenderer *renderer=[[UIGraphicsImageRenderer alloc] initWithSize:CGSizeMake(24,24)];
+    return [[renderer imageWithActions:^(UIGraphicsImageRendererContext *unused) {
+        [glyph drawInRect:CGRectMake((24-size.width)/2,(24-size.height)/2,size.width,size.height)];
+    }] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+}
 static UIImage *RVSettingsLogoImage(void) {
     static UIImage *logo;static dispatch_once_t once;
     dispatch_once(&once,^{
         UIImage *source=[UIImage imageWithData:[[NSData alloc] initWithBase64EncodedString:RVSettingsIconBase64 options:0]];
-        CGImageRef image=source.CGImage;if (!image) return;
-        size_t width=CGImageGetWidth(image),height=CGImageGetHeight(image);
-        if (!width || !height || width>4096 || height>4096) return;
-        // Normalize transparent source padding so the glyph fills the native icon slot.
-        NSMutableData *pixels=[NSMutableData dataWithLength:width*height*4];
-        CGColorSpaceRef space=CGColorSpaceCreateDeviceRGB();
-        CGContextRef context=CGBitmapContextCreate(pixels.mutableBytes,width,height,8,width*4,space,kCGImageAlphaPremultipliedLast|kCGBitmapByteOrder32Big);
-        CGColorSpaceRelease(space);if (!context) return;
-        CGContextDrawImage(context,CGRectMake(0,0,width,height),image);
-        CGImageRef raster=CGBitmapContextCreateImage(context);CGContextRelease(context);if (!raster) return;
-        const unsigned char *bytes=pixels.bytes;size_t left=width,top=height,right=0,bottom=0;
-        for (size_t y=0;y<height;y++) for (size_t x=0;x<width;x++) if (bytes[(y*width+x)*4+3]>16) {
-            left=MIN(left,x);right=MAX(right,x);top=MIN(top,y);bottom=MAX(bottom,y);
-        }
-        if (left>right || top>bottom) { CGImageRelease(raster);return; }
-        // Crop the exact raster inspected above, including its row orientation.
-        CGImageRef cropped=CGImageCreateWithImageInRect(raster,CGRectMake(left,top,right-left+1,bottom-top+1));CGImageRelease(raster);
-        if (!cropped) return;UIImage *glyph=[UIImage imageWithCGImage:cropped];CGImageRelease(cropped);
-        CGFloat scale=MIN(24/glyph.size.width,24/glyph.size.height);CGSize size=CGSizeMake(glyph.size.width*scale,glyph.size.height*scale);
-        UIGraphicsImageRenderer *renderer=[[UIGraphicsImageRenderer alloc] initWithSize:CGSizeMake(24,24)];
-        logo=[[renderer imageWithActions:^(UIGraphicsImageRendererContext *unused) {
-            [glyph drawInRect:CGRectMake((24-size.width)/2,(24-size.height)/2,size.width,size.height)];
-        }] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        logo=RVSettingsSizedIconImage(source);
     });return logo;
 }
 

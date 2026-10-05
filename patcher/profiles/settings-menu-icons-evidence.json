@@ -1,0 +1,780 @@
+{
+  "schema": 1,
+  "youtube_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "ipa_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "ghidra_access": "readOnly, noanalysis",
+  "device_rendering_verified": false,
+  "asset_verification": "Exact catalog names found in the supplied IPA; runtime loading remains subject to the installed app and feature flags.",
+  "implementation": {
+    "scope": "15 root patch groups and 6 tool actions; supplied logos for DeArrow, Return YouTube Dislike and SponsorBlock, existing supplied ReVanced logo at the settings entry. Preference and search rows do not have menu icons.",
+    "native_path": "YTSettingsSectionItem.settingIcon is assigned before native section measurement and binding.",
+    "enum_path": "YTIIcon.message, resolved and ABI-checked setIconType:, with iconImageWithColor: image validation.",
+    "fallback_path": "ABI-checked YTUIResources factory, then UIImage imageNamed:inBundle:compatibleWithTraitCollection: in the YTResources class bundle (main bundle if unavailable).",
+    "bundle_ownership": "YTUIResources initializes the Innertube_Resources loader. YTAppIconSupportProviderImpl delhiIconBundle uses bundleForClass:YTResources.",
+    "image_protocol": "Native resource adapters remain monochrome. Supplied brand adapters use original-color images and the existing root logo multicolor contract. PNGs share the root logo transparent-padding normalization; the DeArrow SVG retains its viewBox and original fills.",
+    "missing_contract": "Missing icon, factory or item setter leaves native settings functional. No fixed addresses or private binary symbol linkage.",
+    "header_padding": "Preserve the zero customEdgePadding from native updateHeader:, removing the port override of 16.",
+    "uikit_fallback": "24-point decorative image, 8-point text gap, matching text-width measurement, native iconActive tint, disabled alpha and reuse clearing."
+  },
+  "contracts": [
+    {
+      "name": "YTSettingsCell",
+      "address": "0x10c9cf0e0",
+      "superclass": "YTCollectionViewCell",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setThumbnailWithIcon:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x10186b9b4"
+        },
+        {
+          "kind": "-",
+          "selector": "updateColors",
+          "encoding": "v16@0:8",
+          "imp": "0x10186c014"
+        },
+        {
+          "kind": "+",
+          "selector": "preferredSizeForEntry:size:withPadding:",
+          "encoding": "{CGSize=dd}44@0:8@16{CGSize=dd}24B40",
+          "imp": "0x10186b300"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsSectionController",
+      "address": "0x10c9cf180",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "updateSettingsCell:withItem:",
+          "encoding": "v32@0:8@16@24",
+          "imp": "0x10186e428"
+        },
+        {
+          "kind": "-",
+          "selector": "updateHeader:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x10186e9f4"
+        }
+      ]
+    },
+    {
+      "name": "YTSettingsSectionItem",
+      "address": "0x10c9cf1d0",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "setSettingIcon:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x101870138"
+        }
+      ]
+    },
+    {
+      "name": "YTAppIconSupportProviderImpl",
+      "address": "0x10c9dab38",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "delhiIconBundle",
+          "encoding": "@16@0:8",
+          "imp": "0x1003395ec"
+        }
+      ]
+    },
+    {
+      "name": "YTFeedHeaderView",
+      "address": "0x10cab6100",
+      "superclass": "YTCollectionReusableView",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "horizontalPaddingForCellContent",
+          "encoding": "d16@0:8",
+          "imp": "0x1042623c8"
+        }
+      ]
+    },
+    {
+      "name": "YTUIResources",
+      "address": "0x10cae8578",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "initialize",
+          "encoding": "v16@0:8",
+          "imp": "0x100294260"
+        }
+      ]
+    }
+  ],
+  "menus": [
+    {
+      "key": "ads",
+      "title": "Ads",
+      "recommended_glyph": "Blocked circle",
+      "asset_name": "yt_outline_slash_circle_left_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "slashCircleLeftOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f21e74"
+      },
+      "verified_icon_type": 399,
+      "enum_name": "Block",
+      "resolver_mapping": [
+        {
+          "icon_type": 399,
+          "icon_type_hex": "0x18f",
+          "name": "Block",
+          "resolver_id": 137,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 137,
+          "cfstring_label": "youtube_outline_experimental_circle_slash_24pt",
+          "asset_name": "youtube_outline_experimental/circle_slash_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "player",
+      "title": "Player",
+      "recommended_glyph": "Outline play triangle",
+      "asset_name": "youtube_outline/play_arrow_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "playArrowOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f249c8"
+      },
+      "verified_icon_type": 1093,
+      "enum_name": "PlayArrowOutlined",
+      "resolver_mapping": [
+        {
+          "icon_type": 1093,
+          "icon_type_hex": "0x445",
+          "name": "PlayArrowOutlined",
+          "resolver_id": 233,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 233,
+          "cfstring_label": "youtube_outline_experimental_play_24pt",
+          "asset_name": "youtube_outline_experimental/play_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "video",
+      "title": "Video quality",
+      "recommended_glyph": "HD rectangle",
+      "asset_name": "youtube_outline/hd_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "videoQualityHdOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f24988"
+      },
+      "verified_icon_type": 1132,
+      "enum_name": "SettingHd",
+      "resolver_mapping": [
+        {
+          "icon_type": 1132,
+          "icon_type_hex": "0x46c",
+          "name": "SettingHd",
+          "resolver_id": 370,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 370,
+          "cfstring_label": "youtube_outline_experimental_hd_24pt",
+          "asset_name": "youtube_outline_experimental/hd_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "shorts",
+      "title": "Shorts",
+      "recommended_glyph": "Outline Shorts logo",
+      "asset_name": "youtube_outline/youtube_shorts_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/PlugIns/IntentsExtension.appex/Assets.car",
+        "Payload/YouTube.app/PlugIns/WidgetKitExtension.appex/Assets.car",
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "youtubeShortsOutline24WithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f22d54"
+      },
+      "verified_icon_type": 769,
+      "enum_name": "YoutubeShortsOutline24",
+      "resolver_mapping": [
+        {
+          "icon_type": 769,
+          "icon_type_hex": "0x301",
+          "name": "YoutubeShortsOutline24",
+          "resolver_id": 253,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 253,
+          "cfstring_label": "youtube_outline_experimental_shorts_24pt",
+          "asset_name": "youtube_outline_experimental/shorts_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "navigation",
+      "title": "Navigation",
+      "recommended_glyph": "Compass",
+      "asset_name": "yt_outline_compass_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "compassOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f22dec"
+      },
+      "verified_icon_type": 777,
+      "enum_name": "ExploreDestination",
+      "resolver_mapping": [
+        {
+          "icon_type": 777,
+          "icon_type_hex": "0x309",
+          "name": "ExploreDestination",
+          "resolver_id": 340,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 340,
+          "cfstring_label": "youtube_outline_experimental_compass_24pt",
+          "asset_name": "youtube_outline_experimental/compass_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "miniplayer",
+      "title": "Miniplayer",
+      "recommended_glyph": "Picture-in-picture window",
+      "asset_name": "yt_outline_picture_in_picture_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "seekbar",
+      "title": "Seekbar and gestures",
+      "recommended_glyph": "Swiping hand",
+      "asset_name": "youtube_outline/hand_swipe_left_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "layout",
+      "title": "Layout and appearance",
+      "recommended_glyph": "Paint palette",
+      "asset_name": "youtube_outline/palette_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Creation_Resources.bundle/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "thumbnails",
+      "title": "Thumbnails",
+      "recommended_glyph": "Landscape image",
+      "asset_name": "youtube_outline/image_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Comment_Resources.bundle/Assets.car",
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Creation_Resources.bundle/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": 367,
+      "enum_name": "Image",
+      "resolver_mapping": [
+        {
+          "icon_type": 367,
+          "icon_type_hex": "0x16f",
+          "name": "Image",
+          "resolver_id": 185,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 185,
+          "cfstring_label": "youtube_outline_experimental_image_24pt",
+          "asset_name": "youtube_outline_experimental/image_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "dearrow",
+      "title": "DeArrow",
+      "recommended_glyph": "Supplied DeArrow logo",
+      "asset_name": "youtube_outline/pencil_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "pencilOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f21a30"
+      },
+      "verified_icon_type": 35,
+      "enum_name": "Edit",
+      "resolver_mapping": [
+        {
+          "icon_type": 35,
+          "icon_type_hex": "0x23",
+          "name": "Edit",
+          "resolver_id": 216,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 216,
+          "cfstring_label": "youtube_outline_experimental_pencil_24pt",
+          "asset_name": "youtube_outline_experimental/pencil_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Pencil",
+      "preferred_brand_asset": "native/assets/settings/DearrowLogo.svg"
+    },
+    {
+      "key": "links",
+      "title": "Links and downloads",
+      "recommended_glyph": "Chain link",
+      "asset_name": "yt_outline_link_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "linkOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f22538"
+      },
+      "verified_icon_type": 298,
+      "enum_name": "Link",
+      "resolver_mapping": [
+        {
+          "icon_type": 298,
+          "icon_type_hex": "0x12a",
+          "name": "Link",
+          "resolver_id": 192,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 192,
+          "cfstring_label": "youtube_outline_experimental_link_24pt",
+          "asset_name": "youtube_outline_experimental/link_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "ryd",
+      "title": "Return YouTube Dislike",
+      "recommended_glyph": "Supplied Return YouTube Dislike logo",
+      "asset_name": "youtube_outline/thumb_down_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Creation_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "thumbDownOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f20438"
+      },
+      "verified_icon_type": 51,
+      "enum_name": "Dislike",
+      "resolver_mapping": [
+        {
+          "icon_type": 51,
+          "icon_type_hex": "0x33",
+          "name": "Dislike",
+          "resolver_id": 274,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 274,
+          "cfstring_label": "youtube_outline_experimental_thumb_down_24pt",
+          "asset_name": "youtube_outline_experimental/thumb_down_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Outline thumbs down",
+      "preferred_brand_asset": "native/assets/settings/ReturnYTDislike.png"
+    },
+    {
+      "key": "sponsorblock",
+      "title": "SponsorBlock",
+      "recommended_glyph": "Supplied SponsorBlock logo",
+      "asset_name": "yt_fill_skip_next_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "skipNextFill",
+        "encoding": "@16@0:8",
+        "imp": "0x104f200e8"
+      },
+      "verified_icon_type": 460,
+      "enum_name": "SkipNext",
+      "resolver_mapping": [
+        {
+          "icon_type": 460,
+          "icon_type_hex": "0x1cc",
+          "name": "SkipNext",
+          "resolver_id": 371,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 371,
+          "cfstring_label": "youtube_fill_experimental_skip_next_24pt",
+          "asset_name": "youtube_fill_experimental/skip_next_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false,
+      "native_fallback_glyph": "Skip next",
+      "preferred_brand_asset": "native/assets/settings/LogoSponsorBlock256px.png"
+    },
+    {
+      "key": "authentication",
+      "title": "Authentication",
+      "recommended_glyph": "Key",
+      "asset_name": "youtube_outline/key_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "keyOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f23764"
+      },
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "advanced",
+      "title": "Advanced",
+      "recommended_glyph": "Gear",
+      "asset_name": "yt_outline_gear_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Ads_Resources.bundle/Assets.car",
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "gearOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f21c88"
+      },
+      "verified_icon_type": 44,
+      "enum_name": "Settings",
+      "resolver_mapping": [
+        {
+          "icon_type": 44,
+          "icon_type_hex": "0x2c",
+          "name": "Settings",
+          "resolver_id": 173,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 173,
+          "cfstring_label": "youtube_outline_experimental_gear_24pt",
+          "asset_name": "youtube_outline_experimental/gear_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.0",
+      "title": "Video tools",
+      "recommended_glyph": "Toolbox",
+      "asset_name": "youtube_outline/toolbox_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.1",
+      "title": "Import configuration",
+      "recommended_glyph": "Arrow into a container",
+      "asset_name": "yt_outline_arrow_in_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "arrowInOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f1fcf0"
+      },
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.2",
+      "title": "Copy configuration",
+      "recommended_glyph": "Overlapping pages",
+      "asset_name": "youtube_outline/copy_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car"
+      ],
+      "factory": null,
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.3",
+      "title": "Reset patch settings",
+      "recommended_glyph": "Circular arrow",
+      "asset_name": "yt_outline_arrow_circle_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "arrowCircleOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f22a28"
+      },
+      "verified_icon_type": null,
+      "enum_name": null,
+      "resolver_mapping": [],
+      "delhi_resolved_assets": [],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.4",
+      "title": "Hook diagnostics",
+      "recommended_glyph": "Chart in a box",
+      "asset_name": "yt_outline_bar_graph_box_vertical_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "barGraphBoxVerticalOutline",
+        "encoding": "@16@0:8",
+        "imp": "0x104f220d8"
+      },
+      "verified_icon_type": 149,
+      "enum_name": "Assessment",
+      "resolver_mapping": [
+        {
+          "icon_type": 149,
+          "icon_type_hex": "0x95",
+          "name": "Assessment",
+          "resolver_id": 124,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 124,
+          "cfstring_label": "youtube_outline_experimental_chart_bar_square_24pt",
+          "asset_name": "youtube_outline_experimental/chart_bar_square_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    },
+    {
+      "key": "tool.5",
+      "title": "About",
+      "recommended_glyph": "Information circle",
+      "asset_name": "yt_outline_info_circle_24pt",
+      "asset_catalogs": [
+        "Payload/YouTube.app/Assets.car",
+        "Payload/YouTube.app/Innertube_Resources.bundle/Assets.car"
+      ],
+      "factory": {
+        "kind": "+",
+        "selector": "infoCircleOutlineWithColor:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x104f21634"
+      },
+      "verified_icon_type": 49,
+      "enum_name": "Info",
+      "resolver_mapping": [
+        {
+          "icon_type": 49,
+          "icon_type_hex": "0x31",
+          "name": "Info",
+          "resolver_id": 189,
+          "requires_delhi_v2": false
+        }
+      ],
+      "delhi_resolved_assets": [
+        {
+          "resolver_id": 189,
+          "cfstring_label": "youtube_outline_experimental_info_circle_24pt",
+          "asset_name": "youtube_outline_experimental/info_circle_24pt",
+          "catalog_name_present": true
+        }
+      ],
+      "device_rendering_verified": false
+    }
+  ],
+  "device_checks_pending": [
+    "All 21 glyphs load and render in the target app",
+    "Light/dark and Delhi/legacy icon tint",
+    "Header alignment, large text, RTL and row reuse after search/navigation"
+  ],
+  "verification": {
+    "mapping_coverage": "All 15 main catalog group IDs and all 6 root tool actions match independently extracted asset/enum/factory evidence.",
+    "factory_abi": "All 15 selected native resource factory signatures match the runtime call forms.",
+    "settings_catalog_check": "Passed on Windows; Foundation bridge harness skipped because it requires macOS.",
+    "literal_hook_check": {
+      "match": 146,
+      "mismatch": 0,
+      "runtime_resolution_required": 31
+    },
+    "device_validated": false,
+    "brand_assets": "PNG base64 decodes byte-for-byte to both source files. All copied SVG/PNG files match Icons-folder sources; original root logo also matches. Generated header --check passes. DeArrow SVG preview visually inspected.",
+    "brand_icons_build_run": false,
+    "brand_icons_device_validated": false
+  },
+  "brand_logos": {
+    "precedence": "Supplied logos override the native glyph for their matching root menu. The verified native glyph remains a decode fallback.",
+    "logos": [
+      {
+        "key": "dearrow",
+        "supplied_filename": "DearrowLogo.svg",
+        "tracked_asset": "native/assets/settings/DearrowLogo.svg",
+        "sha256": "0991f379b022dd189e97c19df3c709492ff4e232d662047bb81b25d0c7f91b3d",
+        "representation": "Original SVG paths and CSS fill colors translated to UIKit cubic paths"
+      },
+      {
+        "key": "ryd",
+        "supplied_filename": "ReturnYTDislike.png",
+        "tracked_asset": "native/assets/settings/ReturnYTDislike.png",
+        "sha256": "c309b0a665f45670a8c0219037180dd261ecf665761da2990f19c9211f7bc0e6",
+        "representation": "Original PNG bytes embedded as base64"
+      },
+      {
+        "key": "sponsorblock",
+        "supplied_filename": "LogoSponsorBlock256px.png",
+        "tracked_asset": "native/assets/settings/LogoSponsorBlock256px.png",
+        "sha256": "36402dad32b85f6de52506e28ad23b5041e2f165c0a22533b92101b5a5caf3e9",
+        "representation": "Original PNG bytes embedded as base64"
+      }
+    ],
+    "revanced_entry": {
+      "tracked_asset": "native/assets/ReVancedSettings.png",
+      "supplied_filename": "ReVanced Logo.png",
+      "sha256": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+      "status": "Already exactly matches the supplied ReVanced logo."
+    },
+    "native_color_contract": "The branded adapter inherits RVSettingsLogoIcon hasIconType=YES, iconType=0x415. In 21.39.4 this selects the native multicolor path, which calls the adapter image method rather than forcing a template. It does not invoke YTIIcon resolution.",
+    "generation": "settings_brand_icons.py writes the checked-in RVSettingsBrandIconData.h; --check verifies it against the original assets without invoking a build."
+  }
+}
