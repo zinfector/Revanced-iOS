@@ -1,0 +1,42 @@
+{
+  "revision": "watch-vote-scope-1",
+  "base_commit": "9431e3c",
+  "native_version": "21.39.4",
+  "report": "report 235.txt",
+  "reported_version": "0.3.36",
+  "user_isolation": "Disabling first_launch_ui restores the You page but breaks dislikes.",
+  "replaces_policy": "process_default_cold_config_and_template_context",
+  "policy": "scoped_watch_defaults_and_template_context",
+  "native_global_configuration_preserved": true,
+  "service_types": {
+    "player": 115,
+    "watch_next": 161
+  },
+  "addresses": {
+    "watch_next_request": "0x1019882b0",
+    "request_context": "0x1045df81c",
+    "account_request_context": "0x100ef5584",
+    "watch_init": "0x10156ef68",
+    "watch_results_init": "0x10174e854",
+    "watch_response_update": "0x101575e4c",
+    "watch_results_load": "0x10174f818",
+    "player_request_factory": "0x1010336e4",
+    "template_context_decorator": "0x100251608",
+    "account_template_context_decorator": "0x100304a38"
+  },
+  "validation": {
+    "new_hook_metadata_matches": 7,
+    "all_hook_metadata_matches": 154,
+    "all_hook_metadata_mismatches": 0,
+    "existing_runtime_resolution_required": 31,
+    "settings_catalog_test_passed": true,
+    "native_settings_harness": "Skipped: requires macOS Foundation",
+    "native_build_performed": false,
+    "device_verified": false
+  },
+  "limitations": [
+    "Thread-local scopes cover synchronous native calls; asynchronous consumers enter separate scopes.",
+    "Device confirmation of the You page and paired dislike layout together is pending.",
+    "The existing preference remains disabled if the user disabled it during isolation."
+  ]
+}

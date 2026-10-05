@@ -6,7 +6,7 @@ CATALOG = {
     'sponsorblock': 'SponsorBlock autoskip', 'feed_ads': 'Hide feed ads and below-video banners',
     'hide_shorts': 'Hide Shorts shelves', 'shorts_ads': 'Hide Shorts ads',
     'remember_speed': 'Remember playback speed',
-    'picture_in_picture': 'Picture in Picture', 'return_dislikes': 'Return YouTube Dislike counts', 'paired_vote_buttons': 'Use paired vote buttons', 'first_launch_ui': 'Keep first-launch UI',
+    'picture_in_picture': 'Picture in Picture', 'return_dislikes': 'Return YouTube Dislike counts', 'paired_vote_buttons': 'Use paired vote buttons', 'first_launch_ui': 'Use compatible dislike layout',
     'copy_video_url': 'Copy URL and timestamp tools', 'external_downloads': 'External downloader share handoff',
     'loop_video': 'Loop ordinary videos', 'pause_on_interrupt': 'Pause on audio interruption',
     'disable_haptics': 'Disable semantic haptics', 'disable_auto_captions': 'Disable automatic captions on mute',

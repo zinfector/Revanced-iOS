@@ -308,19 +308,20 @@ static void RVVoteStartup(NSString *event,NSDictionary *values) {
     }
 }
 #include "RVVoteFirstLaunch.inc"
+#include "RVVoteFirstLaunchScopes.inc"
 static void RVInstallVoteStartup(void) {
     RVInstallVoteFirstLaunch();
+    BOOL scopesInstalled=RVInstallVoteFirstLaunchScopes();
     BOOL loadInstalled=RVHook(@"YTColdConfigStorage",@"loadColdConfigGroupFromBlobStorage:dataKey:",@"@@:@@",YES,^id(IMP original,SEL sel) {
         return ^id(id cls,id store,id key) {
             id group=((id(*)(id,SEL,id,id))original)(cls,sel,store,key);
             RVSpeedCaptureColdGroup(group,NO);
             if (RVEnabled(@"diagnostics")) {
                 NSData *bytes=RVObject(group,"data");
-                NSData *effective=RVVoteFirstLaunchReady ? RVObject(RVVoteFirstLaunchGroup,"data") : bytes;
                 RVVoteStartup(@"cold_config_loaded",@{@"source_group_fingerprint":RVVoteDigest(bytes),@"source_group_bytes":@(bytes.length),
-                    @"group_fingerprint":RVVoteDigest(effective),@"group_empty":@(effective.length==0),@"group_bytes":@(effective.length),@"first_launch_applied":@(RVVoteFirstLaunchReady)});
+                    @"group_fingerprint":RVVoteDigest(bytes),@"group_empty":@(bytes.length==0),@"group_bytes":@(bytes.length),@"first_launch_applied":@NO});
             }
-            if (RVVoteFirstLaunchReady) { RVVoteFirstLaunchCheckpoint(@"loaded_group_replaced",@{@"loaded_group_defaults":@YES});return RVVoteFirstLaunchGroup; }
+            RVVoteFirstLaunchCheckpoint(@"loaded_group_preserved",@{@"loaded_group_defaults":@NO});
             return group;
         };
     });
@@ -332,7 +333,7 @@ static void RVInstallVoteStartup(void) {
             return saved;
         };
     });
-    RVHook(@"YTInnerTubeContextFactory",@"clientInfoWithSendDeviceIdentifier:serviceType:",@"@@:Bq",NO,^id(IMP original,SEL sel) {
+    for (NSString *factoryClass in @[@"YTInnerTubeContextFactory",@"YTAccountScopedInnerTubeContextFactory"]) RVHook(factoryClass,@"clientInfoWithSendDeviceIdentifier:serviceType:",@"@@:Bq",NO,^id(IMP original,SEL sel) {
         return ^id(id factory,BOOL send,NSInteger service) {
             id info=((id(*)(id,SEL,BOOL,NSInteger))original)(factory,sel,send,service);
             if (RVEnabled(@"diagnostics")) {
@@ -340,23 +341,25 @@ static void RVInstallVoteStartup(void) {
                 id hash=RVObject(config,"coldHashData");
                 BOOL defaults=(![cold respondsToSelector:@selector(length)] || ![cold length]) &&
                     (![hash respondsToSelector:@selector(length)] || ![hash length]);
-                RVVoteFirstLaunchCheckpoint(@"request_checked",@{@"request_cold_defaults":@(defaults),@"request_service_type":@(service)});
-                if (RVVoteFirstLaunchReady && !defaults) RVVoteFirstLaunchCheckpoint(@"request_cold_present",nil);
-                RVVoteStartup(@"request_configuration",@{@"cold_data_present":@([cold respondsToSelector:@selector(length)] && [cold length]>0),@"cold_data_fingerprint":RVVoteDigest(cold),@"cold_hash_fingerprint":RVVoteDigest(RVObject(config,"coldHashData")),@"service_type":@(service)});
+                BOOL applied=RVVoteFirstLaunchScoped() && RVVoteFirstLaunchWatchService(service);
+                RVVoteFirstLaunchCheckpoint(applied ? @"request_checked" : @"native_request_preserved",applied ? @{@"request_cold_defaults":@(defaults),@"request_service_type":@(service)} : nil);
+                if (applied && !defaults) RVVoteFirstLaunchCheckpoint(@"request_cold_present",nil);
+                RVVoteStartup(@"request_configuration",@{@"cold_data_present":@([cold respondsToSelector:@selector(length)] && [cold length]>0),@"cold_data_fingerprint":RVVoteDigest(cold),@"cold_hash_fingerprint":RVVoteDigest(RVObject(config,"coldHashData")),@"service_type":@(service),@"first_launch_applied":@(applied),@"factory_class":factoryClass});
             }return info;
         };
     });
     BOOL servingInstalled=RVHook(@"YTElementUpdateHandler",@"emlTemplateServingContext",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id handler) {
             id context=((id(*)(id,SEL))original)(handler,sel);
-            id effective=RVVoteFirstLaunchReady ? nil : context;
+            BOOL applied=RVVoteFirstLaunchScoped();
+            id effective=applied ? nil : context;
             if (RVEnabled(@"diagnostics")) RVVoteStartup(@"elements_serving_context",@{@"source_context_present":@([context respondsToSelector:@selector(length)] && [context length]>0),
-                @"context_present":@([effective respondsToSelector:@selector(length)] && [effective length]>0),@"context_fingerprint":RVVoteDigest(effective),@"first_launch_applied":@(RVVoteFirstLaunchReady)});
-            RVVoteFirstLaunchCheckpoint(@"serving_context_read",@{@"template_context_defaults":@(RVVoteFirstLaunchReady)});
+                @"context_present":@([effective respondsToSelector:@selector(length)] && [effective length]>0),@"context_fingerprint":RVVoteDigest(effective),@"first_launch_applied":@(applied)});
+            RVVoteFirstLaunchCheckpoint(applied ? @"serving_context_read" : @"native_serving_context_preserved",applied ? @{@"template_context_defaults":@YES} : nil);
             return effective;
         };
     });
-    RVVoteFirstLaunchReady=RVVoteFirstLaunchReady && loadInstalled && servingInstalled;
+    RVVoteFirstLaunchReady=RVVoteFirstLaunchReady && loadInstalled && servingInstalled && scopesInstalled;
     RVVoteFirstLaunchCheckpoint(@"startup_hooks_ready",@{@"load_hook_ready":@(loadInstalled),@"serving_context_hook_ready":@(servingInstalled),@"policy_ready":@(RVVoteFirstLaunchReady)});
 }
 static void RVInstallVoteModel(void) {
@@ -379,8 +382,11 @@ static void RVInstallVoteModel(void) {
     for (NSString *selector in @[@"getVideoActionBarElement:error:",@"getCompactifyVideoActionBarElement:error:"]) {
         BOOL installed=RVHook(@"YTBAWatchPageFillerBlock",selector,@"@@:@^@",NO,^id(IMP original,SEL sel) {
             return ^id(id object,id request,NSError **error) {
-                id native=((id(*)(id,SEL,id,NSError **))original)(object,sel,request,error);
-                return RVVoteNormalizeNativeElement(native,selector);
+                NSUInteger previous=RVVoteFirstLaunchEnter(@"vote_element_producer",YES);
+                @try {
+                    id native=((id(*)(id,SEL,id,NSError **))original)(object,sel,request,error);
+                    return RVVoteNormalizeNativeElement(native,selector);
+                } @finally { RVVoteFirstLaunchLeave(previous); }
             };
         });RVVoteRecord(@"producer_hook",@{@"producer":selector,@"hook_installed":@(installed)});
     }

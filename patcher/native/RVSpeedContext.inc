@@ -24,13 +24,12 @@ static void RVSpeedCaptureColdGroup(id group,BOOL replace) {
         RVSpeedOriginalColdGroupPopulated=[RVObject(group,"data") length]>0;
     }
 }
-static id RVSpeedSavedColdGroup(void) { @synchronized(UIImage.class) { return RVSpeedOriginalColdGroup; } }
 static NSDictionary *RVSpeedContextReport(void) {
     @synchronized(UIImage.class) {
         return @{@"revision":@"speed-context-1",@"first_launch_policy_active":@(RVSpeedFirstLaunchPolicyActive()),
             @"saved_native_group_available":@(RVSpeedOriginalColdGroup!=nil),
             @"saved_native_group_populated":@(RVSpeedOriginalColdGroupPopulated),
-            @"configuration_preservation":@"native_speed_and_registry_getters_only",
+            @"configuration_preservation":@"native_global_configuration_with_watch_vote_scopes",
             @"counts":RVSpeedContextCounts.copy ?: @{},@"state":RVSpeedContextState.copy ?: @{},@"device_verified":@NO};
     }
 }

@@ -83,7 +83,7 @@ for key,title,group in [('feed_patterns','Feed ad filters','ads'),('shorts_patte
 DESCRIPTIONS = {
     'hide_navigation_labels':'Keeps the tab icons and their accessible names.',
     'hide_library_navigation':'Hides the You tab, also called Library in some layouts.',
-    'first_launch_ui':'Use YouTube default cold configuration on every launch. Affects native experiment defaults throughout the app. Keeps saved configuration on disk. Restart after changing this switch.',
+    'first_launch_ui':'Uses the compatible watch layout for dislike counts. Account and feed pages keep their usual layout. Restart after changing this switch.',
     'paired_vote_buttons':'Use native paired like/dislike controls when their model is supported. Reopen the video after changing this setting.',
     'sideload_auth_identity':'Uses the original YouTube identity only in the verified native sign-in flow.',
     'sideload_auth_keychain':'Uses native private-keychain storage for the installed signing identity.',

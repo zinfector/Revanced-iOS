@@ -193,6 +193,18 @@
         "selector": "playerViewModifierDidEndGesture:",
         "encoding": "v24@0:8@16",
         "imp": "0x10157322c"
+      },
+      {
+        "kind": "-",
+        "selector": "initWithThumbnailProvider:parentResponder:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x10156ef68"
+      },
+      {
+        "kind": "-",
+        "selector": "updateWithWatchNextResponse:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101575e4c"
       }
     ]
   },
@@ -473,6 +485,12 @@
         "selector": "clientInfoWithSendDeviceIdentifier:serviceType:",
         "encoding": "@28@0:8B16q20",
         "imp": "0x10024e10c"
+      },
+      {
+        "kind": "-",
+        "selector": "contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:innertubeTokenJar:attestationResponseData:reauthProofToken:serviceType:isPrefetch:",
+        "encoding": "@96@0:8@16B24i28@32B40@44@52@60@68@76q84B92",
+        "imp": "0x1045df81c"
       }
     ]
   },
@@ -1899,6 +1917,45 @@
         "selector": "setupStyle",
         "encoding": "v16@0:8",
         "imp": "0x10029f7c4"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchNextServiceImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "makeRequest:refresh:retryEnabled:timeoutInterval:responseBlock:errorBlock:",
+        "encoding": "v56@0:8@16B24B28d32@?40@?48",
+        "imp": "0x1019882b0"
+      }
+    ]
+  },
+  {
+    "name": "YTAccountScopedInnerTubeContextFactory",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:attestationResponseData:reauthProofToken:serviceType:isPrefetch:",
+        "encoding": "@88@0:8@16B24i28@32B40@44@52@60@68q76B84",
+        "imp": "0x100ef5584"
+      }
+    ]
+  },
+  {
+    "name": "YTWatchNextResultsViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "initWithNullableService:parentResponder:format:layout:",
+        "encoding": "@48@0:8@16@24q32@40",
+        "imp": "0x10174e854"
+      },
+      {
+        "kind": "-",
+        "selector": "loadWithModel:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10174f818"
       }
     ]
   }

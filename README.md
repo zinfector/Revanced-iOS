@@ -154,7 +154,7 @@ Status reflects the merged 0.3.37 source. This report covers every declaration i
 
 | Patch | Description | Progress |
 |---|---|:---:|
-| Keep first-launch UI | Native paired-layout startup policy implemented; preserves native speed/registry settings, with remaining device/layout confirmation. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| Use compatible dislike layout | Watch-scoped paired-layout compatibility preserves native account/feed startup configuration; both-screen device verification remains pending. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 
 The patch catalog maps the 87 feature switches to the entries above. The first-launch UI policy is tracked separately because it is an iOS integration feature rather than an Android patch declaration. Per-category SponsorBlock behavior, native skip/undo prompts, inline RYD counts, settings presentation and Shorts toolbar compaction are included in their parent entries.
 
