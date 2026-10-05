@@ -57,7 +57,7 @@ static NSString *RVDAFrameURL(NSString *video) {
     NSString *url=[NSString stringWithFormat:@"https://i.ytimg.com/vi/%@/hq%d.jpg",video,[RVSetting(@"thumbnail_frame") intValue]];
     return RVImageCachedAvailable(url) ? url : nil;
 }
-static NSData *RVDAVideoData(NSData *data,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
+static NSData *RVDAVideoData(NSData *data,NSString *video,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
     NSData *next=data,*metadata=RVDAChild(data,2),*thumbnail=RVDAChild(data,1);
     if (title) {
         NSData *value=metadata ? RVDAMetadataTitle(metadata,title) : nil;if (value) next=RVDASet(next,2,value) ?: next;
@@ -69,7 +69,7 @@ static NSData *RVDAVideoData(NSData *data,NSString *title,NSData *image,BOOL fal
     }
     if (image && thumbnail) { NSData *value=RVDAStaticImage(thumbnail,image);if (value) next=RVDASet(next,1,value) ?: next; }
     else if (fallback && thumbnail && !RVDAChild(thumbnail,14)) {
-        NSString *url=RVDAFrameURL(RVDAText(RVDAChild(data,7)));NSData *original=RVDAChild(thumbnail,1);
+        NSString *url=RVDAFrameURL(video);NSData *original=RVDAChild(thumbnail,1);
         if (url && original) {
             NSData *source=RVVoteMessageField(1,[url dataUsingEncoding:NSUTF8StringEncoding]);
             NSData *value=RVVoteReplace(RVVoteFields(original),@{@1:RVVoteMessageField(1,source)},nil);
@@ -99,11 +99,13 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @interface RVDAProjection : NSObject
 @property(nonatomic,copy) NSString *video,*route,*blocker;
 @property(nonatomic,strong) NSArray<NSNumber *> *componentPath,*videoDataPath;
+@property(nonatomic,strong) NSArray<NSNumber *> *identityPath;
 @property(nonatomic,strong) NSData *source;
 @property(nonatomic,copy) NSString *originalTitle,*untranslatedTitle,*originalImageURL;
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL watchTitle,titleRole,imageRole;
 @property(nonatomic) BOOL contextSlots;
+@property(nonatomic) BOOL liveCard;
 @end
 @implementation RVDAProjection @end
 
@@ -130,16 +132,21 @@ static NSString *RVDAResourceName(NSString *uri) {
 static NSString *RVDAResourceProfileStatus(NSString *raw) {
     NSDictionary *parts=RVDAResourceParts(raw);if (!parts) return @"template_uri_grammar_rejected";
     NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
-        @"video_with_context_slots.eml-js|7f46bdff852ff164",@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7"];
+        @"video_with_context_slots.eml-js|7f46bdff852ff164",@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7",
+        @"video_lockup_with_attachment.eml-fe|72cb15f170efbde1"];
     if ([pinned containsObject:parts[@"key"]]) return @"pinned_uri_model_validation_required";
     for (NSString *key in pinned) if ([[key componentsSeparatedByString:@"|"][0] isEqual:parts[@"basename"]])
         return [parts[@"variant"] isEqual:@"fe"] ? @"template_variant_unmapped" : @"template_revision_unmapped";
     return @"template_resource_unmapped";
 }
+static NSString *RVDALiveCardFailure(NSData *model);
 static NSString *RVDAProfileFailure(NSData *data) {
     NSData *component=RVDAPath(data,@[@1,@168777401]);
     if (!component) return @"serialized_component_root_unresolved";
-    NSString *status=RVDAResourceProfileStatus(RVDAText(RVDAPath(component,@[@3,@172035250,@1])));
+    NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
+    if ([RVDAResourceName(raw) isEqual:@"video_lockup_with_attachment.eml-fe|72cb15f170efbde1"])
+        return RVDALiveCardFailure(RVDAChild(component,5));
+    NSString *status=RVDAResourceProfileStatus(raw);
     return [status isEqual:@"pinned_uri_model_validation_required"] ? @"video_model_path_unresolved" : status;
 }
 static NSString *RVDATemplate(NSData *component) {
@@ -182,11 +189,17 @@ static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
         [result appendData:field.raw];
     }return result;
 }
+#include "RVDeArrowLiveCard.inc"
 static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArray<RVDAProjection *> *found,
                        NSUInteger depth,NSUInteger *budget,NSString *watchVideo) {
     if (depth>16 || !*budget || found.count>1) return;(*budget)--;
     NSArray *fields=RVVoteFields(element);if (!fields) return;
     NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *name=RVDATemplate(component);
+    if ([name isEqual:RVDALiveCardKey()]) {
+        RVDAProjection *profile=RVDALiveCardProfile(RVDAChild(component,5));
+        if (profile) { profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile]; }
+        return;
+    }
     NSDictionary *roots=@{@"compact_video.eml-js|73af68f5375dcfd2":@[@232971250,@25,@1],
         @"video_card.eml-js|309e33d369a3db21":@[@232903841,@1,@1],
         @"video_card_content.eml-js|1fe054d511a8304d":@[@232903841,@1,@1]};
@@ -243,7 +256,7 @@ static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image
         next=RVDASetPath(model,path,RVDAAttributed(original,title)) ?: model;
     } else if (profile.videoDataPath) {
         NSData *original=RVDAPath(model,profile.videoDataPath);
-        NSData *value=RVDAVideoData(original,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
+        NSData *value=RVDAVideoData(original,profile.video,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
         next=RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil);
         next=RVDASetPath(next,profile.videoDataPath,value) ?: next;
         if (profile.contextSlots) {

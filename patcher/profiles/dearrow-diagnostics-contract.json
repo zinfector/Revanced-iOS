@@ -1,7 +1,7 @@
 {
-  "schema": 2,
-  "release": "0.3.38",
-  "status": "implemented_report_105_followup_pending",
+  "schema": 3,
+  "release": "0.3.39",
+  "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
   "tests_run": false,
   "source": "native/RVDeArrowDiagnostics.inc",
@@ -65,5 +65,6 @@
     "D04_role_rejected denotes rejection; D04_role_bound denotes accepted roles.",
     "Once roles are accepted, inspect fallback queue/start/status/generation reason/retry/duration/decode/encode checkpoints."
   ],
-  "live_capture_contract": "profiles/dearrow-live-capture-contract.json"
+  "live_capture_contract": "profiles/dearrow-live-capture-contract.json",
+  "live_card_contract": "dearrow-live-card-contract.json"
 }

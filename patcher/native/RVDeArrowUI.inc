@@ -20,7 +20,7 @@ static _Thread_local NSInteger RVDAUIIndex;
 static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 
 @interface RVDAUIBinding : NSObject
-@property(nonatomic,weak) id controller,section,imageView;
+@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent;
 @property(nonatomic,strong) id originalEntry;
 @property(nonatomic,strong) RVDAProjection *profile;
 @property(nonatomic,strong) RVDeArrowRequest *request;
@@ -46,6 +46,9 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 @property(nonatomic) BOOL refreshQueued,modern;
 @property(nonatomic,copy) NSString *lastCheckpoint,*lastBlocker;
 @property(nonatomic) NSUInteger refreshRequests,materializations;
+@property(nonatomic) BOOL titleConsumerVerified,imageConsumerVerified;
+@property(nonatomic) NSUInteger consumerObservations;
+@property(nonatomic,strong) NSDictionary *consumerCheckpoint;
 @property(nonatomic,strong) NSDictionary *ownerSummary;
 @end
 @implementation RVDAUIBinding
@@ -147,6 +150,7 @@ static BOOL RVDAUICasual(RVDAUIBinding *binding) {
     }return NO;
 }
 static NSString *RVDAUITitle(RVDAUIBinding *binding) {
+    if (binding.profile.liveCard && !binding.titleConsumerVerified) return nil;
     if (RVDAUIOriginal(binding) || !(binding.parts&RVDeArrowPartsTitle)) return nil;
     if (!binding.result && (binding.serviceParts&RVDeArrowPartsTitle) && RVEnabled(@"dearrow_hide_while_fetching") && !binding.pendingExpired && binding.originalTitle.length) return @"\u200b";
     if (!binding.titleComputed) {
@@ -157,6 +161,7 @@ static NSString *RVDAUITitle(RVDAUIBinding *binding) {
     }return binding.computedTitle;
 }
 static UIImage *RVDAUIImage(RVDAUIBinding *binding) {
+    if (binding.profile.liveCard && !binding.imageConsumerVerified) return nil;
     if (RVDAUIOriginal(binding) || !(binding.parts&RVDeArrowPartsThumbnail)) return nil;
     return binding.presentationImage;
 }
@@ -184,6 +189,7 @@ static void RVDAUIRefresh(RVDAUIBinding *binding) {
         [state.request recordCheckpoint:RVDeArrowCheckpointNativeLayout blocker:RVDeArrowBlockerNone];
     });
 }
+#include "RVDeArrowConsumers.inc"
 static void RVDAUIConfigureBackend(void) {
     RVDeArrowOptions *options=RVDeArrowOptions.defaultOptions;
     options.brandingEndpoint=[NSURL URLWithString:RVSetting(@"dearrow_branding_url") ?: @"https://sponsor.ajay.app/api/branding"];
@@ -293,6 +299,9 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         if (RVBool(options,"hasAdLoggingData")) return RVDAUIReject(state,@"D03_video_bound",@"ad_root");
         NSData *data=RVAdResolvedObject(element,"elementData");
         if (![data isKindOfClass:NSData.class] || !data.length) return RVDAUIReject(state,@"D04_role_bound",@"element_data_missing_or_wrong_type");
+        if (RVDAUIDiagnosticsArmed && RVObject(controller,"entry")==entry &&
+            [RVDATemplate(RVDAPath(data,@[@1,@168777401])) isEqual:RVDALiveCardKey()])
+            RVDALiveCaptureRoot(data,NSStringFromClass([controller class]),state.surface,watchVideo);
         state.profile=RVDAProfile(data,watchVideo);state.modern=YES;
         if (!state.profile) {
             BOOL shared=RVDAPath(data,@[@1,@484616221])!=nil;
@@ -301,6 +310,10 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         state.video=state.profile.video;state.route=state.profile.route;
         state.originalTitle=state.profile.originalTitle;state.untranslatedTitle=state.profile.untranslatedTitle;
         state.originalImageURL=state.profile.originalImageURL;state.duration=state.profile.duration;
+        if (state.profile.liveCard) RVDADiagRecord(@"D04_live_card_input_verified",state,nil,
+            @{@"identity_path":state.profile.identityPath,@"presentation_path":state.profile.videoDataPath,
+              @"title_hash":RVDADiagHash([state.originalTitle dataUsingEncoding:NSUTF8StringEncoding]),
+              @"thumbnail_identity_matches":@YES,@"native_consumer_confirmation_pending":@YES});
         state.surface=RVDAUIOwnerSurface(controller,state.profile.watchTitle,&watchVideo);
         state.titleBlocker=state.profile.titleRole ? @"awaiting_metadata" : state.profile.blocker ?: @"title_role_unknown";
         state.imageBlocker=state.profile.imageRole ? @"awaiting_metadata" : state.profile.blocker ?: @"image_role_unknown";
@@ -440,6 +453,9 @@ static NSDictionary *RVDAUIReport(void) {
             @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
+            @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],
+            @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
+            @"consumer_observations":@(state.consumerObservations),@"consumer_checkpoint":state.consumerCheckpoint ?: @{},
             @"last_checkpoint":state.lastCheckpoint ?: @"none",@"last_blocker":state.lastBlocker ?: @"ready",@"owners":state.ownerSummary ?: @{},
             @"result_present":@(result!=nil),@"title_decision":RVDADecisionName(result.titleDecision),
             @"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_state":@(result.imageState),
@@ -532,6 +548,19 @@ static void RVInstallDeArrowUI(void) {
             if (next) RVDADiagCount(@"projected_element_data_consumed");return next ?: native;
         };
     });
+    // Lazy descendants may appear after the factory block has returned. Observe
+    // already-created nodes later on main; never force ASNodeController.node.
+    for (NSString *name in @[@"ELMTextNode",@"ELMImageNode"]) RVDAUIHook(name,@"setElement:",@"v@:@",NO,^id(IMP original,SEL sel) {
+        return ^(id object,id element) {
+            ((void(*)(id,SEL,id))original)(object,sel,element);__weak id weak=object;
+            dispatch_async(dispatch_get_main_queue(),^{
+                id current=weak;if (!current) return;
+                id owner=RVDAUIConsumerRoot(current);
+                for (RVDAUIBinding *state in RVDAUIBindings.allObjects) if (state.profile.liveCard && owner && owner==state.nativeRootComponent && RVDAUICurrent(state))
+                    RVDAUIObserveConsumers(state,current,state.generation,0);
+            });
+        };
+    });
     // Only the materialization argument changes; native controller entries and
     // the shared response graph remain the authoritative original identities.
     RVDAUIHook(@"YTSectionController",@"nodeBlockForItemAtIndex:",@"@?@:q",NO,^id(IMP original,SEL sel) {
@@ -549,7 +578,7 @@ static void RVInstallDeArrowUI(void) {
             RVDAUIBinding *state=RVDAUIBind(responder,entry,RVDAUISection,RVDAUIIndex);
             id next=state ? RVDAUIProjectedEntry(state) : entry;
             id (^native)(void)=((id(*)(id,SEL,id,id,id,id,id))original)(cls,sel,next,responder,observable,registry,provider);
-            if (!state || next==entry || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
+            if (!state || (!state.profile.liveCard && next==entry) || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
             __weak RVDAUIBinding *weak=state;uint64_t generation=state.generation;
             // Native block descriptor: @8@?0. Native construction may run off
             // main; ownership diagnostics return to main after it completes.
@@ -559,8 +588,11 @@ static void RVInstallDeArrowUI(void) {
                     RVDAUIBinding *current=weak;
                     if (current && weakNode && current.generation==generation && RVDAUICurrent(current)) {
                         current.materializations++;
-                        RVDAUIEvent(@"D09_native_target_materialized",current,nil);
-                        [current.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
+                        if (current.profile.liveCard) { RVDAUIBindConsumerRoot(current,weakNode);RVDAUIObserveConsumers(current,weakNode,generation,0); }
+                        if (next!=entry) {
+                            RVDAUIEvent(@"D09_native_target_materialized",current,nil);
+                            [current.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
+                        }
                     }
                 });return node;
             } copy];

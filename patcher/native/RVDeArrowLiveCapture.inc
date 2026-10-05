@@ -78,6 +78,31 @@ static NSDictionary *RVDALivePathProbe(NSData *model,NSArray<NSNumber *> *path) 
         @"thumbnail_present":@(thumbnail!=nil),@"image_video_identity_matches":@(RVDAImageURL(RVDAChild(thumbnail,1),video)!=nil),
         @"presentation_authorized":@NO};
 }
+static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
+    // These semantic paths bypass both the 96-node queue and depth-6 limit.
+    NSDictionary *paths=@{@"navigation_video_id":RVDALiveCardIdentityPath(),@"presentation":@[@232954548,@18,@1],
+        @"attributed_title":@[@232954548,@18,@1,@21,@8178,@1],@"title_content":@[@232954548,@18,@1,@21,@8178,@1,@1],
+        @"tap_video_title":@[@232954548,@18,@4,@169495254,@462702848,@4],
+        @"thumbnail":@[@232954548,@18,@1,@1],@"image_sources":@[@232954548,@18,@1,@1,@1],
+        @"duration_text":@[@232954548,@18,@1,@1,@2],@"title_configuration":@[@232954548,@18,@1,@21,@8178,@50001]};
+    NSMutableArray *probes=[NSMutableArray array];
+    for (NSString *role in [paths.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        NSString *failure=nil;NSUInteger failed=0;NSArray *path=paths[role];
+        NSData *value=RVDACheckedPath(model,path,&failure,&failed);NSString *text=RVDAText(value);
+        NSMutableDictionary *probe=[@{@"role":role,@"path":path,@"status":failure ?: @"path_resolved",
+            @"byte_length":@(value.length),@"utf8_valid":@(text!=nil),@"shape":RVDALiveShape(value)} mutableCopy];
+        if (failure) { probe[@"failed_step"]=@(failed);probe[@"failed_field"]=path[failed]; }
+        if ([role isEqual:@"navigation_video_id"]) { probe[@"video_id_valid"]=@(RVVideoIDValid(text));probe[@"video_hash"]=RVDADiagVideo(text); }
+        if ([role isEqual:@"title_content"] || [role isEqual:@"tap_video_title"]) probe[@"text_hash"]=RVDADiagHash(value);
+        if ([role isEqual:@"duration_text"]) probe[@"duration_valid"]=@(RVDADurationText(text)>0);
+        [probes addObject:probe.copy];
+    }
+    NSDictionary *contract=RVDALiveCardContract(model);
+    return @{@"schema":@1,@"probes":probes,@"blocker":contract[@"blocker"] ?: @"unresolved",
+        @"video_id_valid":@(RVVideoIDValid(contract[@"video"])),@"video_hash":RVDADiagVideo(contract[@"video"]),
+        @"title_input_valid":@([contract[@"title"] length]>0),@"thumbnail_identity_matches":@([contract[@"image_urls"] count]>0),
+        @"native_consumer_confirmation_required":@YES,@"model_values_exported":@NO};
+}
 static void RVDALiveModelWalk(NSData *data,NSArray *path,NSUInteger depth,NSUInteger *budget,NSUInteger *bytes,
                             NSMutableArray *nodes) {
     if (!data || data.length>*bytes) return;
@@ -124,6 +149,11 @@ static void RVDALiveSchedule(NSString *key,NSString *nativeKey) {
     @synchronized(RVDAUIBinding.class) {
         if (!RVDALiveRoots[key] || RVDALiveConfigurations[key]) return;
         if (!RVDALiveConfigurations) RVDALiveConfigurations=[NSMutableDictionary dictionary];epoch=RVDALiveEpoch;
+        if ([RVDAResourceParts(key)[@"variant"] isEqual:@"fe"]) {
+            RVDALiveConfigurations[key]=@{@"resource_key":key,@"state":@"native_consumers_required",@"payload_exported":@NO,
+                @"blocker":@"legacy_config_getter_not_authoritative_for_live_fe",@"lookup_attempts":@0,
+                @"strategy":@"inspect_owned_materialized_inputs_after_native_factory"};return;
+        }
         RVDALiveConfigurations[key]=@{@"resource_key":key,@"state":@"queued",@"payload_exported":@NO};
     }
     // Let the original materialization complete before querying cached native
@@ -207,6 +237,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
                 @"surface":surface ?: @"unknown",@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
+                @"directed_card_contract":[key isEqual:RVDALiveCardKey()] ? RVDALiveDirectedCardProbes(model) : @{},
                 @"sample_policy":@"first_model_per_resource; later observations counted"};
         }
     }
@@ -220,7 +251,7 @@ static void RVDALiveReset(void) {
 }
 static NSDictionary *RVDALiveReport(void) {
     @synchronized(RVDAUIBinding.class) {
-        return @{@"schema":@1,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
+        return @{@"schema":@2,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
             @"configuration_bytes_exported":@(RVDALiveExportedBytes),@"root_limit":@(RVDALiveRootLimit),
             @"model_byte_limit":@(RVDALiveModelLimit),@"configuration_byte_limit":@(RVDALiveConfigLimit),@"session_byte_limit":@(RVDALiveSessionLimit),
             @"model_values_exported":@NO,@"automatic_role_authorization":@NO};

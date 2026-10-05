@@ -1,8 +1,8 @@
 {
-  "schema": 1,
-  "release": "0.3.38",
+  "schema": 2,
+  "release": "0.3.39",
   "trigger": "DeArrow Report 246: native -fe keys rejected; ordinary extension 232954548 yields no old-path VideoData candidate",
-  "status": "live_contract_capture_implemented_new_presentation_mapping_pending",
+  "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
   "tests_run": false,
   "native_source": "native/RVDeArrowLiveCapture.inc",
@@ -11,7 +11,7 @@
     "syntax": "Strict resource basename, optional -js, optional observed -fe variant, delimiter and exact 1..16 hexadecimal revision",
     "normalization": "Preserve -fe in canonical resource key; never alias a native compiled variant to an old bundled role profile",
     "diagnostic_disclosure": "New native resource identifiers matching strict syntax may be disclosed without the bundled-only basename allowlist. Paths, URLs and arbitrary strings remain excluded.",
-    "production_role_authorization": "Unchanged pinned verified resource/revision/model contracts only"
+    "production_role_authorization": "Existing pinned contracts plus exact live-card revision, semantic navigation/thumbnail validation and factory-instance native consumer checks."
   },
   "native_lookup": {
     "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
@@ -21,7 +21,8 @@
     "retries": "Unavailable native configuration only: at most three attempts, delays 0.5 and 2 seconds",
     "lifecycle": "Capture epoch invalidates queued work and retries on reset",
     "payload": "Only provider-returned static template configuration requested by a validated resource key; live browsing-model values are never exported",
-    "format_limit": "Report format, hash, field shape and bounded base64 configuration. A returned configuration can be only a reference; its actual contents must be inspected before selecting the template decoder."
+    "format_limit": "Report format, hash, field shape and bounded base64 configuration. A returned configuration can be only a reference; its actual contents must be inspected before selecting the template decoder.",
+    "live_fe_policy": "Do not query global legacy serialized-config provider for FE keys; record native_consumers_required and inspect the owned materialized inputs."
   },
   "bounds": {
     "owned_roots": 8,
@@ -69,5 +70,6 @@
     "Wait at least three seconds for native configuration lookup retries, then copy DeArrow checkpoints.",
     "Inspect exact live resource keys, candidate-path failed steps, nested model fields and exported native configurations to derive new title/image consumers."
   ],
-  "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not"
+  "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not",
+  "live_card_contract": "dearrow-live-card-contract.json"
 }
