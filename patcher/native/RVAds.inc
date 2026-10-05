@@ -21,7 +21,8 @@ static BOOL RVAdResponsePolicy(RVAdPlaybackState *state,id raw) {
 static id RVAdResolvedObject(id object,const char *name) {
     return RVAdResolve(object,name,@"@@:") ? RVObject(object,name) : nil;
 }
-static NSString *RVAdEligibility(id delegate,id parent,id wrapper,id raw) {
+#include "RVAdWatchOwnership.inc"
+static NSString *RVAdEligibility(id delegate,id parent,id wrapper,id raw,RVAdPlaybackState *state) {
     Class local=NSClassFromString(@"YTLocalPlaybackController"),response=NSClassFromString(@"YTPlayerResponse"),playerData=NSClassFromString(@"YTIPlayerResponse");
     if (!local || ![delegate isKindOfClass:local]) return @"non_local_delegate";
     if (!wrapper) return @"wrapper_nil";
@@ -38,20 +39,19 @@ static NSString *RVAdEligibility(id delegate,id parent,id wrapper,id raw) {
     if (RVBool(raw,"isDAIEnabledPlayback")) return @"DAI_passthrough";
     id video=RVObject(wrapper,"videoID");
     if (!RVVideoIDValid(video)) return @"video_identity_unknown";
-    id owner=parent ?: delegate;BOOL watch=NO;
-    Class watchVC=NSClassFromString(@"YTWatchViewController"),watchController=NSClassFromString(@"YTWatchController");
-    for (NSUInteger i=0;owner && i<16;i++) {
-        if ([NSStringFromClass([owner class]) hasPrefix:@"YTReel"]) return @"shorts_passthrough";
-        watch|=(watchVC && [owner isKindOfClass:watchVC]) || (watchController && [owner isKindOfClass:watchController]);
-        id next=RVObject(owner,"parentResponder");if (next==owner) break;owner=next;
-    }
-    return watch ? @"ready" : @"watch_owner_unknown";
+    RVAdWatchOwnership *ownership=RVAdResolveWatchOwnership(delegate,parent);
+    state.watchOwner=ownership.watch;state.playerOwner=ownership.player;
+    RVAdValue(state,@"watch_ownership",ownership.checkpoints.copy);
+    RVAdValue(state,@"watch_ownership_route",ownership.route);
+    id contentVideo=RVObject(delegate,"contentVideoID");
+    RVAdValue(state,@"content_video_id_valid",@(RVVideoIDValid(contentVideo)));
+    RVAdValue(state,@"wrapper_content_video_matches",@([video isEqual:contentVideo]));
+    return ownership.gate;
 }
 static RVAdPlaybackState *RVAdPrepare(id delegate,id parent,id wrapper,NSString *origin,BOOL boundary) {
     Class local=NSClassFromString(@"YTLocalPlaybackController");
     if (!local || ![delegate isKindOfClass:local]) { RVAdEvent(nil,@"non_local_delegate",1);return nil; }
     id raw=RVAdResolvedObject(wrapper,"playerData");
-    NSString *gate=RVAdEligibility(delegate,parent,wrapper,raw);
     RVAdPlaybackState *state=objc_getAssociatedObject(delegate,RVAdStateKey);
     id video=RVObject(wrapper,"videoID");
     @synchronized(RVAdPlaybackState.class) {
@@ -63,8 +63,8 @@ static RVAdPlaybackState *RVAdPrepare(id delegate,id parent,id wrapper,NSString 
             state.generation=++RVAdGeneration;state.counts=[NSMutableDictionary dictionary];state.values=[NSMutableDictionary dictionary];
             objc_setAssociatedObject(delegate,RVAdStateKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
-        state.gate=gate;state.requested=RVSetting(@"ad_strategy");
-        state.actual=RVEnabled(@"video_ads") && [gate isEqual:@"ready"] ? @"response" : @"native";
+        state.gate=RVAdEligibility(delegate,parent,wrapper,raw,state);state.requested=RVSetting(@"ad_strategy");
+        state.actual=RVEnabled(@"video_ads") && [state.gate isEqual:@"ready"] ? @"response" : @"native";
         Class rawClass=NSClassFromString(@"YTIPlayerResponse");
         if (rawClass && [raw isKindOfClass:rawClass]) objc_setAssociatedObject(raw,RVAdStateKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }

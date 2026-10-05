@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.28'
+VERSION = '0.3.29'
 
 
 def digest(path):
@@ -35,13 +35,11 @@ def main():
     destination = ROOT/'output'
     destination.mkdir(exist_ok=True)
     packages = []
-    for suffix, config_name, strip in [
-        ('-SideStore-auth-native-ads-merged', 'adblock-native', True),
-        ('-SideStore-auth-merged', 'sideload-auth', True),
-        ('-merged', 'defaults', False),
-        ('-expanded-merged', 'expanded', False),
-    ]:
-        output = destination/f'YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
+    # One comprehensive SideStore delivery; never generate strategy/preset variants.
+    for config_name, strip in [('adblock-native', True)]:
+        output = destination/f'YouTube-21.39.4-RVPort-{VERSION}-unsigned.ipa'
+        if output.exists():
+            raise RuntimeError('Refusing to overwrite an existing release IPA')
         print('Packaging '+output.name, flush=True)
         config_path = ROOT/f'configs/{config_name}.json'
         config = json.loads(config_path.read_text(encoding='utf-8'))
@@ -50,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'merged-display-sponsor',
+    receipt = {'version': VERSION, 'release_flavor': 'merged-adblock-ownership',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-display-sponsor-source.json').read_text()),
-               'scope': 'Completed SponsorBlock prompts from 0.3.26 plus display-ad consumers/checkpoints; pending Shorts work excluded.'}
-    (ROOT/'build/package-manifest-0.3.28-merged.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'All implementations merged in main 0.3.28, plus verified Watch/player ownership resolution and ownership/managed-slot checkpoints. One SideStore-compatible native-ad preset.'}
+    (ROOT/'build/package-manifest-0.3.29.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

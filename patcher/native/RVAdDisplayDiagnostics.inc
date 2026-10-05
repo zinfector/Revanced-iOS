@@ -13,6 +13,7 @@ static const void *RVAdDisplayKey=&RVAdDisplayKey;
 static NSMutableDictionary *RVAdDisplayTotals;
 static NSMutableArray *RVAdDisplayHistory;
 static NSDictionary *RVAdDisplayLastVisible,*RVAdDisplayLastNative;
+static NSDictionary *RVAdDisplayLastManagedSlot;
 static __weak RVAdDisplayState *RVAdDisplayLastOwner;
 static NSUInteger RVAdDisplayGeneration;
 static NSDate *RVAdDisplayStarted;
@@ -78,7 +79,8 @@ static NSDictionary *RVDisplayReport(void) {
     @synchronized(RVAdDisplayState.class) {
         RVAdDisplayState *state=RVAdDisplayLastOwner;
         BOOL current=state.owner && objc_getAssociatedObject(state.owner,RVAdDisplayKey)==state;
-        return @{@"schema":@1,@"checkpoint_version":@3,@"enabled":@(RVEnabled(@"feed_ads")),
+        return @{@"schema":@2,@"checkpoint_version":@4,@"enabled":@(RVEnabled(@"feed_ads")),
+            @"last_managed_slot_checkpoint":RVAdDisplayLastManagedSlot ?: @{},
             @"session_events":RVAdDisplayTotals.copy ?: @{},@"last_native_operation":RVAdDisplayLastNative ?: @{},@"last_visible_surface":RVAdDisplayLastVisible ?: @{},
             @"last_visible_context_still_owned":@(current),@"checkpoint_history":RVAdDisplayHistory.copy ?: @[],
             @"session_age_seconds":RVAdDisplayStarted ? @(-RVAdDisplayStarted.timeIntervalSinceNow) : @0,

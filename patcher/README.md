@@ -1,4 +1,6 @@
-# YouTube iOS Patcher 0.3.28
+# YouTube iOS Patcher 0.3.29
+
+Latest release: **0.3.29**, one comprehensive SideStore-compatible IPA: `YouTube-21.39.4-RVPort-0.3.29-unsigned.ipa`. It corrects the observed Watch-ownership eligibility failure and adds ownership/managed-slot checkpoints. Opaque banners remain unresolved; see [ownership correction](ADBLOCK_OWNERSHIP_FIX.md). Older variant descriptions below document historical releases.
 
 Version **0.3.28** merges Home/below-video banner filtering with native SponsorBlock manual-skip and confirmed Undo controls from the completed 0.3.26 worktree. It includes display-ad checkpoints and SponsorBlock prompt checkpoints, and uses the established Xcode 16.4 / iPhoneOS18.5 cloud toolchain. Login, speed, dislike counts and video-ad coordinator fixes are retained. No tests were run; the merged device behavior remains unverified. See [merged build and capture guide](MERGED_DISPLAY_SPONSOR_IMPLEMENTATION.md), [banner-ad details](ADBLOCK_DISPLAY_IMPLEMENTATION.md), and [native prompt behavior](SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
 

@@ -4,6 +4,8 @@
 @property(nonatomic,weak) id controller;
 @property(nonatomic,weak) id response;
 @property(nonatomic,weak) id wrapper;
+@property(nonatomic,weak) id playerOwner;
+@property(nonatomic,weak) id watchOwner;
 @property(nonatomic,weak) id coordinator;
 @property(nonatomic,weak) id retiringCoordinator;
 @property(nonatomic) BOOL transitionPending;
@@ -56,7 +58,10 @@ static BOOL RVAdHook(NSString *cls,NSString *selector,NSString *abi,BOOL classMe
 }
 #include "RVAdDisplayDiagnostics.inc"
 static BOOL RVAdWatchVisible(void) {
-    UIViewController *watch=RVCurrentWatch;
+    RVAdPlaybackState *state=objc_getAssociatedObject(RVCurrentPlayback,RVAdStateKey);
+    id player=state.playerOwner;
+    UIViewController *watch=player && RVPlaybackForPlayer(player)==RVCurrentPlayback ? state.watchOwner : nil;
+    if (!watch && RVPlaybackForPlayer(RVObject(RVCurrentWatch,"playerViewController"))==RVCurrentPlayback) watch=RVCurrentWatch;
     if (![watch isKindOfClass:UIViewController.class] || !watch.viewIfLoaded.window) return NO;
     for (NSUInteger i=0;watch && i<32;i++,watch=watch.parentViewController) {
         if (watch.presentedViewController && !watch.presentedViewController.isBeingDismissed) return NO;
@@ -114,7 +119,7 @@ static NSDictionary *RVAdReport(void) {
         NSString *block=!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !state ? @"controller_lease_missing" :
             ![state.gate isEqual:@"ready"] ? state.gate ?: @"response_resolution_missing" : !owned ? @"response_owner_mismatch" :
             !matches ? @"foreground_watch_snapshot_missing" : RVAdLastVisible[@"first_blocked_checkpoint"];
-        return @{@"schema":@3,@"diagnostics_revision":@"adblock-checkpoints-3",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+        return @{@"schema":@4,@"diagnostics_revision":@"adblock-checkpoints-4",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
             @"diagnostics_enabled":@(RVEnabled(@"diagnostics")),@"profile_accepted":@(RVCompatible),
             @"video_ads_enabled":@(RVEnabled(@"video_ads")),@"feed_ads_enabled":@(RVEnabled(@"feed_ads")),
             @"shorts_ads_enabled":@(RVEnabled(@"shorts_ads")),@"requested_strategy":RVSetting(@"ad_strategy") ?: @"response",
@@ -126,6 +131,10 @@ static NSDictionary *RVAdReport(void) {
             @"factory_response_matches_current_content":@(owned && [state.values[@"factory_response_matches_controller"] boolValue]),
             @"current_factory_binding_matches_playback":@(owned && [state.counts[@"factory_entered"] unsignedLongLongValue]>0),
             @"current_response_lease_matches_playback":@(owned),
+            @"lease_raw_response_matches":@(state.response && state.response==RVContentResponse(RVCurrentPlayback)),
+            @"lease_video_matches_content":@([state.video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]),
+            @"watch_player_binding_current":@(state.playerOwner && RVPlaybackForPlayer(state.playerOwner)==RVCurrentPlayback),
+            @"watch_snapshot_owner_class":state.watchOwner ? NSStringFromClass([state.watchOwner class]) : @"nil",
             @"first_blocked_checkpoint":block,
             @"last_visible_watch_age_seconds":RVAdLastVisible ? @(MAX(0,NSDate.date.timeIntervalSince1970-[RVAdLastVisible[@"captured_at_epoch"] doubleValue])) : NSNull.null,
             @"current_playback":state ? RVAdSnapshot(state,@"report_copy") : @{},@"checkpoint_history":RVAdHistory.copy ?: @[],
@@ -136,5 +145,5 @@ static NSDictionary *RVAdReport(void) {
 }
 static NSString *RVAdSummary(void) {
     NSDictionary *report=RVAdReport();
-    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-3\n\n",report[@"first_blocked_checkpoint"]];
+    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-4\n\n",report[@"first_blocked_checkpoint"]];
 }

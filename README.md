@@ -1,5 +1,7 @@
 # ReVanced iOS
 
+Latest release: **0.3.29**, one comprehensive SideStore-compatible IPA: `YouTube-21.39.4-RVPort-0.3.29-unsigned.ipa`. It corrects the observed Watch-ownership eligibility failure and adds ownership/managed-slot checkpoints. Opaque banners remain unresolved; see [ownership correction](patcher/ADBLOCK_OWNERSHIP_FIX.md). Older variant descriptions below document historical releases.
+
 Version **0.3.28** merges Home/below-video banner filtering with native SponsorBlock manual-skip and confirmed Undo controls from the completed 0.3.26 worktree. It includes display-ad checkpoints and SponsorBlock prompt checkpoints, and uses the established Xcode 16.4 / iPhoneOS18.5 cloud toolchain. Login, speed, dislike counts and video-ad coordinator fixes are retained. No tests were run; the merged device behavior remains unverified. See [merged build and capture guide](patcher/MERGED_DISPLAY_SPONSOR_IMPLEMENTATION.md), [banner-ad details](patcher/ADBLOCK_DISPLAY_IMPLEMENTATION.md), and [native prompt behavior](patcher/SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 82 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.

@@ -125,7 +125,7 @@ static void RVAdRequestCoordinatorPolicy(id controller,NSString *reason) {
     state.lastPolicyObservation=now;
     NSString *requested=RVSetting(@"ad_strategy");
     BOOL changed=![state.requested isEqual:requested];state.requested=requested;
-    state.gate=RVAdEligibility(controller,controller,wrapper,state.response);
+    state.gate=RVAdEligibility(controller,controller,wrapper,state.response,state);
     if (!state.coordinator) {
         id stored=RVAdStoredCoordinator(controller);state.coordinator=stored;
         state.actual=RVAdOwnedNoOp(controller,stored) ? @"coordinator" :

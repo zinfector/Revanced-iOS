@@ -2,6 +2,24 @@
 // Proven companion consumers; never suppress the outer layout/promise lifecycle.
 static NSString *const RVAdDisplayScopeKey=@"RVPort.DisplayAd.Scope";
 static BOOL RVAdDisplaySectionHookReady,RVAdDisplayProviderHookReady;
+static void RVDisplayObserveManagedSlot(id adapter,id slot,id layout,NSString *event) {
+    if (!RVEnabled(@"diagnostics")) return;
+    NSMutableDictionary *checkpoint=[NSMutableDictionary dictionary];
+    checkpoint[@"event"]=event;checkpoint[@"captured_at_epoch"]=@(NSDate.date.timeIntervalSince1970);
+    checkpoint[@"adapter_class"]=NSStringFromClass([adapter class]);
+    checkpoint[@"slot_logging_class"]=slot ? NSStringFromClass([slot class]) : @"nil";
+    checkpoint[@"layout_logging_class"]=layout ? NSStringFromClass([layout class]) : @"nil";
+    BOOL slotKnown=RVAdResolve(slot,"hasSlotData",@"B@:"),layoutKnown=RVAdResolve(layout,"hasLayoutData",@"B@:");
+    checkpoint[@"slot_presence_contract"]=@(slotKnown);checkpoint[@"layout_presence_contract"]=@(layoutKnown);
+    id data=slotKnown && RVBool(slot,"hasSlotData") ? RVAdResolvedObject(slot,"slotData") : nil;
+    id layoutData=layoutKnown && RVBool(layout,"hasLayoutData") ? RVAdResolvedObject(layout,"layoutData") : nil;
+    checkpoint[@"slot_data_present"]=@(data!=nil);checkpoint[@"layout_data_present"]=@(layoutData!=nil);
+    checkpoint[@"slot_data_class"]=data ? NSStringFromClass([data class]) : @"nil";
+    checkpoint[@"layout_data_class"]=layoutData ? NSStringFromClass([layoutData class]) : @"nil";
+    if (RVAdResolve(data,"type",@"i@:")) checkpoint[@"slot_type"]=@(RVInt(data,"type"));
+    checkpoint[@"mutation_performed"]=@NO;
+    @synchronized(RVAdDisplayState.class) { RVAdDisplayLastManagedSlot=checkpoint.copy; }
+}
 @interface RVAdDisplayScope : NSObject
 @property(nonatomic,strong) id section;
 @property(nonatomic,strong) id renderer;
@@ -138,6 +156,7 @@ static void RVInstallDisplayAds(void) {
             // Observation only: NO from canEnterSlot does not cancel the native bind sequence.
             RVDisplayEvent(nil,[selector hasPrefix:@"didBind"] ? @"managed_slot_bound" : @"managed_slot_disposed",1);
             ((void(*)(id,SEL,id,id))original)(adapter,sel,slot,layout);
+            RVDisplayObserveManagedSlot(adapter,slot,layout,[selector hasPrefix:@"didBind"] ? @"native_bind_completed" : @"native_dispose_completed");
         };
     });
 }

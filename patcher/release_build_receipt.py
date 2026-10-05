@@ -1,11 +1,11 @@
-"""Record 0.3.28 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.29 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.28'
+VERSION = '0.3.29'
 
 
 def main():
@@ -35,12 +35,12 @@ def main():
     names += ['native/RVVoteModel.inc', 'native/RVVoteLifecycle.inc', 'VOTE_COUNTER_FIX_SCHEME.md', 'VOTE_STARTUP_INVESTIGATION.md', 'profiles/vote-model-implementation-evidence.json', 'profiles/vote-startup-investigation.json', 'profiles/vote-counter-fix-scheme.json']
     names += ['configs/defaults.json', 'configs/expanded.json', 'configs/sideload-auth.json', 'configs/all-candidates.json']
     names += ['native/RVVoteFirstLaunch.inc', 'FIRST_LAUNCH_UI_SCHEME.md', 'profiles/first-launch-ui-evidence.json']
-    names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
-              for suffix in ('-merged', '-expanded-merged', '-SideStore-auth-merged', '-SideStore-auth-native-ads-merged')]
+    names += [f'output/YouTube-21.39.4-RVPort-{VERSION}-unsigned.ipa']
     names += ['native/RVAds.inc', 'native/RVAdFeed.inc', 'native/RVAdsDiagnostics.inc', 'configs/adblock-native.json', 'ADBLOCK_IMPLEMENTATION.md', 'ADBLOCK_PORT_SCHEME.md', 'profiles/adblock-port-evidence.json', 'profiles/adblock-implementation-evidence.json', 'profiles/adblock-merge-0.3.23.json']
     names += ['native/RVAdCoordinator.inc', 'ADBLOCK_HANDOFF_SCHEME.md', 'ADBLOCK_HANDOFF_IMPLEMENTATION.md', 'profiles/adblock-handoff-evidence.json', 'profiles/adblock-handoff-implementation-evidence.json', 'profiles/adblock-handoff-decompiled.txt', 'profiles/device-adblock-report-1251.json']
     names += ['native/RVAdDisplay.inc', 'native/RVAdDisplayDiagnostics.inc', 'ADBLOCK_DISPLAY_SCHEME.md', 'ADBLOCK_DISPLAY_IMPLEMENTATION.md', 'profiles/adblock-display-evidence.json', 'profiles/adblock-display-protobuf-fields.json', 'profiles/adblock-display-decompiled.txt', 'profiles/adblock-display-implementation-evidence.json']
     names += ['native/RVSponsorPrompt.inc', 'native/RVSponsorPromptUI.inc', 'SPONSORBLOCK_NATIVE_PROMPTS_SCHEME.md', 'SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md', 'profiles/sponsor-prompt-evidence.json', 'profiles/sponsor-prompts-implementation-evidence.json', 'MERGED_DISPLAY_SPONSOR_IMPLEMENTATION.md', 'profiles/merged-display-sponsor-source.json', 'package_merged_release.py', 'build/cloud-build.json']
+    names += ['native/RVAdWatchOwnership.inc', 'ADBLOCK_OWNERSHIP_FIX.md', 'profiles/device-adblock-report-348.json', 'profiles/adblock-ownership-evidence.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -65,7 +65,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.28 merges typed display-ad filtering and native companion clearing with SponsorBlock manual/confirmed-undo prompts from 0.3.26. Both checkpoint sections are included. Opaque Home/header ads and advertising replacement removal remain conservative passthrough. Native prompt appearance/hit testing/seek confirmation and combined device behavior remain unverified. The separate 0.3.27 Shorts worktree was still being edited and is not included. No tests run.'}
+        'remaining_scope': 'Fixes the observed Watch ownership gate using reverse-verified native player bindings. Opaque Home/banner rendering remains unresolved; new managed-slot and ownership checkpoints distinguish remaining gaps. One comprehensive native-ad SideStore IPA; no tests run; device behavior unverified.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

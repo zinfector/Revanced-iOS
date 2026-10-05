@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "version": "0.3.29",
+  "source_base": "a5e6a9515c56f87449630bb9acd2e56ded37b1ad",
+  "observed_report": "device-adblock-report-348.json",
+  "installed_build_source_sha256": "bfad0c0f665cb780e843d3cfe37377270576af6850704f64094e63a47bbf0044",
+  "observed_playback_gap": "watch_owner_unknown, native ad coordinator retained; all ad flags enabled",
+  "observed_display_gap": "zero classified ads/removed rows/companion callbacks, one externally managed ad-slot bind",
+  "research": "Read-only Mach-O Objective-C metadata and ARM64 disassembly; supplied Ghidra project locked by another process, no lock overridden. Static relationships do not reveal the exact device responder chain.",
+  "native_methods": [
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "parentResponder",
+      "encoding": "@16@0:8",
+      "imp": "0x104187148"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "initWithParentResponder:overlayFactory:playerView:playbackControllerDelegate:viewportSizeProvider:recompositeProvider:shouldDelayAdsPlaybackCoordinatorCreation:shouldEnableMediaDrivenPrefetch:enablePictureInPictureSupport:",
+      "encoding": "@76@0:8@16@24@32@40@48@56B64B68B72",
+      "imp": "0x1004c0568"
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "parentResponder",
+      "encoding": "@16@0:8",
+      "imp": "0x10049e7fc"
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "eventsDelegate",
+      "encoding": "@16@0:8",
+      "imp": "0x1041b3e94"
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "initWithServiceRegistryScope:playerViewControllerTraits:parentResponder:overlayFactory:playbackCoordinator:recompositeProvider:playabilityResolutionUIController:shouldDelayAdsPlaybackCoordinatorCreation:shouldDisablePromoNotifications:shouldEnableMediaDrivenPrefetch:",
+      "encoding": "@84@0:8@16@24@32@40@48@56@64B72B76B80",
+      "imp": "0x10048b5c4"
+    },
+    {
+      "class": "YTWatchPlaybackController",
+      "kind": "-",
+      "selector": "parentResponder",
+      "encoding": "@16@0:8",
+      "imp": "0x10137587c"
+    },
+    {
+      "class": "YTWatchPlaybackController",
+      "kind": "-",
+      "selector": "delegate",
+      "encoding": "@16@0:8",
+      "imp": "0x101375894"
+    },
+    {
+      "class": "YTWatchPlaybackController",
+      "kind": "-",
+      "selector": "setPlayerViewController:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x10137435c"
+    },
+    {
+      "class": "YTWatchController",
+      "kind": "-",
+      "selector": "watchViewController",
+      "encoding": "@16@0:8",
+      "imp": "0x10135e0ac"
+    },
+    {
+      "class": "YTWatchController",
+      "kind": "-",
+      "selector": "watchPlaybackController",
+      "encoding": "@16@0:8",
+      "imp": "0x101367a48"
+    },
+    {
+      "class": "YTWatchController",
+      "kind": "-",
+      "selector": "watchPlaybackController:didSetPlayerViewController:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x10135fdb4"
+    },
+    {
+      "class": "YTWatchViewController",
+      "kind": "-",
+      "selector": "playerViewController",
+      "encoding": "@16@0:8",
+      "imp": "0x10157ae74"
+    },
+    {
+      "class": "YTWatchViewController",
+      "kind": "-",
+      "selector": "setPlayerViewController:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x1015714d8"
+    },
+    {
+      "class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "kind": "-",
+      "selector": "controller:didProcessOpportunityWithSlot:shouldExitActiveSlots:",
+      "encoding": "v36@0:8@16@24B32",
+      "imp": "0x100d6e1ec"
+    }
+  ],
+  "native_fields": [
+    {
+      "class": "YTLocalPlaybackController",
+      "ivar": "_delegate",
+      "type": "@\"<YTCorePlaybackControllerDelegate>\""
+    },
+    {
+      "class": "YTPlayerViewController",
+      "ivar": "_playbackController",
+      "type": "@\"<YTCorePlaybackController>\""
+    },
+    {
+      "class": "YTWatchPlaybackController",
+      "ivar": "_playerViewController",
+      "type": "@\"YTPlayerViewController\""
+    }
+  ],
+  "implementation": "Known player/core pair, exact Watch/player reverse binding, original responder fallback, explicit Reel/live/DAI passthrough; weak snapshot owners. Managed ad slot remains observation only.",
+  "tests_run": false,
+  "device_validated": false
+}
