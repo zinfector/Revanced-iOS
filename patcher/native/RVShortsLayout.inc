@@ -170,9 +170,17 @@ static void RVShortsRestoreSelection(UIView *view) {
 }
 static void RVShortsRefreshNavigation(void) {
     if (!NSThread.isMainThread) { dispatch_async(dispatch_get_main_queue(),^{RVShortsRefreshNavigation();});return; }
-    for (UIView *view in RVShortsPivotViews.allObjects) {
+    NSArray *views=RVShortsPivotViews.allObjects;
+    NSHashTable *changed=[NSHashTable hashTableWithOptions:NSPointerFunctionsStrongMemory|NSPointerFunctionsObjectPointerPersonality];
+    for (UIView *view in views) {
         id renderer=RVObject(view,"renderer");
-        if (RVShortsPreparePivot(renderer)) RVSetObject(view,"setRenderer:",renderer);
+        if (RVShortsPreparePivot(renderer)) [changed addObject:renderer];
+    }
+    // Cached views can share a renderer. Rebuild every consumer of a changed
+    // model, even after the first consumer has already installed/restored it.
+    for (UIView *view in views) {
+        id renderer=RVObject(view,"renderer");
+        if ([changed containsObject:renderer]) RVSetObject(view,"setRenderer:",renderer);
     }
 }
 static void RVShortsInstall(void) {
