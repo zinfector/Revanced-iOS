@@ -20,6 +20,7 @@
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
 #include "RVImageHeader.h"
+#include "RVDeArrowBackend.inc"
 
 static void RVExtraObserve(id controller);
 static void RVExtraSetPlayer(id player,id controller);
