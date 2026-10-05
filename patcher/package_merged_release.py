@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.29'
+VERSION = '0.3.30'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'merged-adblock-ownership',
+    receipt = {'version': VERSION, 'release_flavor': 'merged-speed-shorts-adblock',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
-               'merge': json.loads((ROOT/'profiles/merged-display-sponsor-source.json').read_text()),
-               'scope': 'All implementations merged in main 0.3.28, plus verified Watch/player ownership resolution and ownership/managed-slot checkpoints. One SideStore-compatible native-ad preset.'}
-    (ROOT/'build/package-manifest-0.3.29.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text()),
+               'scope': 'Native speed configuration preservation and sheet checkpoints, merged with 0.3.29 ad ownership/display filtering and 0.3.27 Shorts model/header/pivot fixes. SponsorBlock prompts, authentication and native settings retained. One SideStore-compatible native-ad preset.'}
+    (ROOT/'build/package-manifest-0.3.30.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

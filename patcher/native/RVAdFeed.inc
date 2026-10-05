@@ -32,6 +32,7 @@ static NSString *RVAdPresence(NSString *field) {
 static NSString *RVAdSetter(NSString *field) {
     return [NSString stringWithFormat:@"set%@%@:",[[field substringToIndex:1] uppercaseString],[field substringFromIndex:1]];
 }
+#include "RVShortsLayout.inc"
 static BOOL RVAdFeedKind(id item,NSString **reason) {
     if (!item) return NO;
     for (RVAdField *field in RVAdFieldAccessors[NSStringFromClass([item class])]) {
@@ -67,7 +68,9 @@ static NSArray *RVAdFilterEntries(NSArray *entries,NSUInteger depth,RVAdFeedWalk
     for (id item in entries) {
         if (!walk.budget) { RVDisplayEvent(walk.state,@"budget_passthrough",1);RVDisplayValue(walk.state,@"blocked_checkpoint",@"budget_exhausted");[result addObject:item];continue; }
         walk.budget--;NSString *reason=nil;
-        if (RVAdFeedKind(item,&reason)) {
+        NSString *shorts=RVShortsRowKind(item);
+        if (shorts) { RVShortsEvent(@"feed_row_removed");RVShortsEvent([@"feed_removed_" stringByAppendingString:shorts]);changed=YES;continue; }
+        if (RVEnabled(@"feed_ads") && RVAdFeedKind(item,&reason)) {
             RVAdEvent(nil,@"feed_ad_input",1);RVAdEvent(nil,@"feed_removed",1);RVAdEvent(nil,[@"feed_removed_" stringByAppendingString:reason],1);
             RVDisplayValue(walk.state,@"last_mutation",@"typed_removal");RVDisplayEvent(walk.state,@"ad_classified",1);RVDisplayEvent(walk.state,@"removed_entries",1);
             RVDisplayValue(walk.state,@"last_rule",reason);changed=YES;continue;
@@ -109,12 +112,12 @@ static id RVAdFilterModel(id model,NSUInteger depth,RVAdFeedWalk *walk) {
 }
 static id RVFilterModel(id owner,id model) {
     RVAdFeedWalk *walk=RVAdNewWalk(owner,YES,@"model_load");
-    if (!RVEnabled(@"feed_ads")) return model;
+    if (!RVEnabled(@"feed_ads") && !RVEnabled(@"hide_shorts")) return model;
     return RVAdFilterModel(model,0,walk);
 }
 static id RVAdFilterIncoming(id owner,id entries,NSString *route) {
     RVAdFeedWalk *walk=RVAdNewWalk(owner,NO,route);
-    if (!RVEnabled(@"feed_ads") || ![entries isKindOfClass:NSArray.class]) return entries;
+    if ((!RVEnabled(@"feed_ads") && !RVEnabled(@"hide_shorts")) || ![entries isKindOfClass:NSArray.class]) return entries;
     return RVAdFilterEntries(entries,0,walk);
 }
 #include "RVAdDisplay.inc"
@@ -146,12 +149,15 @@ static void RVInstallFeed(void) {
     }
     RVAdFieldAccessors=accessors.copy;RVInstallDisplayAds();
     RVAdHook(@"YTIElementRenderer",@"elementData",@"@@:",NO,^id(IMP original,SEL sel) {
+        RVShortsElementDataOriginal=original;
         return ^id(id object) {
             id data=((id(*)(id,SEL))original)(object,sel);
             if (![data isKindOfClass:NSData.class] || [data length]>2*1024*1024) return data;
             static _Thread_local BOOL makingEmpty;if (makingEmpty) return data;
             BOOL ad=RVAdElementReject(data);
-            BOOL reject=ad || (RVEnabled(@"hide_shorts") && RVDataMatches(data,RVSetting(@"shorts_patterns"))) || RVExtraReject(data);
+            NSString *shorts=RVShortsDataKind(data);
+            BOOL reject=ad || shorts!=nil || RVExtraReject(data);
+            if (shorts) RVShortsEvent(@"element_short_substitution");
             if (!reject) return RVVoteNormalizeElementData(data);
             id result=nil;makingEmpty=YES;
             @try { result=RVObject(RVObject(NSClassFromString(@"YTIElementRenderer"),"emptyCellElementRenderer"),"elementData"); }

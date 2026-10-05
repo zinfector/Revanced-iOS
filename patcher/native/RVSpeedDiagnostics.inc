@@ -63,7 +63,7 @@ static void RVSpeedPickerOpened(id player,NSString *route) {
 }
 static NSDictionary *RVSpeedCheckpointReport(void) {
     NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString *line,NSDictionary *bindings) {
-        return [line containsString:@"PlaybackRate"] || [line containsString:@"Varispeed"] || [line containsString:@"varispeed"] || [line containsString:@"SpeedSheet"] || [line containsString:@"updateActiveOverlayWithActiveVideo"];
+        return [line containsString:@"PlaybackRate"] || [line containsString:@"Varispeed"] || [line containsString:@"varispeed"] || [line containsString:@"SpeedSheet"] || [line containsString:@"updateActiveOverlayWithActiveVideo"] || [line containsString:@"Registry"] || [line containsString:@"Sheet"];
     }]]; }
     NSDictionary *choice=RVSpeedSelections.lastObject;NSString *status=@"no_selection_observed";
     if (choice) {
@@ -72,7 +72,7 @@ static NSDictionary *RVSpeedCheckpointReport(void) {
         else if ([last[@"outcome"] isEqual:@"native_rate_confirmed"]) status=@"native_model_confirmed";
         else status=last[@"outcome"] ?: @"readback_not_confirmed";
     }
-    return @{@"schema":@1,@"patcher_version":@"0.3.20",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+    return @{@"schema":@1,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"session_id":RVSpeedSessionID ?: @"unavailable",@"launch_number":@(RVSpeedLaunchNumber),
         @"enabled":@(RVEnabled(@"diagnostics")),@"clock":@"monotonic_milliseconds_since_hook_install",
         @"event_capacity":@256,@"selection_capacity":@12,@"picker_count":@(RVSpeedPickerID),
@@ -84,6 +84,6 @@ static NSDictionary *RVSpeedCheckpointReport(void) {
 static NSString *RVSpeedCheckpointSummary(void) {
     RVSpeedState *state=objc_getAssociatedObject(RVCurrentPlayer,RVSpeedKey);float observed=RVSpeedObserved(RVCurrentPlayer);
     return [NSString stringWithFormat:@"Speed: %@\nPicker %lu / choice %lu: %.2fx requested, %@ observed.\nCopy speed checkpoints preserves every choice and 0/100/350/1000 ms readbacks.\n\n",
-        state.gate ?: @"No choice observed",(unsigned long)RVSpeedPickerID,(unsigned long)RVSpeedSelectionID,state.requested,
+        RVSpeedSelectionID ? (state.gate ?: @"Awaiting selection readback") : @"No user speed choice observed",(unsigned long)RVSpeedPickerID,(unsigned long)RVSpeedSelectionID,state.requested,
         isfinite(observed) ? [NSString stringWithFormat:@"%.2fx",observed] : @"unavailable"];
 }

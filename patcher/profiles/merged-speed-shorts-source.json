@@ -1,0 +1,17 @@
+{
+  "version": "0.3.30",
+  "base_commit": "576526f",
+  "adblock_base": "576526f",
+  "shorts_commits": [
+    "5566cce",
+    "89cdada"
+  ],
+  "source_worktrees": [
+    "adblock-owner-release-0.3.29",
+    "shorts-layout-release-0.3.27"
+  ],
+  "merge_resolution": "Retain new typed display-ad feed walker and gate ad classification separately from Shorts row removal. Preserve native ownership, companion clearing, prompt and settings implementations. Refresh all native pivot consumers sharing a renderer.",
+  "speed_repair": "Preserve saved native cold configuration for speed/registry getters and recover only missing native speed filler from verified current Watch provider. Add wrapper/thread and factory checkpoints.",
+  "tests_run": false,
+  "device_validated": false
+}

@@ -1,11 +1,11 @@
-"""Record 0.3.29 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.30 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.29'
+VERSION = '0.3.30'
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
     run = json.loads(args.run.read_text(encoding='utf-8'))
     jobs = json.loads(args.jobs.read_text(encoding='utf-8'))
     native = json.loads((ROOT/'build/build-manifest.json').read_text(encoding='utf-8'))
-    names = ['build.py', 'build/RVPort.dylib', 'dist/YouTube-iOS-Patcher.exe',
+    names = ['build.py', 'build/RVPort.dylib', 
              'build/build-manifest.json', 'build/build.log',
              'native/RVPort.m', 'native/RVExtras.inc', 'native/RVSettingsUI.inc',
              'native/RVAuthentication.inc', 'native/RVAuthenticationSupport.h',
@@ -30,6 +30,7 @@ def main():
              'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
              'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
              'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc', 'native/RVSettingsNavigation.inc', 'native/RVDislikesDiagnostics.inc', 'RYD_CHECKPOINTS.md', 'profiles/ryd-checkpoints-evidence.json', 'profiles/device-report-541-ryd-render.json', 'profiles/device-report-615-ryd-mount.json', 'profiles/device-report-635-ryd-lifecycle.json', 'profiles/ryd-lifecycle-evidence.json', 'profiles/ryd-speed-polish-evidence.json', 'native/RVSpeed.inc', 'native/RVSpeedBridge.inc', 'profiles/device-report-728-startup.json', 'profiles/startup-bridge-evidence.json', 'PLAYBACK_SPEED_SCHEME.md', 'profiles/parallel-ui-snapshot-0.3.14.json', 'profiles/device-0.3.12-ryd-render-failure.json']
+    names += ['native/RVSpeedContext.inc', 'native/RVShortsLayout.inc', 'SPEED_CONTEXT_IMPLEMENTATION.md', 'SHORTS_LAYOUT_IMPLEMENTATION.md', 'profiles/merged-speed-shorts-source.json']
     names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
     names += ['native/RVVoteLayoutCompatibility.inc', 'VOTE_LAYOUT_SCHEME.md', 'profiles/vote-layout-compatibility-evidence.json', 'profiles/device-report-823-vote-layout.json']
     names += ['native/RVVoteModel.inc', 'native/RVVoteLifecycle.inc', 'VOTE_COUNTER_FIX_SCHEME.md', 'VOTE_STARTUP_INVESTIGATION.md', 'profiles/vote-model-implementation-evidence.json', 'profiles/vote-startup-investigation.json', 'profiles/vote-counter-fix-scheme.json']
@@ -65,7 +66,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Fixes the observed Watch ownership gate using reverse-verified native player bindings. Opaque Home/banner rendering remains unresolved; new managed-slot and ownership checkpoints distinguish remaining gaps. One comprehensive native-ad SideStore IPA; no tests run; device behavior unverified.'}
+        'remaining_scope': 'Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

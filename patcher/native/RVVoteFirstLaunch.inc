@@ -3,6 +3,7 @@
 // This is a process-wide default-config policy, not an identified UI experiment.
 static id RVVoteFirstLaunchGroup;
 static BOOL RVVoteFirstLaunchReady;
+static BOOL RVSpeedFirstLaunchPolicyActive(void) { return RVVoteFirstLaunchReady; }
 static NSMutableDictionary *RVVoteFirstLaunchCounts,*RVVoteFirstLaunchState;
 static void RVVoteFirstLaunchCheckpoint(NSString *event,NSDictionary *values) {
     if (!RVEnabled(@"diagnostics")) return;
@@ -27,7 +28,7 @@ static NSDictionary *RVVoteFirstLaunchReport(void) {
         return @{@"schema":@1,@"strategy":@"process_default_cold_config_and_template_context",
             @"requested_at_start":@(RVVoteFirstLaunchRequested),@"default_group_ready":@(RVVoteFirstLaunchReady),
             @"restart_required":@YES,@"saved_configuration_deleted":@NO,@"account_storage_changed":@NO,
-            @"scope":@"all_native_cold_experiment_defaults",@"paired_row_device_verified":@NO,
+            @"scope":@"cold_defaults_except_native_speed_and_registry_infrastructure",@"paired_row_device_verified":@NO,
             @"paired_template_seen_this_process":@([RVVoteModelCounts[@"paired_template_materialized"] unsignedIntegerValue]>0),
             @"first_blocked_checkpoint":blocked,@"counts":RVVoteFirstLaunchCounts.copy ?: @{},@"state":RVVoteFirstLaunchState.copy ?: @{}};
     }
@@ -47,6 +48,12 @@ static void RVInstallVoteFirstLaunch(void) {
         BOOL installed=RVHook(className,@"coldConfigGroup",@"@@:",NO,^id(IMP original,SEL sel) {
             return ^id(id object) {
                 id native=((id(*)(id,SEL))original)(object,sel);
+                if (native!=RVVoteFirstLaunchGroup) RVSpeedCaptureColdGroup(native,NO);
+                if (RVSpeedNativeConfigurationScope && RVVoteFirstLaunchReady) {
+                    id saved=RVSpeedSavedColdGroup();
+                    RVSpeedContextValue(@"original_cold_group_supplied",@{@"original_cold_group_available":@(saved!=nil)});
+                    return saved ?: native;
+                }
                 if (!RVVoteFirstLaunchReady) return native;
                 RVVoteFirstLaunchCheckpoint(@"active_group_read",@{@"active_group_defaults":@YES});
                 return RVVoteFirstLaunchGroup;

@@ -57,6 +57,7 @@ static BOOL RVSpeedCurrent(id player,NSString *video) {
         [RVObject(core,"contentVideoID") isEqual:video] && core==RVCurrentPlayback && player==RVCurrentPlayer;
 }
 #include "RVSpeedDiagnostics.inc"
+#include "RVSpeedContext.inc"
 static id RVSpeedOwnerPlayer(id manager) {
     RVSpeedOwner *owner=objc_getAssociatedObject(manager,RVSpeedOwnerKey);id player=owner.player;
     return NSThread.isMainThread && RVCompatible && RVSpeedCurrent(player,RVSpeedVideo(player)) &&
@@ -139,9 +140,9 @@ static void RVSpeedContentReady(id player,NSString *trigger) {
 static NSDictionary *RVSpeedReport(void) {
     RVSpeedState *state=objc_getAssociatedObject(RVCurrentPlayer,RVSpeedKey);
     float observed=RVSpeedObserved(RVCurrentPlayer);
-    return @{@"schema":@3,@"checkpoints":RVSpeedCheckpointReport(),@"current_snapshot":RVSpeedSnapshot(RVCurrentPlayer),@"command_bridge":RVSpeedBridgeReport(),@"current_player_bound":@(RVCurrentPlayer!=nil),
+    return @{@"schema":@3,@"checkpoints":RVSpeedCheckpointReport(),@"current_snapshot":RVSpeedSnapshot(RVCurrentPlayer),@"sheet_context":RVSpeedContextReport(),@"command_bridge":RVSpeedBridgeReport(),@"current_player_bound":@(RVCurrentPlayer!=nil),
         @"content_matches":@(RVSpeedCurrent(RVCurrentPlayer,state.video)),@"source":state.source ?: @"not_observed",
-        @"gate":state.gate ?: @"not_observed",@"explicit_native_choice":@(state.explicitChoice),
+        @"gate":state.gate ?: @"not_observed",@"gate_describes":state.explicitChoice ? @"explicit_user_selection" : @"startup_restoration",@"explicit_native_choice":@(state.explicitChoice),
         @"native_choice_count":@(state.nativeChoices),@"apply_attempts":@(state.attempts),
         @"requested_rate":@(isfinite(state.requested) ? state.requested : 0),
         @"native_rate_available":@(isfinite(observed)),@"native_observed_rate":@(isfinite(observed) ? observed : 0),
@@ -150,6 +151,7 @@ static NSDictionary *RVSpeedReport(void) {
         @"menu_owner_missing":@(atomic_load(&RVSpeedOwnerMissing)),@"native_limits_preserved":@YES,@"device_verified":@NO};
 }
 static void RVInstallSpeedChoices(void) {
+    RVInstallSpeedContext();
     RVSpeedSessionID=NSUUID.UUID.UUIDString;
     RVSpeedLaunchNumber=[NSUserDefaults.standardUserDefaults integerForKey:@"RVPort.speedLaunchNumber"]+1;
     [NSUserDefaults.standardUserDefaults setInteger:RVSpeedLaunchNumber forKey:@"RVPort.speedLaunchNumber"];
@@ -246,12 +248,6 @@ static void RVInstallSpeedChoices(void) {
         return ^(id player,id video,float rate) {
             ((void(*)(id,SEL,id,float))original)(player,sel,video,rate);
             RVSpeedCheckpoint(@"native_rate_changed",player,@{@"callback_rate":@(isfinite(rate) ? rate : 0),@"active_video_matches":@(video==RVObject(player,"activeVideo"))});
-        };
-    });
-    RVHook(@"YTColdConfigClientInfraClientConfigImpl",@"enablePlaybackSpeedSheetWithXplatPlayerAdapter",@"B@:",NO,^id(IMP original,SEL sel) {
-        return ^BOOL(id config) {
-            BOOL native=((BOOL(*)(id,SEL))original)(config,sel);
-            RVSpeedCheckpoint(@"native_picker_adapter_flag",RVCurrentPlayer,@{@"xplat_adapter_enabled":@(native)});return native;
         };
     });
     RVHook(@"YTPlayerViewController",@"setPlaybackRateModel:",@"v@:@",NO,^id(IMP original,SEL sel) {

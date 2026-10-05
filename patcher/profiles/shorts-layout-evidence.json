@@ -1,0 +1,926 @@
+{
+  "schema": 1,
+  "version": "0.3.27",
+  "baseline": "User-confirmed working 0.3.26 Xcode delivery",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "read_only": true,
+  "tests_run": false,
+  "device_validated": false,
+  "named_native_methods_decompiled": 24,
+  "additional_native_functions_decompiled": [
+    "0x1002f91f0",
+    "0x1002f9738"
+  ],
+  "research_outputs": [
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\shorts-layout-investigation",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\build\\shorts-layout-followup"
+  ],
+  "native_contracts": {
+    "YTPivotBarViewController": [
+      {
+        "kind": "-",
+        "selector": "loadPivotBarWithOffline:triggeredByNotification:completion:",
+        "encoding": "v32@0:8B16B20@?24",
+        "imp": "0x1002f1824"
+      },
+      {
+        "kind": "-",
+        "selector": "pivotBarItemForIdentifier:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x103519a84"
+      },
+      {
+        "kind": "-",
+        "selector": "updateViewsWithSelectedPivotIdentifier:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x100300ef4"
+      },
+      {
+        "kind": "-",
+        "selector": "pivotIdentifiers",
+        "encoding": "@16@0:8",
+        "imp": "0x10030105c"
+      },
+      {
+        "kind": "-",
+        "selector": "setRenderer:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10351c35c"
+      }
+    ],
+    "YTPivotBarView": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x1003d5a6c"
+      },
+      {
+        "kind": "-",
+        "selector": "setRenderer:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1002fc268"
+      },
+      {
+        "kind": "-",
+        "selector": "itemViews",
+        "encoding": "@16@0:8",
+        "imp": "0x1002fab40"
+      },
+      {
+        "kind": "-",
+        "selector": "updateTabWidths",
+        "encoding": "v16@0:8",
+        "imp": "0x1003d6078"
+      },
+      {
+        "kind": "-",
+        "selector": "root",
+        "encoding": "@16@0:8",
+        "imp": "0x1002fbfbc"
+      }
+    ],
+    "YTPivotBarItemView": [
+      {
+        "kind": "-",
+        "selector": "layoutSubviews",
+        "encoding": "v16@0:8",
+        "imp": "0x1003d995c"
+      },
+      {
+        "kind": "-",
+        "selector": "setTabWidth:",
+        "encoding": "v24@0:8d16",
+        "imp": "0x1003d6268"
+      },
+      {
+        "kind": "-",
+        "selector": "setRenderer:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1002fc4f4"
+      },
+      {
+        "kind": "-",
+        "selector": "pivotIdentifier",
+        "encoding": "@16@0:8",
+        "imp": "0x10351f820"
+      }
+    ],
+    "YTInnerTubeCollectionViewController": [
+      {
+        "kind": "-",
+        "selector": "sectionControllersForSectionRenderers:reloadingSectionControllerByRenderer:",
+        "encoding": "@32@0:8@16@24",
+        "imp": "0x10035be20"
+      }
+    ],
+    "YTIItemSectionRenderer": [
+      {
+        "kind": "-",
+        "selector": "sectionHeader",
+        "encoding": "@16@0:8",
+        "imp": "0x10045940c"
+      },
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x100330e6c"
+      }
+    ],
+    "YTIShelfRenderer": [
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x1003313c0"
+      }
+    ],
+    "YTIShelfSupportedRenderers": [
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x10504d800"
+      }
+    ],
+    "YTISectionListRenderer": [
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x10032ddec"
+      }
+    ],
+    "YTIPivotBarItemRenderer": [
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x1002f2ae8"
+      }
+    ],
+    "YTIPivotBarRenderer": [
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x1002f212c"
+      }
+    ],
+    "YTIPivotBarSupportedRenderers": [
+      {
+        "kind": "-",
+        "selector": "yt_pivotBarItem",
+        "encoding": "@16@0:8",
+        "imp": "0x103518964"
+      },
+      {
+        "kind": "+",
+        "selector": "descriptor",
+        "encoding": "@16@0:8",
+        "imp": "0x1002f311c"
+      }
+    ]
+  },
+  "protobuf_fields": {
+    "YTIPivotBarRenderer": {
+      "table": "0x10cea65c8",
+      "fields": [
+        {
+          "name": "itemsArray",
+          "number": 1,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTIPivotBarSupportedRenderers"
+        },
+        {
+          "name": "trackingParams",
+          "number": 3,
+          "repeated": false,
+          "data_type": 13,
+          "message_class": null
+        },
+        {
+          "name": "backgroundStyle",
+          "number": 4,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        }
+      ]
+    },
+    "YTIPivotBarSupportedRenderers": {
+      "table": "0x10cea6638",
+      "fields": [
+        {
+          "name": "pivotBarItemRenderer",
+          "number": 117501096,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIPivotBarItemRenderer"
+        },
+        {
+          "name": "elementRenderer",
+          "number": 153515154,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIElementRenderer"
+        },
+        {
+          "name": "pivotBarIconOnlyItemRenderer",
+          "number": 318370163,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIPivotBarIconOnlyItemRenderer"
+        }
+      ]
+    },
+    "YTIPivotBarItemRenderer": {
+      "table": "0x10ce7ccc0",
+      "fields": [
+        {
+          "name": "pivotIdentifier",
+          "number": 1,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "navigationEndpoint",
+          "number": 2,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "title",
+          "number": 3,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "accessibility",
+          "number": 4,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIAccessibilitySupportedDatas"
+        },
+        {
+          "name": "icon",
+          "number": 5,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIIcon"
+        },
+        {
+          "name": "presentationStyle",
+          "number": 6,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIPivotBarItemPresentationStyle"
+        },
+        {
+          "name": "indicator",
+          "number": 7,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIPivotBarItemIndicatorSupportedRenderers"
+        },
+        {
+          "name": "trackingParams",
+          "number": 9,
+          "repeated": false,
+          "data_type": 13,
+          "message_class": null
+        },
+        {
+          "name": "targetId",
+          "number": 10,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "navigationType",
+          "number": 11,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "progressIndicator",
+          "number": 12,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "isDisabled",
+          "number": 13,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "onDeselected",
+          "number": 14,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "thumbnail",
+          "number": 15,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIThumbnailDetails"
+        },
+        {
+          "name": "avatar",
+          "number": 16,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "onLongPress",
+          "number": 17,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "onSelected",
+          "number": 18,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        }
+      ]
+    },
+    "YTIShelfRenderer": {
+      "table": "0x10ce357a0",
+      "fields": [
+        {
+          "name": "title",
+          "number": 1,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "thumbnail",
+          "number": 2,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIThumbnailDetails"
+        },
+        {
+          "name": "endpoint",
+          "number": 3,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "playEndpoint",
+          "number": 4,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "content",
+          "number": 5,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfSupportedRenderers"
+        },
+        {
+          "name": "subscribeButtonRenderer",
+          "number": 6,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTISubscribeButtonRenderer"
+        },
+        {
+          "name": "dismissal",
+          "number": 7,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "contextualItems",
+          "number": 8,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfContextualItemsSupportedRenderers"
+        },
+        {
+          "name": "subtitle",
+          "number": 9,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "titleAnnotation",
+          "number": 12,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "debugHtml",
+          "number": 13,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "actionAnnotation",
+          "number": 14,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "trackingParams",
+          "number": 15,
+          "repeated": false,
+          "data_type": 13,
+          "message_class": null
+        },
+        {
+          "name": "serviceEndpointsArray",
+          "number": 16,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "shelfFeedbackEndpoint",
+          "number": 17,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "menu",
+          "number": 19,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfMenuSupportedRenderers"
+        },
+        {
+          "name": "icon",
+          "number": 22,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIIcon"
+        },
+        {
+          "name": "hideHeader",
+          "number": 23,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "privacySetting",
+          "number": 24,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfPrivacySupportedRenderers"
+        },
+        {
+          "name": "associatedGame",
+          "number": 25,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIAssociatedGameSupportedRenderers"
+        },
+        {
+          "name": "badgesArray",
+          "number": 26,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTIShelfBadgeSupportedRenderers"
+        },
+        {
+          "name": "headerStyle",
+          "number": 27,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfHeaderStyle"
+        },
+        {
+          "name": "impressionEndpointsArray",
+          "number": 28,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTICommand"
+        },
+        {
+          "name": "subscribeButton",
+          "number": 29,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfSubscribeButtonSupportedRenderers"
+        },
+        {
+          "name": "autonavToggle",
+          "number": 30,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfAutoNavToggleSupportedRenderers"
+        },
+        {
+          "name": "playAllButton",
+          "number": 31,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfPlayAllButtonSupportedRenderers"
+        },
+        {
+          "name": "p13NDebugData",
+          "number": 32,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "screenBasedVisibilityCondition",
+          "number": 34,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIScreenBasedVisibilityCondition"
+        },
+        {
+          "name": "unpluggedShelfRendererType",
+          "number": 35,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "headerRenderer",
+          "number": 36,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "thumbnailSecondary",
+          "number": 38,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIThumbnailDetails"
+        },
+        {
+          "name": "sortFilter",
+          "number": 39,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "thumbnailStyle",
+          "number": 40,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "separator",
+          "number": 41,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTISeparatorDetails"
+        },
+        {
+          "name": "shelfPaddingStyle",
+          "number": 43,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "columnCount",
+          "number": 45,
+          "repeated": false,
+          "data_type": 11,
+          "message_class": null
+        },
+        {
+          "name": "minColumnCount",
+          "number": 46,
+          "repeated": false,
+          "data_type": 11,
+          "message_class": null
+        },
+        {
+          "name": "focusContent",
+          "number": 47,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "windowSizeColumnConfig",
+          "number": 48,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIShelfWindowSizeColumnConfig"
+        },
+        {
+          "name": "targetId",
+          "number": 49,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "footerRenderer",
+          "number": 50,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIRenderer"
+        },
+        {
+          "name": "targetingContext",
+          "number": 52,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTITargetingContext"
+        },
+        {
+          "name": "relativeFeedPosition",
+          "number": 53,
+          "repeated": false,
+          "data_type": 7,
+          "message_class": null
+        },
+        {
+          "name": "layoutConfiguration",
+          "number": 54,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTILayoutConfiguration"
+        },
+        {
+          "name": "expandButtonText",
+          "number": 55,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIFormattedString"
+        },
+        {
+          "name": "useWideScreenExpandButton",
+          "number": 56,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "feedRedesignInset",
+          "number": 57,
+          "repeated": false,
+          "data_type": 7,
+          "message_class": null
+        }
+      ]
+    },
+    "YTIShelfSupportedRenderers": {
+      "table": "0x10ce35f18",
+      "fields": [
+        {
+          "name": "horizontalListRenderer",
+          "number": 51431404,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIHorizontalListRenderer"
+        },
+        {
+          "name": "gridRenderer",
+          "number": 51805506,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIGridRenderer"
+        },
+        {
+          "name": "expandedShelfContentsRenderer",
+          "number": 55636665,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIExpandedShelfContentsRenderer"
+        },
+        {
+          "name": "verticalListRenderer",
+          "number": 57988071,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIVerticalListRenderer"
+        },
+        {
+          "name": "messageRenderer",
+          "number": 58508690,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIMessageRenderer"
+        },
+        {
+          "name": "genericPromoRenderer",
+          "number": 65665980,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIGenericPromoRenderer"
+        },
+        {
+          "name": "unpluggedTableSectionRenderer",
+          "number": 118821739,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIUnpluggedTableSectionRenderer"
+        },
+        {
+          "name": "epgPaginationRenderer",
+          "number": 171740502,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIEpgPaginationRenderer"
+        },
+        {
+          "name": "unpluggedHorizontalChipListRenderer",
+          "number": 174532213,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIUnpluggedHorizontalChipListRenderer"
+        }
+      ]
+    },
+    "YTIItemSectionRenderer": {
+      "table": "0x10ce0f410",
+      "fields": [
+        {
+          "name": "contentsArray",
+          "number": 1,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTIItemSectionSupportedRenderers"
+        },
+        {
+          "name": "continuationsArray",
+          "number": 2,
+          "repeated": true,
+          "data_type": 15,
+          "message_class": "YTIItemSectionSupportedContinuations"
+        },
+        {
+          "name": "trackingParams",
+          "number": 4,
+          "repeated": false,
+          "data_type": 13,
+          "message_class": null
+        },
+        {
+          "name": "header",
+          "number": 5,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIItemSectionHeaderSupportedRenderers"
+        },
+        {
+          "name": "background",
+          "number": 6,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIItemSectionBackgroundSupportedRenderers"
+        },
+        {
+          "name": "sectionIdentifier",
+          "number": 7,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "hideBottomSeparator",
+          "number": 8,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "maxAgeStoreSeconds",
+          "number": 9,
+          "repeated": false,
+          "data_type": 11,
+          "message_class": null
+        },
+        {
+          "name": "separatorDetails",
+          "number": 10,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTISeparatorDetails"
+        },
+        {
+          "name": "hideSectionTopInset",
+          "number": 11,
+          "repeated": false,
+          "data_type": 0,
+          "message_class": null
+        },
+        {
+          "name": "autoloadSettings",
+          "number": 12,
+          "repeated": false,
+          "data_type": 17,
+          "message_class": null
+        },
+        {
+          "name": "targetId",
+          "number": 13,
+          "repeated": false,
+          "data_type": 14,
+          "message_class": null
+        },
+        {
+          "name": "scrollToItemAtPosition",
+          "number": 14,
+          "repeated": false,
+          "data_type": 7,
+          "message_class": null
+        },
+        {
+          "name": "selectedIndex",
+          "number": 15,
+          "repeated": false,
+          "data_type": 7,
+          "message_class": null
+        },
+        {
+          "name": "topSeparatorDetails",
+          "number": 18,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTISeparatorDetails"
+        },
+        {
+          "name": "targetingContext",
+          "number": 19,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTITargetingContext"
+        },
+        {
+          "name": "relativeFeedPosition",
+          "number": 20,
+          "repeated": false,
+          "data_type": 7,
+          "message_class": null
+        },
+        {
+          "name": "dataSourceBehavior",
+          "number": 21,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTIDataSourceBehavior"
+        },
+        {
+          "name": "loggingDirectives",
+          "number": 999,
+          "repeated": false,
+          "data_type": 15,
+          "message_class": "YTILoggingDirectives"
+        }
+      ]
+    }
+  },
+  "android_reference": "ReVanced/revanced-patches-main/extensions/youtube/src/main/java/app/revanced/extension/youtube/patches/litho/ShortsFilter.java",
+  "diagnostics_revision": "shorts-layout-1",
+  "cloud_build": {
+    "head_sha": "89cdada791e7dad3f4d49c6fa632cc15f5b7e035",
+    "run_id": "37278598567",
+    "run_url": "https://github.com/zinfector/Revanced-iOS/actions/runs/37278598567",
+    "xcode": "Xcode 16.4\nBuild version 16F6",
+    "clang": "Apple clang version 17.0.0 (clang-1700.0.13.5)\nTarget: arm64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "tests_run": false
+  },
+  "scheme_recorded_before_implementation": true,
+  "root_causes": [
+    "Shorts child empty-cell substitution retained shelf/header models and did not match generic headers.",
+    "Post-layout hidden Shorts view retained renderer item count used by native tab-width calculation."
+  ],
+  "implementation_scope": [
+    "Shorts header and enclosing all-Shorts row classification",
+    "Initial/append/section-construction model filtering independent of feed_ads",
+    "Reversible shared pivot model compaction with native layout/selection",
+    "Rebuild all cached views sharing an affected model",
+    "Dedicated Shorts layout checkpoints"
+  ]
+}

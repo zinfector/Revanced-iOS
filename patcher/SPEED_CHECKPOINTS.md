@@ -1,3 +1,5 @@
+The 0.3.30 report adds native sheet/context and background dispatch evidence. See [SPEED_CONTEXT_IMPLEMENTATION.md](SPEED_CONTEXT_IMPLEMENTATION.md). The version field now identifies this release; startup confirmation is separate from user-choice status.
+
 # Playback speed checkpoints (0.3.19)
 
 Use ReVanced settings > Hook diagnostics > **Copy speed checkpoints**. The full diagnostic report includes the same data under `playback_speed`. Keep diagnostics enabled. Reports include version, source fingerprint, a random process session ID and a launch number so before/after reports can be distinguished. No video IDs, URLs, credentials or account details are recorded.
