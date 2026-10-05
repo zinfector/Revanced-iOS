@@ -40,7 +40,9 @@ static NSString *RVSettingsMenuIconKey(NSDictionary *row) {
 static UIImage *RVSettingsMenuIconImage(id icon,UIColor *color) {
     if (!RVCan(icon,"iconImageWithColor:",@"@@:@")) return nil;
     id image=((id(*)(id,SEL,id))objc_msgSend)(icon,sel_registerName("iconImageWithColor:"),color);
-    return [image isKindOfClass:UIImage.class] && [image size].width>0 && [image size].height>0 ? image : nil;
+    if (![image isKindOfClass:UIImage.class]) return nil;
+    UIImage *resolved=image;
+    return resolved.size.width>0 && resolved.size.height>0 ? resolved : nil;
 }
 
 // The same protocol as YTIIcon, with ordinary monochrome tinting in updateColors.
