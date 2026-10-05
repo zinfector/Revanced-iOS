@@ -16,7 +16,7 @@ def main():
     run = json.loads(args.run.read_text(encoding='utf-8'))
     jobs = json.loads(args.jobs.read_text(encoding='utf-8'))
     native = json.loads((ROOT/'build/build-manifest.json').read_text(encoding='utf-8'))
-    names = ['build.py', 'build/RVPort.dylib', 
+    names = ['build.py', 'build/RVPort.dylib', 'dist/YouTube-iOS-Patcher.exe', 
              'build/build-manifest.json', 'build/build.log',
              'native/RVPort.m', 'native/RVExtras.inc', 'native/RVSettingsUI.inc',
              'native/RVAuthentication.inc', 'native/RVAuthenticationSupport.h',

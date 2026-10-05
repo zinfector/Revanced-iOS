@@ -1,3 +1,5 @@
+Latest ad-block implementation: [0.3.31 structural Elements and inline-player coverage](ADBLOCK_ELEMENTS_INLINE_IMPLEMENTATION.md). Native root ad logging, model/insertion/replacement filtering, retained native cell fallback, separate Watch/inline ownership and checkpoints are included. Device confirmation pending; no tests run.
+
 Latest ad-block integration: [0.3.23 implementation and checkpoints](ADBLOCK_IMPLEMENTATION.md). The working 0.3.22 vote/speed/runtime is retained. New ad behavior is device-unverified; no tests run.
 
 Latest vote counter implementation: [0.3.21 native model scheme](VOTE_COUNTER_FIX_SCHEME.md). 0.3.21 requires device confirmation on clean install and subsequent launches. Opaque shared models, absent native like entities and unsupported visibility/state contracts retain original native controls. Automatic service voting stays disabled.

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Matches the supplied binary's native ad-cell factory predicate on root entries.
 static id RVAdRootElement(id root) {
+    if (!root) return nil;
     if (RVAdIsClass(root,@"YTIElementRenderer")) return root;
     NSString *name=NSStringFromClass([root class]);
     if (![@[@"YTISectionListSupportedRenderers",@"YTIItemSectionSupportedRenderers",@"YTIGridSupportedRenderers",
@@ -84,15 +85,20 @@ static void RVInstallStructuralAdCells(void) {
     });
     RVAdHook(@"YTElementsCellController",@"updateView:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id controller,id view) {
+            // Restore our temporary mask before native reuse/configuration so
+            // an ordinary cell's native hidden decision always takes precedence.
+            if (NSThread.isMainThread && [view isKindOfClass:UIView.class]) {
+                NSNumber *prior=objc_getAssociatedObject(view,RVAdHiddenElementKey);
+                if (prior) {
+                    [(UIView *)view setHidden:prior.boolValue];objc_setAssociatedObject(view,RVAdHiddenElementKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                }
+            }
             ((void(*)(id,SEL,id))original)(controller,sel,view);
             if (!NSThread.isMainThread || ![view isKindOfClass:UIView.class]) return;
-            NSNumber *prior=objc_getAssociatedObject(view,RVAdHiddenElementKey);
             BOOL ad=RVAdStructuralElement(RVObject(controller,"elementEntry"),nil,@"retained_cell_view");
             if (ad) {
-                if (!prior) objc_setAssociatedObject(view,RVAdHiddenElementKey,@([view isHidden]),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                objc_setAssociatedObject(view,RVAdHiddenElementKey,@([view isHidden]),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 [(UIView *)view setHidden:YES];RVDisplayEvent(nil,@"retained_ad_cell_hidden",1);
-            } else if (prior) {
-                [(UIView *)view setHidden:prior.boolValue];objc_setAssociatedObject(view,RVAdHiddenElementKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }
         };
     });
