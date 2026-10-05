@@ -198,7 +198,7 @@ static void RVInstallLinks(void) {
                 if ([cls isEqual:@"YTWatchViewController"]) {
                     if ([selector isEqual:@"viewDidAppear:"]) RVCurrentWatch=current;
                     else if (RVCurrentWatch==current) RVCurrentWatch=nil;
-                    RVRefreshDislikeUI();RVElementWatchTransition(current,[selector isEqual:@"viewDidAppear:"] ? @"watch_appeared" : @"watch_disappeared");
+                    RVSPRefreshUI();RVRefreshDislikeUI();RVElementWatchTransition(current,[selector isEqual:@"viewDidAppear:"] ? @"watch_appeared" : @"watch_disappeared");
                 }
             });
         };
@@ -257,6 +257,7 @@ static void RVExtraSetPlayer(id player,id controller) {
     }
     id nativeController=RVPlaybackForPlayer(player);
     BOOL changed=RVCurrentPlayer!=player || RVCurrentPlayback!=nativeController;
+    if (changed && RVCurrentPlayback) RVSPReset(RVSession(RVCurrentPlayback),@"player_rebound");
     RVCurrentPlayer=player;RVCurrentPlayback=nativeController;
     RVAdRequestCoordinatorPolicy(nativeController,@"content_player_bound");
     if (changed) {
@@ -336,6 +337,7 @@ static NSURL *RVCurrentURL(BOOL timestamp) {
     if (timestamp && isfinite(seconds) && seconds>=0) value=[value stringByAppendingFormat:@"&t=%lld",(long long)floor(seconds)];
     return [NSURL URLWithString:value];
 }
+#include "RVSponsorPromptUI.inc"
 #include "RVServices.inc"
 static void RVShowTools(UIViewController *presenter) {
     UIAlertController *menu=[UIAlertController alertControllerWithTitle:@"Video tools" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -357,7 +359,7 @@ static void RVShowTools(UIViewController *presenter) {
     if (RVEnabled(@"picture_in_picture")) [menu addAction:[UIAlertAction actionWithTitle:@"Start Picture in Picture" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if (RVBool(RVCurrentPlayer,"isPictureInPicturePossible")) { [presenter dismissViewControllerAnimated:YES completion:^{ RVVoid(RVCurrentPlayer,"switchToPip"); }]; }
     }]];
-    if (RVEnabled(@"custom_speed_menu")) [menu addAction:[UIAlertAction actionWithTitle:@"Playback speed…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    if (RVEnabled(@"custom_speed_menu")) [menu addAction:[UIAlertAction actionWithTitle:@"Playback speedâ€¦" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIAlertController *speeds=[UIAlertController alertControllerWithTitle:@"Speed" message:nil preferredStyle:UIAlertControllerStyleAlert];
         for (NSNumber *rate in RVSetting(@"custom_speeds")) [speeds addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@x",rate] style:UIAlertActionStyleDefault handler:^(UIAlertAction *choice) {
             RVSpeedChoose(RVCurrentPlayer,rate.floatValue,nil,@"revanced_video_tools");

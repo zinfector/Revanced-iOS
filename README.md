@@ -1,5 +1,9 @@
 # ReVanced iOS
 
+Version **0.3.26** adds native SponsorBlock manual-skip and confirmed undo controls on the 0.3.24 ad-handoff baseline. It retains sign-in, speed, dislike and coordinator-handoff fixes. No tests were run; device behavior remains unverified.
+
+See [native prompt behavior and failure checkpoints](patcher/SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
+
 Version **0.3.24** adds native cached-coordinator selection and a guarded internal-transition handoff. Policy requests can arrive at any time; changes commit at verified native boundaries. Exact response leases, runtime ARC ownership checks and **adblock-checkpoints-2** distinguish deferred requests from installed coordinators. Login, SponsorBlock, speed, vote presentation and the merged ad filters are preserved. No tests were run; the new handoff needs device confirmation. See [implementation and capture guide](patcher/ADBLOCK_HANDOFF_IMPLEMENTATION.md).
 
 Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 82 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.

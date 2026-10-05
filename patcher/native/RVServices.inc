@@ -219,23 +219,16 @@ static void RVAddServiceTools(UIAlertController *menu,UIViewController *presente
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");
     if (RVEnabled(@"ryd_voting") && RVVideoIDValid(video)) for (NSNumber *value in @[@1,@(-1),@0]) [menu addAction:[UIAlertAction actionWithTitle:value.intValue==1 ? @"RYD: submit like" : value.intValue==-1 ? @"RYD: submit dislike" : @"RYD: withdraw vote" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { RVRYDVote(presenter,video,value); }]];
     if (RVEnabled(@"sponsorblock") && RVOrdinaryContent(RVCurrentPlayback)) {
-        RVPlaybackSession *session=RVSession(RVCurrentPlayback);
+        RVPlaybackSession *session=RVSession(RVCurrentPlayback);NSUInteger generation=session.generation;
         [menu addAction:[UIAlertAction actionWithTitle:@"Skip current SponsorBlock segment" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if (![video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) return;
-            double seconds=RVDouble(RVCurrentPlayer,"currentVideoMediaTime");
-            for (NSDictionary *range in RVSponsorRanges(session,NO)) if (seconds>=[range[@"start"] doubleValue] && seconds<[range[@"end"] doubleValue]) {
-                session.lastSkippedStart=[range[@"start"] doubleValue];session.lastSkippedEnd=[range[@"end"] doubleValue];if (RVSeekSeconds(session.lastSkippedEnd)) { session.hasLastSkip=YES;RVRecordSponsorSkip(session,session.lastSkippedStart,session.lastSkippedEnd); } break;
-            }
+            if ([video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) RVSPTool(@"manual",generation);
         }]];
-        if (session.hasLastSkip) [menu addAction:[UIAlertAction actionWithTitle:@"Undo last SponsorBlock skip" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            if (![video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) return;
-            session.ignoreSegmentEnd=session.lastSkippedEnd;RVSeekSeconds(session.lastSkippedStart);session.hasLastSkip=NO;
+        if (session.promptState.undo && session.promptState.undoRemaining>0) [menu addAction:[UIAlertAction actionWithTitle:@"Undo last SponsorBlock skip" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            if ([video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) RVSPTool(@"undo",generation);
         }]];
         for (NSDictionary *segment in session.rawSegments) if ([segment[@"action"] isEqual:@"poi"] && ![@[@"ignore",@"seekbar-only"] containsObject:RVSponsorBehavior(segment[@"category"])]) {
             [menu addAction:[UIAlertAction actionWithTitle:@"Jump to SponsorBlock highlight" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                if (![video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) return;
-                double now=RVDouble(RVCurrentPlayer,"currentVideoMediaTime"),target=[segment[@"start"] doubleValue];
-                if (isfinite(now) && RVSeekSeconds(target)) { session.highlightApplied=YES;session.lastSkippedStart=now;session.lastSkippedEnd=target;session.hasLastSkip=YES; }
+                if ([video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]) RVSPTool(@"highlight",generation);
             }]];break;
         }
     }

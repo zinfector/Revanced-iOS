@@ -1,4 +1,8 @@
-# YouTube iOS Patcher 0.3.24
+# YouTube iOS Patcher 0.3.26
+
+Version **0.3.26** adds native SponsorBlock manual-skip and confirmed undo controls on the 0.3.24 ad-handoff baseline. It retains sign-in, speed, dislike and coordinator-handoff fixes. No tests were run; device behavior remains unverified.
+
+See [native prompt behavior and failure checkpoints](SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
 
 Version **0.3.24** adds native cached-coordinator selection and a guarded internal-transition handoff. Policy requests can arrive at any time; changes commit at verified native boundaries. Exact response leases, runtime ARC ownership checks and **adblock-checkpoints-2** distinguish deferred requests from installed coordinators. Login, SponsorBlock, speed, vote presentation and the merged ad filters are preserved. No tests were run; the new handoff needs device confirmation. See [implementation and capture guide](ADBLOCK_HANDOFF_IMPLEMENTATION.md).
 
