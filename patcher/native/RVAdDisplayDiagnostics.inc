@@ -14,6 +14,15 @@ static NSMutableDictionary *RVAdDisplayTotals;
 static NSMutableArray *RVAdDisplayHistory;
 static NSDictionary *RVAdDisplayLastVisible,*RVAdDisplayLastNative;
 static NSDictionary *RVAdDisplayLastManagedSlot;
+static NSMutableArray *RVAdElementHistory,*RVAdManagedSlotHistory;
+static void RVDisplayStructuralCheckpoint(NSDictionary *value) {
+    if (!RVEnabled(@"diagnostics")) return;
+    @synchronized(RVAdDisplayState.class) {
+        if (!RVAdElementHistory) RVAdElementHistory=[NSMutableArray array];
+        if (RVAdElementHistory.count>=24) [RVAdElementHistory removeObjectAtIndex:0];
+        [RVAdElementHistory addObject:value];
+    }
+}
 static __weak RVAdDisplayState *RVAdDisplayLastOwner;
 static NSUInteger RVAdDisplayGeneration;
 static NSDate *RVAdDisplayStarted;
@@ -79,14 +88,16 @@ static NSDictionary *RVDisplayReport(void) {
     @synchronized(RVAdDisplayState.class) {
         RVAdDisplayState *state=RVAdDisplayLastOwner;
         BOOL current=state.owner && objc_getAssociatedObject(state.owner,RVAdDisplayKey)==state;
-        return @{@"schema":@2,@"checkpoint_version":@4,@"enabled":@(RVEnabled(@"feed_ads")),
+        return @{@"schema":@3,@"checkpoint_version":@5,@"enabled":@(RVEnabled(@"feed_ads")),
             @"last_managed_slot_checkpoint":RVAdDisplayLastManagedSlot ?: @{},
+            @"managed_slot_history":RVAdManagedSlotHistory.copy ?: @[],
+            @"structural_element_history":RVAdElementHistory.copy ?: @[],
             @"session_events":RVAdDisplayTotals.copy ?: @{},@"last_native_operation":RVAdDisplayLastNative ?: @{},@"last_visible_surface":RVAdDisplayLastVisible ?: @{},
             @"last_visible_context_still_owned":@(current),@"checkpoint_history":RVAdDisplayHistory.copy ?: @[],
             @"session_age_seconds":RVAdDisplayStarted ? @(-RVAdDisplayStarted.timeIntervalSinceNow) : @0,
             @"first_blocked_checkpoint":!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !RVEnabled(@"feed_ads") ? @"policy_off" :
                 !RVAdDisplayLastVisible ? @"foreground_snapshot_missing" : !current ? @"foreground_context_retired" : RVAdDisplayLastVisible[@"first_blocked_checkpoint"],
-            @"unsupported_routes":@[@"opaque_element_roots_without_positive_ad_provenance",@"generic_header_or_masthead",@"ad_replacement_removal_undo_contract",@"already_bound_home_slot_teardown"],
+            @"unsupported_routes":@[@"element_roots_without_positive_ad_provenance",@"generic_header_or_masthead",@"typed_ad_replacement_removal_undo_contract",@"already_bound_home_slot_teardown"],
             @"inspection_is_passive":@YES,@"device_verified":@NO};
     }
 }

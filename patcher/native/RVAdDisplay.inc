@@ -18,7 +18,12 @@ static void RVDisplayObserveManagedSlot(id adapter,id slot,id layout,NSString *e
     checkpoint[@"layout_data_class"]=layoutData ? NSStringFromClass([layoutData class]) : @"nil";
     if (RVAdResolve(data,"type",@"i@:")) checkpoint[@"slot_type"]=@(RVInt(data,"type"));
     checkpoint[@"mutation_performed"]=@NO;
-    @synchronized(RVAdDisplayState.class) { RVAdDisplayLastManagedSlot=checkpoint.copy; }
+    @synchronized(RVAdDisplayState.class) {
+        RVAdDisplayLastManagedSlot=checkpoint.copy;
+        if (!RVAdManagedSlotHistory) RVAdManagedSlotHistory=[NSMutableArray array];
+        if (RVAdManagedSlotHistory.count>=24) [RVAdManagedSlotHistory removeObjectAtIndex:0];
+        [RVAdManagedSlotHistory addObject:checkpoint.copy];
+    }
 }
 @interface RVAdDisplayScope : NSObject
 @property(nonatomic,strong) id section;

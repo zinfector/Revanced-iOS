@@ -183,7 +183,7 @@ def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
         if info.get('CFBundleIdentifier')!=p['bundle'] or info.get('CFBundleShortVersionString')!=p['version'] or image.uuid!=p['uuid'] or sha(binary)!=p['executable_sha256']:
             raise PatchError('Unsupported app version or executable hash; no output produced')
         binary = inject_library(binary, LOAD_PATH)
-        marker = {'patcher_version': '0.3.30', 'release_flavor': 'merged-speed-shorts-adblock', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
+        marker = {'patcher_version': '0.3.31', 'release_flavor': 'merged-elements-inline-adblock', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
                   'uuid': p['uuid'], 'input_ipa_sha256': file_sha(ipa),
                   'original_executable_sha256': p['executable_sha256'], 'patched_executable_sha256': sha(binary),
                   'payload_sha256': sha(library), 'config': c, 'signing_required': True,

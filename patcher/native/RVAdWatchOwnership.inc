@@ -62,6 +62,24 @@ static RVAdWatchOwnership *RVAdResolveWatchOwnership(id controller,id parent) {
         for (id candidate in @[events ?: NSNull.null,ui ?: NSNull.null,viewParent ?: NSNull.null]) {
             if ([NSStringFromClass([candidate class]) hasPrefix:@"YTReel"]) { result.gate=@"shorts_passthrough";return result; }
         }
+        // Inline previews use their own native owner graph, not a normal Watch owner.
+        if (RVAdIsClass(events,@"YTInlineMutedPlaybackWatchController")) {
+            id inlineView=RVAdTypedIvar(events,@"YTInlineMutedPlaybackWatchController","_watchViewController","@\"YTInlineMutedPlaybackWatchViewController\"");
+            id manager=RVAdTypedIvar(events,@"YTInlineMutedPlaybackWatchController","_impVCManager","@\"YTInlineMutedPlaybackViewControllerManager\"");
+            BOOL reverse=RVObject(events,"playerViewController")==player;
+            BOOL viewMatches=RVAdIsClass(viewParent,@"YTInlineMutedPlaybackWatchViewController") && inlineView==viewParent;
+            BOOL managerMatches=manager && RVObject(player,"parentResponder")==manager;
+            result.checkpoints[@"inline_reverse_binding_matches"]=@(reverse);
+            result.checkpoints[@"inline_view_binding_matches"]=@(viewMatches);
+            result.checkpoints[@"inline_manager_binding_matches"]=@(managerMatches);
+            result.checkpoints[@"playback_surface"]=@"inline";
+            if (reverse && viewMatches && managerMatches) {
+                result.gate=@"ready";result.route=@"inline_events_view_manager";
+                result.watch=inlineView;return result;
+            }
+            result.gate=@"inline_owner_binding_mismatch";return result;
+        }
+        result.checkpoints[@"playback_surface"]=@"watch";
         NSArray *candidates=@[viewParent ?: NSNull.null,events ?: NSNull.null,ui ?: NSNull.null];
         NSArray *routes=@[@"player_view_parent",@"player_events_delegate",@"player_ui_delegate"];
         for (NSUInteger n=0;n<candidates.count;n++) {

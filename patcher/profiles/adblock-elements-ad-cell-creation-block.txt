@@ -1,0 +1,28 @@
+Native ad-cell creation block containing class reference: 0x10138749c..0x101387508 (LC_FUNCTION_STARTS bounds)
+0x10138749c: stp      x22, x21, [sp, #-0x30]!
+0x1013874a0: stp      x20, x19, [sp, #0x10]
+0x1013874a4: stp      x29, x30, [sp, #0x20]
+0x1013874a8: add      x29, sp, #0x20
+0x1013874ac: mov      x19, x2
+0x1013874b0: mov      x20, x1
+0x1013874b4: mov      x21, x0
+0x1013874b8: bl       #0x10828bd24
+0x1013874bc: bl       #0x10828bd3c
+0x1013874c0: add      x0, x21, #0x20
+0x1013874c4: bl       #0x10828bb5c
+0x1013874c8: mov      x21, x0
+0x1013874cc: adrp     x8, #0x10c8ec000
+0x1013874d0: ldr      x0, [x8, #0x338]
+0x1013874d4: bl       #0x10828ba30
+0x1013874d8: mov      x2, x20
+0x1013874dc: mov      x3, x19
+0x1013874e0: bl       #0x108419c00 ; initWithEntry:parentResponder:
+0x1013874e4: mov      x22, x0
+0x1013874e8: bl       #0x10828bc04
+0x1013874ec: bl       #0x10828bc1c
+0x1013874f0: bl       #0x10828bc28
+0x1013874f4: mov      x0, x22
+0x1013874f8: ldp      x29, x30, [sp, #0x20]
+0x1013874fc: ldp      x20, x19, [sp, #0x10]
+0x101387500: ldp      x22, x21, [sp], #0x30
+0x101387504: b        #0x10828ba84

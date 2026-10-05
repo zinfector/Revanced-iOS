@@ -1,0 +1,71 @@
+{
+  "report": "Adblock Report 408.txt",
+  "report_sha256": "f5489741f8d12b10b1466e05e4ec8f2541c485c59c6ae4dcb2146dc6a55d9f20",
+  "build_source_sha256": "7b2bca977f3d5b95dfcfe4565095b022b221dda6cd5162c9515d96ac5024087b",
+  "delivered_build_source_sha256": "7b2bca977f3d5b95dfcfe4565095b022b221dda6cd5162c9515d96ac5024087b",
+  "read_only_investigation": true,
+  "tests_run": false,
+  "runtime_sources_modified": false,
+  "ipa_generated": false,
+  "display": {
+    "input_entries": 118,
+    "surviving_entries": 118,
+    "classified_or_removed_events_present": false,
+    "managed_slot_bound": 2,
+    "managed_slot_disposed": 1,
+    "last_managed_slot_type": 12,
+    "last_managed_slot_native_name": "SlotTypeInFeed",
+    "managed_slot_hooks_modify_native_result": false,
+    "native_factory_predicate": {
+      "entry_class": "YTIElementRenderer",
+      "predicate": "compatibilityOptions.hasAdLoggingData",
+      "predicate_invoke": "0x10045bdfc",
+      "registration_method": "YTInnerTubeCellFactory registerCellControllers",
+      "creation_block": "0x10138749c",
+      "controller_class": "YTAdElementsCellController"
+    },
+    "native_bind_provenance": "compatibilityOptions.adLoggingData -> adSlotLoggingData + adLayoutLoggingData",
+    "current_filter_gap": "No structural compatibilityOptions/adLoggingData classification for Element renderer roots or renderer union children",
+    "uncertainty": "Report does not capture the exact entry or template of each visible ad. Absence of element_pattern_candidate does not distinguish no getter call from unmatched template data."
+  },
+  "playback": {
+    "route": "Browse/Home inline muted preview",
+    "events_delegate": "YTInlineMutedPlaybackWatchController",
+    "view_parent": "YTInlineMutedPlaybackWatchViewController",
+    "player_core_pair_matches": true,
+    "gate": "watch_owner_unknown",
+    "actual_strategy": "native",
+    "cached_recreation_requested": false,
+    "cached_compatibility_result": true,
+    "selected_coordinator": "YTAdsControlFlowPlaybackCoordinator",
+    "suppression_observed": false,
+    "response_ads_seen": 7,
+    "uncertainty": "No visible normal Watch snapshot or active ad at report-copy time; this report does not prove that normal Watch preroll suppression failed."
+  },
+  "diagnostic_gaps": [
+    "element getter read totals absent",
+    "no structural ad provenance classification counters",
+    "managed slot history overwritten by last disposal",
+    "current playback report selects shared global inline player",
+    "Watch player-binding field name does not prove Watch ownership"
+  ],
+  "implemented_version": "0.3.31",
+  "base_commit": "4a9afe2",
+  "implemented_routes": [
+    "root_element_ad_logging_classification",
+    "known_union_element_renderer_classification",
+    "initial_append_insert_filter",
+    "element_replacement_native_empty",
+    "native_cell_initializer_empty_fallback",
+    "retained_cell_size_and_owned_visibility",
+    "inline_reverse_view_manager_ownership",
+    "bounded_structural_and_slot_history"
+  ],
+  "limits": [
+    "Unknown or incompatible contracts pass through with diagnostics",
+    "Typed non-Elements advertising replacement roots retain native undo behavior",
+    "Existing bound cells collapse on their next native layout/update; settings changes may require refreshing the feed",
+    "Live and DAI playback retain native behavior",
+    "Device confirmation pending"
+  ]
+}

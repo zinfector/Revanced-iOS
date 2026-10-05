@@ -1,0 +1,433 @@
+{
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "read_only": true,
+  "tests_run": false,
+  "classes": [
+    {
+      "name": "YTAdElementsCellAPIImpl",
+      "address": "0x10c97c760",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "didLoadRenderer:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x100d6dcb4"
+        },
+        {
+          "kind": "-",
+          "selector": "didDisposeRenderer:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x100d6dd8c"
+        },
+        {
+          "kind": "-",
+          "selector": "containsAdLoggingData:",
+          "encoding": "B24@0:8@16",
+          "imp": "0x100d6dee8"
+        },
+        {
+          "kind": "-",
+          "selector": "didDisposeRendererHelper:",
+          "encoding": "v24@0:8@16",
+          "imp": "0x100d6df88"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "_listener",
+          "encoding": "@\"<YTAdElementsCellAPIListener>\"",
+          "offset": 8
+        },
+        {
+          "name": "_loadedAdCells",
+          "encoding": "@\"NSMutableSet\"",
+          "offset": 16
+        }
+      ]
+    },
+    {
+      "name": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "address": "0x10c97c7b0",
+      "superclass": "YTExternallyManagedSlotAdapterBase",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "controller:didProcessOpportunityWithSlot:shouldExitActiveSlots:",
+          "encoding": "v36@0:8@16@24B32",
+          "imp": "0x100d6e1ec"
+        },
+        {
+          "kind": "-",
+          "selector": "isValidSlotType:",
+          "encoding": "B20@0:8i16",
+          "imp": "0x100d6e7a8"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "_slotFactory",
+          "encoding": "@\"<YTSlotFactory>\"",
+          "offset": 8
+        },
+        {
+          "name": "_layoutFactory",
+          "encoding": "@\"YTLayoutFactory\"",
+          "offset": 16
+        },
+        {
+          "name": "_hotConfig",
+          "encoding": "@\"YTHotConfig\"",
+          "offset": 24
+        },
+        {
+          "name": "_pageToSlotsMap",
+          "encoding": "@\"NSMutableDictionary\"",
+          "offset": 32
+        },
+        {
+          "name": "_slotToPageMap",
+          "encoding": "@\"NSMutableDictionary\"",
+          "offset": 40
+        }
+      ]
+    },
+    {
+      "name": "YTInlineMutedPlaybackViewControllerManager",
+      "address": "0x10c9bb398",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "createPlayerViewController",
+          "encoding": "@16@0:8",
+          "imp": "0x10155629c"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "_overlayFactory",
+          "encoding": "@\"YTInlineMutedPlaybackOverlayFactory\"",
+          "offset": 8
+        },
+        {
+          "name": "_hotConfig",
+          "encoding": "@\"YTHotConfig\"",
+          "offset": 16
+        },
+        {
+          "name": "_coldConfig",
+          "encoding": "@\"YTColdConfig\"",
+          "offset": 24
+        },
+        {
+          "name": "_currentPlayerViewController",
+          "encoding": "@\"YTPlayerViewController\"",
+          "offset": 32
+        },
+        {
+          "name": "_parentResponder",
+          "encoding": "@\"<YTResponder>\"",
+          "offset": 40
+        },
+        {
+          "name": "_entry",
+          "encoding": "@\"<YTASDPlayableEntry>\"",
+          "offset": 48
+        },
+        {
+          "name": "_playbackControllers",
+          "encoding": "@\"NSMutableArray\"",
+          "offset": 56
+        }
+      ]
+    },
+    {
+      "name": "YTInlineMutedPlaybackWatchController",
+      "address": "0x10c9bb3e8",
+      "superclass": null,
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "playerViewController",
+          "encoding": "@16@0:8",
+          "imp": "0x101557198"
+        },
+        {
+          "kind": "-",
+          "selector": "attachPlayerViewController",
+          "encoding": "v16@0:8",
+          "imp": "0x108054618"
+        },
+        {
+          "kind": "-",
+          "selector": "acquirePlayerViewController",
+          "encoding": "v16@0:8",
+          "imp": "0x101557760"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "_impVCManager",
+          "encoding": "@\"YTInlineMutedPlaybackViewControllerManager\"",
+          "offset": 8
+        },
+        {
+          "name": "_lastPlaybackError",
+          "encoding": "@\"NSError\"",
+          "offset": 16
+        },
+        {
+          "name": "_wasPlayingBeforeSuspend",
+          "encoding": "B",
+          "offset": 24
+        },
+        {
+          "name": "_startPlayBackCalled",
+          "encoding": "B",
+          "offset": 25
+        },
+        {
+          "name": "_firstMediaTime",
+          "encoding": "d",
+          "offset": 32
+        },
+        {
+          "name": "_currentMediaTime",
+          "encoding": "d",
+          "offset": 40
+        },
+        {
+          "name": "_cachedPlayerResponse",
+          "encoding": "@\"YTPlayerResponse\"",
+          "offset": 48
+        },
+        {
+          "name": "_userDefaults",
+          "encoding": "@\"YTUserDefaults\"",
+          "offset": 56
+        },
+        {
+          "name": "_inceptionController",
+          "encoding": "@\"<YTInceptionControllerProtocol>\"",
+          "offset": 64
+        },
+        {
+          "name": "_hotConfig",
+          "encoding": "@\"YTHotConfig\"",
+          "offset": 72
+        },
+        {
+          "name": "_coldConfig",
+          "encoding": "@\"YTColdConfig\"",
+          "offset": 80
+        },
+        {
+          "name": "_audioSession",
+          "encoding": "@\"<YTAudioSession>\"",
+          "offset": 88
+        },
+        {
+          "name": "_globalStateMonitor",
+          "encoding": "@\"<YTInlinePlaybackGlobalStateMonitor>\"",
+          "offset": 96
+        },
+        {
+          "name": "_inGlobalFeedAudioExperiment",
+          "encoding": "B",
+          "offset": 104
+        },
+        {
+          "name": "_playableEntry",
+          "encoding": "@\"<YTASDPlayableEntry>\"",
+          "offset": 112
+        },
+        {
+          "name": "_shouldPause",
+          "encoding": "B",
+          "offset": 120
+        },
+        {
+          "name": "_disableCaptionsOnAppStartForVwc",
+          "encoding": "B",
+          "offset": 121
+        },
+        {
+          "name": "_enableMainAppBlockRegistryProvider",
+          "encoding": "B",
+          "offset": 122
+        },
+        {
+          "name": "_enableParentBlockRegistryInSectionListViewController",
+          "encoding": "B",
+          "offset": 123
+        },
+        {
+          "name": "_enablePauseFromPlayerBlockApi",
+          "encoding": "B",
+          "offset": 124
+        },
+        {
+          "name": "_enablePlayerStateTriggerAfterPlayerStateChange",
+          "encoding": "B",
+          "offset": 125
+        },
+        {
+          "name": "_enableSingletonPvcProvider",
+          "encoding": "B",
+          "offset": 126
+        },
+        {
+          "name": "_enableUpdatePlayerStateEntityOnImpStop",
+          "encoding": "B",
+          "offset": 127
+        },
+        {
+          "name": "_iosEnableImpStartTimeFix",
+          "encoding": "B",
+          "offset": 128
+        },
+        {
+          "name": "_isInlineMutedViewPortCalculationEnabled",
+          "encoding": "B",
+          "offset": 129
+        },
+        {
+          "name": "_readyToResumeTriggeringStyle",
+          "encoding": "@\"NSString\"",
+          "offset": 136
+        },
+        {
+          "name": "_contentVideoID",
+          "encoding": "@\"NSString\"",
+          "offset": 144
+        },
+        {
+          "name": "_playerStateTriggeredTimedActions",
+          "encoding": "@\"NSMutableArray\"",
+          "offset": 152
+        },
+        {
+          "name": "_blockRegistry",
+          "encoding": "@\"YTBBlockRegistry\"",
+          "offset": 160
+        },
+        {
+          "name": "_blockRegistryProvider",
+          "encoding": "@\"YTELMBlockRegistryProvider\"",
+          "offset": 168
+        },
+        {
+          "name": "_isActive",
+          "encoding": "B",
+          "offset": 176
+        },
+        {
+          "name": "_isIncepting",
+          "encoding": "B",
+          "offset": 177
+        },
+        {
+          "name": "_parentResponder",
+          "encoding": "@\"<YTResponder>\"",
+          "offset": 184
+        },
+        {
+          "name": "_delegate",
+          "encoding": "@\"<YTInlineMutedPlaybackWatchControllerDelegate>\"",
+          "offset": 192
+        },
+        {
+          "name": "_watchViewController",
+          "encoding": "@\"YTInlineMutedPlaybackWatchViewController\"",
+          "offset": 200
+        },
+        {
+          "name": "_navigationEndpoint",
+          "encoding": "@\"YTICommand\"",
+          "offset": 208
+        },
+        {
+          "name": "_dwellStartTime",
+          "encoding": "@\"NSNumber\"",
+          "offset": 216
+        },
+        {
+          "name": "_watchTransition",
+          "encoding": "@\"YTWatchTransition\"",
+          "offset": 224
+        },
+        {
+          "name": "_playerViewController",
+          "encoding": "@\"YTPlayerViewController\"",
+          "offset": 232
+        },
+        {
+          "name": "_loopingPlaybackController",
+          "encoding": "@\"YTLoopingPlaybackController\"",
+          "offset": 240
+        }
+      ]
+    },
+    {
+      "name": "YTAdElementsCellController",
+      "address": "0x10c9bf3b0",
+      "superclass": "YTElementsCellController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithEntry:parentResponder:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x10160b43c"
+        },
+        {
+          "kind": "-",
+          "selector": "dealloc",
+          "encoding": "v16@0:8",
+          "imp": "0x10160b4d4"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "_elementsCellAPI",
+          "encoding": "@\"YTAdElementsCellAPIImpl\"",
+          "offset": 8
+        }
+      ]
+    },
+    {
+      "name": "YTElementsCellController",
+      "address": "0x10cab5520",
+      "superclass": "YTInnerTubeCellController",
+      "methods": [
+        {
+          "kind": "-",
+          "selector": "initWithEntry:parentResponder:",
+          "encoding": "@32@0:8@16@24",
+          "imp": "0x100503814"
+        }
+      ],
+      "ivars": [
+        {
+          "name": "sectionControllerDelegate",
+          "encoding": "@\"<YTSectionControllerDelegate>\"",
+          "offset": 8
+        }
+      ]
+    },
+    {
+      "name": "YTISlotData",
+      "address": "0x10cb00fd8",
+      "superclass": "GPBMessage",
+      "methods": [
+        {
+          "kind": "+",
+          "selector": "descriptor",
+          "encoding": "@16@0:8",
+          "imp": "0x105013028"
+        }
+      ],
+      "ivars": []
+    }
+  ]
+}

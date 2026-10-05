@@ -1,0 +1,438 @@
+{
+  "current_response_lease_matches_playback": true,
+  "schema": 4,
+  "current_factory_binding_matches_playback": 0,
+  "display_ads": {
+    "inspection_is_passive": true,
+    "last_visible_context_still_owned": true,
+    "last_managed_slot_checkpoint": {
+      "layout_logging_class": "YTIAdLayoutLoggingData",
+      "layout_presence_contract": true,
+      "layout_data_present": 1,
+      "captured_at_epoch": 1791187667.368427,
+      "event": "native_dispose_completed",
+      "slot_presence_contract": true,
+      "slot_data_class": "YTISlotData",
+      "adapter_class": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "slot_type": 12,
+      "slot_data_present": 1,
+      "layout_data_class": "YTILayoutData",
+      "mutation_performed": false,
+      "slot_logging_class": "YTIAdSlotLoggingData"
+    },
+    "session_events": {
+      "managed_slot_bound": 2,
+      "container_YTIItemSectionSupportedRenderers": 58,
+      "original_load_forwarded": 6,
+      "surviving_entries": 118,
+      "original_append_forwarded": 5,
+      "container_YTISectionListSupportedRenderers": 30,
+      "managed_slot_disposed": 1,
+      "container_YTISectionListRenderer": 4,
+      "input_entries": 118,
+      "container_YTIItemSectionRenderer": 58
+    },
+    "schema": 2,
+    "last_native_operation": {
+      "counts": {
+        "original_append_forwarded": 1,
+        "surviving_entries": 1,
+        "input_entries": 1,
+        "original_load_forwarded": 1
+      },
+      "surface": "feed",
+      "captured_at_epoch": 1791187667.372009,
+      "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+      "trigger": "surface_appeared",
+      "context_generation": 12,
+      "state": {
+        "route": "append_sections"
+      }
+    },
+    "session_age_seconds": 22.992281079292297,
+    "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+    "device_verified": false,
+    "last_visible_surface": {
+      "counts": {
+        "original_append_forwarded": 1,
+        "surviving_entries": 1,
+        "input_entries": 1,
+        "original_load_forwarded": 1
+      },
+      "surface": "feed",
+      "captured_at_epoch": 1791187667.372009,
+      "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+      "trigger": "surface_appeared",
+      "context_generation": 12,
+      "state": {
+        "route": "append_sections"
+      }
+    },
+    "enabled": true,
+    "checkpoint_history": [
+      {
+        "counts": {},
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.3252869,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 2,
+        "state": {}
+      },
+      {
+        "counts": {},
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.343658,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 3,
+        "state": {}
+      },
+      {
+        "counts": {},
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.3439178,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 4,
+        "state": {}
+      },
+      {
+        "counts": {
+          "container_YTIItemSectionSupportedRenderers": 2,
+          "original_load_forwarded": 1,
+          "surviving_entries": 4,
+          "container_YTISectionListSupportedRenderers": 2,
+          "container_YTISectionListRenderer": 1,
+          "input_entries": 4,
+          "container_YTIItemSectionRenderer": 2
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.574695,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 5,
+        "state": {
+          "route": "model_load"
+        }
+      },
+      {
+        "counts": {
+          "container_YTIItemSectionSupportedRenderers": 4,
+          "original_load_forwarded": 1,
+          "surviving_entries": 8,
+          "original_append_forwarded": 1,
+          "container_YTISectionListSupportedRenderers": 2,
+          "container_YTISectionListRenderer": 1,
+          "input_entries": 8,
+          "container_YTIItemSectionRenderer": 4
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.57494,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 6,
+        "state": {
+          "route": "append_sections"
+        }
+      },
+      {
+        "counts": {},
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.804122,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 7,
+        "state": {}
+      },
+      {
+        "counts": {},
+        "surface": "feed",
+        "captured_at_epoch": 1791187660.804356,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 8,
+        "state": {}
+      },
+      {
+        "counts": {
+          "container_YTIItemSectionSupportedRenderers": 13,
+          "original_load_forwarded": 1,
+          "surviving_entries": 26,
+          "container_YTISectionListSupportedRenderers": 13,
+          "container_YTISectionListRenderer": 1,
+          "input_entries": 26,
+          "container_YTIItemSectionRenderer": 13
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187661.9135761,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 9,
+        "state": {
+          "route": "model_load"
+        }
+      },
+      {
+        "counts": {
+          "container_YTIItemSectionSupportedRenderers": 26,
+          "original_load_forwarded": 1,
+          "surviving_entries": 52,
+          "original_append_forwarded": 1,
+          "container_YTISectionListSupportedRenderers": 13,
+          "container_YTISectionListRenderer": 1,
+          "input_entries": 52,
+          "container_YTIItemSectionRenderer": 26
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187661.913892,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 10,
+        "state": {
+          "route": "append_sections"
+        }
+      },
+      {
+        "counts": {
+          "original_append_forwarded": 1,
+          "surviving_entries": 1,
+          "input_entries": 1,
+          "original_load_forwarded": 1
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187661.914099,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 11,
+        "state": {
+          "route": "append_sections"
+        }
+      },
+      {
+        "counts": {
+          "container_YTIItemSectionSupportedRenderers": 39,
+          "original_load_forwarded": 1,
+          "surviving_entries": 78,
+          "original_append_forwarded": 2,
+          "container_YTISectionListSupportedRenderers": 13,
+          "container_YTISectionListRenderer": 1,
+          "input_entries": 78,
+          "container_YTIItemSectionRenderer": 39
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187667.360135,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "append_sections",
+        "context_generation": 10,
+        "state": {
+          "route": "append_sections"
+        }
+      },
+      {
+        "counts": {
+          "original_append_forwarded": 1,
+          "surviving_entries": 1,
+          "input_entries": 1,
+          "original_load_forwarded": 1
+        },
+        "surface": "feed",
+        "captured_at_epoch": 1791187667.372009,
+        "first_blocked_checkpoint": "inconclusive_no_classified_ad",
+        "trigger": "surface_appeared",
+        "context_generation": 12,
+        "state": {
+          "route": "append_sections"
+        }
+      }
+    ],
+    "unsupported_routes": [
+      "opaque_element_roots_without_positive_ad_provenance",
+      "generic_header_or_masthead",
+      "ad_replacement_removal_undo_contract",
+      "already_bound_home_slot_teardown"
+    ],
+    "checkpoint_version": 4
+  },
+  "inspection_is_passive": true,
+  "diagnostics_enabled": true,
+  "current_controller_has_lease": 1,
+  "feed_ads_enabled": true,
+  "lease_video_matches_content": true,
+  "current_playback": {
+    "state": {
+      "trigger_strategy_falls_back_to_response": false,
+      "raw_response_class": "YTIPlayerResponse",
+      "wrapper_class": "YTPlayerResponse",
+      "native_initialization_completed": true,
+      "policy_request_pending": false,
+      "content_clock_progressed": true,
+      "playerAdsArray": 1,
+      "content_video_id_valid": true,
+      "clock_cpn_matches": 1,
+      "playing_ad": false,
+      "cached_coordinator_class": "YTAdsControlFlowPlaybackCoordinator",
+      "binding_origin": "native_selection",
+      "preroll_completed": true,
+      "coordinator_getter_agrees": true,
+      "event_cpn_present": 1,
+      "wrapper_present": 1,
+      "handoff_gate": "native_assignment_verified",
+      "content_time_seconds": 15.256870041,
+      "assignment_origin": "native_start_return",
+      "pointer_installed": true,
+      "coordinator_ivar_layout_valid": 1,
+      "cached_compatibility_result": true,
+      "player_data_accessor_abi_matches": true,
+      "wrapper_content_video_matches": true,
+      "watch_ownership": {
+        "player_core_binding_matches": true,
+        "events_delegate_class": "YTInlineMutedPlaybackWatchController",
+        "view_parent_class": "YTInlineMutedPlaybackWatchViewController",
+        "core_delegate_class": "YTPlayerViewController",
+        "watch_reverse_binding_matches": false,
+        "ui_delegate_class": "nil",
+        "responder_classes": [
+          "YTLocalPlaybackController",
+          "YTPlayerViewController",
+          "YTInlineMutedPlaybackViewControllerManager",
+          "YTInlineMutedPlaybackContainerController",
+          "YTAppCollectionViewController",
+          "YTVariableHeightHeaderViewController",
+          "YTSectionListViewController",
+          "YTTabViewController",
+          "YTTabsViewController",
+          "YTBrowseResponseViewController",
+          "YTBrowseViewController",
+          "YTHeaderContentComboViewController",
+          "YTAppViewControllerImpl"
+        ]
+      },
+      "watch_ownership_route": "unresolved",
+      "active_cpn_present": 1,
+      "player_data_accessor_present": true,
+      "cached_recreation_requested": false,
+      "controller_response_matches": 1,
+      "selected_coordinator_class": "YTAdsControlFlowPlaybackCoordinator"
+    },
+    "first_blocked_checkpoint": "watch_owner_unknown",
+    "unexpected_ad_playback": 0,
+    "captured_at_epoch": 1791187683.5529752,
+    "trigger": "report_copy",
+    "eligibility_gate": "watch_owner_unknown",
+    "suppression_observed": false,
+    "positive_response_ad_input": true,
+    "content_clock_progressed": true,
+    "requested_strategy": "coordinator",
+    "video_generation": 2,
+    "actual_strategy": "native",
+    "events": {
+      "response_ad_items_seen": 7,
+      "preroll_completed": 1,
+      "response_count_read": 2,
+      "response_array_read": 5,
+      "selection_entered": 1,
+      "cached_compatibility_native": 1,
+      "assignment_verified": 2,
+      "selection_returned": 1
+    }
+  },
+  "session_events": {
+    "response_count_read": 2,
+    "factory_entered": 1,
+    "feed_presence_accessors_resolved": 52,
+    "feed_initial_load": 6,
+    "preroll_completed": 1,
+    "response_ad_items_seen": 7,
+    "assignment_verified": 2,
+    "feed_append_completed": 5,
+    "feed_initial_load_completed": 6,
+    "response_array_read": 6,
+    "selection_entered": 1,
+    "trigger_activation_native_passthrough": 4,
+    "cached_compatibility_native": 1,
+    "selection_returned": 1
+  },
+  "last_visible_watch": {},
+  "last_visible_watch_matches_current_playback": 0,
+  "watch_snapshot_owner_class": "nil",
+  "last_visible_watch_age_seconds": null,
+  "build_source_sha256": "7b2bca977f3d5b95dfcfe4565095b022b221dda6cd5162c9515d96ac5024087b",
+  "factory_seen": 1,
+  "video_ads_enabled": true,
+  "checkpoint_history": [],
+  "device_validated": false,
+  "profile_accepted": true,
+  "watch_player_binding_current": 1,
+  "hooks": {
+    "YTGaplessPlaybackCoordinator reset": true,
+    "YTIIosPlayerConfig useNoOpAdsCoordinator": true,
+    "YTNoOpAdsPlaybackCoordinator willPlayNewVideoWithAutoplay:": true,
+    "YTGaplessPlaybackCoordinator supportsPlaybackForContentPlayerResponse:": true,
+    "YTNoOpAdsPlaybackCoordinator reset": true,
+    "YTWatchNextResultsViewController setCompanionAd:layoutID:interactionLoggingAdsClientData:": true,
+    "YTDAIAdsControlFlowPlaybackCoordinator reset": true,
+    "YTAdBelowPlayerLayoutRenderingAdapter renderCompanionSection:withRenderer:": true,
+    "YTInnerTubeCollectionViewController insertSections:byPosition:error:": true,
+    "YTLocalPlaybackController didTransitionToContentSequenceForVideoSequencer:": true,
+    "YTSectionListViewController viewDidAppear:": true,
+    "feed_fields YTIGridSupportedRenderers": {
+      "expected": 4,
+      "resolved": 4
+    },
+    "YTIPlayerResponse playerAdsArray_Count": true,
+    "YTIPlayerResponse adSlotsArray": true,
+    "feed_fields YTIItemSectionSupportedRenderers": {
+      "expected": 26,
+      "resolved": 26
+    },
+    "YTInnerTubeCollectionViewController viewDidAppear:": true,
+    "YTLocalPlaybackController adsPlaybackCoordinatorForNewPlayback": true,
+    "feed_fields YTISectionListSupportedRenderers": {
+      "expected": 2,
+      "resolved": 2
+    },
+    "YTIPlayerResponse playerAdsArray": true,
+    "YTIElementRenderer elementData": true,
+    "YTCompanionAdSectionController insetWithInset:": true,
+    "YTInnerTubeCollectionViewController replaceEntry:withReplacementRenderer:inSectionController:undoKey:operation:": true,
+    "YTIPlayerResponse adPlacementsArray_Count": true,
+    "YTAdElementsSectionViewRenderingAPI renderSection:withRenderer:": true,
+    "YTRealAdsPlayerServices adsPlaybackCoordinatorWithOverlayManager:delegate:parentResponder:contentPlayerResponse:": true,
+    "feed_fields YTIHorizontalListSupportedRenderers": {
+      "expected": 20,
+      "resolved": 20
+    },
+    "YTAdsControlFlowPlaybackCoordinator reset": true,
+    "YTInnerTubeCollectionViewController loadWithModel:": true,
+    "YTAdsControlFlowManagerImpl handleActivationForTriggerBundles:": true,
+    "YTAdsControlFlowPlaybackCoordinator supportsPlaybackForContentPlayerResponse:": true,
+    "YTIPlayerResponse adSlotsArray_Count": true,
+    "YTDAIAdsControlFlowPlaybackCoordinator willPlayNewVideoWithAutoplay:": true,
+    "YTLocalPlaybackController startPlaybackWithVideoResolver:": true,
+    "YTAdElementsCellExternallyManagedSlotAdapterImpl didBindSlotData:layoutData:": true,
+    "YTLocalPlaybackController videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData:": true,
+    "YTAdElementsCellExternallyManagedSlotAdapterImpl didDisposeSlotData:layoutData:": true,
+    "YTInnerTubeCollectionViewController addSectionsFromArray:": true,
+    "YTReelContentModel makeContentModelForEntry:": true,
+    "YTGaplessPlaybackCoordinator willPlayNewVideoWithAutoplay:": true,
+    "YTWatchNextResultsViewController didUpdateBelowPlayerLayoutWithRenderer:": true,
+    "YTIPlayerResponse adPlacementsArray": true,
+    "YTSectionListViewController loadWithModel:": true,
+    "YTInnerTubeCollectionViewController insertContents:byPosition:inSection:error:": true,
+    "YTDAIAdsControlFlowPlaybackCoordinator supportsPlaybackForContentPlayerResponse:": true,
+    "YTNoOpAdsPlaybackCoordinator supportsPlaybackForContentPlayerResponse:": true,
+    "YTAdsControlFlowPlaybackCoordinator willPlayNewVideoWithAutoplay:": true,
+    "YTLocalPlaybackController adsPlaybackCoordinator:didFinishBreakWithBreakType:": true
+  },
+  "first_blocked_checkpoint": "watch_owner_unknown",
+  "element_rules": "compatibility_patterns_with_protected_contexts; broad Android rules require native structural mapping",
+  "event_counter_scope": "session_totals; playback events reset at content selection or internal transition",
+  "requested_strategy": "coordinator",
+  "live_DAI_coverage": "native_passthrough",
+  "shorts_ads_enabled": true,
+  "lease_raw_response_matches": 1,
+  "diagnostics_revision": "adblock-checkpoints-4",
+  "last_visible_watch_matches_current_generation": false,
+  "factory_response_matches_current_content": 0
+}

@@ -25,7 +25,7 @@
 static const void *RVAdStateKey=&RVAdStateKey;
 static NSMutableDictionary *RVAdTotals,*RVAdHooks;
 static NSMutableArray *RVAdHistory;
-static NSDictionary *RVAdLastVisible;
+static NSDictionary *RVAdLastVisible,*RVAdLastInline;
 static NSString *RVAdLastSignature;
 static NSUInteger RVAdGeneration;
 static NSTimeInterval RVAdCaptureTime;
@@ -100,7 +100,8 @@ static void RVAdCapture(RVAdPlaybackState *state,NSString *trigger) {
     RVAdCaptureTime=now;
     NSDictionary *snapshot=RVAdSnapshot(state,trigger);
     @synchronized(RVAdPlaybackState.class) {
-        RVAdLastVisible=snapshot;
+        BOOL inlinePlayer=[state.values[@"watch_ownership"][@"playback_surface"] isEqual:@"inline"];
+        if (inlinePlayer) RVAdLastInline=snapshot;else RVAdLastVisible=snapshot;
         NSString *signature=[NSString stringWithFormat:@"%@/%@/%@/%@/%@",snapshot[@"video_generation"],
             snapshot[@"first_blocked_checkpoint"],snapshot[@"actual_strategy"],snapshot[@"state"][@"preroll_completed"],
             snapshot[@"state"][@"postroll_completed"]];
@@ -115,35 +116,40 @@ static NSDictionary *RVAdReport(void) {
     RVAdPlaybackState *state=objc_getAssociatedObject(RVCurrentPlayback,RVAdStateKey);
     BOOL owned=state && state.response && state.response==RVContentResponse(RVCurrentPlayback) && [state.video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")];
     @synchronized(RVAdPlaybackState.class) {
-        BOOL matches=state && RVAdLastVisible && [RVAdLastVisible[@"video_generation"] unsignedIntegerValue]==state.generation;
+        BOOL inlinePlayer=[state.values[@"watch_ownership"][@"playback_surface"] isEqual:@"inline"];
+        NSDictionary *visible=inlinePlayer ? RVAdLastInline : RVAdLastVisible;
+        BOOL matches=state && visible && [visible[@"video_generation"] unsignedIntegerValue]==state.generation;
         NSString *block=!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !state ? @"controller_lease_missing" :
             ![state.gate isEqual:@"ready"] ? state.gate ?: @"response_resolution_missing" : !owned ? @"response_owner_mismatch" :
-            !matches ? @"foreground_watch_snapshot_missing" : RVAdLastVisible[@"first_blocked_checkpoint"];
-        return @{@"schema":@4,@"diagnostics_revision":@"adblock-checkpoints-4",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+            !matches ? @"foreground_surface_snapshot_missing" : visible[@"first_blocked_checkpoint"];
+        return @{@"schema":@5,@"diagnostics_revision":@"adblock-checkpoints-5",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
             @"diagnostics_enabled":@(RVEnabled(@"diagnostics")),@"profile_accepted":@(RVCompatible),
             @"video_ads_enabled":@(RVEnabled(@"video_ads")),@"feed_ads_enabled":@(RVEnabled(@"feed_ads")),
             @"shorts_ads_enabled":@(RVEnabled(@"shorts_ads")),@"requested_strategy":RVSetting(@"ad_strategy") ?: @"response",
             @"hooks":RVAdHooks.copy ?: @{},@"event_counter_scope":@"session_totals; playback events reset at content selection or internal transition",
             @"session_events":RVAdTotals.copy ?: @{},@"display_ads":RVDisplayReport(),@"last_visible_watch":RVAdLastVisible ?: @{},
-            @"last_visible_watch_matches_current_playback":@(matches && owned),
-            @"last_visible_watch_matches_current_generation":@(matches),@"current_controller_has_lease":@(state!=nil),
+            @"last_visible_inline":RVAdLastInline ?: @{},
+            @"current_playback_surface":inlinePlayer ? @"inline" : @"watch_or_unknown",
+            @"last_visible_surface_matches_current_playback":@(matches && owned),
+            @"last_visible_watch_matches_current_playback":@(!inlinePlayer && matches && owned),
+            @"last_visible_watch_matches_current_generation":@(!inlinePlayer && matches),@"current_controller_has_lease":@(state!=nil),
             @"factory_seen":@([RVAdTotals[@"factory_entered"] unsignedLongLongValue]>0),
             @"factory_response_matches_current_content":@(owned && [state.values[@"factory_response_matches_controller"] boolValue]),
             @"current_factory_binding_matches_playback":@(owned && [state.counts[@"factory_entered"] unsignedLongLongValue]>0),
             @"current_response_lease_matches_playback":@(owned),
             @"lease_raw_response_matches":@(state.response && state.response==RVContentResponse(RVCurrentPlayback)),
             @"lease_video_matches_content":@([state.video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")]),
-            @"watch_player_binding_current":@(state.playerOwner && RVPlaybackForPlayer(state.playerOwner)==RVCurrentPlayback),
+            @"player_core_binding_current":@(state.playerOwner && RVPlaybackForPlayer(state.playerOwner)==RVCurrentPlayback),
             @"watch_snapshot_owner_class":state.watchOwner ? NSStringFromClass([state.watchOwner class]) : @"nil",
             @"first_blocked_checkpoint":block,
             @"last_visible_watch_age_seconds":RVAdLastVisible ? @(MAX(0,NSDate.date.timeIntervalSince1970-[RVAdLastVisible[@"captured_at_epoch"] doubleValue])) : NSNull.null,
             @"current_playback":state ? RVAdSnapshot(state,@"report_copy") : @{},@"checkpoint_history":RVAdHistory.copy ?: @[],
             @"inspection_is_passive":@YES,@"live_DAI_coverage":@"native_passthrough",
-            @"element_rules":@"compatibility_patterns_with_protected_contexts; broad Android rules require native structural mapping",
+            @"element_rules":@"native_root_element_ad_logging_and_display_slot_provenance; legacy protected patterns retained",
             @"device_validated":@NO};
     }
 }
 static NSString *RVAdSummary(void) {
     NSDictionary *report=RVAdReport();
-    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-4\n\n",report[@"first_blocked_checkpoint"]];
+    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-5\n\n",report[@"first_blocked_checkpoint"]];
 }
