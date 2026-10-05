@@ -42,6 +42,8 @@ def main():
     names += ['native/RVAdDisplay.inc', 'native/RVAdDisplayDiagnostics.inc', 'ADBLOCK_DISPLAY_SCHEME.md', 'ADBLOCK_DISPLAY_IMPLEMENTATION.md', 'profiles/adblock-display-evidence.json', 'profiles/adblock-display-protobuf-fields.json', 'profiles/adblock-display-decompiled.txt', 'profiles/adblock-display-implementation-evidence.json']
     names += ['native/RVSponsorPrompt.inc', 'native/RVSponsorPromptUI.inc', 'SPONSORBLOCK_NATIVE_PROMPTS_SCHEME.md', 'SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md', 'profiles/sponsor-prompt-evidence.json', 'profiles/sponsor-prompts-implementation-evidence.json', 'MERGED_DISPLAY_SPONSOR_IMPLEMENTATION.md', 'profiles/merged-display-sponsor-source.json', 'package_merged_release.py', 'build/cloud-build.json']
     names += ['native/RVAdWatchOwnership.inc', 'ADBLOCK_OWNERSHIP_FIX.md', 'profiles/device-adblock-report-348.json', 'profiles/adblock-ownership-evidence.json']
+    # Internal Markdown stays local and is excluded from public release receipts.
+    names = [name for name in names if Path(name).suffix.lower() != '.md']
     artifacts = {}
     for name in names:
         path = ROOT/name

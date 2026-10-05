@@ -2,3 +2,8 @@
 *.ipa binary
 *.dylib binary
 *.exe binary
+
+# Exclude internal Markdown from published source archives.
+*.[mM][dD] export-ignore
+/README.md -export-ignore
+/SIGNING.md -export-ignore

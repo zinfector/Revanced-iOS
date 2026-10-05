@@ -16,3 +16,8 @@ patcher/output/
 *.crt
 .env
 revanced-patches-main/
+
+# Public Markdown: retain only the root README and signing guide.
+*.[mM][dD]
+!/README.md
+!/SIGNING.md
