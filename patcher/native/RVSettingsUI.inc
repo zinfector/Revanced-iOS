@@ -8,7 +8,7 @@ static NSNumber *RVPreferenceParseNumber(NSString *text) {
     double value;
     return [scanner scanDouble:&value] && scanner.isAtEnd && isfinite(value) ? @(value) : nil;
 }
-static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigation();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged(); }
+static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigation();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged();RVDAUIPreferencesChanged(); }
 
 @interface RVPreferenceTextController : RVSettingsContentController
 @property(nonatomic,strong) UITextView *editor;
@@ -191,7 +191,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"merged-navigation-options",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
+        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"integrated-dearrow",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -220,6 +220,13 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
 }
 - (void)selectRow:(NSDictionary *)row {
     [self.view endEditing:YES];
+    if (row[@"dearrow_action"]) {
+        NSUInteger action=[row[@"dearrow_action"] unsignedIntegerValue];
+        if (action<2) { BOOL success=RVDAUISetCurrentOriginal(action==0);[self message:success ? @"DeArrow updated" : @"No current video" text:success ? @"The current video will refresh immediately. This choice lasts for this app session." : @"Open an ordinary video first."]; }
+        else if (action==2) { RVDAUIClearCaches();[self message:@"DeArrow cache cleared" text:@"Visible eligible videos will request fresh branding."]; }
+        else { NSData *data=[NSJSONSerialization dataWithJSONObject:RVDAUIReport() options:NSJSONWritingPrettyPrinted error:nil];if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];[self message:@"DeArrow checkpoints copied" text:@"The report identifies the service, role, ownership, and refresh stages."]; }
+        return;
+    }
     if (row[@"group"] || row[@"tool"]) {
         if (row[@"group"]) { RVSettingsController *page=[RVSettingsController new];page.groupID=row[@"group"];page.title=page.group[@"title"];RVSettingsPush(self,page);return; }
         NSUInteger tool=[row[@"tool"] unsignedIntegerValue];
@@ -236,7 +243,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
             [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
         if (tool==4) { [self diagnostics];return; }
-        [self message:[@"ReVanced iOS " stringByAppendingString:RV_PORT_VERSION] text:[NSString stringWithFormat:@"YouTube %@\n%lu patch switches and grouped preferences.\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",(unsigned long)RVFeatureKeys.count,RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
+        [self message:[@"ReVanced iOS " stringByAppendingString:RV_PORT_VERSION] text:[NSString stringWithFormat:@"YouTube %@\n%lu patch switches and grouped preferences.\nDeArrow community branding: SponsorBlock / DeArrow (sponsor.ajay.app).\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",(unsigned long)RVFeatureKeys.count,RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
     }
     if (!RVCompatible || [row[@"disabled"] boolValue] || [row[@"toggle"] boolValue]) return;
     NSString *key=row[@"key"];if (!key) return;

@@ -1911,5 +1911,11 @@
       "parent": null,
       "device_validated": false
     }
-  ]
+  ],
+  "dearrow_ui": {
+    "implemented": true,
+    "device_validated": false,
+    "contract": "profiles/dearrow-ui-contract.json",
+    "scope": "Dedicated settings, merged backend, pinned Elements input projection and native row refresh; unknown/shared/entity-only roots preserve originals."
+  }
 }

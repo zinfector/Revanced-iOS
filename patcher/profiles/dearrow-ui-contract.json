@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "status": "implemented_device_confirmation_pending",
+  "device_verified": false,
+  "tests_run": false,
+  "templates": [
+    {
+      "name": "metadata.eml_66a6aa0b42d8d5ee",
+      "sha256": "59741e2e64138c6f1ad72082065b14f1236958697e740abc9c2412fae60e10da"
+    },
+    {
+      "name": "metadata_content.eml_c19e7d5174f9795c",
+      "sha256": "792bf196d24a0c8311fe8e0b541fcf9815810763c91f865d4dcfe19132ad6b75"
+    },
+    {
+      "name": "modern_type_metadata_content.eml_9e4c2921fea0b2f9",
+      "sha256": "65f499cad6f4f927f3b05a980c343eb12c043561b1630b2eb464b1ebb94167cc"
+    },
+    {
+      "name": "lockup_metadata.eml_7c2248435e730bf5",
+      "sha256": "00908a20219d898814b28ef95ee93ed625a2b8886529fc824a43c4d8bbebce03"
+    },
+    {
+      "name": "video_metadata_inner.eml_e50f36a914ed35f7",
+      "sha256": "52cce574fd8226b00afd2727ade05fafc6c01f2aacdacce962b7a856ef03b48e"
+    },
+    {
+      "name": "thumbnail.eml_249348981b4c1c16",
+      "sha256": "33bdcb806cd3209de3451d0ea1e7af63366de393fd47485ee434c8aef6df290f"
+    },
+    {
+      "name": "compact_video.eml-js_73af68f5375dcfd2",
+      "sha256": "1296108eba09d618dcacdeadecd93d99e06a0906186f77f946a36541a9cdc58a"
+    },
+    {
+      "name": "video_card_content.eml-js_1fe054d511a8304d",
+      "sha256": "b6d257cf2b5b94feee1c6e99965bfc85150fbb22135a7040fff3d77db6fd3da3"
+    },
+    {
+      "name": "video_with_context_slots.eml-js_7f46bdff852ff164",
+      "sha256": "dc4219ea222ab90b1f935e0b9a5652c1066c1805736876e557a7f32d821e12a0"
+    }
+  ],
+  "roles": {
+    "metadata_plain_title": "ELMPBMetadata.title=1; originalTitle=30; rich title=formattedTitle27.content1. Byline2/details3 remain separate. metadata_content variable83 and modern_type_metadata_content variable92 instantiate TextType158796380.",
+    "lockup_title": "lockup_metadata variable18=$1.18.8178; variable23=$18.1 is the attributed title. Variable20=$18.50001 is title configuration, not title text. Variable25 chooses native title23 or entity-driven alternate. The headline TextType passes variable25 to function4 parameter4, whose content reads parameter4.content1.",
+    "watch_title": "ELMPBVideoMetadataModel.viewModel6 -> YTIRenderer.videoMetadataViewModel1019 -> title1 -> ELMPBAttributedString.content1. video_metadata_inner variable16=$1.6.1019, two title TextType branches read $16.1.1.",
+    "static_thumbnail": "thumbnail ImageType158796345 ordinary branch reads $1.1.1.1 = ThumbnailModel.thumbnail1 -> YTIVideoThumbnailData.image1 -> ELMPBImage.sources1. Animated preview reads thumbnail.animatedPreviewImage14 and has transition key; avatars/badges use other branches.",
+    "compact_root": "Model extension232971250 -> compactVideoData25 -> videoData1; videoData.videoId7, metadata2, thumbnail1.",
+    "card_root": "Model extension232903841 -> videoCardData1 -> videoData1; videoData.videoId7, metadata2, thumbnail1.",
+    "context_root": "Exact video_with_context_slots template passes root $1.1.1.2 to metadata and $1.1.1.1 to thumbnail. Title can instead be supplied in headline_slot; thumbnail can instead be supplied in thumbnail_slot/compact_thumbnail_slot. Do not assume the parent root extension is YTIYouTubeModel or a GPB class."
+  },
+  "native_contracts": {
+    "text_type": {
+      "tag": 158796380,
+      "registered_class": "ELMTextNode",
+      "registry_function": "0x10030b6b0",
+      "constant_address": "0x10d1254d0"
+    },
+    "image_type": {
+      "tag": 158796345,
+      "registered_class": "ELMImageNode",
+      "registry_function": "0x10030b6b0",
+      "constant_address": "0x10d124e08"
+    },
+    "embedded_image": {
+      "source_field": 2,
+      "class": "ELMPBImageSource",
+      "descriptor": "0x1004cd980",
+      "table": "0x10cda7378",
+      "local_decoder": "0x1005c342c",
+      "behavior": "oneof imageData2 -> NSData -> UIImage.imageWithData; maybeUpdateImageWithLocalImage applies it and returns true, preceding the remote path"
+    },
+    "materialization": "YTSectionController.nodeBlockForItemAtIndex:0x100504fc0 passes original entry, owning cell controller and client-data/block registries to ELMCellNode.nodeBlockForEntry:responder:clientDataObservable:blockRegistry:blockRegistryProvider:. Project only that argument; never mutate the feed entry or raw C++ storage.",
+    "refresh": "YTSectionController.reloadCellAtIndex:0x10426919c -> delegate.reloadCellAtIndex:inSection:0x104336174 -> native reloadItemsAtIndexPaths:. Check current item identity and native valid index path first. updateView: and updateCell: are not refresh methods."
+  },
+  "integration_scheme": [
+    "Merge backend d4ab390 without replacing working native hooks.",
+    "Independent surface policy -> owner+single-video binding -> backend parts mask and cancellation token.",
+    "Trusted custom title updates only an isolated typed title value; incompatible ranges are discarded while component styling remains native.",
+    "Decoded custom image is encoded into bounded ImageSource.imageData2 in the copied static thumbnail; no downloader callback/signature assumptions or remote-original cache collision.",
+    "Keep native original immutable; update generation/revisions on reuse/settings/foreground; asynchronously reload only a still-matching row.",
+    "Unknown, ad, live, Shorts, multi-video, shared raw-pointer and unverified template roots pass through with bounded checkpoints."
+  ],
+  "limitations": [
+    "Runtime/server template versions outside the pinned bundle still require a separate profile.",
+    "SharedComponentType raw-pointer instances are not writable serialized models; no raw C++ pointer mutation.",
+    "Static template evidence establishes roles, not device-visible success.",
+    "Downloaded/entity-only roots need an explicit item identity contract."
+  ],
+  "backend_commit": "d4ab390",
+  "implementation": [
+    "native/RVDeArrowUI.inc",
+    "native/RVDeArrowProjection.inc",
+    "native/RVDeArrowBackend.inc"
+  ],
+  "semantic_slot_policy": "For the pinned video_with_context_slots template, validated optional headline_slot/thumbnail_slot/compact_thumbnail_slot overrides are removed only in the isolated presentation model when the corresponding trusted replacement is usable, selecting the verified native metadata/thumbnail fallback branches.",
+  "parts_remain_independent": true
+}

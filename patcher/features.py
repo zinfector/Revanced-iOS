@@ -57,7 +57,8 @@ CATALOG = {
     'tap_to_seek': 'Tap seekbar to seek',
     'watch_history_dns': 'Watch-history DNS diagnostic tool',
     'sponsorblock_markers': 'SponsorBlock seekbar segment markers',
-    'dearrow_thumbnails': 'DeArrow thumbnails with availability fallback',
+    'dearrow_titles': 'Use DeArrow community titles',
+    'dearrow_thumbnails': 'Use DeArrow community thumbnails',
     'fast_thumbnail_stills': 'Use faster thumbnail still variants',
 }
 

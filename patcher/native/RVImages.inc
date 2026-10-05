@@ -32,9 +32,14 @@
     completion(valid ? request : nil);if (!valid) [self finish:NO];
 }
 @end
+static NSMutableDictionary *RVThumbnailProbeCache;
+static BOOL RVImageCachedAvailable(NSString *url) {
+    NSMutableDictionary *cache=RVThumbnailProbeCache;if (!cache) return NO;
+    @synchronized(cache) { NSDictionary *entry=cache[url];return [entry[@"available"] boolValue] && ![entry[@"pending"] boolValue] && NSDate.timeIntervalSinceReferenceDate<[entry[@"expires"] doubleValue]; }
+}
 static BOOL RVImageAvailable(NSString *url) {
     static NSMutableDictionary *cache;static NSUInteger pending;static dispatch_once_t once;
-    dispatch_once(&once,^{ cache=[NSMutableDictionary dictionary]; });
+    dispatch_once(&once,^{ cache=[NSMutableDictionary dictionary];RVThumbnailProbeCache=cache; });
     if (!url.length || url.length>4096) return NO;
     NSURL *target=[NSURL URLWithString:url];if (![target.scheme isEqual:@"https"] || !target.host.length || target.user || target.password) return NO;
     @synchronized(cache) {
@@ -43,7 +48,7 @@ static BOOL RVImageAvailable(NSString *url) {
         if (entry && ([entry[@"pending"] boolValue] || now<[entry[@"expires"] doubleValue])) return [entry[@"available"] boolValue];
         if (pending>=8) return NO;
         if (cache.count>=256) {
-            for (NSString *key in cache.allKeys) if (!cache[key][@"pending"]) [cache removeObjectForKey:key];
+            for (NSString *key in cache.allKeys) if (![cache[key][@"pending"] boolValue]) [cache removeObjectForKey:key];
         }
         cache[url]=@{@"pending":@YES,@"available":@NO};pending++;
     }

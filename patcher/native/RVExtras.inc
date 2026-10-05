@@ -151,11 +151,10 @@ static NSString *RVThumbnailURL(NSString *value) {
     NSRange custom=[quality rangeOfString:@"_custom_"];if (custom.location!=NSNotFound) quality=[quality substringToIndex:custom.location];
     NSDictionary *variants=@{@"default":@"",@"mqdefault":@"mq",@"hqdefault":@"hq",@"sddefault":@"hq720_",@"hq720":@"hq720_",@"maxresdefault":@"maxres"};
     NSString *prefix=variants[quality];
-    BOOL stills=prefix && RVEnabled(@"alternative_thumbnails"),dearrowEnabled=prefix && RVEnabled(@"dearrow_thumbnails");
+    BOOL stills=prefix && RVEnabled(@"alternative_thumbnails");
     NSString *context;@synchronized(RVThumbnailContextLock) { context=RVThumbnailContext ?: @"home"; }
     id modes=RVSetting(@"thumbnail_modes");NSString *mode=[modes isKindOfClass:NSDictionary.class] ? modes[context] : nil;
-    if ([mode isEqual:@"original"]) { stills=NO;dearrowEnabled=NO; }
-    if ([mode isEqual:@"stills"]) dearrowEnabled=NO;
+    if ([mode isEqual:@"original"]) { stills=NO; }
     if ([mode isEqual:@"dearrow"]) stills=NO;
     if (stills) {
         if (RVEnabled(@"fast_thumbnail_stills") && [@[@"sddefault",@"hq720",@"maxresdefault"] containsObject:quality]) prefix=@"sd";
@@ -167,14 +166,6 @@ static NSString *RVThumbnailURL(NSString *value) {
         }
     }
     NSString *result=parts.string ?: value;
-    if (dearrowEnabled) {
-        NSURLComponents *dearrow=[NSURLComponents componentsWithString:RVSetting(@"dearrow_url")];
-        NSMutableArray *query=[dearrow.queryItems mutableCopy] ?: [NSMutableArray array];
-        NSURLComponents *fallback=[NSURLComponents componentsWithString:result];fallback.scheme=@"https";fallback.host=@"i.ytimg.com";
-        [query addObject:[NSURLQueryItem queryItemWithName:@"videoID" value:path[2]]];
-        [query addObject:[NSURLQueryItem queryItemWithName:@"redirectUrl" value:fallback.string]];dearrow.queryItems=query;
-        if (RVImageAvailable(dearrow.string)) result=dearrow.string;
-    }
     NSString *endpoint=RVSetting(@"thumbnail_proxy_url");
     if (RVEnabled(@"thumbnail_proxy") && [endpoint isKindOfClass:[NSString class]] && endpoint.length) {
         NSURLComponents *proxy=[NSURLComponents componentsWithString:endpoint];
@@ -359,7 +350,7 @@ static void RVShowTools(UIViewController *presenter) {
     if (RVEnabled(@"picture_in_picture")) [menu addAction:[UIAlertAction actionWithTitle:@"Start Picture in Picture" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if (RVBool(RVCurrentPlayer,"isPictureInPicturePossible")) { [presenter dismissViewControllerAnimated:YES completion:^{ RVVoid(RVCurrentPlayer,"switchToPip"); }]; }
     }]];
-    if (RVEnabled(@"custom_speed_menu")) [menu addAction:[UIAlertAction actionWithTitle:@"Playback speedâ€¦" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    if (RVEnabled(@"custom_speed_menu")) [menu addAction:[UIAlertAction actionWithTitle:@"Playback speed…" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIAlertController *speeds=[UIAlertController alertControllerWithTitle:@"Speed" message:nil preferredStyle:UIAlertControllerStyleAlert];
         for (NSNumber *rate in RVSetting(@"custom_speeds")) [speeds addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@x",rate] style:UIAlertActionStyleDefault handler:^(UIAlertAction *choice) {
             RVSpeedChoose(RVCurrentPlayer,rate.floatValue,nil,@"revanced_video_tools");
@@ -769,5 +760,7 @@ static void RVInstallLayout(void) {
         };
     });
 }
+// Install after the existing model/Elements chains so every original IMP remains composed.
+#include "RVDeArrowUI.inc"
 static void RVInstallExtras(void) {
-    RVInstallSpeedBridge();RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallVoteLifecycle();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout(); }
+    RVInstallSpeedBridge();RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallVoteLifecycle();RVInstallDislikeUI();RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout();RVInstallDeArrowUI(); }

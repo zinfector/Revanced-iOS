@@ -1,16 +1,16 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 86 feature switches. Current packaged candidate: **0.3.33**, `YouTube-21.39.4-RVPort-0.3.33-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.34**, `YouTube-21.39.4-RVPort-0.3.34-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.33. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.34. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
 ## Porting progress
 
-Status reflects the merged 0.3.33 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.34 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
@@ -64,7 +64,7 @@ Status reflects the merged 0.3.33 source. This report covers every declaration i
 | SponsorBlock | Category policies, markers, native skip/undo prompts and contribution tools implemented; complete parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Spoof app version | Copied request client-version override implemented; executable/header/stream spoofing remains separate. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Change start page | Home/Subscriptions/You/Shorts initial pivot selection and surviving-tab recovery implemented; other destinations/restores remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
-| Alternative thumbnails | Frame/DeArrow/faster still variants and per-screen probes implemented; lifecycle/service behavior needs confirmation. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
+| Alternative thumbnails | Frame variants plus DeArrow branding coordinator, independent title/thumbnail settings, copied native presentation models and guarded per-row refresh implemented. Unknown templates retain originals; device confirmation pending. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Bypass image region restrictions | Configurable HTTPS thumbnail proxy implemented; requires a compatible user-supplied service. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Announcements | Manual announcements reader implemented; service availability and notification scheduling remain. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 | Pause on audio interrupt | Pause on native audio interruption implemented; resumption/audio-focus parity remains. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
@@ -152,7 +152,7 @@ Status reflects the merged 0.3.33 source. This report covers every declaration i
 |---|---|:---:|
 | Keep first-launch UI | Native paired-layout startup policy implemented; preserves native speed/registry settings, with remaining device/layout confirmation. | <img src="assets/progress/yellow-circle.svg" width="24" height="24" alt="in-progress" title="in-progress"> |
 
-The patch catalog maps the 86 feature switches to the entries above. The first-launch UI policy is tracked separately because it is an iOS integration feature rather than an Android patch declaration. Per-category SponsorBlock behavior, native skip/undo prompts, inline RYD counts, settings presentation and Shorts toolbar compaction are included in their parent entries.
+The patch catalog maps the 87 feature switches to the entries above. The first-launch UI policy is tracked separately because it is an iOS integration feature rather than an Android patch declaration. Per-category SponsorBlock behavior, native skip/undo prompts, inline RYD counts, settings presentation and Shorts toolbar compaction are included in their parent entries.
 
 ## Build and diagnostics
 

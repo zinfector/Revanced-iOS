@@ -1,11 +1,11 @@
-"""Record 0.3.33 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.34 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.33'
+VERSION = '0.3.34'
 
 
 def main():
@@ -46,7 +46,9 @@ def main():
     names += ['native/RVAdWatchOwnership.inc', 'ADBLOCK_OWNERSHIP_FIX.md', 'profiles/device-adblock-report-348.json', 'profiles/adblock-ownership-evidence.json']
     # Internal Markdown stays local and is excluded from public release receipts.
     names = [name for name in names if Path(name).suffix.lower() != '.md']
-    names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json']
+    names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json',
+              'native/RVDeArrowBackend.h','native/RVDeArrowBackend.inc','native/RVDeArrowProjection.inc','native/RVDeArrowUI.inc',
+              'profiles/dearrow-ui-contract.json','profiles/dearrow-backend-contract.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -55,7 +57,7 @@ def main():
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 86, 'runtime_preferences': 120,
+        'feature_switches': 87, 'runtime_preferences': 125,
         'build_only': True, 'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
@@ -71,7 +73,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Native regular 3x button, upsell command removal and configured 3x range implemented; device confirmation pending. Navigation tab filtering, reversible native icon-only labels, surviving-tab startup selection and detailed navigation diagnostics implemented. New navigation behavior requires device confirmation. Retains working adblocking. Implements structural Elements ad classification and inline playback coverage from report 408, with native cell fallback and checkpoint revision 5. Repairs the speed configuration/context interaction identified during report 345 investigation; includes 0.3.29 ad ownership/display filtering and 0.3.27 Shorts/header/pivot fixes. Existing SponsorBlock prompts, native settings and authentication retained. One IPA; no tests run; device confirmation pending.'}
+        'remaining_scope': 'DeArrow backend/settings/presentation adapters implemented for pinned ordinary-video roots. Shared raw-pointer, entity-only and unverified template layouts retain originals with explicit checkpoints. On-device title/image/reuse/navigation behavior remains unverified. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

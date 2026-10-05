@@ -1,8 +1,8 @@
-name: Build regular native 3x and navigation payload with Xcode
+name: Build integrated DeArrow payload with Xcode
 
 on:
   push:
-    branches: [fix/native-three-x-0.3.33]
+    branches: [fix/dearrow-ui-0.3.34]
 
 permissions:
   contents: read

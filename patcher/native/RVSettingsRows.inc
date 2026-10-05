@@ -14,7 +14,7 @@ static NSString *RVPreferenceValueTitle(id value,NSDictionary *rule) {
     return [value length] ? value : @"Native / default";
 }
 static NSString *RVPreferenceMemberTitle(NSString *key) {
-    NSDictionary *names=@{@"home":@"Home",@"subscriptions":@"Subscriptions",@"library":@"Library",@"player":@"Player",@"search":@"Search",
+    NSDictionary *names=@{@"home":@"Home",@"subscriptions":@"Subscriptions",@"library":@"Library",@"player":@"Watch title",@"search":@"Search",@"related":@"Related videos",
         @"sponsor":@"Sponsor",@"selfpromo":@"Self-promotion",@"interaction":@"Interaction reminder",@"intro":@"Intro",@"outro":@"Outro",
         @"preview":@"Preview",@"music_offtopic":@"Off-topic music",@"filler":@"Filler",@"hook":@"Hook",@"poi_highlight":@"Highlight"};
     return names[key] ?: key.capitalizedString;
@@ -61,6 +61,10 @@ static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *list
     }
     if (searching && !rows.count) [rows addObject:@{@"title":@"No matching settings",@"disabled":@YES}];
     NSString *footer=mapKey ? @"Default removes this per-item override. Global settings then apply." : listKey ? @"Enabled categories are requested when the next video is opened." : group[@"hint"];
+    if ([groupID isEqual:@"dearrow"]) return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows},
+        @{@"title":@"Current video and service",@"rows":@[@{@"title":@"Show original for current video",@"dearrow_action":@0},
+        @{@"title":@"Use community version for current video",@"dearrow_action":@1},@{@"title":@"Clear DeArrow cache",@"dearrow_action":@2},
+        @{@"title":@"Copy DeArrow checkpoints",@"dearrow_action":@3}]}];
     return @[@{@"title":@"",@"footer":footer ?: @"",@"rows":rows}];
 }
 static BOOL RVSettingsSaveToggle(NSDictionary *row,BOOL on) {

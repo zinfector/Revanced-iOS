@@ -151,5 +151,10 @@
   "hide_home_navigation": false,
   "hide_subscriptions_navigation": false,
   "hide_library_navigation": false,
-  "hide_navigation_labels": false
+  "hide_navigation_labels": false,
+  "dearrow_titles": false,
+  "dearrow_title_modes": {},
+  "dearrow_thumbnail_modes": {},
+  "dearrow_fallback": "original",
+  "dearrow_branding_url": "https://sponsor.ajay.app/api/branding"
 }

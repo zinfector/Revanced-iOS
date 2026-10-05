@@ -33,6 +33,8 @@ DEFAULTS = {'schema': 1, **{f: False for f in FEATURES}, 'video_ads': True,
             'screen_width_points':1920,'screen_height_points':1080,'form_factor':'tablet',
             'thumbnail_proxy_url':'', 'dearrow_url':'https://dearrow-thumb.ajay.app/api/v1/getThumbnail',
             'sponsor_behaviors':{}, 'sponsor_colors':{}, 'sponsor_min_duration':0.0,
+            'dearrow_title_modes':{}, 'dearrow_thumbnail_modes':{}, 'dearrow_fallback':'original',
+            'dearrow_branding_url':'https://sponsor.ajay.app/api/branding',
             'thumbnail_modes':{}, 'theme_light_background':'', 'theme_dark_background':''}
 DEFAULTS.update(paired_vote_buttons=True,first_launch_ui=True,wifi_quality=-1,cellular_quality=-1,miniplayer_min_dimension_points=0,miniplayer_overlay_opacity=1.0)
 
@@ -134,6 +136,16 @@ def validate_config(config):
     modes=c['thumbnail_modes']
     if not isinstance(modes,dict) or set(modes)-{'home','subscriptions','library','player','search'} or any(v not in ('original','stills','dearrow','dearrow-stills') for v in modes.values()):
         raise PatchError('thumbnail_modes must map home/subscriptions/library/player/search to original, stills, dearrow or dearrow-stills')
+    for key in ('dearrow_title_modes','dearrow_thumbnail_modes'):
+        modes=c[key]
+        if not isinstance(modes,dict) or set(modes)-{'home','subscriptions','library','player','search','related'} or any(v not in ('original','custom') for v in modes.values()):
+            raise PatchError(key+' must map a supported screen to original or custom; omitted screens inherit')
+    if c['dearrow_fallback'] not in ('original','stills'):raise PatchError('Invalid DeArrow thumbnail fallback')
+    endpoint=c['dearrow_branding_url']
+    if not isinstance(endpoint,str) or len(endpoint)>1024:raise PatchError('Invalid dearrow_branding_url')
+    parts=urlsplit(endpoint)
+    if parts.scheme!='https' or not parts.hostname or parts.username or parts.password or parts.fragment:
+        raise PatchError('dearrow_branding_url must be an HTTPS endpoint without credentials or fragment')
     if c['theme'] not in ('system','dark','light'): raise PatchError('Invalid theme')
     if c['start_page'] not in ('','FEwhat_to_watch','FEsubscriptions','FElibrary','FEshorts'): raise PatchError('Unsupported start_page')
     if type(c['thumbnail_frame']) is not int or c['thumbnail_frame'] not in (1,2,3): raise PatchError('thumbnail_frame must be 1, 2 or 3')
