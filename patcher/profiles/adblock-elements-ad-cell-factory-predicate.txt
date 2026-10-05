@@ -1,0 +1,83 @@
+Ad-cell factory predicate global block at 0x10b435900; invoke 0x10045bdfc
+0x10045bdfc
+0x10045bdfc: stp      x22, x21, [sp, #-0x30]!
+0x10045be00: stp      x20, x19, [sp, #0x10]
+0x10045be04: stp      x29, x30, [sp, #0x20]
+0x10045be08: add      x29, sp, #0x20
+0x10045be0c: mov      x19, x1
+0x10045be10: bl       #0x10828bd24
+0x10045be14: adrp     x8, #0x10c8e3000
+0x10045be18: ldr      x0, [x8, #0xf70]
+0x10045be1c: bl       #0x10828bb98
+0x10045be20: mov      x1, x0
+0x10045be24: mov      x0, x19
+0x10045be28: bl       #0x10828bba4
+0x10045be2c: tbz      w0, #0, #0x10045be54
+0x10045be30: mov      x0, x19
+0x10045be34: bl       #0x108313920 ; compatibilityOptions
+0x10045be38: mov      x29, x29
+0x10045be3c: bl       #0x10828bce8
+0x10045be40: mov      x21, x0
+0x10045be44: bl       #0x1083c98c0 ; hasAdLoggingData
+0x10045be48: mov      x20, x0
+0x10045be4c: bl       #0x10828bc28
+0x10045be50: b        #0x10045be58
+0x10045be54: mov      w20, #0
+0x10045be58: bl       #0x10828bc04
+0x10045be5c: mov      x0, x20
+0x10045be60: ldp      x29, x30, [sp, #0x20]
+0x10045be64: ldp      x20, x19, [sp, #0x10]
+0x10045be68: ldp      x22, x21, [sp], #0x30
+0x10045be6c: ret      
+0x10045be70: stp      x22, x21, [sp, #-0x30]!
+0x10045be74: stp      x20, x19, [sp, #0x10]
+0x10045be78: stp      x29, x30, [sp, #0x20]
+0x10045be7c: add      x29, sp, #0x20
+0x10045be80: mov      x19, x1
+0x10045be84: mov      x20, x0
+0x10045be88: bl       #0x10828bd24
+0x10045be8c: add      x0, x20, #0x20
+0x10045be90: bl       #0x10828bb5c
+0x10045be94: mov      x20, x0
+0x10045be98: mov      x2, x19
+0x10045be9c: bl       #0x107c12278
+0x10045bea0: mov      x21, x0
+0x10045bea4: bl       #0x10828bc04
+0x10045bea8: bl       #0x10828bc1c
+0x10045beac: mov      x0, x21
+0x10045beb0: ldp      x29, x30, [sp, #0x20]
+0x10045beb4: ldp      x20, x19, [sp, #0x10]
+0x10045beb8: ldp      x22, x21, [sp], #0x30
+0x10045bebc: ret      
+0x10045bec0: stp      x22, x21, [sp, #-0x30]!
+0x10045bec4: stp      x20, x19, [sp, #0x10]
+0x10045bec8: stp      x29, x30, [sp, #0x20]
+0x10045becc: add      x29, sp, #0x20
+0x10045bed0: mov      x19, x2
+0x10045bed4: bl       #0x10828bd24
+0x10045bed8: adrp     x8, #0x10c8ec000
+0x10045bedc: ldr      x0, [x8, #0x48]
+0x10045bee0: bl       #0x10828bb98
+0x10045bee4: mov      x1, x0
+0x10045bee8: mov      x0, x19
+0x10045beec: bl       #0x10828bba4
+0x10045bef0: tbz      w0, #0, #0x10045bf1c
+0x10045bef4: mov      x0, x19
+0x10045bef8: bl       #0x107c1345c
+0x10045befc: mov      x29, x29
+0x10045bf00: bl       #0x10828bce8
+0x10045bf04: mov      x21, x0
+0x10045bf08: bl       #0x107c1ad9c
+0x10045bf0c: cmp      w0, #2
+0x10045bf10: cset     w20, eq
+0x10045bf14: bl       #0x10828bc28
+0x10045bf18: b        #0x10045bf20
+0x10045bf1c: mov      w20, #0
+0x10045bf20: bl       #0x10828bc04
+0x10045bf24: mov      x0, x20
+0x107c169e8
+0x107c169e8: b        #0x108578aa0 ; setCellControllerCreationBlock:forMatchingBlock:
+0x107c169ec: b        #0x108578ba0 ; setCellLayoutMode:
+0x107c169e4
+0x107c169e4: b        #0x108578a80 ; setCellControllerCreationBlock:forKindOfEntryClass:
+0x107c169e8: b        #0x108578aa0 ; setCellControllerCreationBlock:forMatchingBlock:

@@ -1,12 +1,14 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 82 feature switches. Current packaged candidate: **0.3.30**, `YouTube-21.39.4-RVPort-0.3.30-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 82 feature switches. Current packaged candidate: **0.3.31**, `YouTube-21.39.4-RVPort-0.3.31-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
+Structural Elements ad filtering and inline-player suppression are included alongside the completed speed and Shorts work. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
+
 ## Porting progress
 
-Status reflects the merged 0.3.30 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.31 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - **not started**: no working iOS implementation; Android-only mechanisms are identified explicitly.
 - **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
@@ -18,8 +20,8 @@ Status reflects the merged 0.3.30 source. This report covers every declaration i
 
 | Patch | Description | Progress |
 |---|---|---|
-| Hide ads | Typed feed/banner filtering and native companion clearing implemented; opaque ads remain unresolved. | in-progress |
-| Video ads | Native ad coordinator and Watch ownership repair implemented; device behavior still needs confirmation. | in-progress |
+| Hide ads | Typed filtering, structural Elements ad logging, native empty-renderer/cell fallbacks and companion clearing implemented; unidentified routes and device confirmation remain. | in-progress |
+| Video ads | Native ad coordinator with verified Watch and inline-preview ownership implemented; device behavior still needs confirmation. | in-progress |
 | Copy video URL | Native Video tools copies a clean URL, with an optional timestamp. | done |
 | Remove viewer discretion dialog | Ordinary warning confirmation implemented; age, login and purchase verification stays native. | in-progress |
 | Add more double tap to seek length options | Configurable native double-tap interval implemented. | done |

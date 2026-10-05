@@ -33,8 +33,10 @@ static NSString *RVAdSetter(NSString *field) {
     return [NSString stringWithFormat:@"set%@%@:",[[field substringToIndex:1] uppercaseString],[field substringFromIndex:1]];
 }
 #include "RVShortsLayout.inc"
-static BOOL RVAdFeedKind(id item,NSString **reason) {
+#include "RVAdElements.inc"
+static BOOL RVAdFeedKind(id item,NSString **reason,RVAdDisplayState *state) {
     if (!item) return NO;
+    if (RVAdStructuralElement(item,state,@"feed_classification")) { if (reason) *reason=@"native_element_ad_logging";return YES; }
     for (RVAdField *field in RVAdFieldAccessors[NSStringFromClass([item class])]) {
         if (((BOOL(*)(id,SEL))objc_msgSend)(item,field.selector)) { if (reason) *reason=field.name;return YES; }
     }
@@ -70,10 +72,15 @@ static NSArray *RVAdFilterEntries(NSArray *entries,NSUInteger depth,RVAdFeedWalk
         walk.budget--;NSString *reason=nil;
         NSString *shorts=RVShortsRowKind(item);
         if (shorts) { RVShortsEvent(@"feed_row_removed");RVShortsEvent([@"feed_removed_" stringByAppendingString:shorts]);changed=YES;continue; }
-        if (RVEnabled(@"feed_ads") && RVAdFeedKind(item,&reason)) {
+        if (RVEnabled(@"feed_ads") && RVAdFeedKind(item,&reason,walk.state)) {
             RVAdEvent(nil,@"feed_ad_input",1);RVAdEvent(nil,@"feed_removed",1);RVAdEvent(nil,[@"feed_removed_" stringByAppendingString:reason],1);
             RVDisplayValue(walk.state,@"last_mutation",@"typed_removal");RVDisplayEvent(walk.state,@"ad_classified",1);RVDisplayEvent(walk.state,@"removed_entries",1);
-            RVDisplayValue(walk.state,@"last_rule",reason);changed=YES;continue;
+            RVDisplayValue(walk.state,@"last_rule",reason);
+            RVDisplayStructuralCheckpoint(@{@"stage":@"mutation",@"route":walk.state.values[@"route"] ?: @"array",
+                @"mutation":@"entry_removed",@"rule":reason ?: @"typed",@"surface":walk.state.surface ?: @"unknown",
+                @"root_class":NSStringFromClass([item class]),@"context_generation":@(walk.state.generation),
+                @"captured_at_epoch":@(NSDate.date.timeIntervalSince1970)});
+            changed=YES;continue;
         }
         id updated=RVAdFilterModel(item,depth+1,walk);
         if (updated!=item && RVAdBareEmptySection(updated)) { RVAdEvent(nil,@"feed_bare_section_collapsed",1);changed=YES;continue; }
@@ -84,6 +91,8 @@ static NSArray *RVAdFilterEntries(NSArray *entries,NSUInteger depth,RVAdFeedWalk
 }
 static id RVAdFilterModel(id model,NSUInteger depth,RVAdFeedWalk *walk) {
     if (!model) return model;
+    id blank=RVAdEmptyElementRoot(model,walk.state,@"model_root");
+    if (blank!=model) return blank;
     NSString *name=NSStringFromClass([model class]);NSArray *fields=RVAdFeedChildren()[name];
     if (!fields) return model;
     id cached=[walk.copies objectForKey:model];if (cached) return cached;
@@ -147,11 +156,12 @@ static void RVInstallFeed(void) {
         RVAdEvent(nil,@"feed_presence_accessors_resolved",resolved);
         @synchronized(RVAdPlaybackState.class) { RVAdHooks[[@"feed_fields " stringByAppendingString:name]]=@{ @"resolved":@(resolved),@"expected":@([RVAdFeedFields()[name] count])}; }
     }
-    RVAdFieldAccessors=accessors.copy;RVInstallDisplayAds();
+    RVAdFieldAccessors=accessors.copy;RVInstallDisplayAds();RVInstallStructuralAdCells();
     RVAdHook(@"YTIElementRenderer",@"elementData",@"@@:",NO,^id(IMP original,SEL sel) {
         RVShortsElementDataOriginal=original;
         return ^id(id object) {
             id data=((id(*)(id,SEL))original)(object,sel);
+            RVDisplayEvent(nil,@"element_data_read",1);
             if (![data isKindOfClass:NSData.class] || [data length]>2*1024*1024) return data;
             static _Thread_local BOOL makingEmpty;if (makingEmpty) return data;
             BOOL ad=RVAdElementReject(data);
@@ -199,7 +209,10 @@ static void RVInstallFeed(void) {
         return ^id(id controller,id entry,id replacement,id section,id undo,id operation) {
             RVAdFeedWalk *walk=RVAdNewWalk(controller,NO,@"replace_entry");NSString *reason=nil;id filtered=replacement;
             if (RVEnabled(@"feed_ads")) {
-                if (RVAdFeedKind(replacement,&reason)) { RVDisplayEvent(walk.state,@"unsupported_ad_replacement",1);RVDisplayValue(walk.state,@"blocked_checkpoint",@"unsupported_replacement"); }
+                if (RVAdFeedKind(replacement,&reason,walk.state)) {
+                    filtered=RVAdEmptyElementRoot(replacement,walk.state,@"replacement_root");
+                    if (filtered==replacement) { RVDisplayEvent(walk.state,@"unsupported_ad_replacement",1);RVDisplayValue(walk.state,@"blocked_checkpoint",@"unsupported_typed_replacement"); }
+                }
                 else filtered=RVAdFilterModel(replacement,0,walk);
             }
             // Do not invent native undo/removal results for an advertising root.

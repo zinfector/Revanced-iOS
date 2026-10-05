@@ -1,8 +1,8 @@
-name: Build merged speed and Shorts payload with Xcode
+name: Build Elements and inline adblock payload with Xcode
 
 on:
   push:
-    branches: [build/speed-shorts-merged-0.3.30]
+    branches: [fix/elements-inline-adblock-0.3.31]
 
 permissions:
   contents: read

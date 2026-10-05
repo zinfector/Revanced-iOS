@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.30"
+#define RV_PORT_VERSION @"0.3.31"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
