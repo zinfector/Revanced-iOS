@@ -3,7 +3,14 @@
 @interface RVAdPlaybackState : NSObject
 @property(nonatomic,weak) id controller;
 @property(nonatomic,weak) id response;
+@property(nonatomic,weak) id wrapper;
 @property(nonatomic,weak) id coordinator;
+@property(nonatomic,weak) id retiringCoordinator;
+@property(nonatomic) BOOL transitionPending;
+@property(nonatomic) BOOL transitionResetCompleted;
+@property(nonatomic) BOOL transitionAutoplayObserved;
+@property(nonatomic) BOOL transitionAutoplay;
+@property(nonatomic) NSTimeInterval lastPolicyObservation;
 @property(nonatomic,copy) NSString *video;
 @property(nonatomic,copy) NSString *requested;
 @property(nonatomic,copy) NSString *actual;
@@ -62,12 +69,15 @@ static NSDictionary *RVAdSnapshot(RVAdPlaybackState *state,NSString *trigger) {
         NSDictionary *counts=state.counts.copy ?: @{},*values=state.values.copy ?: @{};
         BOOL input=[counts[@"response_ad_items_seen"] unsignedLongLongValue]>0;
         BOOL suppressed=[counts[@"response_ad_items_suppressed"] unsignedLongLongValue]>0 ||
-            [counts[@"no_op_selected"] unsignedLongLongValue]>0;
+            ([values[@"native_no_op_selected"] boolValue] && [values[@"pointer_installed"] boolValue] && [state.actual isEqual:@"coordinator"]);
         BOOL progressed=[values[@"content_clock_progressed"] boolValue];
         BOOL ad=[values[@"playing_ad"] boolValue];
+        NSString *handoff=values[@"handoff_gate"];
         NSString *block=!RVEnabled(@"video_ads") ? @"feature_disabled" : ![state.gate isEqual:@"ready"] ?
             state.gate ?: @"playback_not_observed" : !input ? @"inconclusive_no_ad_input" : !suppressed ?
             @"suppression_not_observed" : ad ? @"unexpected_ad_playback" : !progressed ? @"content_clock_not_progressing" : @"none_detected";
+        if (RVEnabled(@"video_ads") && [state.gate isEqual:@"ready"] && handoff && ![handoff isEqual:@"ready"] &&
+            ![handoff isEqual:@"native_assignment_verified"]) block=handoff;
         return @{@"captured_at_epoch":@(NSDate.date.timeIntervalSince1970),@"trigger":trigger,
             @"video_generation":@(state.generation),@"requested_strategy":state.requested ?: @"unknown",
             @"actual_strategy":state.actual ?: @"native",@"eligibility_gate":state.gate ?: @"playback_not_observed",
@@ -78,7 +88,7 @@ static NSDictionary *RVAdSnapshot(RVAdPlaybackState *state,NSString *trigger) {
 }
 static void RVAdCapture(RVAdPlaybackState *state,NSString *trigger) {
     if (!state || !NSThread.isMainThread || !RVEnabled(@"diagnostics") || state.controller!=RVCurrentPlayback ||
-        objc_getAssociatedObject(RVCurrentPlayback,RVAdStateKey)!=state || state.response!=RVContentResponse(RVCurrentPlayback) || !RVAdWatchVisible()) return;
+        objc_getAssociatedObject(RVCurrentPlayback,RVAdStateKey)!=state || !RVAdWatchVisible()) return;
     NSTimeInterval now=NSDate.timeIntervalSinceReferenceDate;
     if ([trigger isEqual:@"clock"] && now-RVAdCaptureTime<1) return;
     RVAdCaptureTime=now;
@@ -97,19 +107,25 @@ static void RVAdCapture(RVAdPlaybackState *state,NSString *trigger) {
 }
 static NSDictionary *RVAdReport(void) {
     RVAdPlaybackState *state=objc_getAssociatedObject(RVCurrentPlayback,RVAdStateKey);
-    BOOL owned=state && state.response==RVContentResponse(RVCurrentPlayback) && [state.video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")];
+    BOOL owned=state && state.response && state.response==RVContentResponse(RVCurrentPlayback) && [state.video isEqual:RVObject(RVCurrentPlayback,"contentVideoID")];
     @synchronized(RVAdPlaybackState.class) {
-        BOOL matches=owned && RVAdLastVisible && [RVAdLastVisible[@"video_generation"] unsignedIntegerValue]==state.generation;
-        return @{@"schema":@1,@"diagnostics_revision":@"adblock-checkpoints-1",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+        BOOL matches=state && RVAdLastVisible && [RVAdLastVisible[@"video_generation"] unsignedIntegerValue]==state.generation;
+        NSString *block=!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !state ? @"controller_lease_missing" :
+            ![state.gate isEqual:@"ready"] ? state.gate ?: @"response_resolution_missing" : !owned ? @"response_owner_mismatch" :
+            !matches ? @"foreground_watch_snapshot_missing" : RVAdLastVisible[@"first_blocked_checkpoint"];
+        return @{@"schema":@2,@"diagnostics_revision":@"adblock-checkpoints-2",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
             @"diagnostics_enabled":@(RVEnabled(@"diagnostics")),@"profile_accepted":@(RVCompatible),
             @"video_ads_enabled":@(RVEnabled(@"video_ads")),@"feed_ads_enabled":@(RVEnabled(@"feed_ads")),
             @"shorts_ads_enabled":@(RVEnabled(@"shorts_ads")),@"requested_strategy":RVSetting(@"ad_strategy") ?: @"response",
-            @"hooks":RVAdHooks.copy ?: @{},@"event_counter_scope":@"session_totals; playback events reset at native factory binding",
+            @"hooks":RVAdHooks.copy ?: @{},@"event_counter_scope":@"session_totals; playback events reset at content selection or internal transition",
             @"session_events":RVAdTotals.copy ?: @{},@"last_visible_watch":RVAdLastVisible ?: @{},
-            @"last_visible_watch_matches_current_playback":@(matches),
-            @"current_factory_binding_matches_playback":@(owned),
-            @"first_blocked_checkpoint":!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !owned ? @"factory_binding_missing" :
-                !matches ? @"foreground_watch_snapshot_missing" : RVAdLastVisible[@"first_blocked_checkpoint"],
+            @"last_visible_watch_matches_current_playback":@(matches && owned),
+            @"last_visible_watch_matches_current_generation":@(matches),@"current_controller_has_lease":@(state!=nil),
+            @"factory_seen":@([RVAdTotals[@"factory_entered"] unsignedLongLongValue]>0),
+            @"factory_response_matches_current_content":@(owned && [state.values[@"factory_response_matches_controller"] boolValue]),
+            @"current_factory_binding_matches_playback":@(owned && [state.counts[@"factory_entered"] unsignedLongLongValue]>0),
+            @"current_response_lease_matches_playback":@(owned),
+            @"first_blocked_checkpoint":block,
             @"last_visible_watch_age_seconds":RVAdLastVisible ? @(MAX(0,NSDate.date.timeIntervalSince1970-[RVAdLastVisible[@"captured_at_epoch"] doubleValue])) : NSNull.null,
             @"current_playback":state ? RVAdSnapshot(state,@"report_copy") : @{},@"checkpoint_history":RVAdHistory.copy ?: @[],
             @"inspection_is_passive":@YES,@"live_DAI_coverage":@"native_passthrough",
@@ -119,5 +135,5 @@ static NSDictionary *RVAdReport(void) {
 }
 static NSString *RVAdSummary(void) {
     NSDictionary *report=RVAdReport();
-    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-1\n\n",report[@"first_blocked_checkpoint"]];
+    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-2\n\n",report[@"first_blocked_checkpoint"]];
 }

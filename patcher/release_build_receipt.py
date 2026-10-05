@@ -1,11 +1,11 @@
-"""Record 0.3.23 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.24 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.23'
+VERSION = '0.3.24'
 
 
 def main():
@@ -38,6 +38,7 @@ def main():
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth', '-SideStore-auth-native-ads')]
     names += ['native/RVAds.inc', 'native/RVAdFeed.inc', 'native/RVAdsDiagnostics.inc', 'configs/adblock-native.json', 'ADBLOCK_IMPLEMENTATION.md', 'ADBLOCK_PORT_SCHEME.md', 'profiles/adblock-port-evidence.json', 'profiles/adblock-implementation-evidence.json', 'profiles/adblock-merge-0.3.23.json']
+    names += ['native/RVAdCoordinator.inc', 'ADBLOCK_HANDOFF_SCHEME.md', 'ADBLOCK_HANDOFF_IMPLEMENTATION.md', 'profiles/adblock-handoff-evidence.json', 'profiles/adblock-handoff-implementation-evidence.json', 'profiles/adblock-handoff-decompiled.txt', 'profiles/device-adblock-report-1251.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -62,7 +63,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.23 merges recorded-watch ad response filtering, scoped native no-op coordinator selection, typed feed and Shorts filters, and redacted ad checkpoints. New ad behavior requires device confirmation. Login, SponsorBlock, speed and first-launch vote presentation implementations are preserved from the user-confirmed 0.3.22 base. No tests run.'}
+        'remaining_scope': '0.3.24 adds native selection/reuse handling and a guarded internal-transition coordinator handoff, runtime ARC ownership validation, exact response leases and ad checkpoint revision 2. Active-ad or cleanup-unproven changes are deferred. New ad behavior requires device confirmation. Login, SponsorBlock, speed and first-launch vote presentation implementations are preserved from the user-confirmed 0.3.22 base. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

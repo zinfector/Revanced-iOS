@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "version": "0.3.24",
+  "base_commit": "4a9a8124a70dc61ffdc28e2001a6ea14320fe495",
+  "target_youtube_version": "21.39.4",
+  "tests_run": false,
+  "device_handoff_verified": false,
+  "report": "device-adblock-report-1251.json",
+  "scheme": "adblock-handoff-evidence.json",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "report_does_not_prove_nil_factory_argument": true,
+  "implemented": [
+    "native selector scoped cached recreation",
+    "native original factory and original delegate",
+    "late response lease refresh",
+    "settings/player/clock pending request",
+    "reset-observed internal transition with native initialization",
+    "runtime named strong ivar assignment",
+    "published pointer verification",
+    "rejected candidate reset",
+    "retired-generation callback diagnostics"
+  ],
+  "deferred": [
+    "active ad",
+    "unknown ad state",
+    "unproven transition cleanup",
+    "ownership/ABI mismatch",
+    "generation/response/pointer mismatch"
+  ],
+  "diagnostics_revision": "adblock-checkpoints-2",
+  "preserved_native_sources": {
+    "RVAuthentication.inc": {
+      "base_blob_sha256": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+      "content_preserved": true
+    },
+    "RVAuthenticationSupport.h": {
+      "base_blob_sha256": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+      "content_preserved": true
+    },
+    "RVSpeed.inc": {
+      "base_blob_sha256": "27c3e6ebf4c96d6b0b7bd9dd366d925f38285e8989a30ecc8c03f61b080ba94a",
+      "content_preserved": true
+    },
+    "RVSpeedBridge.inc": {
+      "base_blob_sha256": "7ff98cdf40e4fb0a526bf840ed32202122a7917b2af88071ef102cd336bd9e42",
+      "content_preserved": true
+    },
+    "RVSpeedDiagnostics.inc": {
+      "base_blob_sha256": "11ef11c58684063bda1cd444e7d64aa455bddf94b9c3ada63a9fe1e3fc2ffa8b",
+      "content_preserved": true
+    },
+    "RVVoteFirstLaunch.inc": {
+      "base_blob_sha256": "19d0bd248b38d3f6ebecee3c624422afec87a2b330a02921d0818c94a0093a98",
+      "content_preserved": true
+    },
+    "RVVoteModel.inc": {
+      "base_blob_sha256": "0337ef825b478534f1d9102ffec8a0f6b31dd4c921797f817a8ec8e1cf89c431",
+      "content_preserved": true
+    },
+    "RVVoteLifecycle.inc": {
+      "base_blob_sha256": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+      "content_preserved": true
+    },
+    "RVVoteLayoutCompatibility.inc": {
+      "base_blob_sha256": "26ea55db7eefc2180e6ccad180850fc839808964d8ddd19ec72b27dd0014c2f2",
+      "content_preserved": true
+    },
+    "RVElementDislikes.inc": {
+      "base_blob_sha256": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
+      "content_preserved": true
+    },
+    "RVNativeDislikes.inc": {
+      "base_blob_sha256": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+      "content_preserved": true
+    },
+    "RVDislikesUI.inc": {
+      "base_blob_sha256": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
+      "content_preserved": true
+    },
+    "RVDislikesDiagnostics.inc": {
+      "base_blob_sha256": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
+      "content_preserved": true
+    },
+    "RVAdFeed.inc": {
+      "base_blob_sha256": "67725bac16c70fb2f59136723e3d0435710bbf40d782f0ee6c48bd70a7eb13f5",
+      "content_preserved": true
+    },
+    "RVMiniplayer.inc": {
+      "base_blob_sha256": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+      "content_preserved": true
+    }
+  },
+  "native_method_provenance": [
+    {
+      "class": "YTAdsControlFlowPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1015bb8c0"
+    },
+    {
+      "class": "YTAdsControlFlowPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015bc624"
+    },
+    {
+      "class": "YTGaplessPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1080555f8"
+    },
+    {
+      "class": "YTGaplessPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015c1bbc"
+    },
+    {
+      "class": "YTNoOpAdsPlaybackCoordinator",
+      "kind": "-",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "encoding": "B24@0:8@16",
+      "imp": "0x1015c3914"
+    },
+    {
+      "class": "YTNoOpAdsPlaybackCoordinator",
+      "kind": "-",
+      "selector": "reset",
+      "encoding": "v16@0:8",
+      "imp": "0x1015c39d0"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "initWithParentResponder:overlayFactory:playerView:playbackControllerDelegate:viewportSizeProvider:recompositeProvider:shouldDelayAdsPlaybackCoordinatorCreation:shouldEnableMediaDrivenPrefetch:enablePictureInPictureSupport:",
+      "encoding": "@76@0:8@16@24@32@40@48@56B64B68B72",
+      "imp": "0x1004c0568"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData:",
+      "encoding": "v48@0:8@16@24@32@40",
+      "imp": "0x104180200"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "didTransitionToContentSequenceForVideoSequencer:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x104180430"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "resetWithCurrentVideoSequencer",
+      "encoding": "v16@0:8",
+      "imp": "0x104180684"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "startPlaybackWithVideoResolver:",
+      "encoding": "v24@0:8@16",
+      "imp": "0x104184118"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "adsPlaybackCoordinatorForNewPlayback",
+      "encoding": "@16@0:8",
+      "imp": "0x1041848e4"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "resetToState:stoppageReason:",
+      "encoding": "v24@0:8i16i20",
+      "imp": "0x104184988"
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "adsPlaybackCoordinator",
+      "encoding": "@16@0:8",
+      "imp": "0x104187170"
+    }
+  ],
+  "fixed_runtime_addresses": false,
+  "initial_native_assignment": "original startPlaybackWithVideoResolver caller",
+  "transition_assignment": "object_setIvarWithStrongDefault after runtime layout verification",
+  "coordinator_behavior_requires_diagnostics": false
+}

@@ -258,6 +258,7 @@ static void RVExtraSetPlayer(id player,id controller) {
     id nativeController=RVPlaybackForPlayer(player);
     BOOL changed=RVCurrentPlayer!=player || RVCurrentPlayback!=nativeController;
     RVCurrentPlayer=player;RVCurrentPlayback=nativeController;
+    RVAdRequestCoordinatorPolicy(nativeController,@"content_player_bound");
     if (changed) {
         RVSponsorCount(@"player_bound");
         RVSponsorValue(@"controller_resolved",@(nativeController!=nil));

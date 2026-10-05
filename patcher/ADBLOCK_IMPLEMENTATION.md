@@ -1,5 +1,7 @@
 # Ad-block implementation and checkpoints
 
+Latest: 0.3.24 adds selection/reuse and a guarded transition handoff. See [ADBLOCK_HANDOFF_IMPLEMENTATION.md](ADBLOCK_HANDOFF_IMPLEMENTATION.md). The 0.3.23 merge record below remains the provenance for response, feed and Shorts filtering.
+
 The source now implements the supported player, typed-feed, and Shorts adapters from [the port scheme](ADBLOCK_PORT_SCHEME.md). Runtime behavior is not yet confirmed on a device. No tests were run.
 
 ## Changes

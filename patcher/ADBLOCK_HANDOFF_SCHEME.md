@@ -1,5 +1,7 @@
 # Coordinator replacement throughout the playback lifecycle
 
+Implemented in 0.3.24: [runtime paths, limits and checkpoint guide](ADBLOCK_HANDOFF_IMPLEMENTATION.md). The original research/design record follows.
+
 Status: implementation scheme for YouTube 21.39.4, based on read-only native research and Adblock Report 1251. No runtime changes or new IPA are delivered by this document. No tests were run.
 
 The design accepts an ad-policy request at any time and replaces the actual controller-owned coordinator when the native playback lifecycle permits it. Initial selection, cached reuse, and internal transitions need separate handling. A request during an active ad or an unverified transition remains pending; arbitrary mutation in the middle of an ad is not established as safe by the current evidence.
