@@ -8,7 +8,7 @@ static NSNumber *RVPreferenceParseNumber(NSString *text) {
     double value;
     return [scanner scanDouble:&value] && scanner.isAtEnd && isfinite(value) ? @(value) : nil;
 }
-static void RVPreferencesChanged(void) { RVSPRefreshUI();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged(); }
+static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigation();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged(); }
 
 @interface RVPreferenceTextController : RVSettingsContentController
 @property(nonatomic,strong) UITextView *editor;
@@ -191,7 +191,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVRefreshShortcuts();RV
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":@"0.3.29",@"release_flavor":@"merged-adblock-ownership",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
+        NSDictionary *report=@{@"patcher_version":@"0.3.29",@"release_flavor":@"merged-adblock-ownership",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -210,6 +210,10 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVRefreshShortcuts();RV
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy SponsorBlock prompt checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSData *data=[NSJSONSerialization dataWithJSONObject:RVSPReport() options:NSJSONWritingPrettyPrinted error:nil];
+        if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Copy Shorts layout checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSData *data=[NSJSONSerialization dataWithJSONObject:RVShortsReport() options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];

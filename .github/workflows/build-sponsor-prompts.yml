@@ -1,8 +1,8 @@
-name: Build SponsorBlock payload with Xcode
+name: Build Shorts layout payload with Xcode
 
 on:
   push:
-    branches: [build/sponsor-prompts-xcode-0.3.26]
+    branches: [build/shorts-layout-xcode-0.3.27]
 
 permissions:
   contents: read
