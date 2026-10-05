@@ -91,7 +91,7 @@ static void RVDislikeCaptureCheckpoint(NSString *trigger) {
 static NSDictionary *RVDislikeCheckpointReport(void) {
     BOOL enabled=RVEnabled(@"diagnostics");
     BOOL current=RVDislikeLastVisibleCheckpoint && [RVDislikeLastVisibleCheckpoint[@"video_generation"] unsignedIntegerValue]==RVDislikeGeneration;
-    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-8",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-9",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"report_captured_at":RVDislikeCheckpointDate(),@"diagnostics_enabled":@(enabled),
         @"video_generation":@(RVDislikeGeneration),@"last_visible_watch_matches_current_video":@(current),
         @"last_visible_watch_age_seconds":RVDislikeLastVisibleCheckpoint ? @(MAX(0,NSDate.timeIntervalSinceReferenceDate-RVDislikeLastVisibleTime)) : NSNull.null,
@@ -102,7 +102,7 @@ static NSDictionary *RVDislikeCheckpointReport(void) {
 }
 static NSString *RVDislikeCheckpointSummary(void) {
     NSDictionary *report=RVDislikeCheckpointReport();NSDictionary *service=report[@"last_visible_watch"][@"service"];
-    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-8\n\n",
+    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-9\n\n",
         report[@"first_blocked_checkpoint"],service[@"fetch_state"] ?: @"not recorded",service[@"http_status"] ?: @0,
         [report[@"last_visible_watch_matches_current_video"] boolValue] ? @"yes" : @"no"];
 }

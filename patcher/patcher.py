@@ -34,7 +34,7 @@ DEFAULTS = {'schema': 1, **{f: False for f in FEATURES}, 'video_ads': True,
             'thumbnail_proxy_url':'', 'dearrow_url':'https://dearrow-thumb.ajay.app/api/v1/getThumbnail',
             'sponsor_behaviors':{}, 'sponsor_colors':{}, 'sponsor_min_duration':0.0,
             'thumbnail_modes':{}, 'theme_light_background':'', 'theme_dark_background':''}
-DEFAULTS.update(paired_vote_buttons=True,wifi_quality=-1,cellular_quality=-1,miniplayer_min_dimension_points=0,miniplayer_overlay_opacity=1.0)
+DEFAULTS.update(paired_vote_buttons=True,first_launch_ui=True,wifi_quality=-1,cellular_quality=-1,miniplayer_min_dimension_points=0,miniplayer_overlay_opacity=1.0)
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 def file_sha(path):
@@ -183,7 +183,7 @@ def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
         if info.get('CFBundleIdentifier')!=p['bundle'] or info.get('CFBundleShortVersionString')!=p['version'] or image.uuid!=p['uuid'] or sha(binary)!=p['executable_sha256']:
             raise PatchError('Unsupported app version or executable hash; no output produced')
         binary = inject_library(binary, LOAD_PATH)
-        marker = {'patcher_version': '0.3.21', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
+        marker = {'patcher_version': '0.3.22', 'profile': p['id'], 'bundle': p['bundle'], 'version': p['version'],
                   'uuid': p['uuid'], 'input_ipa_sha256': file_sha(ipa),
                   'original_executable_sha256': p['executable_sha256'], 'patched_executable_sha256': sha(binary),
                   'payload_sha256': sha(library), 'config': c, 'signing_required': True,

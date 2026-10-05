@@ -1,11 +1,11 @@
-"""Record 0.3.21 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.22 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.21'
+VERSION = '0.3.22'
 
 
 def main():
@@ -33,6 +33,7 @@ def main():
     names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
     names += ['native/RVVoteLayoutCompatibility.inc', 'VOTE_LAYOUT_SCHEME.md', 'profiles/vote-layout-compatibility-evidence.json', 'profiles/device-report-823-vote-layout.json']
     names += ['native/RVVoteModel.inc', 'native/RVVoteLifecycle.inc', 'VOTE_COUNTER_FIX_SCHEME.md', 'VOTE_STARTUP_INVESTIGATION.md', 'profiles/vote-model-implementation-evidence.json', 'profiles/vote-startup-investigation.json', 'profiles/vote-counter-fix-scheme.json']
+    names += ['native/RVVoteFirstLaunch.inc', 'FIRST_LAUNCH_UI_SCHEME.md', 'profiles/first-launch-ui-evidence.json']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}
@@ -43,7 +44,7 @@ def main():
         artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 81, 'runtime_preferences': 115,
+        'feature_switches': 82, 'runtime_preferences': 116,
         'build_only': True, 'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
@@ -59,7 +60,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.21 normalizes supported watch vote presentation models to native paired controls, preserves native like entities/commands, binds native typography, and refreshes after component recreation. Opaque/shared templates and missing native count contracts retain original controls with explicit diagnostic gates. Device confirmation remains pending. Authentication, SponsorBlock and the user-confirmed speed implementation are preserved. No tests run.'}
+        'remaining_scope': '0.3.22 applies a reversible process default-cold-config/template-context policy each launch. It affects all native cold experiment defaults and still needs paired-row device confirmation. It also normalizes supported watch vote presentation models to native paired controls, preserves native like entities/commands, binds native typography, and refreshes after component recreation. Opaque/shared templates and missing native count contracts retain original controls with explicit diagnostic gates. Device confirmation remains pending. Authentication, SponsorBlock and the user-confirmed speed implementation are preserved. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

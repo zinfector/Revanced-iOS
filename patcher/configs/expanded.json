@@ -170,5 +170,6 @@
   "miniplayer_min_dimension_points": 0,
   "miniplayer_overlay_opacity": 1.0,
   "miniplayer_hide_overlay_buttons": false,
-  "paired_vote_buttons": true
+  "paired_vote_buttons": true,
+  "first_launch_ui": true
 }

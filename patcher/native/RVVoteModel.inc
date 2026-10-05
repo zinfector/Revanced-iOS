@@ -6,6 +6,7 @@ static NSMutableDictionary *RVVoteStartupState;
 static NSMutableArray *RVVoteStartupHistory;
 static _Thread_local unsigned int RVVoteModelDepth;
 static const void *RVVoteNormalizedKey=&RVVoteNormalizedKey;
+static NSDictionary *RVVoteFirstLaunchReport(void);
 static void RVVoteCompositionChanged(id component,NSString *reason);
 static BOOL RVVotePairEnabled(void) { return RVEnabled(@"return_dislikes") && RVEnabled(@"paired_vote_buttons"); }
 static void RVVoteRecord(NSString *event,NSDictionary *values) {
@@ -280,7 +281,7 @@ static NSDictionary *RVVoteModelReport(void) {
         return @{@"schema":@1,@"enabled":@(RVVotePairEnabled()),@"strategy":@"native_watch_model_pair_normalization",
             @"observation_scope":@"latest_supported_model_in_process",@"first_blocked_model_checkpoint":blocked,
             @"state":RVVoteModelState.copy ?: @{},@"counts":RVVoteModelCounts.copy ?: @{},@"history":RVVoteModelHistory.copy ?: @[],
-            @"startup":RVVoteStartupState.copy ?: @{},@"startup_history":RVVoteStartupHistory.copy ?: @[],@"device_verified":@NO};
+            @"first_launch_policy":RVVoteFirstLaunchReport(),@"startup":RVVoteStartupState.copy ?: @{},@"startup_history":RVVoteStartupHistory.copy ?: @[],@"device_verified":@NO};
     }
 }
 static NSData *RVVoteNormalizeSerialized(NSData *data,NSString *modelClass) {
@@ -306,14 +307,20 @@ static void RVVoteStartup(NSString *event,NSDictionary *values) {
         [RVVoteStartupHistory addObject:@{@"event":event,@"elapsed_ms":@(MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-RVVoteLayoutStarted))),@"values":values}];
     }
 }
+#include "RVVoteFirstLaunch.inc"
 static void RVInstallVoteStartup(void) {
-    RVHook(@"YTColdConfigStorage",@"loadColdConfigGroupFromBlobStorage:dataKey:",@"@@:@@",YES,^id(IMP original,SEL sel) {
+    RVInstallVoteFirstLaunch();
+    BOOL loadInstalled=RVHook(@"YTColdConfigStorage",@"loadColdConfigGroupFromBlobStorage:dataKey:",@"@@:@@",YES,^id(IMP original,SEL sel) {
         return ^id(id cls,id store,id key) {
             id group=((id(*)(id,SEL,id,id))original)(cls,sel,store,key);
             if (RVEnabled(@"diagnostics")) {
                 NSData *bytes=RVObject(group,"data");
-                RVVoteStartup(@"cold_config_loaded",@{@"group_fingerprint":RVVoteDigest(bytes),@"group_empty":@(bytes.length==0),@"group_bytes":@(bytes.length)});
-            }return group;
+                NSData *effective=RVVoteFirstLaunchReady ? RVObject(RVVoteFirstLaunchGroup,"data") : bytes;
+                RVVoteStartup(@"cold_config_loaded",@{@"source_group_fingerprint":RVVoteDigest(bytes),@"source_group_bytes":@(bytes.length),
+                    @"group_fingerprint":RVVoteDigest(effective),@"group_empty":@(effective.length==0),@"group_bytes":@(effective.length),@"first_launch_applied":@(RVVoteFirstLaunchReady)});
+            }
+            if (RVVoteFirstLaunchReady) { RVVoteFirstLaunchCheckpoint(@"loaded_group_replaced",@{@"loaded_group_defaults":@YES});return RVVoteFirstLaunchGroup; }
+            return group;
         };
     });
     RVHook(@"YTColdConfigStorage",@"saveToBlobStoreColdConfig:hash:error:",@"B@:@@^@",NO,^id(IMP original,SEL sel) {
@@ -328,17 +335,27 @@ static void RVInstallVoteStartup(void) {
             id info=((id(*)(id,SEL,BOOL,NSInteger))original)(factory,sel,send,service);
             if (RVEnabled(@"diagnostics")) {
                 id config=RVObject(info,"configInfo"),cold=RVObject(config,"coldConfigData");
+                id hash=RVObject(config,"coldHashData");
+                BOOL defaults=(![cold respondsToSelector:@selector(length)] || ![cold length]) &&
+                    (![hash respondsToSelector:@selector(length)] || ![hash length]);
+                RVVoteFirstLaunchCheckpoint(@"request_checked",@{@"request_cold_defaults":@(defaults),@"request_service_type":@(service)});
+                if (RVVoteFirstLaunchReady && !defaults) RVVoteFirstLaunchCheckpoint(@"request_cold_present",nil);
                 RVVoteStartup(@"request_configuration",@{@"cold_data_present":@([cold respondsToSelector:@selector(length)] && [cold length]>0),@"cold_data_fingerprint":RVVoteDigest(cold),@"cold_hash_fingerprint":RVVoteDigest(RVObject(config,"coldHashData")),@"service_type":@(service)});
             }return info;
         };
     });
-    RVHook(@"YTElementUpdateHandler",@"emlTemplateServingContext",@"@@:",NO,^id(IMP original,SEL sel) {
+    BOOL servingInstalled=RVHook(@"YTElementUpdateHandler",@"emlTemplateServingContext",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id handler) {
             id context=((id(*)(id,SEL))original)(handler,sel);
-            if (RVEnabled(@"diagnostics")) RVVoteStartup(@"elements_serving_context",@{@"context_present":@([context respondsToSelector:@selector(length)] && [context length]>0),@"context_fingerprint":RVVoteDigest(context)});
-            return context;
+            id effective=RVVoteFirstLaunchReady ? nil : context;
+            if (RVEnabled(@"diagnostics")) RVVoteStartup(@"elements_serving_context",@{@"source_context_present":@([context respondsToSelector:@selector(length)] && [context length]>0),
+                @"context_present":@([effective respondsToSelector:@selector(length)] && [effective length]>0),@"context_fingerprint":RVVoteDigest(effective),@"first_launch_applied":@(RVVoteFirstLaunchReady)});
+            RVVoteFirstLaunchCheckpoint(@"serving_context_read",@{@"template_context_defaults":@(RVVoteFirstLaunchReady)});
+            return effective;
         };
     });
+    RVVoteFirstLaunchReady=RVVoteFirstLaunchReady && loadInstalled && servingInstalled;
+    RVVoteFirstLaunchCheckpoint(@"startup_hooks_ready",@{@"load_hook_ready":@(loadInstalled),@"serving_context_hook_ready":@(servingInstalled),@"policy_ready":@(RVVoteFirstLaunchReady)});
 }
 static void RVInstallVoteModel(void) {
     RVInstallVoteStartup();
@@ -347,6 +364,7 @@ static void RVInstallVoteModel(void) {
             return ^id(id object) {
                 id data=((id(*)(id,SEL))original)(object,sel);
                 if (!RVVotePairEnabled() || RVVoteModelDepth || ![data isKindOfClass:NSData.class] || [data length]>2*1024*1024) return data;
+                RVVoteRecord(@"native_serialization_entered",@{@"serialized_model_class":modelClass});
                 RVVoteModelDepth++;NSData *next=data;
                 @try { next=RVVoteNormalizeSerialized(data,modelClass); }
                 @catch (NSException *exception) { RVVoteRecord(@"normalization_skipped",@{@"normalization_gate":@"serialized_contract_exception"}); }

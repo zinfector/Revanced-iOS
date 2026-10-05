@@ -1,3 +1,5 @@
+Latest device candidate: **0.3.22**. Use `YouTube-21.39.4-RVPort-0.3.22-SideStore-auth-unsigned.ipa`. **Return YouTube Dislike > Keep first-launch UI** defaults on and bypasses saved cold configuration in memory each launch. Saved data remains intact. It affects native cold experiment defaults across the app; restart after changing the switch. Device layout confirmation is pending. See [the scheme and checkpoints](FIRST_LAUNCH_UI_SCHEME.md). No tests run.
+
 # YouTube iOS Patcher 0.3.15
 
 Version 0.3.15 addresses the mounting failure confirmed by foreground RYD Report 615. It mounts count text inside the existing native dislike button, using native subnodes when their contexts match and an owned noninteractive UILabel fallback otherwise. Foreground checkpoints distinguish the rendering modes and remaining constraints. New count display remains device-unverified. Authentication, SponsorBlock and the packaged parallel settings UI are retained. No tests run.

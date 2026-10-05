@@ -1,8 +1,14 @@
+Latest: **0.3.22** adds **Keep first-launch UI**, enabled by default under Return YouTube Dislike. It uses default cold configuration and absent template-serving context each launch, preserving saved files. The policy affects native cold experiment defaults across the app and requires a full restart after changes. Device layout remains unverified. No tests run.
+
+See [FIRST_LAUNCH_UI_SCHEME.md](FIRST_LAUNCH_UI_SCHEME.md) for implementation scope and exact `vote_model.first_launch_policy` checkpoints. Install `YouTube-21.39.4-RVPort-0.3.22-SideStore-auth-unsigned.ipa`. Confirm `ryd-checkpoints-9` and the new release fingerprint. Serializer `native_serialization_entered` is now counted even when projection bytes do not change.
+
+## Previous model implementation
+
 Latest: **0.3.21** replaces unused experiment overrides with native watch model normalization. The setting **Return YouTube Dislike > Paired vote buttons** defaults on. Reopen the video after changing it. Login, SponsorBlock and native speed behavior are preserved. No tests were run; device behavior remains unverified.
 
 ## New model and restart checkpoints
 
-Capture one report after deleting/reinstalling and another after force-quitting/reopening the same installed app. Use the same ordinary video and capture its row before opening Settings. The delivered IPA is `YouTube-21.39.4-RVPort-0.3.21-SideStore-auth-unsigned.ipa`; diagnostic revision is `ryd-checkpoints-8`. Confirm the build fingerprint against `profiles/release-0.3.21.json`.
+Capture one report after deleting/reinstalling and another after force-quitting/reopening the same installed app. Use the same ordinary video and capture its row before opening Settings. The delivered IPA is `YouTube-21.39.4-RVPort-0.3.21-SideStore-auth-unsigned.ipa`; diagnostic revision is `ryd-checkpoints-9`. Confirm the build fingerprint against `profiles/release-0.3.21.json`.
 
 Read `return_youtube_dislike.vote_model` in full diagnostics, or `last_visible_watch.vote_model` in the dedicated report. Model observations are the latest supported model in the process; rendering snapshots remain video-bound.
 
@@ -33,11 +39,11 @@ Report 635 and the screenshot confirm the 0.3.15 count mounts and draws. Its his
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-8`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-9`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-8**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-9**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.

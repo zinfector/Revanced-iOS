@@ -1,0 +1,35 @@
+{
+  "version": "0.3.22",
+  "base_commit": "3cdef98",
+  "device_verified": false,
+  "tests_run": false,
+  "report": "Report 1046.txt",
+  "report_launch": 2,
+  "reported_version": "0.3.21",
+  "observed_active_components": [
+    "compactify_video_action_bar",
+    "like_button_with_vm_input",
+    "like_button",
+    "dislike_button_vm",
+    "animated_like_icon"
+  ],
+  "policy": "process_default_cold_config_and_template_context",
+  "scope": "All native cold experiment defaults; not an identified per-vote experiment. Saved configuration and account storage retained.",
+  "native_absent_blob_default": "YTIColdConfigGroup +message",
+  "addresses": {
+    "storage_loader": "0x1000e574c",
+    "storage_group_getter": "0x100192f44",
+    "config_group_getter": "0x1000e4f7c",
+    "config_data": "0x1002606bc",
+    "stored_config_hash": "0x100260710",
+    "storage_hash": "0x100260750",
+    "request_factory": "0x10024e10c"
+  },
+  "diagnostics_revision": "ryd-checkpoints-9",
+  "limitations": [
+    "Account and hot configuration are retained; server presentation may still vary.",
+    "No paired-row device confirmation.",
+    "Downloaded template resources are not removed.",
+    "Actual paired-template checkpoints remain distinct from applied default-input checkpoints."
+  ]
+}
