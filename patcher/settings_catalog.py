@@ -3,7 +3,7 @@ import json
 from features import CATALOG
 
 GROUPS = [
-    ('ads','Ads','Reopen the video or feed after changing ad filters.', 'video_ads feed_ads shorts_ads'),
+    ('ads','Ads','Feed ads also controls sponsored cards and below-video banners. Reopen the affected screen after changing filters.', 'video_ads feed_ads shorts_ads'),
     ('player','Player','Playback changes apply when the next video is opened.', 'background_playback picture_in_picture loop_video pause_on_interrupt disable_auto_captions force_original_audio open_videos_fullscreen exit_fullscreen_end custom_speed_menu remember_speed'),
     ('video','Video quality','Resolution caps filter available formats. Reopen the video to apply them.', 'advanced_quality_menu hide_premium_quality remember_quality disable_hdr disable_vp9'),
     ('shorts','Shorts','Navigation changes may need a relaunch. The app-icon shortcut can be cached by iOS.', 'hide_shorts hide_shorts_navigation disable_shorts_resume shorts_autoplay open_shorts_regular hide_shorts_shortcut'),

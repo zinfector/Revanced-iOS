@@ -54,6 +54,7 @@ static BOOL RVAdHook(NSString *cls,NSString *selector,NSString *abi,BOOL classMe
     }
     return installed;
 }
+#include "RVAdDisplayDiagnostics.inc"
 static BOOL RVAdWatchVisible(void) {
     UIViewController *watch=RVCurrentWatch;
     if (![watch isKindOfClass:UIViewController.class] || !watch.viewIfLoaded.window) return NO;
@@ -113,12 +114,12 @@ static NSDictionary *RVAdReport(void) {
         NSString *block=!RVEnabled(@"diagnostics") ? @"diagnostics_disabled" : !state ? @"controller_lease_missing" :
             ![state.gate isEqual:@"ready"] ? state.gate ?: @"response_resolution_missing" : !owned ? @"response_owner_mismatch" :
             !matches ? @"foreground_watch_snapshot_missing" : RVAdLastVisible[@"first_blocked_checkpoint"];
-        return @{@"schema":@2,@"diagnostics_revision":@"adblock-checkpoints-2",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+        return @{@"schema":@3,@"diagnostics_revision":@"adblock-checkpoints-3",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
             @"diagnostics_enabled":@(RVEnabled(@"diagnostics")),@"profile_accepted":@(RVCompatible),
             @"video_ads_enabled":@(RVEnabled(@"video_ads")),@"feed_ads_enabled":@(RVEnabled(@"feed_ads")),
             @"shorts_ads_enabled":@(RVEnabled(@"shorts_ads")),@"requested_strategy":RVSetting(@"ad_strategy") ?: @"response",
             @"hooks":RVAdHooks.copy ?: @{},@"event_counter_scope":@"session_totals; playback events reset at content selection or internal transition",
-            @"session_events":RVAdTotals.copy ?: @{},@"last_visible_watch":RVAdLastVisible ?: @{},
+            @"session_events":RVAdTotals.copy ?: @{},@"display_ads":RVDisplayReport(),@"last_visible_watch":RVAdLastVisible ?: @{},
             @"last_visible_watch_matches_current_playback":@(matches && owned),
             @"last_visible_watch_matches_current_generation":@(matches),@"current_controller_has_lease":@(state!=nil),
             @"factory_seen":@([RVAdTotals[@"factory_entered"] unsignedLongLongValue]>0),
@@ -135,5 +136,5 @@ static NSDictionary *RVAdReport(void) {
 }
 static NSString *RVAdSummary(void) {
     NSDictionary *report=RVAdReport();
-    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-2\n\n",report[@"first_blocked_checkpoint"]];
+    return [NSString stringWithFormat:@"Ad-block checkpoint: %@\nDiagnostics: adblock-checkpoints-3\n\n",report[@"first_blocked_checkpoint"]];
 }

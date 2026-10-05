@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "version": "0.3.25",
+  "base_commit": "e0a6197",
+  "scheme": "ADBLOCK_DISPLAY_SCHEME.md",
+  "native_research": "adblock-display-evidence.json",
+  "typed_ad_fields": 52,
+  "traversal_container_and_union_classes": 8,
+  "implemented": [
+    "typed_grid_horizontal_shelf",
+    "native_insert_arrays",
+    "legacy_companion_setter",
+    "scoped_elements_section_clear",
+    "scoped_provider_empty_update",
+    "nested_replacement_filter",
+    "display_checkpoints_3"
+  ],
+  "preserved": [
+    "RVAdCoordinator.inc",
+    "RVAds.inc",
+    "RVAuthentication.inc",
+    "RVExtras.inc",
+    "RVSpeed.inc",
+    "RVSpeedBridge.inc",
+    "RVVoteFirstLaunch.inc",
+    "RVVoteModel.inc",
+    "RVVoteLifecycle.inc",
+    "RVNativeDislikes.inc",
+    "RVElementDislikes.inc"
+  ],
+  "remaining": [
+    "opaque_home_roots",
+    "generic_header_masthead",
+    "advertising_replacement_remove_undo_contract",
+    "already_bound_home_slot_teardown"
+  ],
+  "tests_run": false,
+  "gui_smoke_test_run": false,
+  "static_hook_check_run": false,
+  "device_banner_verified": false,
+  "build_status": "Local ARM64 compilation succeeded; exact cloud build and IPA hashes recorded separately in the release receipt.",
+  "native_source_sha256": {
+    "RVAdDisplay.inc": "26b36df8da42357aca4232fd2dfa5b6de4683b8943945b75ef03e9585a6f12d3",
+    "RVAdDisplayDiagnostics.inc": "26c3ac0925980e5f14085ec36c63d0b760207b6344b93ca1d64fd14b156e87bd",
+    "RVAdFeed.inc": "e180bbc373aa86193ca13d919e6ba46425049497700091480e21d0dc63a8c0a8",
+    "RVAdsDiagnostics.inc": "e68b7a12a557f352cad688fcdac6e8b8918bdd8c45980f1699085ce58bcd4a88",
+    "RVAdCoordinator.inc": "9ac46b4dc3fe84a958c88b968803c8a928bdba863fe6a0816f49a85e3473fcc0",
+    "RVAds.inc": "6fabef484a57c2b216b562b56ab0526e9aaf092e83b96b215e862e8e195d8d26",
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVExtras.inc": "7565f867843c480c7a314e01934981ae173685077f7f49d8790f3cd89600cc4f",
+    "RVSpeed.inc": "27c3e6ebf4c96d6b0b7bd9dd366d925f38285e8989a30ecc8c03f61b080ba94a",
+    "RVSpeedBridge.inc": "7ff98cdf40e4fb0a526bf840ed32202122a7917b2af88071ef102cd336bd9e42",
+    "RVVoteFirstLaunch.inc": "19d0bd248b38d3f6ebecee3c624422afec87a2b330a02921d0818c94a0093a98",
+    "RVVoteModel.inc": "0337ef825b478534f1d9102ffec8a0f6b31dd4c921797f817a8ec8e1cf89c431",
+    "RVVoteLifecycle.inc": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+    "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+    "RVElementDislikes.inc": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea"
+  }
+}
