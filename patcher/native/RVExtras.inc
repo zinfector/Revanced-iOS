@@ -321,6 +321,7 @@ static void RVExtraObserve(id controller) {
 
 #include "RVDislikesUI.inc"
 #include "RVSpeedBridge.inc"
+#include "RVVoteLayoutCompatibility.inc"
 #include "RVElementDislikes.inc"
 #include "RVNativeDislikes.inc"
 #include "RVDislikesDiagnostics.inc"

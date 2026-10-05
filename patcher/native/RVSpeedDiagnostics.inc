@@ -72,7 +72,7 @@ static NSDictionary *RVSpeedCheckpointReport(void) {
         else if ([last[@"outcome"] isEqual:@"native_rate_confirmed"]) status=@"native_model_confirmed";
         else status=last[@"outcome"] ?: @"readback_not_confirmed";
     }
-    return @{@"schema":@1,@"patcher_version":@"0.3.19",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+    return @{@"schema":@1,@"patcher_version":@"0.3.20",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"session_id":RVSpeedSessionID ?: @"unavailable",@"launch_number":@(RVSpeedLaunchNumber),
         @"enabled":@(RVEnabled(@"diagnostics")),@"clock":@"monotonic_milliseconds_since_hook_install",
         @"event_capacity":@256,@"selection_capacity":@12,@"picker_count":@(RVSpeedPickerID),

@@ -1,14 +1,16 @@
 # Return YouTube Dislike checkpoints
 
+Latest: 0.3.20 adds native-pair and native-like-text detection plus per-launch experiment read diagnostics. Report 823 passed dislike rendering while showing a different native row. See [VOTE_LAYOUT_SCHEME.md](VOTE_LAYOUT_SCHEME.md) for the restart capture procedure and exact flag checkpoints. Historical findings below describe earlier rendering repairs.
+
 Report 635 and the screenshot confirm the 0.3.15 count mounts and draws. Its history captures transient player detachment, node removal and delayed recreation after miniplayer return. Version 0.3.16 reserves the missing icon gap and adds lifecycle refreshes. Spacing and restoration still require device confirmation.
 
 Report 541 (0.3.12) has a count matching playback and one measured text node (23 by 14 points), but zero render-mounted, loaded, or in-window text nodes. This narrows the problem to the element text's mounting/rendering path. A measured Yoga frame alone does not establish a rendered label. The report was copied from Settings, so a snapshot from the visible watch page is needed to distinguish the original failure from leaving that page.
 
-The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-6`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
+The diagnostic update adds `ryd_checkpoints` to the full report and a separate **Copy RYD checkpoints** action. Its revision is `ryd-checkpoints-7`. It inspects existing nodes and layers without loading views, forcing layout, or changing the renderer. The checkpoints remain passive; version 0.3.15 also changes the production mounting path. Compilation does not establish that the counter is visible on a device.
 
 ## Capture procedure
 
-1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-6**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
+1. Install/sign the checkpoint IPA. In Hook diagnostics, confirm **Diagnostics: ryd-checkpoints-7**. The copied report's `build_source_sha256` identifies the compiled native sources; compare it with the delivered build receipt if several builds share a version number.
 2. Ensure ReVanced's **Return YouTube Dislike** and **Diagnostics** settings are enabled.
 3. Open an ordinary recorded video in portrait, with the like/dislike row visible. Leave it on that page for about 10 seconds. Capture a screenshot of the row before navigating away.
 4. Open **Settings > ReVanced > Hook diagnostics > Copy RYD checkpoints**. Hook diagnostics is under the **Tools and configuration** section. Save the copied JSON beside the screenshot.
@@ -33,8 +35,10 @@ Read `last_visible_watch.checkpoints` in this order. `first_blocked_checkpoint` 
 | `text_node_loaded`, `text_layer_in_window` | both true | Native node/layer mounting into the active surface |
 | `text_raster_contents_present` | true | Text layer drawing/backing contents, after mounting and window attachment |
 | `text_unclipped` | true | Hidden/transparent layers, clipping, or offscreen placement |
+| `native_pair_detected` | true | Compatible bounded native vote pair discovery |
+| `native_like_text_in_pair_detected` | true | Native text present within that pair |
 
-`none_detected` means the geometry checks passed; it does not prove the text was visibly drawn. Include the screenshot if the count is still absent.
+`none_detected` means the rendering and native-pair discovery checks passed; it does not prove the text was visibly drawn. Include the screenshot if the count is still absent.
 
 ## Fields that make a failure actionable
 

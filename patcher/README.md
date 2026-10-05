@@ -180,4 +180,6 @@ Version 0.3.17 balances the measured native like/dislike pair’s outer insets u
 
 Version 0.3.18 targets the native granular speed command bridge and retries semantic dislike binding after row initialization. Full diagnostics expose the actual slider bridge and redacted binding checkpoints. No tests run; device confirmation pending.
 
-Version 0.3.19 targets missing initial rate/model reads in the native overlay speed picker. Hook diagnostics now provides **Copy speed checkpoints**, with timed history for each selection. See [SPEED_CHECKPOINTS.md](SPEED_CHECKPOINTS.md). No tests run; first-launch device confirmation remains pending.
+Version 0.3.19 targets missing initial rate/model reads in the native overlay speed picker. Hook diagnostics now provides **Copy speed checkpoints**, with timed history for each selection. See [SPEED_CHECKPOINTS.md](SPEED_CHECKPOINTS.md). The user reports the 0.3.19 speed picker works. No tests run.
+
+Version 0.3.20 addresses the native vote-row redesign after relaunch while RYD is enabled. Four guarded experiment accessors preserve the compatible native row; checkpoints distinguish native pair/like-text discovery from dislike rendering. The layout fix requires device confirmation. See [VOTE_LAYOUT_SCHEME.md](VOTE_LAYOUT_SCHEME.md). Speed behavior remains as in 0.3.19. No tests run.

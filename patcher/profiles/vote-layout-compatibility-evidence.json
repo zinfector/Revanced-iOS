@@ -1,0 +1,54 @@
+{
+  "implementation_version": "0.3.20",
+  "native_getter_contracts": [
+    {
+      "class": "YTColdConfigCrossPlatformCoreClientGlobalConfigImpl",
+      "kind": "-",
+      "selector": "enableWatchModernTypographyAssociatedUxChangesNative",
+      "encoding": "B16@0:8",
+      "imp": "0x101072604"
+    },
+    {
+      "class": "YTColdConfigCrossPlatformCoreClientGlobalConfigImpl",
+      "kind": "-",
+      "selector": "enableAlignVideoActionButtonStyleWithTetrisButtonStyleNative",
+      "encoding": "B16@0:8",
+      "imp": "0x10106d3e4"
+    },
+    {
+      "class": "YTColdConfig",
+      "kind": "-",
+      "selector": "crossPlatformCoreClientGlobalConfigEnableWatchModernTypographyAssociatedUxChangesNative",
+      "encoding": "B16@0:8",
+      "imp": "0x104f2bf14"
+    },
+    {
+      "class": "YTColdConfig",
+      "kind": "-",
+      "selector": "crossPlatformCoreClientGlobalConfigEnableAlignVideoActionButtonStyleWithTetrisButtonStyleNative",
+      "encoding": "B16@0:8",
+      "imp": "0x104f27c60"
+    }
+  ],
+  "experiment_ids": {
+    "enableWatchModernTypographyAssociatedUxChangesNative": 45620338,
+    "enableAlignVideoActionButtonStyleWithTetrisButtonStyleNative": 45633839
+  },
+  "native_evidence": "Read-only Ghidra decompilation proves getters read coldConfigGroup.experimentFlags.flags booleanFlagValue with keys 0x2b81c72 and 0x2b8512f; aliases read same flag. objc_classes.json proves B16@0:8 contracts. No direct watch layout call site proved by cross-references.",
+  "layout_cause_status": "hypothesis_pending_device_confirmation",
+  "change": "Return false for these two watch-layout flags via concrete/aggregate aliases only when return_dislikes is enabled, installed before app launch. Preserve original value when disabled. Do not modify persisted experiment flags, global Delhi icons, Elements migration or speed picker flags.",
+  "diagnostics": "Record hook installation, per-process launch/session, first/last observed native flag values, effective values, read counts, override counts and monotonic times. Separate native pair detection and native like text detection from dislike draw checkpoints. Geometry supports existing flattened icon Yoga frames without loading views.",
+  "device_layout_verified": false,
+  "tests_run": false,
+  "source_sha256": {
+    "RVVoteLayoutCompatibility.inc": "1fc8a91e278c2a1949ed5b406717c770c303304b72302e514884463bb2d42ef8",
+    "RVElementDislikes.inc": "49e2b5182de686409fd3dc42db6b757ed64a0afa96e78c1d0b09a3866a2976cc",
+    "RVDislikesDiagnostics.inc": "73772c4270ff442780cf0497c3aee9a9878bad140dfd0ccce0c40d6bbc02f5f2"
+  },
+  "preserved_from_0.3.19": [
+    "speed behavior (diagnostic version string advanced only)",
+    "authentication",
+    "SponsorBlock",
+    "settings UI"
+  ]
+}

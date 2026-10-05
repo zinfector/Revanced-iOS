@@ -508,6 +508,18 @@
         "selector": "enableResumeToShorts",
         "encoding": "B16@0:8",
         "imp": "0x103d805b0"
+      },
+      {
+        "kind": "-",
+        "selector": "crossPlatformCoreClientGlobalConfigEnableWatchModernTypographyAssociatedUxChangesNative",
+        "encoding": "B16@0:8",
+        "imp": "0x104f2bf14"
+      },
+      {
+        "kind": "-",
+        "selector": "crossPlatformCoreClientGlobalConfigEnableAlignVideoActionButtonStyleWithTetrisButtonStyleNative",
+        "encoding": "B16@0:8",
+        "imp": "0x104f27c60"
       }
     ]
   },
@@ -1844,6 +1856,23 @@
         "selector": "enablePlaybackSpeedSheetWithXplatPlayerAdapter",
         "encoding": "B16@0:8",
         "imp": "0x10105dacc"
+      }
+    ]
+  },
+  {
+    "name": "YTColdConfigCrossPlatformCoreClientGlobalConfigImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "enableWatchModernTypographyAssociatedUxChangesNative",
+        "encoding": "B16@0:8",
+        "imp": "0x101072604"
+      },
+      {
+        "kind": "-",
+        "selector": "enableAlignVideoActionButtonStyleWithTetrisButtonStyleNative",
+        "encoding": "B16@0:8",
+        "imp": "0x10106d3e4"
       }
     ]
   }

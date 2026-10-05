@@ -73,7 +73,7 @@ static void RVNativeDislikeRefresh(void) {
     }
 }
 static NSDictionary *RVNativeDislikeReport(void) {
-    return @{@"schema":@3,@"enabled":@(RVEnabled(@"return_dislikes")),
+    return @{@"schema":@4,@"layout_compatibility":RVVoteLayoutReport(),@"enabled":@(RVEnabled(@"return_dislikes")),
         @"request_in_flight":@(RVDislikeTask!=nil),@"count_available":@(RVDislikeCount!=nil),
         @"bound_native_actions":@(RVNativeDislikeViews.count),@"counts":RVNativeDislikeCounts.copy ?: @{},
         @"native_surface":@"slim_and_named_resource_yoga_watch_actions",

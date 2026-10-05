@@ -52,15 +52,17 @@ static NSDictionary *RVDislikeCheckpointSnapshot(NSString *trigger) {
         @"text_node_loaded":@([element[@"loaded_text_nodes"] unsignedIntegerValue]>0),
         @"text_layer_in_window":@([element[@"render_layers_in_window"] unsignedIntegerValue]>0),
         @"text_raster_contents_present":@([element[@"raster_content_nodes"] unsignedIntegerValue]>0),
-        @"text_unclipped":@([element[@"unclipped_text_nodes"] unsignedIntegerValue]>0)};
+        @"text_unclipped":@([element[@"unclipped_text_nodes"] unsignedIntegerValue]>0),
+        @"native_pair_detected":@([element[@"native_pairs_current_watch"] unsignedIntegerValue]>0),
+        @"native_like_text_in_pair_detected":@([element[@"native_like_texts_current_watch"] unsignedIntegerValue]>0)};
     NSString *block=@"none_detected";
     for (NSString *key in @[@"feature_enabled",@"playback_video_valid",@"watch_foreground",@"watch_player_matches",
         @"count_matches_playback",@"dislike_icon_seen",@"text_node_created",@"text_node_measured",@"text_node_mounted",
-        @"text_node_loaded",@"text_layer_in_window",@"text_raster_contents_present",@"text_unclipped"]) if (![checks[key] boolValue]) { block=key;break; }
+        @"text_node_loaded",@"text_layer_in_window",@"text_raster_contents_present",@"text_unclipped",@"native_pair_detected",@"native_like_text_in_pair_detected"]) if (![checks[key] boolValue]) { block=key;break; }
     if (count && ![element[@"owned_text_nodes"] unsignedIntegerValue] && (RVNativeDislikeViews.count || RVDislikeActions.count))
         block=@"not_applicable_non_element_path";
     return @{@"captured_at":RVDislikeCheckpointDate(),@"trigger":trigger,@"video_generation":@(RVDislikeGeneration),
-        @"scope":@"element_count_path",@"checkpoints":checks,@"first_blocked_checkpoint":block,
+        @"scope":@"element_count_and_native_pair_layout",@"layout_compatibility":RVVoteLayoutReport(),@"checkpoints":checks,@"first_blocked_checkpoint":block,
         @"service":RVDislikeServiceState.copy ?: @{@"fetch_state":@"not_recorded"},
         @"current_video_events":events,@"event_counter_scope":@"since_current_video_binding",
         @"watch_player_pointer_matches":element[@"watch_player_pointer_matches"],
@@ -78,7 +80,7 @@ static void RVDislikeCaptureCheckpoint(NSString *trigger) {
     NSDictionary *checks=snapshot[@"checkpoints"];
     NSString *signature=[NSString stringWithFormat:@"%lu/%@/%@/%@/%@/%@/%@/%@",(unsigned long)RVDislikeGeneration,
         snapshot[@"first_blocked_checkpoint"],snapshot[@"service"][@"fetch_state"],snapshot[@"service"][@"http_status"],
-        checks[@"text_node_measured"],checks[@"text_node_mounted"],checks[@"text_node_loaded"],@[checks[@"text_raster_contents_present"],checks[@"text_unclipped"]]];
+        checks[@"text_node_measured"],checks[@"text_node_mounted"],checks[@"text_node_loaded"],@[checks[@"text_raster_contents_present"],checks[@"text_unclipped"],checks[@"native_pair_detected"],checks[@"native_like_text_in_pair_detected"]]];
     if ([signature isEqual:RVDislikeCheckpointSignature]) return;
     RVDislikeCheckpointSignature=signature;
     if (!RVDislikeCheckpointHistory) RVDislikeCheckpointHistory=[NSMutableArray array];
@@ -88,7 +90,7 @@ static void RVDislikeCaptureCheckpoint(NSString *trigger) {
 static NSDictionary *RVDislikeCheckpointReport(void) {
     BOOL enabled=RVEnabled(@"diagnostics");
     BOOL current=RVDislikeLastVisibleCheckpoint && [RVDislikeLastVisibleCheckpoint[@"video_generation"] unsignedIntegerValue]==RVDislikeGeneration;
-    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-6",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-7",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"report_captured_at":RVDislikeCheckpointDate(),@"diagnostics_enabled":@(enabled),
         @"video_generation":@(RVDislikeGeneration),@"last_visible_watch_matches_current_video":@(current),
         @"last_visible_watch_age_seconds":RVDislikeLastVisibleCheckpoint ? @(MAX(0,NSDate.timeIntervalSinceReferenceDate-RVDislikeLastVisibleTime)) : NSNull.null,
@@ -99,7 +101,7 @@ static NSDictionary *RVDislikeCheckpointReport(void) {
 }
 static NSString *RVDislikeCheckpointSummary(void) {
     NSDictionary *report=RVDislikeCheckpointReport();NSDictionary *service=report[@"last_visible_watch"][@"service"];
-    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-6\n\n",
+    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-7\n\n",
         report[@"first_blocked_checkpoint"],service[@"fetch_state"] ?: @"not recorded",service[@"http_status"] ?: @0,
         [report[@"last_visible_watch_matches_current_video"] boolValue] ? @"yes" : @"no"];
 }

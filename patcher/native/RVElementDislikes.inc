@@ -33,6 +33,8 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic) CGFloat leadingInset;
 @property(nonatomic) CGFloat trailingInset;
 @property(nonatomic,copy) NSString *edgeGate;
+@property(nonatomic) BOOL nativePairPresent;
+@property(nonatomic) BOOL nativeLikeTextPresent;
 @property(nonatomic,weak) UIViewController *watch;
 @property(nonatomic,copy) NSString *spacingGate;
 @property(nonatomic) NSUInteger suspensionCount;
@@ -265,6 +267,7 @@ static BOOL RVElementRectInAncestor(id node,id ancestor,CGRect *result) {
 }
 static void RVElementBalanceEdges(id parent,RVElementDislikeState *state) {
     if (!state.textNode || state.updating || !RVElementOwnedWatch(parent,state)) return;
+    state.nativePairPresent=NO;state.nativeLikeTextPresent=NO;
     id pair=RVElementParent(parent);
     BOOL rtl=RVElementLoadedView(parent).effectiveUserInterfaceLayoutDirection==UIUserInterfaceLayoutDirectionRightToLeft;
     for (NSUInteger level=0;pair && level<6;level++,pair=RVElementParent(pair)) {
@@ -275,10 +278,12 @@ static void RVElementBalanceEdges(id parent,RVElementDislikeState *state) {
             id text=RVObject(node,"attributedText");if (node!=state.textNode && [text isKindOfClass:NSAttributedString.class] && [text length]) nativeText=YES;
         }
         if (images.count>2) break;
-        if (images.count!=2 || !nativeText) continue;
+        if (images.count!=2) continue;
         id other=nil;NSUInteger downs=0;
         for (id image in images) if (RVElementImageKind(image)==1) downs++;else other=image;
         if (downs!=1 || !other) continue;
+        state.nativePairPresent=YES;state.nativeLikeTextPresent=nativeText;
+        if (!nativeText) continue;
         CGRect iconRect,textRect,pairRect=RVElementTextFrame(pair);
         if (!RVElementRectInAncestor(other,pair,&iconRect) || !RVElementRectInAncestor(state.textNode,pair,&textRect) || pairRect.size.width<=0) continue;
         CGFloat leading=rtl ? pairRect.size.width-CGRectGetMaxX(iconRect) : CGRectGetMinX(iconRect);
@@ -551,17 +556,24 @@ static void RVElementWatchTransition(id watch,NSString *reason) {
     });
 }
 static NSDictionary *RVElementDislikeReport(void) {
-    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0,contents=0,displayFinished=0;
+    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0,contents=0,displayFinished=0,nativePairs=0,nativeLikeTexts=0;
     NSMutableArray *geometry=[NSMutableArray array];
     for (id node in RVElementDislikeParents.allObjects) {
         RVElementDislikeState *state=objc_getAssociatedObject(node,RVElementDislikeKey);id text=state.textNode;
         if (!text) continue;attached++;
+        BOOL current=[state.video isEqual:RVDislikeVideo] && RVElementOwnedWatch(node,state);
+        nativePairs+=current && state.nativePairPresent;nativeLikeTexts+=current && state.nativeLikeTextPresent;
         CGRect iconFrame=CGRectZero;BOOL gapMeasured=NO;CGFloat actualGap=0;
+        NSString *iconGeometrySource=@"unavailable";
         if (state.renderLabel.superview) for (id image in RVElementSubtree(node)) {
-            if (RVElementImageKind(image)!=1 || !RVBool(image,"isNodeLoaded") || RVBool(image,"isLayerBacked")) continue;
-            id iconView=RVObject(image,"view");UIView *buttonView=state.renderLabel.superview;
-            if (![iconView isKindOfClass:UIView.class] || ![iconView isDescendantOfView:buttonView]) continue;
-            iconFrame=[iconView convertRect:[iconView bounds] toView:buttonView];
+            if (RVElementImageKind(image)!=1) continue;
+            UIView *buttonView=state.renderLabel.superview;
+            id iconView=RVBool(image,"isNodeLoaded") && !RVBool(image,"isLayerBacked") ? RVObject(image,"view") : nil;
+            if ([iconView isKindOfClass:UIView.class] && [iconView isDescendantOfView:buttonView]) {
+                iconFrame=[iconView convertRect:[iconView bounds] toView:buttonView];iconGeometrySource=@"loaded_native_view";
+            } else if (RVElementRectInAncestor(image,node,&iconFrame) && RVBool(node,"isNodeLoaded") && !RVBool(node,"isLayerBacked") && buttonView==RVObject(node,"view")) {
+                iconGeometrySource=@"flattened_native_yoga_frame";
+            } else continue;
             CGRect labelFrame=state.renderLabel.frame;
             BOOL rtl=buttonView.effectiveUserInterfaceLayoutDirection==UIUserInterfaceLayoutDirectionRightToLeft;
             actualGap=rtl ? CGRectGetMinX(iconFrame)-CGRectGetMaxX(labelFrame) : CGRectGetMinX(labelFrame)-CGRectGetMaxX(iconFrame);
@@ -618,7 +630,8 @@ static NSDictionary *RVElementDislikeReport(void) {
             @"native_text_supernode_present":@(renderParent!=nil),@"native_text_node_loaded":@(nativeLoaded),
             @"button_node_loaded":@(RVBool(node,"isNodeLoaded")),@"button_layer_backed":@(RVBool(node,"isLayerBacked")),
             @"node_context_matches_button":@(RVObject(node,"nodeContext")==RVObject(text,"nodeContext")),
-            @"icon_gap_measured":@(gapMeasured),@"icon_text_gap_points":@(actualGap),@"icon_frame_x":@(iconFrame.origin.x),@"icon_frame_width":@(iconFrame.size.width),
+            @"native_pair_present":@(state.nativePairPresent),@"native_like_text_present":@(state.nativeLikeTextPresent),
+            @"icon_geometry_source":iconGeometrySource,@"icon_gap_measured":@(gapMeasured),@"icon_text_gap_points":@(actualGap),@"icon_frame_x":@(iconFrame.origin.x),@"icon_frame_width":@(iconFrame.size.width),
             @"outer_leading_inset":@(state.leadingInset),@"outer_trailing_inset":@(state.trailingInset),@"owned_end_margin":@(state.endMargin),@"outer_edge_gate":state.edgeGate ?: @"not_measured",
             @"spacing_points":@(state.spacingPoints),@"spacing_gate":state.spacingGate ?: @"unknown",
             @"watch_suspended":@(state.suspended),@"suspension_count":@(state.suspensionCount),@"resume_count":@(state.resumeCount),
@@ -648,7 +661,7 @@ static NSDictionary *RVElementDislikeReport(void) {
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@9,@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@10,@"native_pairs_current_watch":@(nativePairs),@"native_like_texts_current_watch":@(nativeLikeTexts),@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
         @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVDislikeWatchPlayerMatches(watch)),@"watch_player_pointer_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),
