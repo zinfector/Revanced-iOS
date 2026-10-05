@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.32",
+  "patcher_version": "0.3.38",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -1917,5 +1917,11 @@
     "device_validated": false,
     "contract": "profiles/dearrow-ui-contract.json",
     "scope": "Dedicated settings, merged backend, pinned Elements input projection and native row refresh; unknown/shared/entity-only roots preserve originals."
+  },
+  "dearrow_live_contract_capture": {
+    "status": "implemented_mapping_pending",
+    "contract": "profiles/dearrow-live-capture-contract.json",
+    "device_verified": false,
+    "tests_run": false
   }
 }

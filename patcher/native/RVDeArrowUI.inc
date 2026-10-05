@@ -56,6 +56,7 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 @end
 @implementation RVDAUIImageLease @end
 static BOOL RVDAUIPolicy(NSString *surface,BOOL title);
+static NSString *RVDAUIOwnerSurface(id owner,BOOL watchTitle,NSString **watchVideo);
 #include "RVDeArrowDiagnostics.inc"
 static void RVDAUIRestoreAccessibility(id value) {
     if (![value isKindOfClass:UIView.class]) return;
@@ -295,7 +296,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         state.profile=RVDAProfile(data,watchVideo);state.modern=YES;
         if (!state.profile) {
             BOOL shared=RVDAPath(data,@[@1,@484616221])!=nil;
-            return RVDAUIReject(state,@"D04_role_bound",shared ? @"shared_component_input_unavailable" : @"template_or_video_profile_unknown");
+            return RVDAUIReject(state,@"D04_role_bound",shared ? @"shared_component_input_unavailable" : RVDAProfileFailure(data));
         }
         state.video=state.profile.video;state.route=state.profile.route;
         state.originalTitle=state.profile.originalTitle;state.untranslatedTitle=state.profile.untranslatedTitle;
@@ -450,15 +451,16 @@ static NSDictionary *RVDAUIReport(void) {
         history=RVDAUIHistory.copy ?: @[];counts=RVDAUICounts.copy ?: @{};stages=RVDAUILastStages.copy ?: @{};attempts=RVDAUISamples.allValues.copy ?: @[];templates=RVDAUITemplateSamples.allValues.copy ?: @[];
     }
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
-        @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@1,
+        @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
         @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,
         @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
-        @"hooks":RVDAUIHooks.copy ?: @[],@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
+        @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
 }
 static void RVDAUIStartCapture(void) {
     [RVDAUIProbeRequest cancel];RVDAUIProbeRequest=nil;RVDAUIProbeResult=nil;RVDAUIProbeGeneration++;
     RVDAUIDiagnosticsArmed=YES;
+    RVDALiveReset();
     @synchronized(RVDAUIBinding.class) { RVDAUICounts=[NSMutableDictionary dictionary];RVDAUILastStages=[NSMutableDictionary dictionary];RVDAUISamples=[NSMutableDictionary dictionary];RVDAUITemplateSamples=[NSMutableDictionary dictionary];RVDAUIHistory=[NSMutableArray array]; }
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;RVDAUIPreferencesChanged();RVDAUIEvent(@"D00_capture_started",nil,nil);
 }

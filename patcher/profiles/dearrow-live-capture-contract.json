@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "release": "0.3.38",
+  "trigger": "DeArrow Report 246: native -fe keys rejected; ordinary extension 232954548 yields no old-path VideoData candidate",
+  "status": "live_contract_capture_implemented_new_presentation_mapping_pending",
+  "device_verified": false,
+  "tests_run": false,
+  "native_source": "native/RVDeArrowLiveCapture.inc",
+  "uri_structure_schema": 2,
+  "resource_identity": {
+    "syntax": "Strict resource basename, optional -js, optional observed -fe variant, delimiter and exact 1..16 hexadecimal revision",
+    "normalization": "Preserve -fe in canonical resource key; never alias a native compiled variant to an old bundled role profile",
+    "diagnostic_disclosure": "New native resource identifiers matching strict syntax may be disclosed without the bundled-only basename allowlist. Paths, URLs and arbitrary strings remain excluded.",
+    "production_role_authorization": "Unchanged pinned verified resource/revision/model contracts only"
+  },
+  "native_lookup": {
+    "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "singleton": "ELMTemplateProcessorResolver.sharedInstance, @@:, 0x100511bb8",
+    "configuration": "getSerializedTemplateConfig:withError:, @@:@^@, 0x1046a4b80",
+    "scheduling": "Main queue after the current native materialization; never inside the URI getter or a synchronized lookup lock",
+    "retries": "Unavailable native configuration only: at most three attempts, delays 0.5 and 2 seconds",
+    "lifecycle": "Capture epoch invalidates queued work and retries on reset",
+    "payload": "Only provider-returned static template configuration requested by a validated resource key; live browsing-model values are never exported",
+    "format_limit": "Report format, hash, field shape and bounded base64 configuration. A returned configuration can be only a reference; its actual contents must be inspected before selecting the template decoder."
+  },
+  "bounds": {
+    "owned_roots": 8,
+    "model_bytes": 2097152,
+    "fields_per_message": 4096,
+    "displayed_fields_per_message": 32,
+    "model_nodes": 96,
+    "model_depth": 6,
+    "aggregate_model_inspection_bytes_per_resource": 4194304,
+    "configuration_bytes_per_resource": 196608,
+    "configuration_bytes_per_capture": 786432,
+    "native_observed_resource_keys": 64
+  },
+  "ownership": "Capture only main-thread matched controller entries with section/index scope, ordinary YTVideoElementCellController or explicit watch metadata owner, and a checked negative ad-presence flag",
+  "model_inventory": "Breadth-first structural paths include field and occurrence index. Store field/wire/count/length, first failed candidate step and salted candidate-ID hashes. No model base64, titles, personal IDs or thumbnail URLs.",
+  "candidate_policy": "All discovered paths/IDs are inspection candidates, never permission to request a video or rewrite a node",
+  "failure_reasons": [
+    "template_uri_grammar_rejected",
+    "template_resource_unmapped",
+    "template_variant_unmapped",
+    "template_revision_unmapped",
+    "video_model_path_unresolved",
+    "serialized_component_root_unresolved"
+  ],
+  "report_fields": [
+    "native_templates[].uri_structure.resource_parts",
+    "live_contract_capture.roots[].resource_key",
+    "live_contract_capture.roots[].native_uri_observed",
+    "live_contract_capture.roots[].path_probes[].steps",
+    "live_contract_capture.roots[].model_nodes",
+    "live_contract_capture.configurations[].state",
+    "live_contract_capture.configurations[].format",
+    "live_contract_capture.configurations[].template_config_base64"
+  ],
+  "checkpoints": [
+    "D00_capture_started",
+    "D04_role_rejected with exact URI/resource/variant/revision/model blocker",
+    "D04_live_configuration_captured with availability, lookup count and export status",
+    "D04_role_bound only after an independently verified profile actually binds",
+    "D05_policy_evaluated through service/fallback/projection/refresh remain downstream of verified roles"
+  ],
+  "next_device_capture": [
+    "Start capture explicitly, then close Settings and scroll newly configured ordinary Home rows.",
+    "Open an ordinary video and scroll its related rows so player/related owners are captured separately.",
+    "Wait at least three seconds for native configuration lookup retries, then copy DeArrow checkpoints.",
+    "Inspect exact live resource keys, candidate-path failed steps, nested model fields and exported native configurations to derive new title/image consumers."
+  ],
+  "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not"
+}

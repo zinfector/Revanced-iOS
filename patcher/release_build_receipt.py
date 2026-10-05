@@ -1,11 +1,11 @@
-"""Record 0.3.37 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.38 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.37'
+VERSION = '0.3.38'
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
     names += ['native/RVSettingsMenuIcons.inc','native/RVSettingsBrandIcons.inc','native/RVSettingsBrandIconData.h',
               'native/assets/settings/DearrowLogo.svg','native/assets/settings/LogoSponsorBlock256px.png',
               'native/assets/settings/ReturnYTDislike.png','profiles/settings-menu-icons-evidence.json','settings_brand_icons.py']
-    names += ['native/RVDeArrowTemplateNames.inc','profiles/dearrow-recovery-scheme.json','profiles/settings-modal-header-evidence.json']
+    names += ['native/RVDeArrowTemplateNames.inc','native/RVDeArrowLiveCapture.inc','profiles/dearrow-live-capture-contract.json','profiles/dearrow-recovery-scheme.json','profiles/settings-modal-header-evidence.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -77,7 +77,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Report 202 establishes rejection before service dispatch. Independent URI/model diagnostics and precise rejection counters implemented; presentation contracts remain pinned until live identifiers are captured. Random fallback shares backend transfer admission, retries pending generation, resolves duration only for the bound video, and has cancellation/deadline guards. Native settings modal header correction merged. No tests run; device confirmation pending.'}
+        'remaining_scope': 'Report 246 confirms native -fe grammar rejection and independently unresolved ordinary-card model paths. Resource recognition, exact blocker diagnostics, owned live configuration capture and nested model inspection are implemented. Production presentation profiles remain pinned pending capture of the live consumers. Includes latest settings and watch-only vote-layout scope. No tests run; device confirmation pending.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

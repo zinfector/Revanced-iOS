@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "release": "0.3.36",
+  "release": "0.3.38",
   "status": "implemented_report_105_followup_pending",
   "device_verified": false,
   "tests_run": false,
@@ -12,13 +12,13 @@
   ],
   "bounds": {
     "events": 96,
-    "attempt_samples": 32,
+    "attempt_samples": 64,
     "bindings": 32,
     "owner_hops": 16,
     "component_samples": 8,
     "scanned_nodes": 32,
     "diagnostic_bytes": 131072,
-    "native_template_samples": 32
+    "native_template_samples": 64
   },
   "settings_snapshot": "Independent switches, whitelisted screen overrides, legacy thumbnail migration and effective per-screen part policies; no service URLs.",
   "observation_only": "Failed binding snapshots and service probe never relax production identity, ordinary-video, role, or lifecycle gates.",
@@ -51,17 +51,19 @@
     "bindings[].fallback_phase",
     "bindings[].fallback_retries",
     "bindings[].duration_source",
-    "backend.queued_auxiliary_transfers"
+    "backend.queued_auxiliary_transfers",
+    "live_contract_capture"
   ],
   "observed_failure_profile": "device-dearrow-report-105.json",
-  "uri_structure_schema": 1,
+  "uri_structure_schema": 2,
   "report_202_blocker": "All retained live URI samples failed normalization; exact grammar redacted in the old report.",
-  "privacy": "Allowlisted bundled template basenames, hexadecimal revision tokens and bounded delimiter positions only; unknown tokens, namespaces and identifiers remain salted hashes. No titles/video IDs/URLs/raw protobuf.",
+  "privacy": "Strict native resource identifiers and bounded provider-returned static template configurations are disclosed for owned roots. Browsing-model values, title text, video IDs and URLs are never exported. ID candidates remain salted hashes.",
   "next_capture_focus": [
     "Find the YTVideoElementCellController ordinary-card sample. Read uri_structure.filename, normalization_reason, prefix_namespace, suffix_tokens and delimiters.",
     "Check candidate_path, video_id_valid and title/static-image presence. Candidate observations do not authorize presentation rewriting.",
     "Identify watch metadata samples independently using surface counters and explicit owner chains.",
     "D04_role_rejected denotes rejection; D04_role_bound denotes accepted roles.",
     "Once roles are accepted, inspect fallback queue/start/status/generation reason/retry/duration/decode/encode checkpoints."
-  ]
+  ],
+  "live_capture_contract": "profiles/dearrow-live-capture-contract.json"
 }

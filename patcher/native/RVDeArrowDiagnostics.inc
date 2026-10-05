@@ -64,6 +64,12 @@ static NSDictionary *RVDADiagURI(NSString *raw) {
     NSTextCheckingResult *match=[filenameRegex firstMatchInString:raw options:0 range:NSMakeRange(0,raw.length)];
     NSString *filename=match ? [raw substringWithRange:match.range] : nil;
     BOOL known=filename && [RVDADiagnosticTemplateNames() containsObject:filename];
+    NSString *normalized=RVDAResourceName(raw);
+    // Both callers observe native template identifiers, never title strings.
+    // Strict resource syntax permits new names without admitting URLs/paths.
+    BOOL nativeIdentifier=normalized && raw.length<=160 && ![raw containsString:@"/"] &&
+        ![raw containsString:@"%"] && ([raw isEqual:normalized] || [raw isEqual:[normalized stringByReplacingOccurrencesOfString:@"|" withString:@"_"]]);
+    BOOL disclose=known || nativeIdentifier;
     NSString *prefix=match ? [raw substringToIndex:match.range.location] : @"";
     NSString *suffix=match ? [raw substringFromIndex:NSMaxRange(match.range)] : @"";
     NSMutableArray *delimiters=[NSMutableArray array],*tokens=[NSMutableArray array];
@@ -79,20 +85,18 @@ static NSDictionary *RVDADiagURI(NSString *raw) {
                 BOOL hex=[hexRegex firstMatchInString:token options:0 range:NSMakeRange(0,token.length)]!=nil;
                 BOOL decimal=hex && [token rangeOfCharacterFromSet:NSCharacterSet.decimalDigitCharacterSet.invertedSet].location==NSNotFound;
                 [tokens addObject:@{@"length":@(token.length),@"kind":decimal ? @"decimal_digits" : hex ? @"hex_digits" : @"other",
-                    @"value":known && hex ? token : @"redacted",@"hash":RVDADiagHash([token dataUsingEncoding:NSUTF8StringEncoding])}];
+                    @"value":disclose && hex ? token : @"redacted",@"hash":RVDADiagHash([token dataUsingEncoding:NSUTF8StringEncoding])}];
             }start=i+1;
         }
     }
-    NSString *normalized=RVDAResourceName(raw);
-    NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
-        @"video_with_context_slots.eml-js|7f46bdff852ff164",@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7"];
-    NSString *profileStatus=!normalized ? @"uri_grammar_rejected" : [pinned containsObject:normalized] ? @"pinned_uri_model_validation_required" : @"name_or_revision_not_pinned";
+    NSString *profileStatus=RVDAResourceProfileStatus(raw);
     NSString *reason=normalized ? @"normalized" : !match ? @"filename_not_found" : !known ? @"basename_not_allowlisted" :
         controls ? @"control_character" : nonASCII ? @"non_ascii_suffix" : prefix.length ? @"prefix_or_path_present" :
         tokens.count==1 && [tokens[0][@"length"] unsignedIntegerValue]>16 ? @"revision_exceeds_16_characters" : @"suffix_structure_unrecognized";
     NSString *namespace=[@[@"eko:",@"eml:",@"js:",@"wasm:"] containsObject:prefix] ? prefix : prefix.length ? @"redacted" : @"none";
     return @{@"present":@YES,@"raw_length":@(raw.length),@"raw_hash":RVDADiagHash([raw dataUsingEncoding:NSUTF8StringEncoding]),
-        @"filename":known ? filename : @"redacted_or_absent",@"filename_allowlisted":@(known),@"filename_offset":match ? @(match.range.location) : @(-1),
+        @"filename":disclose ? filename : @"redacted_or_absent",@"filename_allowlisted":@(known),@"native_identifier_valid":@(nativeIdentifier),
+        @"resource_parts":nativeIdentifier ? RVDAResourceParts(raw) : @{},@"filename_offset":match ? @(match.range.location) : @(-1),
         @"prefix_length":@(prefix.length),@"prefix_namespace":namespace,@"prefix_hash":RVDADiagHash([prefix dataUsingEncoding:NSUTF8StringEncoding]),
         @"suffix_length":@(suffix.length),@"suffix_delimiters":delimiters,@"suffix_tokens":tokens,@"suffix_has_control":@(controls),@"suffix_has_non_ascii":@(nonASCII),
         @"production_normalized":@(normalized!=nil),@"normalization_reason":reason,@"resource_profile_status":profileStatus};
@@ -114,14 +118,16 @@ static NSArray *RVDADiagVideoCandidates(NSData *model) {
             @"title_present":@(RVDAChild(metadata,1)!=nil || RVDAPath(metadata,@[@27,@1])!=nil),@"presentation_verified":@NO}];
     }return result;
 }
+#include "RVDeArrowLiveCapture.inc"
 static NSString *RVDADiagTemplateName(NSString *uri) {
     // Admit only the conventional template filename + hex revision, not a URL.
     if (!uri.length || uri.length>160) return @"absent_or_unrecognized";
-    NSRange range=[uri rangeOfString:@"^[A-Za-z0-9_]+\\.eml(-js)?\\|[0-9a-fA-F]{1,16}$" options:NSRegularExpressionSearch];
+    NSRange range=[uri rangeOfString:@"^[A-Za-z0-9_]+\\.eml(-js)?(-fe)?\\|[0-9a-fA-F]{1,16}$" options:NSRegularExpressionSearch];
     return range.location==0 && range.length==uri.length ? uri : @"unrecognized_template_hash";
 }
 static void RVDADiagNativeTemplate(NSString *raw) {
     if (!RVDADiagEnabled() || ![raw isKindOfClass:NSString.class] || raw.length>2048) return;
+    RVDALiveNativeURI(raw);
     RVDADiagCount(@"native.template_uri_entered");NSString *name=RVDAResourceName(raw),*hash=RVDADiagHash([raw dataUsingEncoding:NSUTF8StringEncoding]);
     @synchronized(RVDAUIBinding.class) {
         if (!RVDAUITemplateSamples) RVDAUITemplateSamples=[NSMutableDictionary dictionary];
@@ -169,6 +175,13 @@ static void RVDADiagAttempt(id controller,id entry,id section,NSInteger index,NS
     NSString *entryClass=entry ? NSStringFromClass([entry class]) : @"absent",*ownerClass=controller ? NSStringFromClass([controller class]) : @"absent";
     id element=NSThread.isMainThread ? RVAdRootElement(entry) : nil;
     NSData *data=RVObject(element,"elementData");
+    if (RVDAUIDiagnosticsArmed && NSThread.isMainThread && section && index>=0 && RVObject(controller,"entry")==entry) {
+        NSString *watchVideo=nil,*surface=RVDAUIOwnerSurface(controller,YES,&watchVideo);
+        BOOL ordinary=[ownerClass isEqual:@"YTVideoElementCellController"] || ([surface isEqual:@"player"] && RVVideoIDValid(watchVideo));
+        id options=RVAdResolvedObject(element,"compatibilityOptions");
+        if (ordinary && RVAdResolve(options,"hasAdLoggingData",@"B@:") && !RVBool(options,"hasAdLoggingData"))
+            RVDALiveCaptureRoot(data,ownerClass,surface ?: RVDAUIOwnerSurface(controller,NO,NULL),watchVideo);
+    }
     NSData *uri=[data isKindOfClass:NSData.class] && data.length<=128*1024 ? RVDAPath(data,@[@1,@168777401,@3,@172035250,@1]) : nil;
     NSString *key=[NSString stringWithFormat:@"%@/%@/%@/%@",ownerClass,entryClass,blocker,RVDADiagHash(uri)];
     @synchronized(RVDAUIBinding.class) {

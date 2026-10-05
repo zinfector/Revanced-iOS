@@ -107,17 +107,40 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @end
 @implementation RVDAProjection @end
 
-static NSString *RVDAResourceName(NSString *uri) {
+static NSDictionary *RVDAResourceParts(NSString *uri) {
     if (!uri.length || uri.length>2048) return nil;
     // The service can supply a resource path, while bundled filenames use an
     // underscore revision separator. Keep the exact revision; never admit an
     // arbitrary downloaded revision by basename alone.
     NSString *leaf=[uri.lastPathComponent stringByRemovingPercentEncoding];if (!leaf) return nil;
     static NSRegularExpression *regex;static dispatch_once_t once;
-    dispatch_once(&once,^{ regex=[NSRegularExpression regularExpressionWithPattern:@"^([A-Za-z0-9_]+\\.eml(?:-js)?)[_|]([0-9a-fA-F]{1,16})$" options:0 error:nil]; });
+    dispatch_once(&once,^{ regex=[NSRegularExpression regularExpressionWithPattern:@"^([A-Za-z0-9_]+\\.eml(?:-js)?)(-fe)?[_|]([0-9a-fA-F]{1,16})$" options:0 error:nil]; });
     NSTextCheckingResult *match=[regex firstMatchInString:leaf options:0 range:NSMakeRange(0,leaf.length)];
     if (!match) return nil;
-    return [NSString stringWithFormat:@"%@|%@",[leaf substringWithRange:[match rangeAtIndex:1]],[[leaf substringWithRange:[match rangeAtIndex:2]] lowercaseString]];
+    NSString *name=[leaf substringWithRange:[match rangeAtIndex:1]],*revision=[[leaf substringWithRange:[match rangeAtIndex:3]] lowercaseString];
+    BOOL fe=[match rangeAtIndex:2].location!=NSNotFound;
+    // Native .eml-fe resources are distinct compiled templates. Recognizing a
+    // key does not authorize projecting the old .eml/-js field contracts.
+    return @{@"basename":name,@"variant":fe ? @"fe" : @"bundled",
+        @"revision":revision,@"key":[NSString stringWithFormat:@"%@%@|%@",name,fe ? @"-fe" : @"",revision]};
+}
+static NSString *RVDAResourceName(NSString *uri) {
+    return RVDAResourceParts(uri)[@"key"];
+}
+static NSString *RVDAResourceProfileStatus(NSString *raw) {
+    NSDictionary *parts=RVDAResourceParts(raw);if (!parts) return @"template_uri_grammar_rejected";
+    NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
+        @"video_with_context_slots.eml-js|7f46bdff852ff164",@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7"];
+    if ([pinned containsObject:parts[@"key"]]) return @"pinned_uri_model_validation_required";
+    for (NSString *key in pinned) if ([[key componentsSeparatedByString:@"|"][0] isEqual:parts[@"basename"]])
+        return [parts[@"variant"] isEqual:@"fe"] ? @"template_variant_unmapped" : @"template_revision_unmapped";
+    return @"template_resource_unmapped";
+}
+static NSString *RVDAProfileFailure(NSData *data) {
+    NSData *component=RVDAPath(data,@[@1,@168777401]);
+    if (!component) return @"serialized_component_root_unresolved";
+    NSString *status=RVDAResourceProfileStatus(RVDAText(RVDAPath(component,@[@3,@172035250,@1])));
+    return [status isEqual:@"pinned_uri_model_validation_required"] ? @"video_model_path_unresolved" : status;
 }
 static NSString *RVDATemplate(NSData *component) {
     return RVDAResourceName(RVDAText(RVDAPath(component,@[@3,@172035250,@1])));

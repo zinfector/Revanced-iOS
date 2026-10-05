@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.37**, `YouTube-21.39.4-RVPort-0.3.37-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.38**, `YouTube-21.39.4-RVPort-0.3.38-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -8,13 +8,13 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.37. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.38. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
-DeArrow 0.3.37 adds independent live-template diagnostics and queued, retryable random-frame generation. Report 202 showed rejection before service dispatch. Title/thumbnail presentation contracts remain pinned until the new device report identifies the live URI and model structure; visible replacement is not yet confirmed. [Recovery scheme](patcher/profiles/dearrow-recovery-scheme.json).
+DeArrow 0.3.38 recognizes native `-fe` resource variants and captures the live ordinary-card template configuration and nested model structure. Report 246 showed that the existing bundled field mappings do not match those cards. This candidate captures the missing contract; title and thumbnail replacement on those layouts remains pending. [Capture contract](patcher/profiles/dearrow-live-capture-contract.json).
 
 ## Porting progress
 
-Status reflects the merged 0.3.37 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.38 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
