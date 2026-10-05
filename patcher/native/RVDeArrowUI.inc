@@ -34,6 +34,10 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
 @property(nonatomic) uint64_t imageRevision;
+@property(nonatomic) NSTimeInterval fallbackDeadline;
+@property(nonatomic) NSUInteger fallbackRetries;
+@property(nonatomic) BOOL fallbackRetryScheduled;
+@property(nonatomic,copy) NSString *fallbackPhase,*durationSource;
 @property(nonatomic,copy) NSString *video,*surface,*route,*titleBlocker,*imageBlocker;
 @property(nonatomic) NSInteger index;
 @property(nonatomic) uint64_t generation,settingsRevision;
@@ -72,6 +76,8 @@ static void RVDAUIEvent(NSString *checkpoint,RVDAUIBinding *binding,NSString *bl
     RVDADiagRecord(checkpoint,binding,blocker,nil);
 }
 static RVDAUIBinding *RVDAUIReject(RVDAUIBinding *binding,NSString *checkpoint,NSString *blocker) {
+    if ([checkpoint isEqual:@"D04_role_bound"]) checkpoint=@"D04_role_rejected";
+    RVDADiagCount([NSString stringWithFormat:@"rejected.surface.%@",binding.surface ?: @"unknown"]);
     RVDAUIEvent(checkpoint,binding,blocker);RVDADiagAttempt(binding.controller,binding.originalEntry,binding.section,binding.index,blocker);return nil;
 }
 static BOOL RVDAUIPolicy(NSString *surface,BOOL title) {
@@ -189,6 +195,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
+    binding.fallbackDeadline=0;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
     binding.generation=++RVDAUIGeneration;binding.settingsRevision=RVDAUISettingsRevision;
     BOOL title=(!binding.modern || binding.profile.titleRole) && RVDAUIPolicy(binding.surface,YES);
     BOOL image=(!binding.modern || binding.profile.imageRole) && RVDAUIPolicy(binding.surface,NO) && ![binding.surface isEqual:@"player"];
@@ -333,6 +340,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
     if (!state.surface) return RVDAUIReject(state,@"D02_owner_bound",@"owner_surface_unknown");
     objc_setAssociatedObject(controller,RVDAUIBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [RVDAUIBindings addObject:state];RVDAUIEvent(@"D02_owner_bound",state,nil);RVDAUIEvent(@"D03_video_bound",state,nil);
+    RVDADiagCount([NSString stringWithFormat:@"accepted.surface.%@",state.surface]);
     RVDAUIEvent(@"D04_role_bound",state,state.profile.blocker);RVDAUIRequest(state);return state;
 }
 static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
@@ -428,6 +436,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"original_title_bound":@(state.originalTitle.length>0),@"untranslated_title_bound":@(state.untranslatedTitle.length>0),
             @"local_title_changed":@(RVDAUITitle(state)!=nil),@"casual_original_selected":@(RVDAUICasual(state)),
             @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),
+            @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
             @"last_checkpoint":state.lastCheckpoint ?: @"none",@"last_blocker":state.lastBlocker ?: @"ready",@"owners":state.ownerSummary ?: @{},
@@ -441,7 +450,7 @@ static NSDictionary *RVDAUIReport(void) {
         history=RVDAUIHistory.copy ?: @[];counts=RVDAUICounts.copy ?: @{};stages=RVDAUILastStages.copy ?: @{};attempts=RVDAUISamples.allValues.copy ?: @[];templates=RVDAUITemplateSamples.allValues.copy ?: @[];
     }
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
-        @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),
+        @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@1,
         @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,
         @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"hooks":RVDAUIHooks.copy ?: @[],@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,

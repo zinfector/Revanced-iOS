@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "0.3.37",
+  "status": "implemented_diagnostic_capture_required_for_live_template_contract",
+  "tests_run": false,
+  "source_report": "Dearrow Report 202.txt",
+  "report_sha256": "0d1966dfe1a55cf8ae717e4afc1e1ac21e73d254986f989f0a8143c3984b7cce",
+  "native_lookup_evidence": [
+    "ELMComponent.templateURI 0x100543810 returns NSString without key normalization",
+    "Eko provider key lookup 0x100536158 uses a complete opaque string key",
+    "Eko provider URI lookup/cache 0x107e0cc9c uses the complete URI string"
+  ],
+  "diagnostic_only_template_names": 301,
+  "production_uri_matching_changed": false,
+  "unknown_roles_are_projected": false,
+  "fallback": {
+    "shared_active_limit": 4,
+    "auxiliary_queue_limit": 64,
+    "queue_wait_limit_seconds": 60,
+    "deadline_seconds": 150,
+    "retry_limit": 4,
+    "backoff_seconds": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "image_request_timeout_seconds": 45,
+    "duration_sources": [
+      "DeArrow metadata",
+      "native thumbnail timestamp",
+      "ordinary native playback with matching bound video ID and checked double ABI"
+    ],
+    "generation_retries_keep_selected_timestamp": true
+  },
+  "remaining": [
+    "Use next report to identify actual live URI structure and candidate identity/model shape",
+    "Verify exact live title/thumbnail template contracts before permitting projection",
+    "Native duration recovery for off-screen videos without usable metadata/timestamp remains unavailable"
+  ]
+}

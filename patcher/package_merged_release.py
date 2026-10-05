@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.36'
+VERSION = '0.3.37'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-options',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-recovery',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Repairs resource URI matching, strict native section recovery, independent DeArrow screen policy and primary static-thumbnail roles. Adds grouped native settings, title formatting, Casual selection, decoded fallback/effect pipeline, original/custom preview and stronger diagnostics. Downloaded unknown templates retain originals. Contribution voting remains unavailable; capture does not establish device-visible replacement. No tests run.'}
-    (ROOT/'build/package-manifest-0.3.36.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Report 202 independent live URI/model identity diagnostics, rejection/surface counters, shared transfer queue, retryable random-frame generation, same-video playback duration recovery and lifecycle deadlines. Presentation contracts remain pinned pending the diagnostic device report. Includes native settings modal header changes. No tests run.'}
+    (ROOT/'build/package-manifest-0.3.37.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

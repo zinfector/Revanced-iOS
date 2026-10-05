@@ -158,12 +158,15 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic) NSUInteger limit;
 @property(nonatomic) BOOL completed;
 @property(nonatomic,copy) void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger);
+@property(nonatomic,copy) void (^onStart)(void);
 - (void)start:(NSURL *)url timeout:(NSTimeInterval)timeout;
 - (void)finish:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code;
 - (void)cancel;
 @end
 @implementation RVDAHTTP
 - (void)start:(NSURL *)url timeout:(NSTimeInterval)timeout {
+    @synchronized(self) {
+    if (self.completed) return; // queued cancellation must never start a session
     self.body=[NSMutableData data];NSURLSessionConfiguration *config=NSURLSessionConfiguration.ephemeralSessionConfiguration;
     config.URLCache=nil;config.HTTPCookieStorage=nil;config.HTTPShouldSetCookies=NO;config.URLCredentialStorage=nil;
     config.requestCachePolicy=NSURLRequestReloadIgnoringLocalCacheData;config.timeoutIntervalForRequest=timeout;
@@ -174,11 +177,13 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     [request setValue:@"Revanced-iOS/DeArrow-backend-1" forHTTPHeaderField:@"User-Agent"];
     [request setValue:self.limit==RVDAMetadataLimit ? @"application/json" : @"image/webp,image/jpeg,image/png" forHTTPHeaderField:@"Accept"];
     self.task=[self.session dataTaskWithRequest:request];[self.task resume];
+    void (^started)(void)=self.onStart;self.onStart=nil;if (started) started();
+    }
 }
 - (void)finish:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code {
     void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger);NSURLSession *session;NSData *body;NSHTTPURLResponse *response;
     @synchronized(self) {
-        if (self.completed) return;self.completed=YES;completion=self.completion;self.completion=nil;
+        if (self.completed) return;self.completed=YES;completion=self.completion;self.completion=nil;self.onStart=nil;
         session=self.session;self.session=nil;self.task=nil;body=self.body.copy;self.body=nil;response=self.response;
     }
     [session invalidateAndCancel];if (completion) completion(body,response,blocker,code);
@@ -263,6 +268,8 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) RVDeArrowOptions *options;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAJob *> *jobs;
 @property(nonatomic,strong) NSMutableArray<RVDAOperation *> *operations;
+@property(nonatomic,strong) NSMutableArray<NSDictionary *> *auxiliaryOperations;
+@property(nonatomic) BOOL auxiliaryTurn;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAMetadata *> *metadataCache;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAImage *> *imageCache;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,NSNumber *> *cooldowns;
@@ -276,6 +283,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 - (void)record:(RVDeArrowCheckpoint)checkpoint blocker:(RVDeArrowBlocker)blocker video:(NSString *)video details:(NSDictionary *)details;
 - (void)recordRequest:(RVDeArrowRequest *)request checkpoint:(RVDeArrowCheckpoint)checkpoint blocker:(RVDeArrowBlocker)blocker;
 - (void)pump;
+- (void)enqueueAuxiliary:(RVDAHTTP *)transfer URL:(NSURL *)url timeout:(NSTimeInterval)timeout;
 - (void)processMetadata:(RVDAJob *)job;
 - (void)deliver:(RVDAJob *)job;
 - (void)scheduleFlush;
@@ -300,7 +308,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         _configurationRevision=1;_options=RVDeArrowOptions.defaultOptions;
         _queue=dispatch_queue_create("RVPort.DeArrow.Backend",DISPATCH_QUEUE_SERIAL);
         dispatch_queue_set_specific(_queue,RVDAQueueKey,(__bridge void *)self,NULL);
-        _jobs=[NSMutableDictionary dictionary];_operations=[NSMutableArray array];
+        _jobs=[NSMutableDictionary dictionary];_operations=[NSMutableArray array];_auxiliaryOperations=[NSMutableArray array];
         _metadataCache=[NSMutableDictionary dictionary];_imageCache=[NSMutableDictionary dictionary];_cooldowns=[NSMutableDictionary dictionary];
         _counts=[NSMutableDictionary dictionary];_state=[NSMutableDictionary dictionary];_events=[NSMutableArray array];
         _salt=NSUUID.UUID.UUIDString;_started=NSProcessInfo.processInfo.systemUptime;
@@ -435,7 +443,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     [self sync:^{
         report=@{@"schema":@1,@"backend_implemented":@YES,@"presentation_observed":@([self.state[@"presentation_observed"] boolValue]),@"device_verified":@NO,
             @"diagnostics_enabled":@(self.options.diagnosticsEnabled),@"configuration_revision":@(self.configurationRevision),
-            @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),
+            @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),@"queued_auxiliary_transfers":@(self.auxiliaryOperations.count),
             @"metadata_cache_entries":@(self.metadataCache.count),@"image_cache_entries":@(self.imageCache.count),@"decoded_image_bytes":@(self.imageCost),
             @"counts":self.counts.copy,@"state":self.state.copy,@"recent_events":self.events.copy};
     }];return report;
@@ -708,9 +716,42 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         [self record:RVDeArrowCheckpointMetadataReceived blocker:RVDeArrowBlockerBackoff video:job.videoID details:nil];[self processMetadata:job];
     }
 }
+- (void)enqueueAuxiliary:(RVDAHTTP *)transfer URL:(NSURL *)url timeout:(NSTimeInterval)timeout {
+    // Same serialized admission queue and four-transfer budget as metadata and
+    // submitted thumbnails. Cancellation completes once even while queued.
+    void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger)=transfer.completion;
+    __weak RVDeArrowBackend *weak=self;__block BOOL admitted=NO;
+    transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
+        RVDeArrowBackend *backend=weak;if (!backend) return;
+        dispatch_async(backend.queue,^{
+            if (admitted && backend.activeTransfers) backend.activeTransfers--;
+            if (completion) completion(data,response,blocker,code);
+            [backend pump];
+        });
+    };
+    dispatch_async(self.queue,^{
+        if (!RVDAEndpoint(url)) { [transfer finish:RVDeArrowBlockerInvalidOptions errorCode:0];return; }
+        NSIndexSet *cancelled=[self.auxiliaryOperations indexesOfObjectsPassingTest:^BOOL(NSDictionary *op,NSUInteger index,BOOL *stop) {
+            RVDAHTTP *pending=op[@"transfer"];@synchronized(pending) { return pending.completed; }
+        }];
+        [self.auxiliaryOperations removeObjectsAtIndexes:cancelled];
+        if (self.auxiliaryOperations.count>=64) { [transfer finish:RVDeArrowBlockerQueueFull errorCode:0];return; }
+        [self.auxiliaryOperations addObject:@{@"transfer":transfer,@"url":url,@"timeout":@(timeout),@"queued_at":@(RVDANow()),
+            @"admit":[^{ admitted=YES; } copy]}];[self pump];
+    });
+}
 - (void)pump {
     if (self.pumping) return;self.pumping=YES;
-    while (self.activeTransfers<RVDAMaxTransfers && self.operations.count) {
+    while (self.activeTransfers<RVDAMaxTransfers && (self.operations.count || self.auxiliaryOperations.count)) {
+        if (self.auxiliaryOperations.count && (self.auxiliaryTurn || !self.operations.count)) {
+            NSDictionary *operation=self.auxiliaryOperations.firstObject;[self.auxiliaryOperations removeObjectAtIndex:0];
+            RVDAHTTP *transfer=operation[@"transfer"];BOOL completed;@synchronized(transfer) { completed=transfer.completed; }
+            if (completed) continue;
+            if (RVDANow()-[operation[@"queued_at"] doubleValue]>60) { [transfer finish:RVDeArrowBlockerBackoff errorCode:NSURLErrorTimedOut];continue; }
+            self.auxiliaryTurn=NO;self.activeTransfers++;void (^admit)(void)=operation[@"admit"];admit();
+            [transfer start:operation[@"url"] timeout:[operation[@"timeout"] doubleValue]];continue;
+        }
+        self.auxiliaryTurn=YES;
         RVDAOperation *operation=self.operations.firstObject;[self.operations removeObjectAtIndex:0];RVDAJob *job=operation.job;
         if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) continue;
         if ([self.cooldowns[operation.URL.host.lowercaseString] doubleValue]>RVDANow()) { [self blockedOperation:operation];continue; }

@@ -1,8 +1,8 @@
-name: Build DeArrow options payload with Xcode
+name: Build DeArrow recovery payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-options-0.3.36]
+    branches: [fix/dearrow-recovery-0.3.37]
 
 permissions:
   contents: read
