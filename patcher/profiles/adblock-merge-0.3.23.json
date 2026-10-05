@@ -1,0 +1,44 @@
+{
+  "version": "0.3.23",
+  "base_commit": "350fbef72c6167c40215599a3c6ef38031d4b2d2",
+  "imported_input_sha256": {
+    "patcher/native/RVAds.inc": "ed90058b69fd51999fda5de96fd84a56cc4cd3ff24ade2d28037fa2b8bc6d0d9",
+    "patcher/native/RVAdFeed.inc": "9e54402beb68d3c4a6aee2ba20ae06b9a33e194d2a39dd9517fb5ace23ff41cd",
+    "patcher/native/RVAdsDiagnostics.inc": "a44d04a33b0d5157f28e3d9a421a0cc4906f21ee09b25c49904644d21a1cf07b",
+    "patcher/ADBLOCK_IMPLEMENTATION.md": "21b3551fc170ce6f567a419b7ba15f0a52b64795a9b66f3713e0f4ab5dc614b6",
+    "patcher/ADBLOCK_PORT_SCHEME.md": "8414e755834e58cebb82158169208ab474a4f3e111f36155c37182eaf5501e9d",
+    "patcher/profiles/adblock-implementation-evidence.json": "e49f8b8d8f0cf08b016058a14c076b94a7fabd8046fc197168c8b563eab81d7f",
+    "patcher/profiles/adblock-port-evidence.json": "e65afb1741256618d909b3b720d0926aa36b6417f0f3ccc54c38c46337a7dd38"
+  },
+  "preserved_base_file_sha256": {
+    "native/RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "native/RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "native/RVSpeed.inc": "27c3e6ebf4c96d6b0b7bd9dd366d925f38285e8989a30ecc8c03f61b080ba94a",
+    "native/RVSpeedBridge.inc": "7ff98cdf40e4fb0a526bf840ed32202122a7917b2af88071ef102cd336bd9e42",
+    "native/RVSpeedDiagnostics.inc": "11ef11c58684063bda1cd444e7d64aa455bddf94b9c3ada63a9fe1e3fc2ffa8b",
+    "native/RVVoteFirstLaunch.inc": "19d0bd248b38d3f6ebecee3c624422afec87a2b330a02921d0818c94a0093a98",
+    "native/RVVoteModel.inc": "0337ef825b478534f1d9102ffec8a0f6b31dd4c921797f817a8ec8e1cf89c431",
+    "native/RVVoteLifecycle.inc": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+    "native/RVVoteLayoutCompatibility.inc": "26ea55db7eefc2180e6ccad180850fc839808964d8ddd19ec72b27dd0014c2f2",
+    "native/RVElementDislikes.inc": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
+    "native/RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68"
+  },
+  "merge_choices": [
+    "Import only ad-specific adapters and documentation from parallel older snapshot.",
+    "Retain RVVoteNormalizeElementData in surviving element-data path.",
+    "Preserve current watch, clock, speed, vote lifecycle and settings integration.",
+    "Keep response default; generate coordinator preset from released SideStore config.",
+    "Add full and dedicated ad checkpoints without changing speed-specific report."
+  ],
+  "feature_switches": 82,
+  "runtime_preferences": 116,
+  "tests_run": false,
+  "device_adblock_verified": false,
+  "user_reported_base_features_working": [
+    "login",
+    "SponsorBlock",
+    "native speed picker",
+    "first-launch vote presentation"
+  ],
+  "historical_evidence": "adblock-implementation-evidence.json records standalone prior build, not merged payload."
+}

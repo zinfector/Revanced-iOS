@@ -1,8 +1,8 @@
 # ReVanced iOS
 
-Version 0.3.15 addresses the mounting failure confirmed by foreground RYD Report 615. It mounts count text inside the existing native dislike button, using native subnodes when their contexts match and an owned noninteractive UILabel fallback otherwise. Foreground checkpoints distinguish the rendering modes and remaining constraints. New count display remains device-unverified. Authentication, SponsorBlock and the packaged parallel settings UI are retained. No tests run.
+Version **0.3.23** merges the separate ad-block implementation into the user-confirmed 0.3.22 base. It adds scoped recorded-watch response/coordinator handling, typed feed and Shorts filters, and **Copy ad-block checkpoints** in diagnostics. Login, SponsorBlock, speed and first-launch vote presentation fixes are preserved. The new ad behavior needs device confirmation; no tests were run.
 
-Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 80 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
+Experimental Windows/Python patcher and ARM64 iOS adapter for the analyzed, decrypted **YouTube 21.39.4** IPA. The source exposes 82 feature switches and a 30-feature expanded preset. This is a partial native port; complete Android parity and full stream/header spoofing are not implemented. Device target: iPhone 17 Pro Max / iOS 27.0. The user now reports successful login; playback, refresh and the new settings UI still require device checks.
 
 - [Patcher usage and build instructions](patcher/README.md)
 - [Every local Android patch and its iOS coverage/limits](patcher/COVERAGE.md)
@@ -69,3 +69,5 @@ Version 0.3.9 merges the user-authorized snapshot of the still-edited parallel n
 Read the [RYD capture/checkpoint guide](patcher/RYD_CHECKPOINTS.md).
 
 [0.3.14 build receipt](patcher/profiles/release-0.3.14.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37238785537) succeeded; regression, hook and GUI smoke checks were skipped. RYD checkpoint revision 2 preserves visible watch-page state and observes layout/mounting/loading/drawing without forcing it. Rendering repair remains unverified.
+
+Latest SideStore candidate: **YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa** (response strategy). The alternate **YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-native-ads-unsigned.ipa** selects the native coordinator. Both preserve the working authentication and vote presentation defaults and remove extensions. Saved in-app preferences override bundled configuration. To change strategies, use ReVanced settings and open a new video. See [ad-block behavior and checkpoints](patcher/ADBLOCK_IMPLEMENTATION.md).

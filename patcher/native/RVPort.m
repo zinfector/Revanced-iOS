@@ -30,6 +30,7 @@ static NSString *RVContentGate(id controller);
 static BOOL RVEnabled(NSString *key);
 static __weak id RVCurrentPlayer;
 static __weak id RVCurrentPlayback;
+static __weak id RVCurrentWatch;
 static NSMutableDictionary<NSString *,NSNumber *> *RVSponsorCounts;
 static NSMutableDictionary<NSString *,id> *RVSponsorState;
 static void RVSponsorCount(NSString *key) {
@@ -102,37 +103,7 @@ static id RVContentResponse(id controller) {
 #include "RVAuthentication.inc"
 #include "RVMiniplayer.inc"
 
-static BOOL RVAds(NSString *strategy) { return RVEnabled(@"video_ads") && [RVSetting(@"ad_strategy") isEqual:strategy]; }
-static void RVInstallAds(void) {
-    for (NSString *field in @[@"playerAdsArray",@"adPlacementsArray",@"adSlotsArray"]) {
-        RVHook(@"YTIPlayerResponse",field,@"@@:",NO,^id(IMP original,SEL selector) {
-            return ^id(id object) {
-                if (RVAds(@"response")) return [NSMutableArray array];
-                return ((id(*)(id,SEL))original)(object,selector);
-            };
-        });
-    }
-    for (NSString *selector in @[@"isMonetized",@"hasPrerollAds"]) {
-        RVHook(@"YTIPlayerResponse",selector,@"B@:",NO,^id(IMP original,SEL sel) {
-            return ^BOOL(id object) {
-                return RVAds(@"response") ? NO : ((BOOL(*)(id,SEL))original)(object,sel);
-            };
-        });
-    }
-    RVHook(@"YTAdsControlFlowManagerImpl",@"handleActivationForTriggerBundles:",@"v@:@",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id bundles) { if (!RVAds(@"trigger")) ((void(*)(id,SEL,id))original)(object,sel,bundles); };
-    });
-    RVHook(@"YTLocalPlaybackController",@"createAdsPlaybackCoordinator",@"@@:",NO,^id(IMP original,SEL sel) {
-        return ^id(id object) { return RVAds(@"coordinator") ? nil : ((id(*)(id,SEL))original)(object,sel); };
-    });
-    NSDictionary *gates=@{@"YTIPlayabilityStatus":@"isPlayableInBackground",@"MLVideo":@"playableInBackground",
-        @"YTPlaybackData":@"isPlayableInBackground",@"YTBackgroundabilityPolicyImpl":@"isBackgroundableByUserSettings"};
-    for (NSString *cls in gates) {
-        RVHook(cls,gates[cls],@"B@:",NO,^id(IMP original,SEL sel) {
-            return ^BOOL(id object) { return RVEnabled(@"background_playback") ? YES : ((BOOL(*)(id,SEL))original)(object,sel); };
-        });
-    }
-}
+#include "RVAds.inc"
 
 @interface RVPlaybackSession : NSObject
 @property(nonatomic,copy) NSString *videoID;
@@ -276,6 +247,7 @@ static void RVObservePlayback(id controller,id timeObject,NSString *source) {
         RVSponsorCount(@"unowned_clock");return;
     }
     RVExtraObserve(controller);
+    RVAdObserveClock(controller,timeObject);
     NSString *videoID=RVObject(controller,"contentVideoID");
     NSString *gate=RVContentGate(controller);
     if (gate) { RVSponsorValue(@"playback_gate",gate);return; }
@@ -352,56 +324,7 @@ static BOOL RVDataMatches(NSData *data,NSArray<NSString *> *patterns) {
     }
     return NO;
 }
-static BOOL RVIsPromoted(id item) {
-    return RVBool(item,"hasPromotedVideoRenderer") || RVBool(item,"hasCompactPromotedVideoRenderer") || RVBool(item,"hasPromotedVideoInlineMutedRenderer");
-}
-static id RVFilterModel(id model) {
-    if (!RVEnabled(@"feed_ads")) return model;
-    NSArray *contents=RVObject(model,"contentsArray");
-    if (![contents isKindOfClass:[NSArray class]] || !RVCan(model,"setContentsArray:",@"v@:@") || ![model conformsToProtocol:@protocol(NSCopying)]) return model;
-    NSMutableArray *filtered=[NSMutableArray array];
-    for (id item in contents) {
-        if (RVIsPromoted(item)) continue;
-        id section=RVObject(item,"itemSectionRenderer");
-        if (section) {
-            id newSection=RVFilterModel(section);
-            if (newSection!=section && [item conformsToProtocol:@protocol(NSCopying)] && RVCan(item,"setItemSectionRenderer:",@"v@:@")) {
-                id copy=[item copy];RVSetObject(copy,"setItemSectionRenderer:",newSection);[filtered addObject:copy];continue;
-            }
-        }
-        [filtered addObject:item];
-    }
-    if ([filtered isEqualToArray:contents]) return model;
-    id copy=[model copy];RVSetObject(copy,"setContentsArray:",filtered);return copy;
-}
-static void RVInstallFeed(void) {
-    RVHook(@"YTIElementRenderer",@"elementData",@"@@:",NO,^id(IMP original,SEL sel) {
-        return ^id(id object) {
-            id data=((id(*)(id,SEL))original)(object,sel);
-            if (![data isKindOfClass:[NSData class]] || [data length]>2*1024*1024) return data;
-            BOOL reject=(RVEnabled(@"feed_ads") && RVDataMatches(data,RVSetting(@"feed_patterns"))) ||
-                (RVEnabled(@"hide_shorts") && RVDataMatches(data,RVSetting(@"shorts_patterns"))) || RVExtraReject(data);
-            static _Thread_local BOOL makingEmpty;
-            if (!reject || makingEmpty) return RVVoteNormalizeElementData(data);
-            makingEmpty=YES;
-            id empty=RVObject(NSClassFromString(@"YTIElementRenderer"),"emptyCellElementRenderer");
-            id result=RVObject(empty,"elementData");
-            makingEmpty=NO;
-            return [result isKindOfClass:[NSData class]] ? result : data;
-        };
-    });
-    for (NSString *cls in @[@"YTSectionListViewController",@"YTInnerTubeCollectionViewController"]) {
-        RVHook(cls,@"loadWithModel:",@"v@:@",NO,^id(IMP original,SEL sel) {
-            return ^(id object,id model) { ((void(*)(id,SEL,id))original)(object,sel,RVFilterModel(model)); };
-        });
-    }
-    RVHook(@"YTReelContentModel",@"makeContentModelForEntry:",@"@@:@",YES,^id(IMP original,SEL sel) {
-        return ^id(id cls,id entry) {
-            id model=((id(*)(id,SEL,id))original)(cls,sel,entry);
-            return RVEnabled(@"shorts_ads") && RVInt(model,"videoType")==3 ? nil : model;
-        };
-    });
-}
+#include "RVAdFeed.inc"
 
 static id RVLimitFormats(id formats) {
     int cap=[RVSetting(@"default_quality") intValue];

@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 // Additional version-specific adapters. Included in RVPort.m so all hooks share ABI guards.
-static __weak id RVCurrentWatch;
 static NSString *RVDislikeVideo;
 static NSNumber *RVDislikeCount;
 static NSURLSessionDataTask *RVDislikeTask;

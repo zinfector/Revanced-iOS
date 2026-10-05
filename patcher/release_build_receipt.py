@@ -1,11 +1,11 @@
-"""Record 0.3.22 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.23 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.22'
+VERSION = '0.3.23'
 
 
 def main():
@@ -36,7 +36,8 @@ def main():
     names += ['configs/defaults.json', 'configs/expanded.json', 'configs/sideload-auth.json', 'configs/all-candidates.json']
     names += ['native/RVVoteFirstLaunch.inc', 'FIRST_LAUNCH_UI_SCHEME.md', 'profiles/first-launch-ui-evidence.json']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
-              for suffix in ('', '-expanded', '-SideStore-auth')]
+              for suffix in ('', '-expanded', '-SideStore-auth', '-SideStore-auth-native-ads')]
+    names += ['native/RVAds.inc', 'native/RVAdFeed.inc', 'native/RVAdsDiagnostics.inc', 'configs/adblock-native.json', 'ADBLOCK_IMPLEMENTATION.md', 'ADBLOCK_PORT_SCHEME.md', 'profiles/adblock-port-evidence.json', 'profiles/adblock-implementation-evidence.json', 'profiles/adblock-merge-0.3.23.json']
     artifacts = {}
     for name in names:
         path = ROOT/name
@@ -61,7 +62,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.22 applies a reversible process default-cold-config/template-context policy each launch. It affects all native cold experiment defaults and still needs paired-row device confirmation. It also normalizes supported watch vote presentation models to native paired controls, preserves native like entities/commands, binds native typography, and refreshes after component recreation. Opaque/shared templates and missing native count contracts retain original controls with explicit diagnostic gates. Device confirmation remains pending. Authentication, SponsorBlock and the user-confirmed speed implementation are preserved. No tests run.'}
+        'remaining_scope': '0.3.23 merges recorded-watch ad response filtering, scoped native no-op coordinator selection, typed feed and Shorts filters, and redacted ad checkpoints. New ad behavior requires device confirmation. Login, SponsorBlock, speed and first-launch vote presentation implementations are preserved from the user-confirmed 0.3.22 base. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

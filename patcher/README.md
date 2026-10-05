@@ -1,10 +1,10 @@
-Latest device candidate: **0.3.22**. Use `YouTube-21.39.4-RVPort-0.3.22-SideStore-auth-unsigned.ipa`. **Return YouTube Dislike > Keep first-launch UI** defaults on and bypasses saved cold configuration in memory each launch. Saved data remains intact. It affects native cold experiment defaults across the app; restart after changing the switch. Device layout confirmation is pending. See [the scheme and checkpoints](FIRST_LAUNCH_UI_SCHEME.md). No tests run.
+# YouTube iOS Patcher 0.3.23
 
-# YouTube iOS Patcher 0.3.15
+Version **0.3.23** merges the separate ad-block implementation into the user-confirmed 0.3.22 base. It adds scoped recorded-watch response/coordinator handling, typed feed and Shorts filters, and **Copy ad-block checkpoints** in diagnostics. Login, SponsorBlock, speed and first-launch vote presentation fixes are preserved. The new ad behavior needs device confirmation; no tests were run.
 
 Version 0.3.15 addresses the mounting failure confirmed by foreground RYD Report 615. It mounts count text inside the existing native dislike button, using native subnodes when their contexts match and an owned noninteractive UILabel fallback otherwise. Foreground checkpoints distinguish the rendering modes and remaining constraints. New count display remains device-unverified. Authentication, SponsorBlock and the packaged parallel settings UI are retained. No tests run.
 
-A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 80 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
+A Windows GUI and Python CLI that inject a native adapter into the **analyzed, decrypted YouTube 21.39.4 ARM64 IPA**. The patcher has 82 feature switches plus configurable speed, network quality, SponsorBlock policies, thumbnails, gesture, theme, branding and request fields. The original IPA is preserved; existing outputs are refused.
 
 **Experimental: the user now reports successful Google login on the target iPhone. Playback, token refresh and the new settings UI still require device checks.** The output is unsigned and must be re-signed, including RVPort.dylib and retained extensions, before installation. Compilation, hook metadata matches and archive checks establish the patch artifact's structure; they do not establish playback behavior.
 
@@ -14,7 +14,7 @@ See [AUTHENTICATION_SCHEME.md](AUTHENTICATION_SCHEME.md) for the Android GmsCore
 
 The 0.3.1 auth artifact installed and its identity hook ran on the target device, but login failed and repeated keychain reads returned missing-entitlement errors. Version 0.3.2 uses the native private keychain, corrects the SSO request user-agent identity, and adds redacted auth-advice diagnostics; the user now reports login success on the target device.
 
-For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
+For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa`. It uses the macOS-built payload, removes extensions and enables the two independently switchable authentication adapters alongside the expanded preset. SideStore signs and installs it. The ordinary defaults/expanded presets leave these adapters disabled. The ordinary default/expanded IPAs also retain six app extensions. Use the `SideStore-auth` file for sideloading; it includes the expanded features plus authentication adapters.
 
 Version 0.3.3 adds miniplayer drag/horizontal-drag/double-tap switches, message/Premium badge hiding, square corners, minimum dimension, circular-background opacity, and a Shorts app-shortcut switch. These options are off/native in the default, expanded and SideStore-auth presets; configure them in the GUI or native settings. The 0.3.2 authentication adapter is preserved. See [MINIPLAYER_SCHEME.md](MINIPLAYER_SCHEME.md) for exact behavior and limits.
 
@@ -24,8 +24,8 @@ Version 0.3.5 connects SponsorBlock to the native player event-center clock, sha
 
 ## Deliverables
 
-- `output/YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
-- `output/YouTube-21.39.4-RVPort-0.3.15-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.15-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
+- `output/YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa`: expanded preset plus both authentication adapters; extensions removed.
+- `output/YouTube-21.39.4-RVPort-0.3.23-unsigned.ipa` and `output/YouTube-21.39.4-RVPort-0.3.23-expanded-unsigned.ipa`: default/expanded configurations with authentication adapters disabled and six extensions retained; require a signer that remaps and signs every extension.
 - `dist/YouTube-iOS-Patcher.exe`: standalone Windows GUI with scrolling feature selection, JSON config loading and optional PNG branding.
 - `output/YouTube-21.39.4-RVPort-0.3-unsigned.ipa`: default configuration; video ads and background playback enabled, additional features available in native settings.
 - `output/YouTube-21.39.4-RVPort-0.3-expanded-unsigned.ipa`: 30-feature experimental preset from `configs/expanded.json`.
@@ -164,13 +164,13 @@ The [0.3.9 build-only receipt](profiles/release-0.3.9.json) records the successf
 
 [0.3.12 build-only receipt](profiles/release-0.3.12.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37234483316) succeeded with regression, hook and GUI smoke checks skipped. Use the 0.3.12 SideStore-auth IPA. Independent dislike rendering and the settings snapshot remain device-unverified.
 
-[0.3.13 build receipt](profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
+[0.3.13 build receipt](profiles/release-0.3.13.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37236403392) succeeded, with regression tests, hook checks and GUI smoke checks skipped. Use `YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa` in SideStore. The rendering revision remains device-unverified.
 
 Read the [RYD capture/checkpoint guide](RYD_CHECKPOINTS.md).
 
 [0.3.14 build receipt](profiles/release-0.3.14.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37238785537) succeeded; regression, hook and GUI smoke checks were skipped. RYD checkpoint revision 2 preserves visible watch-page state and observes layout/mounting/loading/drawing without forcing it. Rendering repair remains unverified.
 
-[0.3.15 build receipt](profiles/release-0.3.15.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37239941953) succeeded; regression, hook and GUI smoke checks were skipped. Use `YouTube-21.39.4-RVPort-0.3.15-SideStore-auth-unsigned.ipa`. Report 615 confirms the foreground text mounting failure. This release adds context-guarded native mounting, an owned label fallback inside the native dislike button, and checkpoint revision 3. Authentication, SponsorBlock and the packaged settings snapshot carry over. Device rendering remains unverified.
+[0.3.15 build receipt](profiles/release-0.3.15.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37239941953) succeeded; regression, hook and GUI smoke checks were skipped. Use `YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa`. Report 615 confirms the foreground text mounting failure. This release adds context-guarded native mounting, an owned label fallback inside the native dislike button, and checkpoint revision 3. Authentication, SponsorBlock and the packaged settings snapshot carry over. Device rendering remains unverified.
 
 Version 0.3.16 reserves an eight-point logical gap between dislike icon and count using native Yoga margin, and restores the same-video counter after miniplayer transitions without playback interaction. Checkpoint revision 4 records transition and spacing gates. Includes the previously packaged settings UI, authentication and SponsorBlock. No tests run; device confirmation pending.
 
@@ -185,3 +185,5 @@ Version 0.3.18 targets the native granular speed command bridge and retries sema
 Version 0.3.19 targets missing initial rate/model reads in the native overlay speed picker. Hook diagnostics now provides **Copy speed checkpoints**, with timed history for each selection. See [SPEED_CHECKPOINTS.md](SPEED_CHECKPOINTS.md). The user reports the 0.3.19 speed picker works. No tests run.
 
 Version 0.3.20 addresses the native vote-row redesign after relaunch while RYD is enabled. Four guarded experiment accessors preserve the compatible native row; checkpoints distinguish native pair/like-text discovery from dislike rendering. The layout fix requires device confirmation. See [VOTE_LAYOUT_SCHEME.md](VOTE_LAYOUT_SCHEME.md). Speed behavior remains as in 0.3.19. No tests run.
+
+Latest SideStore candidate: **YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-unsigned.ipa** (response strategy). The alternate **YouTube-21.39.4-RVPort-0.3.23-SideStore-auth-native-ads-unsigned.ipa** selects the native coordinator. Both preserve the working authentication and vote presentation defaults and remove extensions. Saved in-app preferences override bundled configuration. To change strategies, use ReVanced settings and open a new video. See [ad-block behavior and checkpoints](ADBLOCK_IMPLEMENTATION.md).

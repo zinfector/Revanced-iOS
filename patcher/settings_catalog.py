@@ -19,7 +19,7 @@ GROUPS = [
 ]
 
 PARAMETERS = {
-    'ad_strategy':('ads','Video ad strategy','choice',dict(choices=['response','trigger','coordinator'],choice_labels=['Player response','Ad triggers','Ad coordinator'])),
+    'ad_strategy':('ads','Video ad strategy','choice',dict(choices=['response','trigger','coordinator'],choice_labels=['Player response','Player response (trigger fallback)','Native ad coordinator'],hint='The trigger option uses response filtering. Reopen the video after changing strategy.')),
     'default_speed':('player','Default playback speed','number',dict(min=.25,max=4,options=[.25,.5,.75,1,1.25,1.5,1.75,2,2.5,3,4],unit='x')),
     'custom_speeds':('player','Playback speed choices','number_list',dict(min=.25,max=4,list_min=1,list_max=30,unit='x')),
     'default_quality':('video','Default resolution cap','choice',dict(choices=[0,144,240,360,480,720,1080,1440,2160],integer=True,choice_labels=['Auto','144p','240p','360p','480p','720p','1080p','1440p','2160p'])),

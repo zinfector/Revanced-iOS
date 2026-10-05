@@ -1,3 +1,5 @@
+Latest ad-block integration: [0.3.23 implementation and checkpoints](ADBLOCK_IMPLEMENTATION.md). The working 0.3.22 vote/speed/runtime is retained. New ad behavior is device-unverified; no tests run.
+
 Latest vote counter implementation: [0.3.21 native model scheme](VOTE_COUNTER_FIX_SCHEME.md). 0.3.21 requires device confirmation on clean install and subsequent launches. Opaque shared models, absent native like entities and unsupported visibility/state contracts retain original native controls. Automatic service voting stays disabled.
 
 # YouTube iOS port coverage - 0.3.15
@@ -14,8 +16,8 @@ Two wrappers remain blocked: full stream replacement and alternate-client transp
 
 | Android patch | Status / configuration | iOS behavior and limits |
 |---|---|---|
-| Hide ads | partial; `feed_ads` | Promoted-renderer removal and positive element-data filters. iOS component identifiers differ; Android advertising filters are not all mapped. |
-| Video ads | adapted; `video_ads` | Player response, trigger or coordinator ad strategy. Each strategy needs content/ad transition tests; no stream or entitlement replacement. |
+| Hide ads | partial; `feed_ads` | 28 typed ad-presence fields, bounded feed/continuation filtering, protected-context element patterns and native Shorts ad classification. Broad Android identifier/path rules and additional insertion/promotion surfaces are not all mapped; device confirmation pending. |
+| Video ads | adapted; `video_ads` | Owned recorded-watch response arrays/counts or scoped native no-op coordinator selection; trigger choice falls back to response filtering. Unknown owners, live/DAI and Reels player policies pass through; ad/content transitions require device confirmation; no stream replacement. |
 | Copy video URL | adapted; `copy_video_url` | Native Tools menu copies a clean video URL, optionally with timestamp. Uses an iOS menu instead of the Android overlay buttons. |
 | Remove viewer discretion dialog | partial; `remove_discretion_dialog` | Auto-confirms positively identified ordinary content warnings. Age, login, rental and interstitial verification remain native; this does not unlock restricted videos. |
 | Add more double tap to seek length options | adapted; `double_tap_seconds` | Overrides the native seek-interval class method, 0 preserves native behavior. Configured through JSON; disabling double-tap takes precedence. |
@@ -70,7 +72,7 @@ Two wrappers remain blocked: full stream replacement and alternate-client transp
 
 | Declaration | Status | Mapping / remaining scope |
 |---|---|---|
-| `hideAdsResourcePatch` | resource_adapter | Promoted-renderer removal and positive element-data filters. iOS component identifiers differ; Android advertising filters are not all mapped. |
+| `hideAdsResourcePatch` | resource_adapter | 28 typed ad-presence fields, bounded feed/continuation filtering, protected-context element patterns and native Shorts ad classification. Broad Android identifier/path rules and additional insertion/promotion surfaces are not all mapped; device confirmation pending. |
 | `copyVideoURLResourcePatch` | resource_adapter | Native Tools menu copies a clean video URL, optionally with timestamp. Uses an iOS menu instead of the Android overlay buttons. |
 | `downloadsResourcePatch` | resource_adapter | Native share-sheet handoff of the current video URL. Requires a compatible installed extension; no internal media downloader, offline storage, DRM or subscription authorization. |
 | `disablePreciseSeekingGesturePatch` | partial | Tap-to-seek, progress hiding, fine-scrubber gesture suppression and color override. Native slide-to-seek is retained. Android heatmap/chapter styling and full seekbar geometry are not reproduced. |

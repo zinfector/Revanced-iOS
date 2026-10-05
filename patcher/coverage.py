@@ -8,8 +8,8 @@ ROOT=Path(__file__).resolve().parent
 SOURCE=ROOT.parent/'revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube'
 # status, configuration keys, implemented behavior and concrete remaining scope
 MAPPING={
-'hideAdsPatch':('partial','feed_ads','Promoted-renderer removal and positive element-data filters.','iOS component identifiers differ; Android advertising filters are not all mapped.'),
-'videoAdsPatch':('adapted','video_ads','Player response, trigger or coordinator ad strategy.','Each strategy needs content/ad transition tests; no stream or entitlement replacement.'),
+'hideAdsPatch':('partial', 'feed_ads', '28 typed ad-presence fields, bounded feed/continuation filtering, protected-context element patterns and native Shorts ad classification.', 'Broad Android identifier/path rules and additional insertion/promotion surfaces are not all mapped; device confirmation pending.'),
+'videoAdsPatch':('adapted', 'video_ads', 'Owned recorded-watch response arrays/counts or scoped native no-op coordinator selection; trigger choice falls back to response filtering.', 'Unknown owners, live/DAI and Reels player policies pass through; ad/content transitions require device confirmation; no stream replacement.'),
 'copyVideoURLPatch':('adapted','copy_video_url','Native Tools menu copies a clean video URL, optionally with timestamp.','Uses an iOS menu instead of the Android overlay buttons.'),
 'removeViewerDiscretionDialogPatch':('partial','remove_discretion_dialog','Auto-confirms positively identified ordinary content warnings.','Age, login, rental and interstitial verification remain native; this does not unlock restricted videos.'),
 'addMoreDoubleTapToSeekLengthOptionsPatch':('adapted','double_tap_seconds','Overrides the native seek-interval class method, 0 preserves native behavior.','Configured through JSON; disabling double-tap takes precedence.'),

@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "created_at": "2026-10-05T04:20:31.014694+00:00",
+  "diagnostics_revision": "adblock-checkpoints-1",
+  "build_source_sha256": "32fd0648acddf908a5c8605bc8deb4a90c9c3bff0d27a585d2fb916b61b61217",
+  "payload_sha256": "dffbeedac7bd0091951195ef0634d25724f06be2e563c9d1ca6d8c3897bfed87",
+  "payload_bytes": 1160158,
+  "signing_header_padding_bytes": 16384,
+  "production_build_succeeded": true,
+  "production_packages_succeeded": true,
+  "tests_run": false,
+  "device_validated": false,
+  "signing_required": true,
+  "packages": [
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\output\\YouTube-21.39.4-RVPort-adblock-native-SideStore-auth-unsigned.ipa",
+      "bytes": 140773905,
+      "sha256": "2c0c3601efdff2f372eef639ee03d4f397b4d1020a24f74a36955f8d6eee9f47",
+      "configuration": "configs/adblock-native.json",
+      "configuration_sha256": "fec2a2d69c6bb50bb7bf4fceae6fb1d63bada577085f7567cf94880147637216",
+      "ad_strategy": "coordinator"
+    },
+    {
+      "path": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\patcher\\output\\YouTube-21.39.4-RVPort-adblock-response-SideStore-auth-unsigned.ipa",
+      "bytes": 140773901,
+      "sha256": "d138e04722e8b6b799e6cff2bd726aaf21fc417061c90b2616b2f83cec3d29c7",
+      "configuration": "configs/sideload-auth.json",
+      "configuration_sha256": "b0f76b7c4982c390396431c3517a972a01df89ba15d3381631039779248e6275",
+      "ad_strategy": "response"
+    }
+  ],
+  "research_evidence": "profiles/adblock-port-evidence.json",
+  "source_files": {
+    "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+    "RVAdFeed.inc": "9e54402beb68d3c4a6aee2ba20ae06b9a33e194d2a39dd9517fb5ace23ff41cd",
+    "RVAds.inc": "ed90058b69fd51999fda5de96fd84a56cc4cd3ff24ade2d28037fa2b8bc6d0d9",
+    "RVAdsDiagnostics.inc": "a44d04a33b0d5157f28e3d9a421a0cc4906f21ee09b25c49904644d21a1cf07b",
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVDislikesDiagnostics.inc": "18de09de591ebbd36fdb0ea66c1dff2ddd081bfbcea64d8205bad840f71a5a57",
+    "RVDislikesUI.inc": "9bc063d73a73a376b8467135e52d2b23cb16fb3fe1f629b0b271d5d64e8dd0e9",
+    "RVElementDislikes.inc": "7de13ea13aec90dd6e12e596b7d82a4cae4317833be4c1f2c5b3ca5d7f1b6724",
+    "RVExtras.inc": "6fcdc0b9221119190892b33ba067e4e395edb16ac7934042e842c6779254793c",
+    "RVFeatures.h": "3df8b4cd18951918a9aaf506e1d7c5ccc835c8b60bcd5390a655a5a49630029c",
+    "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+    "RVImages.inc": "e5535549253ccfdefde066444588db402d0df72bab7aa99f33e9fd899488d8ba",
+    "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+    "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+    "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+    "RVNativeDislikes.inc": "b398e42f585c66449d5e0cfecc0500e97b09568aff43194c183471aef7c5f114",
+    "RVPort.m": "28d0f46c4820a618932d0698b7bbed03bf2be80bdaa12a809a1bece08f97b310",
+    "RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+    "RVServices.inc": "dd1b988824d8f6ae6ead164c8b9f8731c9f0937c87086a64f564a062d5ccd5ee",
+    "RVSettingsBridge.inc": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
+    "RVSettingsCatalog.h": "1a8240b366a02fb73b4c9334766837510a6edef876fc130db6ce0d52e1b86e41",
+    "RVSettingsIcon.inc": "23c1eead0249ba601c23f948300aa9467c85bfeef7b9bf9446ff69252545cfcf",
+    "RVSettingsModel.inc": "391d7282370f60e73a723b6892162a2922ce044a109e985b182ac69cd0df9070",
+    "RVSettingsNativeUI.inc": "f73e987c5f4eced62a6e08184923d8696eaf668f2c0784d8f27eaf4193c3cd65",
+    "RVSettingsNavigation.inc": "f09a157644f44df46f885154f63f54584567a9b6a30240e5b8ba16553fe8e681",
+    "RVSettingsRows.inc": "69ed5b5ea2a45842cb702b2fafbd4c193ff36f30d535a16a5083d0e6864798e7",
+    "RVSettingsUI.inc": "086ca03cd8c71dc3d8ab16b6ed18a31d1149d62cd444ec6bf78c64df74099e5a"
+  },
+  "implementation": "ADBLOCK_IMPLEMENTATION.md",
+  "scope": [
+    "Owned recorded-watch native no-op coordinator or response array/count filtering",
+    "28 descriptor-backed feed ad fields including appended sections",
+    "Native Reel ad-entry filtering with nullable consumer contract",
+    "Bounded redacted diagnostics"
+  ],
+  "remaining_scope": [
+    "Live and DAI native passthrough",
+    "Broad Android Elements paths require native mapping",
+    "Additional Shorts insertion paths",
+    "Fullscreen, Premium, shopping, merchandise and popup promotions"
+  ],
+  "verification_limit": "Compiled and packaged only; no tests or device validation performed."
+}

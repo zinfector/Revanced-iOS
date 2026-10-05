@@ -1,5 +1,5 @@
 {
-  "patcher_version": "0.3.21",
+  "patcher_version": "0.3.23",
   "scope": "All val *Patch declarations found in the local YouTube Kotlin tree, including private resources, unnamed subpatches and shared factories. Shared implementations outside this tree are represented by their YouTube wrapper.",
   "device_validated": false,
   "named_inventory_count": 51,
@@ -25,8 +25,8 @@
       "config_keys": [
         "feed_ads"
       ],
-      "implementation": "Promoted-renderer removal and positive element-data filters.",
-      "limits": "iOS component identifiers differ; Android advertising filters are not all mapped.",
+      "implementation": "28 typed ad-presence fields, bounded feed/continuation filtering, protected-context element patterns and native Shorts ad classification.",
+      "limits": "Broad Android identifier/path rules and additional insertion/promotion surfaces are not all mapped; device confirmation pending.",
       "parent": "hideAdsPatch",
       "device_validated": false
     },
@@ -41,8 +41,8 @@
       "config_keys": [
         "feed_ads"
       ],
-      "implementation": "Promoted-renderer removal and positive element-data filters.",
-      "limits": "iOS component identifiers differ; Android advertising filters are not all mapped.",
+      "implementation": "28 typed ad-presence fields, bounded feed/continuation filtering, protected-context element patterns and native Shorts ad classification.",
+      "limits": "Broad Android identifier/path rules and additional insertion/promotion surfaces are not all mapped; device confirmation pending.",
       "parent": null,
       "device_validated": false
     },
@@ -57,8 +57,8 @@
       "config_keys": [
         "video_ads"
       ],
-      "implementation": "Player response, trigger or coordinator ad strategy.",
-      "limits": "Each strategy needs content/ad transition tests; no stream or entitlement replacement.",
+      "implementation": "Owned recorded-watch response arrays/counts or scoped native no-op coordinator selection; trigger choice falls back to response filtering.",
+      "limits": "Unknown owners, live/DAI and Reels player policies pass through; ad/content transitions require device confirmation; no stream replacement.",
       "parent": null,
       "device_validated": false
     },

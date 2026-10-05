@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "created_at": "2026-10-05T03:58:19.710554+00:00",
+  "scope": "ad-block source research and proposed iOS port; no runtime implementation",
+  "target_version": "21.39.4",
+  "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "android_apk_version": "20.40.45",
+  "read_only_ghidra": true,
+  "methods_decompiled": 33,
+  "sources_sha256": {
+    "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/ad/video/VideoAdsPatch.kt": "807c4ca5e96485e7ecf41fad0621ddd19ee23e593323e9ee359032985e3e4333",
+    "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/ad/video/Fingerprints.kt": "85a5280dbd6fa11dedea3bcadc0c47d192c084d0ab9898f1b618a2b6b8b81a0f",
+    "revanced-patches-main/patches/src/main/kotlin/app/revanced/patches/youtube/ad/general/HideAdsPatch.kt": "6083154a9b3c1ba56ed6b706c58c9f818cd106af558be6baaa20fab71617f155",
+    "revanced-patches-main/extensions/youtube/src/main/java/app/revanced/extension/youtube/patches/VideoAdsPatch.java": "c71d5caf610c3c01f90d636f12955c8298f2949abd2c12e36959ef4fc9057459",
+    "revanced-patches-main/extensions/youtube/src/main/java/app/revanced/extension/youtube/patches/litho/AdsFilter.java": "79e3da13455ab7dc4666b65cbcf1053d57b0952c7871e9305ec5670b9ddf1a04",
+    "Revanced-iOS/patcher/native/RVPort.m": "73bd2156a81ad077fd79527f4588149a5384930e52c35040c9e44b14509c6d40",
+    "Revanced-iOS/patcher/native/RVExtras.inc": "b7a98de9cdc3fe470bb7d31bac43b89a135360c88148811ed5034cfe79f2160d",
+    "Revanced-iOS/patcher/native/RVRuntime.inc": "651341aa34d6b42df93063dc13daa6a519820cda3a50e6c8057fecf6eb6a6abb",
+    "Revanced-iOS/patcher/settings_catalog.py": "c4d379e905a5c50dc3a43e61b640c039605f8b2ac023892ae3574242d11c9dcf",
+    "Revanced-iOS/patcher/configs/defaults.json": "ff0e0bea40f3e7503cf9b9faa07f7875b7b65cd90edc1b53884a990e611d79f8",
+    "analysis/evidence/android_ad_anchors.json": "ef4b2694bd8c20ea700aad12f7126a50f6d3db754c0f1bac082fb83cfe0d4f24",
+    "analysis/evidence/android-yyp.java": "3db37f99fd53c9e6477d62fe886bb63dfe0a92720ce6c8e091a64b728cda756a"
+  },
+  "research_artifacts_sha256": {
+    "metadata.json": "b2eb65eab8c8ce569834789c301592f67d6438dd86fe785f2e404b64aae3ebf5",
+    "identity.txt": "4a82ce363ce9e0a846ccb599acb65ba81352f7ed344edc762a2b380cf17d0b8e",
+    "decompiled-annotated.txt": "adfb4f353f6012e5ed6f108f33b4c7eab07df1c8b610b357255be944ffa0e0a4",
+    "protobuf-fields.json": "83927a486eaa1e254c72324726a810ec63ce3430f2e9bd3ff92aea04a3a30512"
+  },
+  "native_factory": {
+    "class": "YTRealAdsPlayerServices",
+    "kind": "-",
+    "selector": "adsPlaybackCoordinatorWithOverlayManager:delegate:parentResponder:contentPlayerResponse:",
+    "encoding": "@48@0:8@16@24@32@40",
+    "imp": "0x1004c15e8"
+  },
+  "no_op_flag": {
+    "name": "useNoOpAdsCoordinator",
+    "number": 32,
+    "has_index": 48,
+    "storage_offset": 49,
+    "flags": "0x0",
+    "repeated": false,
+    "data_type": 0,
+    "message_class": null
+  },
+  "no_op_completion": {
+    "preroll_break_type": 1,
+    "postroll_break_type": 3,
+    "delegate_selector": "adsPlaybackCoordinator:didFinishBreakWithBreakType:",
+    "supports_new_response_returns": false
+  },
+  "shorts": {
+    "factory_returns_reel_model_subclass": true,
+    "native_predicate": {
+      "kind": "-",
+      "selector": "isAdVideo",
+      "encoding": "B16@0:8",
+      "imp": "0x10350fe84"
+    },
+    "ad_video_type": 3,
+    "sequence_consumer_accepts_null_models": true,
+    "consumer": {
+      "kind": "-",
+      "selector": "processReelWatchSequenceResponse:withModel:",
+      "encoding": "v32@0:8@16@24",
+      "imp": "0x1034e8c30"
+    }
+  },
+  "continuation_insertion": {
+    "kind": "-",
+    "selector": "addSectionsFromArray:",
+    "encoding": "v24@0:8@16",
+    "imp": "0x1004ff500"
+  },
+  "additional_feed_candidate_fields": [
+    {
+      "name": "promotedVideoRenderer",
+      "number": 62887855,
+      "has_index": 62,
+      "storage_offset": 344,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedVideoRenderer"
+    },
+    {
+      "name": "compactPromotedVideoRenderer",
+      "number": 73920376,
+      "has_index": 4,
+      "storage_offset": 528,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTICompactPromotedVideoRenderer"
+    },
+    {
+      "name": "compactPromotedBannerRenderer",
+      "number": 92377611,
+      "has_index": 84,
+      "storage_offset": 784,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTICompactPromotedBannerRenderer"
+    },
+    {
+      "name": "compactPromotedItemRenderer",
+      "number": 92511086,
+      "has_index": 85,
+      "storage_offset": 800,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTICompactPromotedItemRenderer"
+    },
+    {
+      "name": "promotedAppInstallRenderer",
+      "number": 99845384,
+      "has_index": 137,
+      "storage_offset": 880,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedAppInstallRenderer"
+    },
+    {
+      "name": "promotedTextBannerRenderer",
+      "number": 105649908,
+      "has_index": 138,
+      "storage_offset": 896,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedTextBannerRenderer"
+    },
+    {
+      "name": "promoted15ClickTextWatchRenderer",
+      "number": 137341759,
+      "has_index": 123,
+      "storage_offset": 1040,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromoted15ClickTextWatchRenderer"
+    },
+    {
+      "name": "promoted15ClickTextCtdWatchRenderer",
+      "number": 137341794,
+      "has_index": 122,
+      "storage_offset": 1048,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromoted15ClickTextCtdWatchRenderer"
+    },
+    {
+      "name": "promoted15ClickPtTextWatchRenderer",
+      "number": 150805198,
+      "has_index": 121,
+      "storage_offset": 1128,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromoted15ClickPtTextWatchRenderer"
+    },
+    {
+      "name": "promoted15ClickPtTextCtdWatchRenderer",
+      "number": 150805689,
+      "has_index": 120,
+      "storage_offset": 1136,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromoted15ClickPtTextCtdWatchRenderer"
+    },
+    {
+      "name": "promotedSparklesTextCtdWatch15ClickRenderer",
+      "number": 157152263,
+      "has_index": 125,
+      "storage_offset": 1200,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextCtdWatch15ClickRenderer"
+    },
+    {
+      "name": "promotedSparklesTextCtdWatchGridFormRenderer",
+      "number": 157152273,
+      "has_index": 126,
+      "storage_offset": 1208,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextCtdWatchGridFormRenderer"
+    },
+    {
+      "name": "promotedSparklesTextCtdWatchWideFormRenderer",
+      "number": 157152280,
+      "has_index": 127,
+      "storage_offset": 1216,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextCtdWatchWideFormRenderer"
+    },
+    {
+      "name": "promotedSparklesTextWatch15ClickRenderer",
+      "number": 157152285,
+      "has_index": 128,
+      "storage_offset": 1224,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextWatch15ClickRenderer"
+    },
+    {
+      "name": "promotedSparklesTextWatchGridFormRenderer",
+      "number": 157152291,
+      "has_index": 129,
+      "storage_offset": 1232,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextWatchGridFormRenderer"
+    },
+    {
+      "name": "promotedSparklesTextWatchWideFormRenderer",
+      "number": 157152292,
+      "has_index": 130,
+      "storage_offset": 1240,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextWatchWideFormRenderer"
+    },
+    {
+      "name": "promotedVideoInlineMutedRenderer",
+      "number": 166487981,
+      "has_index": 63,
+      "storage_offset": 1296,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedVideoInlineMutedRenderer"
+    },
+    {
+      "name": "promotedSparklesTextProductWatchRenderer",
+      "number": 171071888,
+      "has_index": 135,
+      "storage_offset": 1312,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextProductWatchRenderer"
+    },
+    {
+      "name": "promotedSparklesTextHomeRenderer",
+      "number": 175333548,
+      "has_index": 131,
+      "storage_offset": 1352,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextHomeRenderer"
+    },
+    {
+      "name": "promotedSparklesTextSearchRenderer",
+      "number": 175608736,
+      "has_index": 136,
+      "storage_offset": 1360,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextSearchRenderer"
+    },
+    {
+      "name": "adsWebViewRenderer",
+      "number": 186384161,
+      "has_index": 180,
+      "storage_offset": 1408,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIAdsWebViewRenderer"
+    },
+    {
+      "name": "promotedSparklesTextProductHomeRenderer",
+      "number": 191960355,
+      "has_index": 132,
+      "storage_offset": 1440,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextProductHomeRenderer"
+    },
+    {
+      "name": "promotedSparklesTextCtdHomeRenderer",
+      "number": 194442374,
+      "has_index": 133,
+      "storage_offset": 1456,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextCtdHomeRenderer"
+    },
+    {
+      "name": "promotedSparklesTextCtdHomeCompactFormRenderer",
+      "number": 194442375,
+      "has_index": 134,
+      "storage_offset": 1464,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedSparklesTextCtdHomeCompactFormRenderer"
+    },
+    {
+      "name": "promotedDiscoveryAppPromoCompactFormRenderer",
+      "number": 196922251,
+      "has_index": 124,
+      "storage_offset": 1480,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIPromotedDiscoveryAppPromoCompactFormRenderer"
+    },
+    {
+      "name": "adSlotRenderer",
+      "number": 424701016,
+      "has_index": 198,
+      "storage_offset": 1664,
+      "flags": "0x0",
+      "repeated": false,
+      "data_type": 15,
+      "message_class": "YTIAdSlotRenderer"
+    }
+  ],
+  "default_element_patterns_cstring_matches": {
+    "text_search_ad": 0,
+    "ads_video_with_context": 0,
+    "carousel_ad": 0
+  },
+  "pattern_evidence_limitation": "C-string inventory only; server-delivered templates and runtime responses may contain identifiers absent here.",
+  "android_shorts_os_helper_has_kotlin_injection_reference": false,
+  "proposal": {
+    "preserve_independent_switches": [
+      "video_ads",
+      "feed_ads",
+      "shorts_ads"
+    ],
+    "response_default_preserved_initially": true,
+    "replace_nil_coordinator_with_native_no_op_path": true,
+    "force_iOS_os_name_to_android_automotive": false,
+    "typed_feed_filter_before_layout": true,
+    "broad_android_pattern_list_needs_structural_iOS_mapping": true,
+    "live_DAI_unknown_paths_pass_through": true
+  },
+  "tests_run": false,
+  "build_run": false,
+  "device_validated": false
+}
