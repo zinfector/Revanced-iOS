@@ -1,11 +1,11 @@
-"""Record 0.3.18 build artifacts without executing regression or smoke tests."""
+"""Record 0.3.19 build artifacts without executing regression or smoke tests."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.18'
+VERSION = '0.3.19'
 
 
 def main():
@@ -30,6 +30,7 @@ def main():
              'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
              'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
              'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc', 'native/RVSettingsNavigation.inc', 'native/RVDislikesDiagnostics.inc', 'RYD_CHECKPOINTS.md', 'profiles/ryd-checkpoints-evidence.json', 'profiles/device-report-541-ryd-render.json', 'profiles/device-report-615-ryd-mount.json', 'profiles/device-report-635-ryd-lifecycle.json', 'profiles/ryd-lifecycle-evidence.json', 'profiles/ryd-speed-polish-evidence.json', 'native/RVSpeed.inc', 'native/RVSpeedBridge.inc', 'profiles/device-report-728-startup.json', 'profiles/startup-bridge-evidence.json', 'PLAYBACK_SPEED_SCHEME.md', 'profiles/parallel-ui-snapshot-0.3.14.json', 'profiles/device-0.3.12-ryd-render-failure.json']
+    names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
     names += [f'output/YouTube-21.39.4-RVPort-{VERSION}{suffix}-unsigned.ipa'
               for suffix in ('', '-expanded', '-SideStore-auth')]
     artifacts = {}
@@ -56,7 +57,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': '0.3.18 scopes missing-player recovery to the granular speed bridge and retries native semantic RYD binding after startup. Native like rendering remains native and device confirmation is pending. No tests run.'}
+        'remaining_scope': '0.3.19 refreshes legacy speed overlay state and missing rate/model reads; bounded chronological checkpoints retain each native speed selection. Authentication, SponsorBlock and RYD carry forward from 0.3.18. First-launch device confirmation and existing RYD startup issues remain pending. No tests run.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

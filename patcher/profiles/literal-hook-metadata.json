@@ -409,6 +409,12 @@
         "selector": "finishPlayback",
         "encoding": "v16@0:8",
         "imp": "0x104184e18"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRateModel:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x10417eb0c"
       }
     ]
   },
@@ -450,6 +456,12 @@
         "selector": "setPlaybackRateModel:",
         "encoding": "v24@0:8@16",
         "imp": "0x1041af578"
+      },
+      {
+        "kind": "-",
+        "selector": "singleVideo:playbackRateDidChange:",
+        "encoding": "v28@0:8@16f24",
+        "imp": "0x1041b21a0"
       }
     ]
   },
@@ -1692,6 +1704,30 @@
         "selector": "varispeedSwitchController:didSelectRateModel:",
         "encoding": "v32@0:8@16@24",
         "imp": "0x1041aab10"
+      },
+      {
+        "kind": "-",
+        "selector": "updateActiveOverlayWithActiveVideoCurrentState:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1041aa0e4"
+      },
+      {
+        "kind": "-",
+        "selector": "varispeedController",
+        "encoding": "@16@0:8",
+        "imp": "0x1041aa858"
+      },
+      {
+        "kind": "-",
+        "selector": "currentPlaybackRateForVarispeedSwitchController:",
+        "encoding": "f24@0:8@16",
+        "imp": "0x1041aaa4c"
+      },
+      {
+        "kind": "-",
+        "selector": "currentPlaybackRateModelForVarispeedSwitchController:",
+        "encoding": "@24@0:8@16",
+        "imp": "0x1041aaa90"
       }
     ]
   },
@@ -1762,6 +1798,52 @@
         "selector": "subscribeToActivePlaybackRateChange:writer:error:",
         "encoding": "B40@0:8@16@24^@32",
         "imp": "0x101a921b8"
+      }
+    ]
+  },
+  {
+    "name": "YTMainAppVideoPlayerOverlayViewController",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "didPressVarispeed:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x1017166f0"
+      },
+      {
+        "kind": "-",
+        "selector": "currentPlaybackRate",
+        "encoding": "d16@0:8",
+        "imp": "0x1017198d0"
+      },
+      {
+        "kind": "-",
+        "selector": "currentPlaybackRateModel",
+        "encoding": "@16@0:8",
+        "imp": "0x101711d34"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRate:",
+        "encoding": "v24@0:8d16",
+        "imp": "0x101713e58"
+      },
+      {
+        "kind": "-",
+        "selector": "setPlaybackRateModel:",
+        "encoding": "v24@0:8@16",
+        "imp": "0x101713f04"
+      }
+    ]
+  },
+  {
+    "name": "YTColdConfigClientInfraClientConfigImpl",
+    "methods": [
+      {
+        "kind": "-",
+        "selector": "enablePlaybackSpeedSheetWithXplatPlayerAdapter",
+        "encoding": "B16@0:8",
+        "imp": "0x10105dacc"
       }
     ]
   }

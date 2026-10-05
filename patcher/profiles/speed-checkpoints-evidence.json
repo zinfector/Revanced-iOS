@@ -1,0 +1,23 @@
+{
+  "version": "0.3.19",
+  "reports": "device-report-755-speed.json",
+  "finding": "Failing first launch uses legacy overlay model callbacks; working reload uses command bridge selections. Neither exercised missing-player recovery. The last requested/observed rate of 1x hides earlier choices.",
+  "native_readers": {
+    "overlay.currentPlaybackRate": "0x1017198d0",
+    "overlay.currentPlaybackRateModel": "0x101711d34",
+    "overlay.setPlaybackRate:": "0x101713e58",
+    "overlay.setPlaybackRateModel:": "0x101713f04",
+    "overlay.didPressVarispeed:": "0x1017166f0",
+    "manager.currentPlaybackRateForVarispeedSwitchController:": "0x1041aaa4c",
+    "manager.currentPlaybackRateModelForVarispeedSwitchController:": "0x1041aaa90",
+    "manager.varispeedController": "0x1041aa858",
+    "manager.updateActiveOverlayWithActiveVideoCurrentState:": "0x1041aa0e4"
+  },
+  "fix": "Refresh cached native overlay video state using its native update method for the same current ordinary-content player; recover empty rate/model reads; capture overlay intent before native forwarding. Preserve valid native reads, native clamping, scalar models, bridge scope and bounded retries.",
+  "diagnostics": "256 process-local monotonic events and last 12 selections with timed checkpoints; separate copy action and before/after session identification. Native flag values observed only.",
+  "tests_run": false,
+  "device_verified": false,
+  "sponsorblock_implementation_changed": false,
+  "authentication_implementation_changed": false,
+  "ryd_implementation_changed": false
+}

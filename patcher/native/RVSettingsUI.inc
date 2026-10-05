@@ -186,15 +186,21 @@ static void RVPreferencesChanged(void) { RVRefreshShortcuts();RVSegmentsChanged(
 - (void)diagnostics {
     NSString *text;@synchronized(RVStatus) { text=[RVStatus componentsJoinedByString:@"\n"]; }
     text=[RVDislikeCheckpointSummary() stringByAppendingString:text ?: @""];
+    text=[RVSpeedCheckpointSummary() stringByAppendingString:text ?: @""];
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":@"0.3.18",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport()};
+        NSDictionary *report=@{@"patcher_version":@"0.3.19",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport()};
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy RYD checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSData *data=[NSJSONSerialization dataWithJSONObject:RVDislikeCheckpointReport() options:NSJSONWritingPrettyPrinted error:nil];
+        if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Copy speed checkpoints" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSDictionary *report=@{@"playback_speed":RVSpeedReport()};
+        NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];

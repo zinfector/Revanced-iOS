@@ -179,3 +179,5 @@ Version 0.3.17 balances the measured native like/dislike pair’s outer insets u
 [0.3.17 build receipt](profiles/release-0.3.17.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37243138174) succeeded. Use `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Regression, hook and GUI smoke checks were skipped. Device outer-inset matching, swipe timing and native speed-menu behavior remain unverified.
 
 Version 0.3.18 targets the native granular speed command bridge and retries semantic dislike binding after row initialization. Full diagnostics expose the actual slider bridge and redacted binding checkpoints. No tests run; device confirmation pending.
+
+Version 0.3.19 targets missing initial rate/model reads in the native overlay speed picker. Hook diagnostics now provides **Copy speed checkpoints**, with timed history for each selection. See [SPEED_CHECKPOINTS.md](SPEED_CHECKPOINTS.md). No tests run; first-launch device confirmation remains pending.

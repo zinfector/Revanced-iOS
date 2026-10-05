@@ -63,6 +63,9 @@ static void RVInstallSpeedBridge(void) {
                     RVSpeedBridgeArgumentRate=RVSpeedFloat(args,[name isEqual:@"setPlaybackRate:error:"] ? "playbackRate" : "rate");
                     RVSpeedBridgeArgumentScalar=RVSpeedFloat(args,"scalar");
                 }
+                RVSpeedCheckpoint(selection ? @"bridge_selection_received" : @"bridge_rate_read_started",RVCurrentPlayer,
+                    @{@"method":name,@"argument_rate":@(isfinite(RVSpeedBridgeArgumentRate) ? RVSpeedBridgeArgumentRate : 0),
+                      @"argument_scalar":@(isfinite(RVSpeedBridgeArgumentScalar) ? RVSpeedBridgeArgumentScalar : 0)});
                 BOOL previous=RVSpeedBridgeCapture;RVSpeedBridgeScope++;RVSpeedBridgeCapture=selection;
                 id result;NSError *nativeError=nil;
                 @try { result=((id(*)(id,SEL,id,NSError **))original)(block,sel,args,error ? &nativeError : NULL); }
@@ -75,6 +78,8 @@ static void RVInstallSpeedBridge(void) {
                     RVSpeedBridgeResultRate=RVSpeedFloat(result,"activeRate");
                     RVSpeedBridgeResultHasRate=RVBool(result,"hasActiveRate") && isfinite(RVSpeedBridgeResultRate);
                 }
+                RVSpeedCheckpoint(@"bridge_call_returned",RVCurrentPlayer,@{@"method":name,@"native_error":@(nativeError!=nil),
+                    @"result_rate_available":@(RVSpeedBridgeResultHasRate),@"result_rate":@(isfinite(RVSpeedBridgeResultRate) ? RVSpeedBridgeResultRate : 0)});
                 return result;
             };
         });
