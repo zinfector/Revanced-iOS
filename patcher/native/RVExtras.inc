@@ -745,15 +745,10 @@ static void RVInstallLayout(void) {
         };
     });
     RVHook(@"YTAppPivotBarController",@"defaultSelectedPivotIdentifier",@"@@:",NO,^id(IMP original,SEL sel) {
-        return ^id(id object) { NSString *value=RVSetting(@"start_page");return [value isKindOfClass:[NSString class]] && value.length ? value : ((id(*)(id,SEL))original)(object,sel); };
-    });
-    RVHook(@"YTPivotBarViewController",@"viewDidAppear:",@"v@:B",NO,^id(IMP original,SEL sel) {
-        return ^(id object,BOOL animated) {
-            ((void(*)(id,SEL,BOOL))original)(object,sel,animated);
-            if (RVCan(object,"pivotBarItemViewForPivotIdentifier:",@"@@:@")) for (NSString *identifier in @[@"FEshorts",@"FEshorts_tab"]) {
-                id view=((id(*)(id,SEL,id))objc_msgSend)(object,sel_registerName("pivotBarItemViewForPivotIdentifier:"),identifier);
-                RVHideView(view,RVEnabled(@"hide_shorts_navigation"));
-            }
+        return ^id(id object) {
+            NSString *value=RVSetting(@"start_page");
+            id selected=[value isKindOfClass:[NSString class]] && value.length ? value : ((id(*)(id,SEL))original)(object,sel);
+            return RVEnabled(@"hide_shorts_navigation") && RVShortsIdentifier(selected) ? @"FEwhat_to_watch" : selected;
         };
     });
     RVHook(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@B",NO,^id(IMP original,SEL sel) {

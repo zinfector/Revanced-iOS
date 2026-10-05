@@ -1,4 +1,4 @@
-"""Package the Apple Xcode 0.3.26 payload and record evidence, without tests."""
+"""Package the Apple Xcode 0.3.27 payload and record evidence, without tests."""
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -8,7 +8,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.26'
+VERSION = '0.3.27'
 
 
 def digest(path):
@@ -31,7 +31,7 @@ def main():
                for p in sorted((ROOT/'native').rglob('*')) if p.is_file()}
     if sources != native['source_files']:
         raise RuntimeError('Native sources changed since compilation')
-    baseline = json.loads((ROOT/'profiles/sponsor-prompts-baseline.json').read_text(encoding='utf-8'))
+    baseline = json.loads((ROOT/'profiles/shorts-layout-baseline-0.3.26.json').read_text(encoding='utf-8'))
     preserved = {name: value for name, value in sources.items()
                  if baseline['native_sources'].get(name) == value}
     changed = {name: value for name, value in sources.items()
@@ -61,15 +61,15 @@ def main():
         'device_validated': False, 'signing_required': True,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'packaging': 'Production input/config/payload validation; archive self-check disabled.',
-        'diagnostics_revision': 'sponsor-prompts-1', 'native_build': native, 'cloud_build': cloud,
+        'diagnostics_revision': 'shorts-layout-1', 'native_build': native, 'cloud_build': cloud,
         'preserved_native_sources': preserved, 'changed_or_added_native_sources': changed,
         'packages': packages,
-        'limits': ['Apple Xcode payload replaces the crashing Zig delivery; device crash resolution unverified.',
-                   'Frosted-glass style-provider experiments remain unmapped.',
+        'limits': ['Shorts shelf/header removal and compacted native pivot layout need device confirmation.',
+                   'Unknown Shorts templates/native contracts are preserved and reported.',
                    'Saved preferences override bundled defaults, including ad strategy.']}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for target in (ROOT/f'build/package-manifest-{VERSION}.json',
-                   ROOT/'profiles/sponsor-prompts-implementation-evidence.json',
+                   ROOT/'profiles/shorts-layout-implementation-evidence.json',
                    destination/f'RVPort-{VERSION}-build-receipt.json'):
         target.write_text(encoded, encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages),

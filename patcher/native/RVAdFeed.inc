@@ -26,6 +26,7 @@ static NSDictionary *RVAdFeedFields(void) {
 static NSString *RVAdPresence(NSString *field) {
     return [@"has" stringByAppendingString:[[[field substringToIndex:1] uppercaseString] stringByAppendingString:[field substringFromIndex:1]]];
 }
+#include "RVShortsLayout.inc"
 static BOOL RVAdFeedKind(id item,NSString **reason) {
     NSArray *fields=RVAdFieldAccessors[NSStringFromClass([item class])];
     for (RVAdField *field in fields) {
@@ -52,7 +53,11 @@ static NSArray *RVAdFilterEntries(NSArray *entries,NSUInteger depth,NSUInteger *
     for (id item in entries) {
         if (!*budget) { RVAdEvent(nil,@"feed_budget_passthrough",1);[result addObject:item];continue; }
         --*budget;NSString *reason=nil;
-        if (RVAdFeedKind(item,&reason)) {
+        NSString *shorts=RVShortsRowKind(item);
+        if (shorts) {
+            RVShortsEvent(@"feed_row_removed");RVShortsEvent([@"feed_removed_" stringByAppendingString:shorts]);changed=YES;continue;
+        }
+        if (RVEnabled(@"feed_ads") && RVAdFeedKind(item,&reason)) {
             RVAdEvent(nil,@"feed_ad_input",1);RVAdEvent(nil,@"feed_removed",1);
             RVAdEvent(nil,[@"feed_removed_" stringByAppendingString:reason],1);changed=YES;continue;
         }
@@ -88,7 +93,7 @@ static id RVAdFilterModel(id model,NSUInteger depth,NSUInteger *budget,NSHashTab
     id copy=[model copy];RVSetObject(copy,"setContentsArray:",filtered);RVAdEvent(nil,@"feed_model_copied",1);return copy;
 }
 static id RVFilterModel(id model) {
-    if (!RVEnabled(@"feed_ads")) return model;
+    if (!RVEnabled(@"feed_ads") && !RVEnabled(@"hide_shorts")) return model;
     NSUInteger budget=4096;NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     return RVAdFilterModel(model,0,&budget,seen);
 }
@@ -120,35 +125,48 @@ static void RVInstallFeed(void) {
     }
     RVAdFieldAccessors=accessors.copy;
     RVAdHook(@"YTIElementRenderer",@"elementData",@"@@:",NO,^id(IMP original,SEL sel) {
+        RVShortsElementDataOriginal=original;
         return ^id(id object) {
             id data=((id(*)(id,SEL))original)(object,sel);
             if (![data isKindOfClass:NSData.class] || [data length]>2*1024*1024) return data;
             static _Thread_local BOOL makingEmpty;if (makingEmpty) return data;
             BOOL ad=RVAdElementReject(data);
-            BOOL reject=ad || (RVEnabled(@"hide_shorts") && RVDataMatches(data,RVSetting(@"shorts_patterns"))) || RVExtraReject(data);
+            NSString *shorts=RVShortsDataKind(data);
+            BOOL reject=ad || shorts || RVExtraReject(data);
             if (!reject) return RVVoteNormalizeElementData(data);
             id result=nil;makingEmpty=YES;
             @try { result=RVObject(RVObject(NSClassFromString(@"YTIElementRenderer"),"emptyCellElementRenderer"),"elementData"); }
             @finally { makingEmpty=NO; }
             if (![result isKindOfClass:NSData.class]) { if (ad) RVAdEvent(nil,@"element_empty_contract_missing",1);return RVVoteNormalizeElementData(data); }
-            if (ad) RVAdEvent(nil,@"element_empty_substitution",1);return result;
+            if (ad) RVAdEvent(nil,@"element_empty_substitution",1);
+            if (shorts) RVShortsEvent([@"element_empty_" stringByAppendingString:shorts]);return result;
         };
     });
     for (NSString *cls in @[@"YTSectionListViewController",@"YTInnerTubeCollectionViewController"]) RVAdHook(cls,@"loadWithModel:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id controller,id model) {
-            RVAdEvent(nil,@"feed_initial_load",1);id filtered=RVFilterModel(model);
+            RVAdEvent(nil,@"feed_initial_load",1);RVShortsEvent(@"feed_initial_load_observed");id filtered=RVFilterModel(model);
             ((void(*)(id,SEL,id))original)(controller,sel,filtered);RVAdEvent(nil,@"feed_initial_load_completed",1);
         };
     });
     RVAdHook(@"YTInnerTubeCollectionViewController",@"addSectionsFromArray:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id controller,id entries) {
             id filtered=entries;
-            if (RVEnabled(@"feed_ads") && [entries isKindOfClass:NSArray.class]) {
+            if ((RVEnabled(@"feed_ads") || RVEnabled(@"hide_shorts")) && [entries isKindOfClass:NSArray.class]) {
                 NSUInteger budget=4096;NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
-                RVAdEvent(nil,@"feed_append_input",[entries count]);filtered=RVAdFilterEntries(entries,0,&budget,seen);
+                RVAdEvent(nil,@"feed_append_input",[entries count]);RVShortsEvent(@"feed_append_observed");filtered=RVAdFilterEntries(entries,0,&budget,seen);
                 RVAdEvent(nil,@"feed_append_surviving",[filtered count]);
             }
             ((void(*)(id,SEL,id))original)(controller,sel,filtered);RVAdEvent(nil,@"feed_append_completed",1);
+        };
+    });
+    RVAdHook(@"YTInnerTubeCollectionViewController",@"sectionControllersForSectionRenderers:reloadingSectionControllerByRenderer:",@"@@:@@",NO,^id(IMP original,SEL sel) {
+        return ^id(id object,id entries,id reload) {
+            id filtered=entries;
+            if (RVEnabled(@"hide_shorts") && [entries isKindOfClass:NSArray.class]) {
+                NSUInteger budget=4096;NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
+                RVShortsEvent(@"feed_section_construction_observed");filtered=RVAdFilterEntries(entries,0,&budget,seen);
+            }
+            return ((id(*)(id,SEL,id,id))original)(object,sel,filtered,reload);
         };
     });
     RVAdHook(@"YTReelContentModel",@"makeContentModelForEntry:",@"@@:@",YES,^id(IMP original,SEL sel) {

@@ -1,5 +1,7 @@
 # ReVanced iOS
 
+Version **0.3.27** removes identified Shorts shelf/header rows before feed rendering and compacts native navigation when the Shorts tab is hidden. It retains the user-confirmed working 0.3.26 Xcode compiler pipeline and SponsorBlock prompts. No tests were run; the new layout needs device confirmation. See [implementation and checkpoints](patcher/SHORTS_LAYOUT_IMPLEMENTATION.md).
+
 Version **0.3.26** adds native SponsorBlock manual-skip and confirmed undo controls on the 0.3.24 ad-handoff baseline. It retains sign-in, speed, dislike and coordinator-handoff fixes. No tests were run; device behavior remains unverified.
 
 See [native prompt behavior and failure checkpoints](patcher/SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
@@ -40,7 +42,7 @@ Version 0.3.3 adds selected miniplayer gesture, badge, corner, size and backgrou
 
 [Verified 0.3.3 artifact receipt](patcher/profiles/release-0.3.3.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37184316117) passed all 35 host tests, built the ARM64 payload and packaged the 79-switch Windows GUI. Real-IPA verification preserves retained original files and executable sections/load commands. These checks do not establish successful device login or UI behavior.
 
-Version 0.3.4 adds **YouTube Settings → ReVanced**, with 13 groups, search, 113 runtime preferences, import/export, reset and diagnostics. The working sign-in implementation and existing preferences carry over. [Settings scheme](patcher/SETTINGS_SCHEME.md).
+Version 0.3.4 adds **YouTube Settings â†’ ReVanced**, with 13 groups, search, 113 runtime preferences, import/export, reset and diagnostics. The working sign-in implementation and existing preferences carry over. [Settings scheme](patcher/SETTINGS_SCHEME.md).
 
 [Verified 0.3.4 artifact receipt](patcher/profiles/release-0.3.4.json): the [cloud run](https://github.com/zinfector/Revanced-iOS/actions/runs/37186801341) passed all 37 host tests, including the production preference/menu bridge harness and CLI export round trip, built the native payload and packaged the Windows GUI. That receipt applies to 0.3.4; its test results do not validate later SponsorBlock changes.
 

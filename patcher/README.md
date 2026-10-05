@@ -1,5 +1,7 @@
 # YouTube iOS Patcher 0.3.26
 
+Version **0.3.27** removes identified Shorts shelf/header rows before feed rendering and compacts native navigation when the Shorts tab is hidden. It retains the user-confirmed working 0.3.26 Xcode compiler pipeline and SponsorBlock prompts. No tests were run; the new layout needs device confirmation. See [implementation and checkpoints](SHORTS_LAYOUT_IMPLEMENTATION.md).
+
 Version **0.3.26** adds native SponsorBlock manual-skip and confirmed undo controls on the 0.3.24 ad-handoff baseline. It retains sign-in, speed, dislike and coordinator-handoff fixes. No tests were run; device behavior remains unverified.
 
 See [native prompt behavior and failure checkpoints](SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md).
@@ -22,7 +24,7 @@ For SideStore, use `output/YouTube-21.39.4-RVPort-0.3.24-SideStore-auth-unsigned
 
 Version 0.3.3 adds miniplayer drag/horizontal-drag/double-tap switches, message/Premium badge hiding, square corners, minimum dimension, circular-background opacity, and a Shorts app-shortcut switch. These options are off/native in the default, expanded and SideStore-auth presets; configure them in the GUI or native settings. The 0.3.2 authentication adapter is preserved. See [MINIPLAYER_SCHEME.md](MINIPLAYER_SCHEME.md) for exact behavior and limits.
 
-Version 0.3.4 adds **YouTube Settings → ReVanced**, with 13 preference groups, search, 113 runtime controls, configuration import/export, reset, Video tools and diagnostics. Existing saved preferences and the working authentication implementation carry over. See [SETTINGS_SCHEME.md](SETTINGS_SCHEME.md) for the native integration and verification scope. The three-finger hold opens the same pane as a fallback.
+Version 0.3.4 adds **YouTube Settings â†’ ReVanced**, with 13 preference groups, search, 113 runtime controls, configuration import/export, reset, Video tools and diagnostics. Existing saved preferences and the working authentication implementation carry over. See [SETTINGS_SCHEME.md](SETTINGS_SCHEME.md) for the native integration and verification scope. The three-finger hold opens the same pane as a fallback.
 
 Version 0.3.5 connects SponsorBlock to the native player event-center clock, shares the local playback-controller session with marker rendering, and aligns markers to the native seekbar track. It adds a redacted `sponsorblock` diagnostic section. No tests were run for 0.3.5 at the user's request; compilation and IPA construction do not establish device behavior. See [SPONSORBLOCK_SCHEME.md](SPONSORBLOCK_SCHEME.md).
 
@@ -56,7 +58,7 @@ The original ad/background/SponsorBlock/feed/speed/quality hooks are extended wi
 
 Read the per-patch limits in [COVERAGE.md](COVERAGE.md). Downloads are a share handoff requiring a compatible installed extension. RYD service votes are separate from your YouTube account's votes. Thumbnail proxying requires your own compatible endpoint. Age/login/rental verification remains native. Full stream replacement and alternate-client transport/header spoofing are **not implemented**; request-field overrides are not equivalents. Android GmsCore services are not transplanted; 0.3.2 instead adapts selected native SSO behavior. ContentProvider and system-back fixes have no corresponding mechanism in this IPA. Many UI patches implement a selected subset, not complete Android preference or resource parity.
 
-In the app, open **YouTube Settings → ReVanced**, or hold three fingers for one second as a fallback. The pane contains grouped switches and value editors, search, import/export and reset. **Copy configuration** is on the root screen; **Copy diagnostic report** is under Hook diagnostics. Reports include hook statuses and effective configuration without service identities. Video tools are available from the root ReVanced settings screen. SponsorBlock Tools exposes category behavior/color controls and manual contribution actions. Reopen the video or restart after changes affecting request construction/player models or network quality policy; not every feature updates an existing player immediately.
+In the app, open **YouTube Settings â†’ ReVanced**, or hold three fingers for one second as a fallback. The pane contains grouped switches and value editors, search, import/export and reset. **Copy configuration** is on the root screen; **Copy diagnostic report** is under Hook diagnostics. Reports include hook statuses and effective configuration without service identities. Video tools are available from the root ReVanced settings screen. SponsorBlock Tools exposes category behavior/color controls and manual contribution actions. Reopen the video or restart after changes affecting request construction/player models or network quality policy; not every feature updates an existing player immediately.
 
 ## Windows GUI
 
@@ -181,7 +183,7 @@ Version 0.3.16 reserves an eight-point logical gap between dislike icon and coun
 
 [0.3.16 build receipt](profiles/release-0.3.16.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37241222919). Use `YouTube-21.39.4-RVPort-0.3.16-SideStore-auth-unsigned.ipa`. Compilation/package only; no tests executed. Device spacing and miniplayer restoration remain unverified.
 
-Version 0.3.17 balances the measured native like/dislike pair’s outer insets using owned text margin, restores verified same-video dislike labels during the swipe, and captures both native speed-menu paths with precedence over startup restoration and bounded readiness retries. Checkpoint revision 5 and playback_speed diagnostics expose remaining failures. Authentication, SponsorBlock and the packaged settings UI carry over. No tests run; device confirmation pending.
+Version 0.3.17 balances the measured native like/dislike pairâ€™s outer insets using owned text margin, restores verified same-video dislike labels during the swipe, and captures both native speed-menu paths with precedence over startup restoration and bounded readiness retries. Checkpoint revision 5 and playback_speed diagnostics expose remaining failures. Authentication, SponsorBlock and the packaged settings UI carry over. No tests run; device confirmation pending.
 
 [0.3.17 build receipt](profiles/release-0.3.17.json): [cloud build](https://github.com/zinfector/Revanced-iOS/actions/runs/37243138174) succeeded. Use `YouTube-21.39.4-RVPort-0.3.17-SideStore-auth-unsigned.ipa`. Regression, hook and GUI smoke checks were skipped. Device outer-inset matching, swipe timing and native speed-menu behavior remain unverified.
 
