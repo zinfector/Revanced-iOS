@@ -1,0 +1,262 @@
+{
+  "schema": 1,
+  "status": "proposed_not_implemented",
+  "supported_youtube_version": "21.39.4",
+  "tests_run": false,
+  "runtime_changed": false,
+  "source_report": "Report 931.txt",
+  "base_aggregate_source_sha256": "4fb8571f8595dfbd1681d843cd4c8f1f4ee8a835d103fd80fbe36f44585531aa",
+  "approach": "presentation-only watch-model normalization with semantic native count/state binding and composition revisions",
+  "target_button_type": 15,
+  "standalone_button_types": [
+    3,
+    4
+  ],
+  "model_fields": {
+    "YTILikeCountEntity": {
+      "table": "0x10cdab890",
+      "fields": [
+        {
+          "name": "key",
+          "number": 1,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "likeCountIfLiked",
+          "number": 4,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "likeCountIfDisliked",
+          "number": 5,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "likeCountIfIndifferent",
+          "number": 6,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "expandedLikeCountIfLiked",
+          "number": 7,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "expandedLikeCountIfDisliked",
+          "number": 8,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "expandedLikeCountIfIndifferent",
+          "number": 9,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "likeCountLabel",
+          "number": 10,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "likeButtonA11YText",
+          "number": 11,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "likeCountIfLikedNumber",
+          "number": 12,
+          "data_type": 8,
+          "class": null
+        },
+        {
+          "name": "likeCountIfDislikedNumber",
+          "number": 13,
+          "data_type": 8,
+          "class": null
+        },
+        {
+          "name": "likeCountIfIndifferentNumber",
+          "number": 14,
+          "data_type": 8,
+          "class": null
+        },
+        {
+          "name": "shouldExpandLikeCount",
+          "number": 15,
+          "data_type": 0,
+          "class": null
+        },
+        {
+          "name": "sentimentFactoidA11YTextIfLiked",
+          "number": 17,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        },
+        {
+          "name": "sentimentFactoidA11YTextIfDisliked",
+          "number": 18,
+          "data_type": 15,
+          "class": "ELMPBAttributedString"
+        }
+      ]
+    },
+    "YTILikeButtonViewModel": {
+      "table": "0x10ce0a540",
+      "fields": [
+        {
+          "name": "toggleButtonViewModel",
+          "number": 1,
+          "data_type": 15,
+          "class": "YTIRenderer"
+        },
+        {
+          "name": "resetAnimationCommand",
+          "number": 2,
+          "data_type": 15,
+          "class": "ELMPBCommand"
+        },
+        {
+          "name": "likeStatusEntityKey",
+          "number": 3,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "animationEntityKey",
+          "number": 4,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "playerControlsVisibilityEntityKey",
+          "number": 5,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "likeStatusEntity",
+          "number": 6,
+          "data_type": 15,
+          "class": "YTILikeStatusEntity"
+        },
+        {
+          "name": "enableAnimationURL",
+          "number": 10,
+          "data_type": 0,
+          "class": null
+        },
+        {
+          "name": "likeAnimationLightURL",
+          "number": 11,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "likeAnimationDarkURL",
+          "number": 12,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "teasersOrderEntityKey",
+          "number": 14,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "animatedLikeIconV2ViewModel",
+          "number": 15,
+          "data_type": 15,
+          "class": "YTIRenderer"
+        },
+        {
+          "name": "likeCountEntity",
+          "number": 16,
+          "data_type": 15,
+          "class": "YTILikeCountEntity"
+        }
+      ]
+    },
+    "YTIDislikeButtonViewModel": {
+      "table": "0x10cf53420",
+      "fields": [
+        {
+          "name": "toggleButtonViewModel",
+          "number": 1,
+          "data_type": 15,
+          "class": "YTIRenderer"
+        },
+        {
+          "name": "dislikeEntityKey",
+          "number": 2,
+          "data_type": 14,
+          "class": null
+        },
+        {
+          "name": "likeStatusEntity",
+          "number": 3,
+          "data_type": 15,
+          "class": "YTILikeStatusEntity"
+        }
+      ]
+    }
+  },
+  "implementation_preconditions": [
+    "Observe active action-model producer and its call count on device",
+    "Recover nested ELMPBElement component/model extension mapping before mutation",
+    "Validate complete segmented envelope and native submodel contracts",
+    "Preserve native command/state/count/visibility/logging bindings",
+    "Resolve vote-specific style contract if compactify overrides paired presentation"
+  ],
+  "candidate_boundaries": [
+    {
+      "class": "YTBAWatchPageFillerBlock",
+      "selector": "getVideoActionBarElement:error:",
+      "encoding": "@32@0:8@16^@24"
+    },
+    {
+      "class": "YTBAWatchPageFillerBlock",
+      "selector": "getCompactifyVideoActionBarElement:error:",
+      "encoding": "@32@0:8@16^@24"
+    }
+  ],
+  "observation_boundaries": [
+    {
+      "class": "ELMComponent",
+      "selector": "initWithElement:context:treeLocalContext:",
+      "encoding": "@40@0:8@16@24@32"
+    },
+    {
+      "class": "ELMComponent",
+      "selector": "updateWithElement:",
+      "encoding": "v24@0:8@16"
+    },
+    {
+      "class": "ELMComponent",
+      "selector": "updateWithElement:forced:",
+      "encoding": "v28@0:8@16B24"
+    }
+  ],
+  "first_failure_checkpoints": [
+    "action_model_observed",
+    "video_scope_verified",
+    "native_like_entity_resolved",
+    "pair_model_ready",
+    "paired_template_materialized",
+    "native_like_text_rendered",
+    "ryd_count_bound",
+    "typography_resolved",
+    "pair_geometry_balanced",
+    "transition_rebound",
+    "vote_command_preserved"
+  ],
+  "degraded_behavior": "Keep original native layout and improved independent estimate adapter; report explicit unsupported/missing contract, never claim paired rendering success."
+}
