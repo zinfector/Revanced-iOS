@@ -159,6 +159,7 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     BOOL lockout=NO;
     @synchronized(self) {
         if (!self.enabled || self.generation!=generation || NSProcessInfo.processInfo.systemUptime>=self.deadline) return RVUSBError(@"session_expired");
+        if (self.failedPairings>=8) return RVUSBError(@"pairing_locked_enable_new_session");
         if ([operation isEqual:@"pair"]) {
             if (![credential.lowercaseString isEqual:self.accessCode.lowercaseString]) {
                 lockout=++self.failedPairings>=8;

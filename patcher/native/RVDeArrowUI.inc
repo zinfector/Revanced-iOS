@@ -504,6 +504,9 @@ static void RVDAUIStartCapture(void) {
 static void RVDAUIStopCapture(void) {
     RVDAUIDiagnosticsArmed=NO;
     [RVDAUIProbeRequest cancel];RVDAUIProbeRequest=nil;RVDAUIProbeGeneration++;
+    if ([@[@"pending",@"metadata_ready_image_pending"] containsObject:RVDAUIProbeResult[@"state"] ?: @""]) {
+        NSMutableDictionary *probe=[RVDAUIProbeResult mutableCopy];probe[@"state"]=@"cancelled";RVDAUIProbeResult=probe.copy;
+    }
     [RVDeArrowBackend.sharedBackend setDiagnosticsEnabled:RVDADiagEnabled()];
     // Retain the last captured evidence; normal presentation requests are untouched.
 }
