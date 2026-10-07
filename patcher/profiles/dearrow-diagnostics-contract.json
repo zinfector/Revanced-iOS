@@ -1,7 +1,8 @@
 {
-  "schema": 3,
-  "release": "0.3.39",
-  "status": "live_card_contract_implemented_device_confirmation_pending",
+  "schema": 4,
+  "release": "0.3.40",
+  "status": "adaptive_live_contract_implemented_device_confirmation_pending",
+  "adaptive_contract": "dearrow-adaptive-contract.json",
   "device_verified": false,
   "tests_run": false,
   "source": "native/RVDeArrowDiagnostics.inc",
@@ -52,7 +53,13 @@
     "bindings[].fallback_retries",
     "bindings[].duration_source",
     "backend.queued_auxiliary_transfers",
-    "live_contract_capture"
+    "live_contract_capture",
+    "bindings[].adapter",
+    "bindings[].structural_fingerprint",
+    "bindings[].consumer_checkpoint",
+    "watch_interactions",
+    "consumer_strategy",
+    "global_setter_observers"
   ],
   "observed_failure_profile": "device-dearrow-report-105.json",
   "uri_structure_schema": 2,
@@ -63,7 +70,9 @@
     "Check candidate_path, video_id_valid and title/static-image presence. Candidate observations do not authorize presentation rewriting.",
     "Identify watch metadata samples independently using surface counters and explicit owner chains.",
     "D04_role_rejected denotes rejection; D04_role_bound denotes accepted roles.",
-    "Once roles are accepted, inspect fallback queue/start/status/generation reason/retry/duration/decode/encode checkpoints."
+    "Once roles are accepted, inspect fallback queue/start/status/generation reason/retry/duration/decode/encode checkpoints.",
+    "Require D09_live_native_replacement_consumed and D10_live_replacement_visible for replacement confirmation.",
+    "For failed watch taps, inspect W01 touch receiving view, W02 native gesture decision, W03 node/text-link tap, W04 command bridge and W05 presentation/seek request. Missing stages locate a gap; native text links may bypass ordinary gestures and void returns do not establish success."
   ],
   "live_capture_contract": "profiles/dearrow-live-capture-contract.json",
   "live_card_contract": "dearrow-live-card-contract.json"
