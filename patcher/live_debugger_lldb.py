@@ -133,7 +133,7 @@ def launch(status, udid, arguments, private):
     symbols = arguments.get('symbols')
     if symbols:
         source = Path(symbols).expanduser()
-        dwarf = source/'Contents/Resources/DWARF/RVPort' if source.is_dir() else source
+        dwarf = source/'Contents/Resources/DWARF/RVPort.dylib' if source.is_dir() else source
         symbol_uuid = macho_uuid(dwarf)
         if not any(image['name'] == 'RVPort.dylib' and image['uuid'].upper() == symbol_uuid for image in images):
             raise ValueError('RVPort symbols UUID does not match this installed app. No attach attempted.')
@@ -142,6 +142,15 @@ def launch(status, udid, arguments, private):
     commands += [f'process connect connect://127.0.0.1:{port}', f'process attach --pid {pid}']
     command_file = folder/'attach.lldb'
     command_file.write_text('\n'.join(commands)+'\n', encoding='utf-8')
+    checkpoint_file = folder/'checkpoints.json'
+    checkpoints = {'process_nonce': status['process_nonce'], 'pid': pid,
+                   'target_uuid': local_uuid, 'target_identity_verified': True,
+                   'get_task_allow': True, 'symbols_identity_verified': bool(symbols),
+                   'developer_image': 'negotiated_by_apple_service_not_yet_confirmed',
+                   'debugserver_connection': 'pending', 'process_attach': 'inspect_lldb_output',
+                   'memory_read': 'not_attempted', 'breakpoint_hit': 'not_attempted',
+                   'expression_support': 'not_attempted'}
+    checkpoint_file.write_text(json.dumps(checkpoints, indent=2), encoding='utf-8')
     log_path = folder/'transport.log'
     log = log_path.open('w', encoding='utf-8')
     environment = os.environ.copy()
@@ -173,10 +182,14 @@ def launch(status, udid, arguments, private):
             if relay.poll() is not None:
                 break
         if relay.poll() is not None:
+            checkpoints['debugserver_connection'] = 'relay_failed'
+            checkpoint_file.write_text(json.dumps(checkpoints, indent=2), encoding='utf-8')
             raise ValueError('Apple debugproxy failed; inspect '+str(log_path)+' for Developer Mode, DDI or tunnel errors.')
         # The ready line precedes the asynchronous listener bind. Do not probe it
         # with a TCP connection: that would consume the debugserver session.
         time.sleep(0.5)
+        checkpoints['debugserver_connection'] = 'relay_started_attach_pending'
+        checkpoint_file.write_text(json.dumps(checkpoints, indent=2), encoding='utf-8')
         print('LLDB opens interactively. After attach, use thread backtrace all, register read, breakpoint set, memory read/write, and expression. Detach before quitting to resume YouTube.')
         subprocess.run([debugger, '--source', str(command_file)], check=True)
     finally:
@@ -189,3 +202,5 @@ def launch(status, udid, arguments, private):
                 relay.wait()
         reader.join(timeout=2)
         log.close()
+        checkpoints['session_closed'] = True
+        checkpoint_file.write_text(json.dumps(checkpoints, indent=2), encoding='utf-8')

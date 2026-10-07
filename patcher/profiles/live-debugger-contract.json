@@ -25,7 +25,9 @@
     "mutation_tombstones": 2048,
     "transactions": 16,
     "scratch_allocations": 16,
-    "event_ring": 256
+    "event_ring": 256,
+    "computer_dump_bytes": 16777216,
+    "completed_journals": 64
   },
   "memory": "Self-process ARM64 vm_map APIs. Read mapped readable regions; write already writable non-executable regions after expected-byte comparison; read back; owner-bound rollback requires current bytes match prior replacement. No protection escalation; concurrent writes not atomic.",
   "calls": "Fixed reviewed Objective-C return/argument encodings and compiled C prototypes only; arbitrary calls/CPP/aggregates/registers/breakpoints require optional external LLDB.",

@@ -1,10 +1,12 @@
 """Authenticated wired RVPort debugger. Native jobs survive transport reconnects."""
 import argparse
 import base64
+import gzip
 import json
 import os
 from pathlib import Path
 import struct
+import subprocess
 import sys
 import time
 import uuid
@@ -107,7 +109,7 @@ class Connection(usb.DiagnosticConnection):
         if status['process_nonce'] != nonce:
             raise DebugError('Process/debug mode changed. Outcome is unknown; pending job retained. Nothing was replayed.')
         if not status['enabled']:
-            raise DebugError('Enable live debugging in Settings â†’ ReVanced â†’ USB diagnostics.')
+            raise DebugError('Enable live debugging in Settings Ã¢â€ â€™ ReVanced Ã¢â€ â€™ USB diagnostics.')
 
     def journal(self, job):
         data = json.dumps(job, separators=(',', ':'), allow_nan=False).encode()
@@ -115,13 +117,21 @@ class Connection(usb.DiagnosticConnection):
             data = usb.dpapi(data)
         private_write(PRIVATE/'pending'/f"{job['id']}.job", data)
 
-    def clear(self, identifier):
+    def clear(self, identifier, outcome=None):
+        if outcome is not None:
+            record = json.dumps(outcome, separators=(',', ':'), allow_nan=False).encode()
+            if os.name == 'nt':
+                record = usb.dpapi(record)
+            private_write(PRIVATE/'completed'/f'{identifier}.job', record)
+            retained = sorted((PRIVATE/'completed').glob('*.job'), key=lambda p: p.stat().st_mtime)
+            for old in retained[:-64]:
+                old.unlink()
         (PRIVATE/'pending'/f'{identifier}.job').unlink(missing_ok=True)
 
     def submit(self, operation, arguments):
         status = self.status()
         if not status['enabled']:
-            raise DebugError('Enable live debugging in Settings â†’ ReVanced â†’ USB diagnostics.')
+            raise DebugError('Enable live debugging in Settings Ã¢â€ â€™ ReVanced Ã¢â€ â€™ USB diagnostics.')
         job = {'id': str(uuid.uuid4()), 'nonce': status['process_nonce'],
                'udid': self.udid, 'operation': operation, 'arguments': arguments,
                'created': time.time()}
@@ -166,10 +176,10 @@ class Connection(usb.DiagnosticConnection):
                     continue
                 if reason == 'job_result_expired_will_not_repeat':
                     raise DebugError(f'Result expired for job {identifier}; mutation was not repeated. Journal retained.')
-                self.clear(identifier)
+                self.clear(identifier, response)
                 raise DebugError(str(reason))
             if data.get('state') in TERMINAL:
-                self.clear(identifier)
+                self.clear(identifier, data)
                 return data
             if data.get('state') not in {'queued', 'running'}:
                 raise DebugError('Invalid job state; journal retained.')
@@ -186,7 +196,10 @@ class Connection(usb.DiagnosticConnection):
             job = json.loads(data)
             if self.udid and self.udid.replace('-', '').lower() != job['udid'].replace('-', '').lower():
                 continue
-            records.append({'journal': path.name, 'job': self.finish(job)})
+            try:
+                records.append({'journal': path.name, 'job': self.finish(job)})
+            except DebugError as error:
+                records.append({'journal': path.name, 'error': str(error), 'retained': True})
         return records
 
     def command(self, name, arguments):
@@ -209,9 +222,10 @@ class Connection(usb.DiagnosticConnection):
 
 HELP = '''Commands: status, images, regions, read, write, rollback, allocate, free,
 object, get, items, value, invoke, retain, release, functions, call, bindings,
-graph, roles, refresh, events, job, cancel, recover, watch, doctor, lldb, quit.
+graph, roles, refresh, events, job, cancel, recover, dump, watch, doctor, lldb, quit.
 Arguments are a JSON object after the command. Addresses are hex strings.
   read {"address":"0x1234","length":64}
+  dump {"image_uuid":"loaded image UUID","offset":"0x1000","length":1048576}
   write {"address":"0x1234","hex":"0100","expected_hex":"0000"}
   rollback {"transaction":"UUID returned by write"}
   graph {"handle":"binding handle from bindings","cursor":0}
@@ -226,6 +240,45 @@ executable regions and return a rollback transaction. Ctrl+C stops waiting;
 recover retrieves pending outcomes. No mutation is replayed into a new process.
 LLDB is optional: it requires Developer Mode, a mounted DDI and get-task-allow.
 The in-app agent works independently of those external-debugger prerequisites.'''
+
+
+def dump(connection, arguments):
+    length = arguments.get('length')
+    if type(length) is not int or not 1 <= length <= 16*1024*1024:
+        raise DebugError('Dump length must be 1..16 MiB; each native read is at most 64 KiB.')
+    image = arguments.get('image_uuid')
+    field = 'offset' if image else 'address'
+    base = arguments.get(field)
+    if not isinstance(base, str) or not base.startswith('0x'):
+        raise DebugError('Supply address, or image_uuid and offset, as hex strings.')
+    start = int(base, 16)
+    if not 0 <= start < 2**64-length:
+        raise DebugError('Invalid dump range.')
+    status = connection.status()
+    nonce = status['process_nonce']
+    path = Path(arguments['out']).expanduser() if arguments.get('out') else PRIVATE/'captures'/f'{uuid.uuid4()}.jsonl.gz'
+    path.parent.mkdir(parents=True, exist_ok=True)
+    captured = 0
+    with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as raw:
+        with gzip.GzipFile(fileobj=raw, mode='wb') as stream:
+            def record(value):
+                stream.write((json.dumps(value, separators=(',', ':'))+'\n').encode())
+            record({'schema': 1, 'kind': 'memory_dump', 'status': status, 'requested_length': length,
+                    'start': base, 'image_uuid': image, 'atomic': False})
+            try:
+                while captured < length:
+                    connection.same_process(nonce)
+                    request = {field: hex(start+captured), 'length': min(65536, length-captured)}
+                    if image:
+                        request['image_uuid'] = image
+                    job = connection.submit('debug.read', request)
+                    if job['process_nonce'] != nonce or not job['result'].get('ok'):
+                        raise DebugError('Chunk failed or process changed: '+str(job))
+                    record({'offset': captured, 'job': job})
+                    captured += job['result']['length']
+            finally:
+                record({'captured_length': captured, 'complete': captured == length, 'atomic': False})
+    output({'capture': str(path), 'length': captured, 'compressed': True, 'atomic': False})
 
 
 def watch(connection, arguments):
@@ -271,6 +324,8 @@ def dispatch(connection, name, arguments):
         output(connection.recover())
     elif name == 'watch':
         watch(connection, arguments)
+    elif name == 'dump':
+        dump(connection, arguments)
     elif name == 'doctor':
         output(external.doctor(connection.status(), arguments))
     elif name == 'lldb':
@@ -319,7 +374,7 @@ def main():
             return 0
         except KeyboardInterrupt:
             print('\nWaiting stopped. Any pending native job can be retrieved with recover.')
-        except (usb.DiagnosticError, OSError, ValueError, KeyError, TypeError) as error:
+        except (usb.DiagnosticError, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
             print(str(error), file=sys.stderr)
 
 
@@ -329,6 +384,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print('\nWaiting stopped. Run recover to retrieve pending jobs.', file=sys.stderr)
         raise SystemExit(130)
-    except (usb.DiagnosticError, OSError, ValueError, KeyError, TypeError) as error:
+    except (usb.DiagnosticError, OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(str(error), file=sys.stderr)
         raise SystemExit(2)
