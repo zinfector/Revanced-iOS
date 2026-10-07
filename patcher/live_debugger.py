@@ -109,7 +109,7 @@ class Connection(usb.DiagnosticConnection):
         if status['process_nonce'] != nonce:
             raise DebugError('Process/debug mode changed. Outcome is unknown; pending job retained. Nothing was replayed.')
         if not status['enabled']:
-            raise DebugError('Enable live debugging in Settings Ã¢â€ â€™ ReVanced Ã¢â€ â€™ USB diagnostics.')
+            raise DebugError('Enable live debugging in Settings -> ReVanced -> USB diagnostics.')
 
     def journal(self, job):
         data = json.dumps(job, separators=(',', ':'), allow_nan=False).encode()
@@ -131,7 +131,9 @@ class Connection(usb.DiagnosticConnection):
     def submit(self, operation, arguments):
         status = self.status()
         if not status['enabled']:
-            raise DebugError('Enable live debugging in Settings Ã¢â€ â€™ ReVanced Ã¢â€ â€™ USB diagnostics.')
+            raise DebugError('Enable live debugging in Settings -> ReVanced -> USB diagnostics.')
+        if operation not in status.get('operations', []):
+            raise DebugError('This app does not advertise the requested operation.')
         job = {'id': str(uuid.uuid4()), 'nonce': status['process_nonce'],
                'udid': self.udid, 'operation': operation, 'arguments': arguments,
                'created': time.time()}
@@ -222,7 +224,8 @@ class Connection(usb.DiagnosticConnection):
 
 HELP = '''Commands: status, images, regions, read, write, rollback, allocate, free,
 object, get, items, value, invoke, retain, release, functions, call, bindings,
-graph, roles, refresh, events, job, cancel, recover, dump, watch, doctor, lldb, quit.
+graph, roles, refresh, events, job, cancel, recover, history, result, dump,
+watch, doctor, lldb, quit.
 Arguments are a JSON object after the command. Addresses are hex strings.
   read {"address":"0x1234","length":64}
   dump {"image_uuid":"loaded image UUID","offset":"0x1000","length":1048576}
@@ -322,6 +325,13 @@ def dispatch(connection, name, arguments):
         connection.token = usb.pair(connection.wait_device(), connection.port)
     elif name == 'recover':
         output(connection.recover())
+    elif name == 'history':
+        output([{'job_id': path.stem, 'completed': path.stat().st_mtime}
+                for path in sorted((PRIVATE/'completed').glob('*.job'), key=lambda p: p.stat().st_mtime)])
+    elif name == 'result':
+        identifier = str(uuid.UUID(arguments['job_id']))
+        data = (PRIVATE/'completed'/f'{identifier}.job').read_bytes()
+        output(json.loads(usb.dpapi(data, decrypt=True) if os.name == 'nt' else data))
     elif name == 'watch':
         watch(connection, arguments)
     elif name == 'dump':
