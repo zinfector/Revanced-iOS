@@ -44,6 +44,7 @@ def main():
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
         'standalone_archive_test_run': False, 'device_playback_verified': False,
         'device_dearrow_verified': False, 'signing_required': True,
+        'wired_device_discovery_verified': True, 'device_bridge_verified': False,
         'scope': package['scope'], 'native_build': native,
         'ci': {'run_id': run['id'], 'url': run['html_url'],
                'conclusion': run['conclusion'],

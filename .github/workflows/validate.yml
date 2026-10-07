@@ -96,6 +96,7 @@ jobs:
           name: windows-patcher
           path: |
             patcher/dist/YouTube-iOS-Patcher.exe
+            patcher/dist/YouTube-USB-Diagnostics.exe
             patcher/build/ci-packaged-smoke.json
             LICENSE
           if-no-files-found: error

@@ -252,7 +252,9 @@ def summarize(response):
     root = response['data']
     dearrow = root.get('dearrow', root if 'backend' in root and 'bindings' in root else {})
     watch = dearrow.get('watch_interactions', root if response.get('topic') == 'watch' else {})
-    failures = Counter(str(item.get('blocker', 'unspecified')) for item in dearrow.get('attempt_samples', []))
+    failures = Counter()
+    for item in dearrow.get('attempt_samples', []):
+        failures[str(item.get('blocker', 'unspecified'))] += int(item.get('occurrences', 1))
     bindings = []
     keys = ('surface', 'route', 'video_hash', 'adapter', 'ownership_blocker', 'requested_parts', 'title_input_blocker',
             'image_input_blocker', 'title_consumer_verified', 'image_consumer_verified', 'title_blocker', 'image_blocker',
@@ -369,7 +371,7 @@ def main():
             operation = {'status': 'status', 'start': 'capture-start', 'stop': 'capture-stop', 'probe': 'probe'}[args.command]
             print(json.dumps(request(device, args.port, operation, token)['data'], indent=2))
         return 0
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         print('\nCollector stopped. Existing reports retained.')
         return 130
     except (DiagnosticError, OSError, ValueError, KeyError, plistlib.InvalidFileException) as error:
