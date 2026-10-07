@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.45'
+VERSION = '0.3.46'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-primitive-ancestry',
+    receipt = {'version': VERSION, 'release_flavor': 'wired-live-debugger',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'DeArrow primitive ancestry repair: follow independent typed controller parent and owningComponent edges to the exact immutable factory occurrence; reject ambiguous, competing occurrence and over-budget paths. Compact pre-filter native primitive census, role match and ancestry rejection checkpoints; independent title/thumbnail gates and native factory consumption stages. Correct supported watch title capture classification. Apple Xcode 16.4 production build; watch interaction forwarding and saved USB reconnection retained; no tests; visible device replacement remains unverified. Live memory debugger is a separate design, not enabled in this payload.'}
-    (ROOT/'build/package-manifest-0.3.45.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Explicit authenticated USB live debugging: process identity, loaded image UUID/offset maps, paginated VM regions, bounded self-process memory reads, expected-byte writable-data writes with readback and rollback, owned scratch allocation, generation/epoch scoped opaque object handles, reviewed typed native calls, bounded DeArrow graph/role inspectors and event stream. Saved PC pairing and encrypted pending-job journals; mutation deduplication, no replay into restarted processes. Optional personalized Apple debugproxy/LLDB attachment with local target/symbol UUID checks; exact Xcode build symbols. Debug mode off by default; all prior DeArrow and interaction repairs retained. Production build only, no tests or device attachment validation.'}
+    (ROOT/'build/package-manifest-0.3.46.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

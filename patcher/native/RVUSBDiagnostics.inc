@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #import <Security/Security.h>
+#include "RVDebugAgent.inc"
 
 enum { RVUSBPort=49629,RVUSBRequestLimit=8192,RVUSBResponseLimit=16*1024*1024,RVUSBClientLimit=4 };
 static NSString *const RVUSBEnabledPreference=@"rvport.usb-diagnostics.enabled";
@@ -138,6 +139,7 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
             @"saved_computers":@(self.pairings.count),@"pairing_storage_status":@(self.pairingStorageStatus),
             @"clients":@(self.clients.count),@"snapshot_pending":@(self.snapshotPending),
             @"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+            @"live_debugging_enabled":@(RVDBGEnabled()),@"debug_protocol_schema":@2,
             @"operations":@[@"status",@"report",@"capture-start",@"capture-stop",@"probe"]};
     }
 }
@@ -172,6 +174,7 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
 - (void)stop {
     if (!NSThread.isMainThread) { __weak RVUSBDiagnostics *weak=self;dispatch_async(dispatch_get_main_queue(),^{ [weak stop]; });return; }
     [NSUserDefaults.standardUserDefaults setBool:NO forKey:RVUSBEnabledPreference];
+    RVDBGSetEnabled(NO);
     [self pause];self.resumeCapture=NO;
 }
 - (void)resume {
@@ -234,8 +237,11 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     }
 }
 - (NSDictionary *)process:(NSDictionary *)request generation:(uint64_t)generation {
-    if (![request isKindOfClass:NSDictionary.class] || ![request[@"schema"] isEqual:@1]) return RVUSBError(@"invalid_request_schema");
-    for (NSString *key in request) if (![@[@"schema",@"operation",@"credential",@"topic",@"client_id",@"client_name"] containsObject:key]) return RVUSBError(@"unsupported_request_field");
+    if (![request isKindOfClass:NSDictionary.class]) return RVUSBError(@"invalid_request_schema");
+    BOOL debug=[request[@"schema"] isEqual:@2] && [request[@"operation"] isKindOfClass:NSString.class] && [request[@"operation"] hasPrefix:@"debug."];
+    if (![request[@"schema"] isEqual:@1] && !debug) return RVUSBError(@"invalid_request_schema");
+    NSArray *fields=debug ? @[@"schema",@"operation",@"credential",@"request_id",@"process_nonce",@"arguments"] : @[@"schema",@"operation",@"credential",@"topic",@"client_id",@"client_name"];
+    for (NSString *key in request) if (![fields containsObject:key]) return RVUSBError(@"unsupported_request_field");
     NSString *operation=request[@"operation"],*credential=request[@"credential"],*topic=request[@"topic"] ?: @"dearrow";
     if (![operation isKindOfClass:NSString.class] || ![credential isKindOfClass:NSString.class] || credential.length>64 || ![topic isKindOfClass:NSString.class]) return RVUSBError(@"invalid_request_values");
     @synchronized(self) {
@@ -259,6 +265,13 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
         for (NSDictionary *record in self.pairings.allValues) if ([credential isEqual:record[@"token"]]) { authenticated=YES;break; }
         if (!authenticated) return RVUSBError(@"authentication_required");
     }
+    if (debug) return RVDBGProcess(request,credential,^BOOL {
+        @synchronized(self) {
+            if (!self.enabled || self.generation!=generation) return NO;
+            for (NSDictionary *record in self.pairings.allValues) if ([credential isEqual:record[@"token"]]) return YES;
+            return NO;
+        }
+    });
     if ([operation isEqual:@"status"]) return @{@"schema":@1,@"ok":@YES,@"operation":operation,@"data":[self status]};
     if (![@[@"report",@"capture-start",@"capture-stop",@"probe"] containsObject:operation]) return RVUSBError(@"unsupported_operation");
     if ([operation isEqual:@"report"] && ![@[@"all",@"dearrow",@"watch",@"adblock",@"speed",@"ryd",@"sponsorblock",@"navigation"] containsObject:topic]) return RVUSBError(@"unsupported_report_topic");
@@ -308,5 +321,7 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
 
 static void RVUSBResumeSavedDiagnostics(void) {
     // No listener for users who never opted in, or manually disabled it.
-    if (RVCompatible && [NSUserDefaults.standardUserDefaults boolForKey:RVUSBEnabledPreference]) [RVUSBDiagnostics.shared resume];
+    if (RVCompatible && [NSUserDefaults.standardUserDefaults boolForKey:RVUSBEnabledPreference]) {
+        RVDBGSetEnabled([NSUserDefaults.standardUserDefaults boolForKey:RVDBGPreference]);[RVUSBDiagnostics.shared resume];
+    }
 }

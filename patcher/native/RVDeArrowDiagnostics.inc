@@ -4,7 +4,7 @@ static BOOL RVDAUIDiagnosticsArmed;
 static NSMutableDictionary *RVDAUICounts,*RVDAUILastStages,*RVDAUISamples;
 static NSMutableDictionary *RVDAUITemplateSamples;
 static NSString *RVDAUISalt;
-static BOOL RVDADiagEnabled(void) { return RVEnabled(@"diagnostics") || RVDAUIDiagnosticsArmed; }
+static BOOL RVDADiagEnabled(void) { return RVEnabled(@"diagnostics") || RVDAUIDiagnosticsArmed || atomic_load(&RVDBGActive); }
 static NSString *RVDADiagHash(NSData *data) {
     if (!data) return @"absent";
     NSMutableData *salted=[[RVDAUISalt dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
@@ -21,6 +21,7 @@ static void RVDADiagCount(NSString *name) {
     }
 }
 static void RVDADiagRecord(NSString *checkpoint,RVDAUIBinding *binding,NSString *blocker,NSDictionary *details) {
+    if (atomic_load(&RVDBGActive)) { NSMutableDictionary *trace=[details mutableCopy] ?: [NSMutableDictionary dictionary];trace[@"blocker"]=blocker ?: @"ready";RVDBGRecord(checkpoint,binding.generation,binding.surface,trace); }
     if (!RVDADiagEnabled()) return;
     @synchronized(RVDAUIBinding.class) {
         if (!RVDAUIHistory) RVDAUIHistory=[NSMutableArray array];

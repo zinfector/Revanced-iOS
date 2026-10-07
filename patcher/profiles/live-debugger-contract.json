@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "release": "0.3.46",
+  "wire_schema": 2,
+  "explicit_opt_in": true,
+  "default_enabled": false,
+  "authentication": "Existing saved USB pairing and keychain token; no LAN listener. Windows pending journals protected with current-user DPAPI.",
+  "thread_model": "Socket worker returns bounded job ticket; reviewed UI/native operations execute on main queue; no socket/main-queue semaphore dependency.",
+  "identity": [
+    "process/debug-session nonce",
+    "loaded image UUID + offset",
+    "opaque weak native handles + occurrence generation + consumer epoch"
+  ],
+  "limits": {
+    "request_bytes": 8192,
+    "response_bytes": 16777216,
+    "read_bytes": 65536,
+    "write_bytes": 1024,
+    "graph_objects": 256,
+    "graph_page": 32,
+    "handles": 1024,
+    "retained_handles": 32,
+    "jobs": 64,
+    "pending_jobs": 8,
+    "mutation_tombstones": 2048,
+    "transactions": 16,
+    "scratch_allocations": 16,
+    "event_ring": 256
+  },
+  "memory": "Self-process ARM64 vm_map APIs. Read mapped readable regions; write already writable non-executable regions after expected-byte comparison; read back; owner-bound rollback requires current bytes match prior replacement. No protection escalation; concurrent writes not atomic.",
+  "calls": "Fixed reviewed Objective-C return/argument encodings and compiled C prototypes only; arbitrary calls/CPP/aggregates/registers/breakpoints require optional external LLDB.",
+  "reconnect": "Same nonce/job identity only. Mutation tombstones prevent repetition after bounded result eviction; unknown outcomes retained, never replayed into a new process. Disable opt-in resets nonce and agent state while preserving pairing.",
+  "lldb": {
+    "pymobiledevice3": "11.24.0",
+    "transport": "Selected UDID, userspace tunnel, localhost-only Apple debugproxy relay",
+    "requirements": [
+      "Darwin-capable LLDB",
+      "Developer Mode",
+      "mounted personalized developer disk image",
+      "get-task-allow"
+    ],
+    "identity": "Local ARM64 target and optional DWARF symbol UUIDs match agent loaded-image snapshot before attach.",
+    "signing_changed": false,
+    "device_validated": false
+  },
+  "tests_run": false
+}

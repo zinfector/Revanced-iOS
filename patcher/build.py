@@ -58,7 +58,7 @@ def build(sdk=None, zig=None):
         compiler=[str(zig),'cc','-target','aarch64-ios.17.0']
     args=compiler+['-isysroot',str(sdk),'-isystem',str(sdk/'usr/include'),'-L'+str(sdk/'usr/lib'),
         '-F'+str(sdk/'System/Library/Frameworks'),'-F'+str(sdk/'System/Library/PrivateFrameworks'),
-        '-fobjc-arc','-fblocks','-O2','-Wall','-Wextra',
+        '-fobjc-arc','-fblocks','-O2','-g','-save-temps=obj','-Wall','-Wextra',
         '-Werror','-Wno-unused-parameter','-fvisibility=hidden','-dynamiclib',
         str(ROOT/'native/RVPort.m'),'-o',str(out/'RVPort.dylib'),
         '-framework','Foundation','-framework','UIKit','-framework','ImageIO','-framework','NaturalLanguage','-framework','CoreImage','-framework','AVFoundation','-framework','MediaPlayer','-framework','CoreGraphics','-framework','QuartzCore','-framework','Network','-framework','Security','-lobjc',
@@ -69,6 +69,10 @@ def build(sdk=None, zig=None):
     if result.returncode:
         print((out/'build.log').read_text(),file=sys.stderr)
         raise RuntimeError(f'Compiler exited {result.returncode}')
+    if sys.platform == 'darwin' and not zig:
+        symbol_folder = out/'RVPort.dSYM'
+        subprocess.run(['xcrun', 'dsymutil', str(out/'RVPort.dylib'), '-o', str(symbol_folder)], check=True)
+        shutil.make_archive(str(out/'RVPort.dSYM'), 'zip', out, 'RVPort.dSYM')
     from patcher import payload
     binary=payload(out/'RVPort.dylib')
     from macho import MachO
@@ -84,7 +88,8 @@ def build(sdk=None, zig=None):
     metadata={'payload_sha256':hashlib.sha256(binary).hexdigest(),'source_sha256':hashlib.sha256(source).hexdigest(),
               'build_source_sha256':source_fingerprint,
               'source_files':source_files,
-              'compiler_command':args,'sdk':str(sdk),'signing_header_padding_bytes':len(padding),'runtime_validated':False}
+              'compiler_command':args,'sdk':str(sdk),'signing_header_padding_bytes':len(padding),'runtime_validated':False,
+              'debug_symbols': 'RVPort.dSYM.zip' if sys.platform == 'darwin' and not zig else None}
     (out/'build-manifest.json').write_text(json.dumps(metadata,indent=2),encoding='utf-8')
     print(f'Built {out / "RVPort.dylib"} ({len(binary):,} bytes)')
 

@@ -1,8 +1,8 @@
-name: Build DeArrow primitive ancestry payload with Xcode
+name: Build wired live debugger payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-primitive-ancestry-0.3.45]
+    branches: [fix/wired-live-debugger-0.3.46]
 
 permissions:
   contents: read
@@ -45,6 +45,7 @@ jobs:
         with:
           name: native-build
           path: |
+            patcher/build/RVPort.dSYM.zip
             patcher/build/RVPort.dylib
             patcher/build/build-manifest.json
             patcher/build/build.log

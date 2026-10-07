@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.45'
+VERSION = '0.3.46'
 
 
 def digest(path):
@@ -26,6 +26,8 @@ def main():
              'build/RVPort.dylib', 'build/build-manifest.json', 'build/build.log',
              'build/cloud-build.json', f'build/package-manifest-{VERSION}.json',
              'dist/YouTube-iOS-Patcher.exe', 'dist/YouTube-USB-Diagnostics.exe',
+             'dist/YouTube-Live-Debugger.exe', 'live_debugger.py', 'live_debugger_lldb.py',
+             'build/RVPort.dSYM.zip', 'profiles/live-debugger-contract.json',
              'usb_diagnostics.py', 'profiles/usb-diagnostics-contract.json', 'coverage.json', 'features.py',
              'settings_catalog.py', 'configs/adblock-native.json',
              'profiles/dearrow-adaptive-contract.json', 'profiles/dearrow-live-card-contract.json',

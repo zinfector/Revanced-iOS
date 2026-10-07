@@ -15,12 +15,14 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.45"
+#define RV_PORT_VERSION @"0.3.46"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
 #include "RVImageHeader.h"
 #include "RVDeArrowBackend.inc"
+static _Atomic(BOOL) RVDBGActive;
+static void RVDBGRecord(NSString *name,uint64_t generation,NSString *surface,NSDictionary *details);
 
 static void RVExtraObserve(id controller);
 static void RVExtraSetPlayer(id player,id controller);

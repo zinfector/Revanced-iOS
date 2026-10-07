@@ -36,6 +36,16 @@ def main():
         print((ROOT/'build/package-usb.log').read_text(), file=sys.stderr)
         return result.returncode
     print(ROOT/'dist/YouTube-USB-Diagnostics.exe')
+    debugger = [sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--console',
+                '--name', 'YouTube-Live-Debugger', '--distpath', str(ROOT/'dist'),
+                '--workpath', str(ROOT/'build/pyinstaller-debugger'), '--specpath', str(ROOT/'build'),
+                '--paths', str(ROOT), str(ROOT/'live_debugger.py')]
+    with (ROOT/'build/package-debugger.log').open('w', encoding='utf-8') as log:
+        result = subprocess.run(debugger, env=env, stdout=log, stderr=subprocess.STDOUT)
+    if result.returncode:
+        print((ROOT/'build/package-debugger.log').read_text(), file=sys.stderr)
+        return result.returncode
+    print(ROOT/'dist/YouTube-Live-Debugger.exe')
     return 0
 
 if __name__ == '__main__': raise SystemExit(main())

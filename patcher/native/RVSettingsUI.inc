@@ -208,7 +208,8 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
 - (void)usbDiagnostics {
     RVUSBDiagnostics *bridge=RVUSBDiagnostics.shared;BOOL enabled=[bridge.status[@"enabled"] boolValue];
     NSString *text=enabled ? [NSString stringWithFormat:@"Pairing code: %@\n\nSaved computers: %lu\n%@\n\nEnter the code once on a new PC. Saved PCs reconnect without a code. No session expiry. Collection pauses in the background and resumes when YouTube returns to the foreground, including after relaunch.",bridge.accessCode,(unsigned long)bridge.savedComputers.count,[bridge.savedComputers componentsJoinedByString:@", "]]
-        : @"Connect your iPhone to your PC by USB. Enable diagnostics, then open YouTube-USB-Diagnostics on the PC. Pair once; saved computers reconnect automatically. Playback and account controls are not exposed.";
+        : @"Connect your iPhone to your PC by USB. Enable diagnostics, then open YouTube-USB-Diagnostics on the PC. Pair once; saved computers reconnect automatically. Enable live debugging separately for memory and native-object access.";
+    if (enabled) text=[text stringByAppendingFormat:@"\n\nLive debugging: %@. Use YouTube-Live-Debugger on the paired PC for memory inspection, writes and typed native calls.",RVDBGEnabled() ? @"enabled" : @"disabled"];
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"USB diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     if (enabled) [alert addAction:[UIAlertAction actionWithTitle:@"Disable diagnostics" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [bridge stop]; }]];
     else [alert addAction:[UIAlertAction actionWithTitle:@"Enable diagnostics" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -216,6 +217,9 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     }]];
     if (enabled && bridge.savedComputers.count) [alert addAction:[UIAlertAction actionWithTitle:@"Forget saved computers" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         NSString *error=[bridge forgetComputers];if (error) [self message:@"USB diagnostics" text:error];else [self usbDiagnostics];
+    }]];
+    if (enabled) [alert addAction:[UIAlertAction actionWithTitle:RVDBGEnabled() ? @"Disable live debugging" : @"Enable live debugging" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        RVDBGSetEnabled(!RVDBGEnabled());[self usbDiagnostics];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
 }

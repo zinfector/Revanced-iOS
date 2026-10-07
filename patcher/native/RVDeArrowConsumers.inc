@@ -22,6 +22,7 @@ static _Thread_local __unsafe_unretained RVDAUIFactoryCapture *RVDAUIFactoryScop
 - (void)dealloc { [self retire]; }
 @end
 static void RVDAUIRetireConsumers(RVDAUIBinding *binding) {
+    RVDBGRecord(@"native_consumers_retired",binding.generation,binding.surface,nil);
     for (RVDAUIConsumerLease *lease in binding.consumerLeases) [lease retire];
     [binding.consumerLeases removeAllObjects];binding.consumerEpoch++;
     binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;
