@@ -356,6 +356,9 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     NSURL *root=[NSFileManager.defaultManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask].firstObject;
     return [[root URLByAppendingPathComponent:@"RVPort.DeArrow" isDirectory:YES] URLByAppendingPathComponent:@"branding-v1.json"];
 }
+- (void)setDiagnosticsEnabled:(BOOL)enabled {
+    [self sync:^{ self.options.diagnosticsEnabled=enabled; }];
+}
 - (void)loadDisk {
     if (self.diskLoaded) return;self.diskLoaded=YES;if (!self.options.persistMetadata) return;
     NSURL *url=[self diskURL];if (!url) return;

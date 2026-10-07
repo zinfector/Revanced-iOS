@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "release": "0.3.41",
+  "status": "implemented_device_confirmation_pending",
+  "tests_run": false,
+  "native_source": "native/RVUSBDiagnostics.inc",
+  "collector": "usb_diagnostics.py",
+  "scope": "Diagnostics only; no UI automation, app/account actions, arbitrary invocation, or device file access.",
+  "transport": {
+    "address": "127.0.0.1",
+    "device_port": 49629,
+    "host": "Apple Mobile Device Service via localhost:27015 on Windows",
+    "usb_only_selection": true,
+    "mux_protocols": [
+      0,
+      1
+    ],
+    "frames": "4-byte big-endian JSON byte length followed by UTF-8 JSON; one request/response per USB connection",
+    "protocol_reference": "https://github.com/doronz88/pymobiledevice3/blob/master/pymobiledevice3/usbmux.py"
+  },
+  "activation": "Explicit Settings > ReVanced > USB diagnostics > Enable session; no socket or endpoint at launch.",
+  "authentication": {
+    "code": "8 random UUID hexadecimal characters shown only in app UI",
+    "token": "32 random UUID hexadecimal characters returned only after pairing",
+    "pairing_attempt_limit": 8,
+    "expiry_seconds": 1800,
+    "stop_on": "Background, manual disable, process termination or expiry",
+    "persisted_in_app": false,
+    "pc_storage": "Windows current-user DPAPI protected token; no token in reports or stdout"
+  },
+  "operations": {
+    "status": "Bridge status without traversing UI",
+    "report": "Main-thread snapshots: dearrow/watch/all/adblock/speed/ryd/sponsorblock/navigation",
+    "capture-start": "Existing DeArrow diagnostic capture action",
+    "capture-stop": "Stop native expensive capture and probe logging; retain evidence and normal requests/caches/decisions",
+    "probe": "Existing current-video branding service diagnostic only"
+  },
+  "bounds": {
+    "clients": 4,
+    "request_bytes": 8192,
+    "response_bytes": 16777216,
+    "socket_timeout_seconds": 10,
+    "main_queue_wait_seconds": 5,
+    "pending_main_jobs": 1,
+    "record_seconds_max": 1800,
+    "poll_interval_seconds_min": 1
+  },
+  "lifecycle": "Private socket queues; snapshot work only on main with generation/foreground check. Shutdown interrupts owned clients. Expired generation cannot operate a later session. A timed-out pending main job is cancelled and remains the sole queued job until main resumes.",
+  "reports": "Compressed complete JSON transport envelope plus compact checkpoint summary saved outside IPA output. Exclusive filenames prevent replacement of older reports.",
+  "completion": "Apple compilation and production packaging; wired discovery permitted, no regression/static-hook/GUI/archive tests or UI automation. End-to-end bridge requires installation of the new IPA and explicit session activation."
+}

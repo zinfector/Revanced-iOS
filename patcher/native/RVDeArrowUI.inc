@@ -501,6 +501,12 @@ static void RVDAUIStartCapture(void) {
     @synchronized(RVDAUIBinding.class) { RVDAUICounts=[NSMutableDictionary dictionary];RVDAUILastStages=[NSMutableDictionary dictionary];RVDAUISamples=[NSMutableDictionary dictionary];RVDAUITemplateSamples=[NSMutableDictionary dictionary];RVDAUIHistory=[NSMutableArray array]; }
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;RVDAUIPreferencesChanged();RVDAUIEvent(@"D00_capture_started",nil,nil);
 }
+static void RVDAUIStopCapture(void) {
+    RVDAUIDiagnosticsArmed=NO;
+    [RVDAUIProbeRequest cancel];RVDAUIProbeRequest=nil;RVDAUIProbeGeneration++;
+    [RVDeArrowBackend.sharedBackend setDiagnosticsEnabled:RVDADiagEnabled()];
+    // Retain the last captured evidence; normal presentation requests are untouched.
+}
 static BOOL RVDAUIProbeCurrentService(void) {
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");
     if (!RVVideoIDValid(video) || !RVOrdinaryContent(RVCurrentPlayback) || !RVCompatible) return NO;

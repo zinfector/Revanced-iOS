@@ -98,6 +98,8 @@ typedef NS_ENUM(NSUInteger, RVDeArrowBlocker) {
 // Thread-safe. Invalid options return NO and leave current options unchanged.
 // Successful changed options invalidate tokens; UI must rebind after configuring.
 - (BOOL)configure:(RVDeArrowOptions *)options;
+// Change capture logging without invalidating requests, decisions or caches.
+- (void)setDiagnosticsEnabled:(BOOL)enabled;
 // Completion ALWAYS runs asynchronously on main. May deliver metadata then image.
 // Result is masked to requested parts; title-only consumers do not wait for images.
 // UI must also check its owner/video/clientGeneration before applying a snapshot.

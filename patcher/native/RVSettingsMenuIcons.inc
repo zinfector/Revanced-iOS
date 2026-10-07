@@ -30,6 +30,7 @@ static const RVSettingsMenuGlyph RVSettingsMenuGlyphs[]={
     {"tool.3",0,"arrowCircleOutline","yt_outline_arrow_circle_24pt"},
     {"tool.4",0x95,"barGraphBoxVerticalOutline","yt_outline_bar_graph_box_vertical_24pt"},
     {"tool.5",0x31,"infoCircleOutlineWithColor:","yt_outline_info_circle_24pt"},
+    {"tool.6",0x95,"barGraphBoxVerticalOutline","yt_outline_bar_graph_box_vertical_24pt"},
 };
 static NSString *RVSettingsMenuIconKey(NSDictionary *row) {
     // Only root menu actions have group/tool keys; search and preference rows stay unadorned.

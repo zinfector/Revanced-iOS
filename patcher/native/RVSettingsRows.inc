@@ -33,7 +33,7 @@ static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *list
         NSMutableArray *groups=[NSMutableArray array];
         for (NSDictionary *item in RVPreferencesCatalog()[@"groups"])
             [groups addObject:@{@"title":item[@"title"],@"group":item[@"id"]}];
-        NSMutableArray *tools=[NSMutableArray array];NSArray *titles=@[@"Video tools",@"Import configuration",@"Copy configuration",@"Reset patch settings",@"Hook diagnostics",@"About"];
+        NSMutableArray *tools=[NSMutableArray array];NSArray *titles=@[@"Video tools",@"Import configuration",@"Copy configuration",@"Reset patch settings",@"Hook diagnostics",@"About",@"USB diagnostics"];
         for (NSUInteger index=0;index<titles.count;index++) [tools addObject:@{@"title":titles[index],@"tool":@(index)}];
         return @[@{@"title":@"Patch settings",@"rows":groups},@{@"title":@"Tools and configuration",@"rows":tools}];
     }

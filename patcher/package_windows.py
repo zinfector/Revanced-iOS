@@ -26,6 +26,16 @@ def main():
         print((ROOT/'build/package.log').read_text(), file=sys.stderr)
         return result.returncode
     print(ROOT/'dist/YouTube-iOS-Patcher.exe')
+    collector = [sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--console',
+                 '--name', 'YouTube-USB-Diagnostics', '--distpath', str(ROOT/'dist'),
+                 '--workpath', str(ROOT/'build/pyinstaller-usb'), '--specpath', str(ROOT/'build'),
+                 str(ROOT/'usb_diagnostics.py')]
+    with (ROOT/'build/package-usb.log').open('w', encoding='utf-8') as log:
+        result = subprocess.run(collector, env=env, stdout=log, stderr=subprocess.STDOUT)
+    if result.returncode:
+        print((ROOT/'build/package-usb.log').read_text(), file=sys.stderr)
+        return result.returncode
+    print(ROOT/'dist/YouTube-USB-Diagnostics.exe')
     return 0
 
 if __name__ == '__main__': raise SystemExit(main())

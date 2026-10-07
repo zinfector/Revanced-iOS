@@ -1,8 +1,8 @@
-name: Build adaptable DeArrow payload with Xcode
+name: Build USB diagnostics payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-adaptive-0.3.40]
+    branches: [feature/usb-diagnostics-0.3.41]
 
 permissions:
   contents: read

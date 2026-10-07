@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "RVSettingsRows.inc"
+#include "RVUSBDiagnostics.inc"
 #include "RVSettingsNativeUI.inc"
 
 static NSNumber *RVPreferenceParseNumber(NSString *text) {
@@ -204,6 +205,17 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     };
     RVSettingsPush(self,editor);
 }
+- (void)usbDiagnostics {
+    RVUSBDiagnostics *bridge=RVUSBDiagnostics.shared;BOOL enabled=[bridge.status[@"enabled"] boolValue];
+    NSString *text=enabled ? [NSString stringWithFormat:@"Session code: %@\n\nEnter this code in YouTube-USB-Diagnostics on your PC. Keep YouTube in the foreground while collecting reports. This session expires in 30 minutes or when the app goes into the background.",bridge.accessCode]
+        : @"Connect your iPhone to your PC by USB. Enable this session, then open YouTube-USB-Diagnostics on the PC to collect reports directly. Playback and account controls are not exposed.";
+    UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"USB diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
+    if (enabled) [alert addAction:[UIAlertAction actionWithTitle:@"Disable session" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [bridge stop]; }]];
+    else [alert addAction:[UIAlertAction actionWithTitle:@"Enable session" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *error=[bridge start];if (error) [self message:@"USB diagnostics unavailable" text:error];else [self usbDiagnostics];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
+}
 - (void)diagnostics {
     NSString *text;@synchronized(RVStatus) { text=[RVStatus componentsJoinedByString:@"\n"]; }
     text=[RVDislikeCheckpointSummary() stringByAppendingString:text ?: @""];
@@ -211,8 +223,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
     text=[RVAdSummary() stringByAppendingString:text ?: @""];
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"Hook diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Copy diagnostic report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSArray *hooks;@synchronized(RVStatus) { hooks=[RVStatus copy]; }
-        NSDictionary *report=@{@"patcher_version":RV_PORT_VERSION,@"release_flavor":@"dearrow-options",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,@"profile_accepted":@(RVCompatible),@"youtube_version":NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",@"ios_version":UIDevice.currentDevice.systemVersion,@"device_model":UIDevice.currentDevice.model,@"effective_config":RVEffectivePreferences(),@"hooks":hooks,@"authentication":RVAuthenticationReport(),@"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),@"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),@"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
+        NSDictionary *report=RVDiagnosticsSnapshot(@"all");
         NSData *data=[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil];
         if (data) UIPasteboard.generalPasteboard.string=[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }]];
@@ -268,6 +279,7 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
             [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];return;
         }
         if (tool==4) { [self diagnostics];return; }
+        if (tool==6) { [self usbDiagnostics];return; }
         [self message:[@"ReVanced iOS " stringByAppendingString:RV_PORT_VERSION] text:[NSString stringWithFormat:@"YouTube %@\n%lu patch switches and grouped preferences.\nDeArrow community branding: SponsorBlock / DeArrow (sponsor.ajay.app).\n%@",NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"] ?: @"",(unsigned long)RVFeatureKeys.count,RVCompatible ? @"Supported app profile." : @"Unsupported app: patches disabled."]];return;
     }
     if (!RVCompatible || [row[@"disabled"] boolValue] || [row[@"toggle"] boolValue]) return;
