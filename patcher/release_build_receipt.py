@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.46'
+VERSION = '0.3.47'
 
 
 def digest(path):
@@ -31,7 +31,7 @@ def main():
              'usb_diagnostics.py', 'profiles/usb-diagnostics-contract.json', 'coverage.json', 'features.py',
              'settings_catalog.py', 'configs/adblock-native.json',
              'profiles/dearrow-adaptive-contract.json', 'profiles/dearrow-live-card-contract.json',
-             'profiles/dearrow-live-capture-contract.json']
+             'profiles/dearrow-live-capture-contract.json', 'profiles/dearrow-thumbnail-recovery-contract.json']
     names += ['native/'+name for name in native['source_files']]
     names += ['output/'+item['filename'] for item in package['packages']]
     artifacts = {}

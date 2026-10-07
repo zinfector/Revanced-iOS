@@ -91,7 +91,7 @@ static NSURL *RVDAURL(NSURL *endpoint,NSString *videoID,NSNumber *timestamp,BOOL
         url.path=[path stringByAppendingFormat:@"/%@",[RVDAHash(videoID) substringToIndex:4]];
     } else {
         [query addObject:[NSURLQueryItem queryItemWithName:@"videoID" value:videoID]];
-        [query addObject:[NSURLQueryItem queryItemWithName:@"time" value:timestamp.stringValue]];
+        [query addObject:[NSURLQueryItem queryItemWithName:@"time" value:timestamp ? [NSString stringWithFormat:@"%.17g",timestamp.doubleValue] : nil]];
     }
     url.queryItems=query.count ? query : nil;return url.URL;
 }
@@ -161,6 +161,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,copy) void (^onStart)(void);
 - (void)start:(NSURL *)url timeout:(NSTimeInterval)timeout;
 - (void)finish:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code;
+- (void)finishData:(NSData *)data response:(NSHTTPURLResponse *)response blocker:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code;
 - (void)cancel;
 @end
 @implementation RVDAHTTP
@@ -181,10 +182,13 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     }
 }
 - (void)finish:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code {
+    [self finishData:nil response:nil blocker:blocker errorCode:code];
+}
+- (void)finishData:(NSData *)data response:(NSHTTPURLResponse *)incomingResponse blocker:(RVDeArrowBlocker)blocker errorCode:(NSInteger)code {
     void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger);NSURLSession *session;NSData *body;NSHTTPURLResponse *response;
     @synchronized(self) {
         if (self.completed) return;self.completed=YES;completion=self.completion;self.completion=nil;self.onStart=nil;
-        session=self.session;self.session=nil;self.task=nil;body=self.body.copy;self.body=nil;response=self.response;
+        session=self.session;self.session=nil;self.task=nil;body=data ?: self.body.copy;self.body=nil;response=incomingResponse ?: self.response;
     }
     [session invalidateAndCancel];if (completion) completion(body,response,blocker,code);
 }
@@ -222,6 +226,15 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     completion([challenge.protectionSpace.authenticationMethod isEqual:NSURLAuthenticationMethodServerTrust] ? NSURLSessionAuthChallengePerformDefaultHandling : NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
 }
 @end
+
+// A network flight owns independent cancellation tickets. One recycled row
+// cannot cancel another row's request for the same image/configuration.
+@interface RVDAAuxiliaryFlight : NSObject
+@property(nonatomic,strong) RVDAHTTP *transfer;
+@property(nonatomic,strong) NSMutableArray<RVDAHTTP *> *subscribers;
+@property(nonatomic) BOOL started;
+@end
+@implementation RVDAAuxiliaryFlight @end
 
 @interface RVDAMetadata : NSObject
 @property(nonatomic) RVDeArrowDecision titleDecision,thumbnailDecision;
@@ -269,6 +282,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAJob *> *jobs;
 @property(nonatomic,strong) NSMutableArray<RVDAOperation *> *operations;
 @property(nonatomic,strong) NSMutableArray<NSDictionary *> *auxiliaryOperations;
+@property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAAuxiliaryFlight *> *auxiliaryFlights;
 @property(nonatomic) BOOL auxiliaryTurn;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAMetadata *> *metadataCache;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAImage *> *imageCache;
@@ -308,7 +322,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         _configurationRevision=1;_options=RVDeArrowOptions.defaultOptions;
         _queue=dispatch_queue_create("RVPort.DeArrow.Backend",DISPATCH_QUEUE_SERIAL);
         dispatch_queue_set_specific(_queue,RVDAQueueKey,(__bridge void *)self,NULL);
-        _jobs=[NSMutableDictionary dictionary];_operations=[NSMutableArray array];_auxiliaryOperations=[NSMutableArray array];
+        _jobs=[NSMutableDictionary dictionary];_operations=[NSMutableArray array];_auxiliaryOperations=[NSMutableArray array];_auxiliaryFlights=[NSMutableDictionary dictionary];
         _metadataCache=[NSMutableDictionary dictionary];_imageCache=[NSMutableDictionary dictionary];_cooldowns=[NSMutableDictionary dictionary];
         _counts=[NSMutableDictionary dictionary];_state=[NSMutableDictionary dictionary];_events=[NSMutableArray array];
         _salt=NSUUID.UUID.UUIDString;_started=NSProcessInfo.processInfo.systemUptime;
@@ -446,7 +460,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     [self sync:^{
         report=@{@"schema":@1,@"backend_implemented":@YES,@"presentation_observed":@([self.state[@"presentation_observed"] boolValue]),@"device_verified":@NO,
             @"presentation_observed_meaning":@"adapter_checkpoint_only_not_visible_replacement",@"diagnostics_enabled":@(self.options.diagnosticsEnabled),@"configuration_revision":@(self.configurationRevision),
-            @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),@"queued_auxiliary_transfers":@(self.auxiliaryOperations.count),
+            @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),@"queued_auxiliary_transfers":@(self.auxiliaryOperations.count),@"auxiliary_shared_flights":@(self.auxiliaryFlights.count),
             @"metadata_cache_entries":@(self.metadataCache.count),@"image_cache_entries":@(self.imageCache.count),@"decoded_image_bytes":@(self.imageCost),
             @"counts":self.counts.copy,@"state":self.state.copy,@"recent_events":self.events.copy};
     }];return report;
@@ -719,28 +733,62 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         [self record:RVDeArrowCheckpointMetadataReceived blocker:RVDeArrowBlockerBackoff video:job.videoID details:nil];[self processMetadata:job];
     }
 }
-- (void)enqueueAuxiliary:(RVDAHTTP *)transfer URL:(NSURL *)url timeout:(NSTimeInterval)timeout {
-    // Same serialized admission queue and four-transfer budget as metadata and
-    // submitted thumbnails. Cancellation completes once even while queued.
-    void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger)=transfer.completion;
-    __weak RVDeArrowBackend *weak=self;__block BOOL admitted=NO;
-    transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
-        RVDeArrowBackend *backend=weak;if (!backend) return;
-        dispatch_async(backend.queue,^{
-            if (admitted && backend.activeTransfers) backend.activeTransfers--;
-            if (completion) completion(data,response,blocker,code);
-            [backend pump];
-        });
-    };
+- (void)enqueueAuxiliary:(RVDAHTTP *)subscriber URL:(NSURL *)url timeout:(NSTimeInterval)timeout {
+    // All dictionary/queue/subscriber changes use the existing serialized queue.
     dispatch_async(self.queue,^{
-        if (!RVDAEndpoint(url)) { [transfer finish:RVDeArrowBlockerInvalidOptions errorCode:0];return; }
-        NSIndexSet *cancelled=[self.auxiliaryOperations indexesOfObjectsPassingTest:^BOOL(NSDictionary *op,NSUInteger index,BOOL *stop) {
-            RVDAHTTP *pending=op[@"transfer"];@synchronized(pending) { return pending.completed; }
-        }];
-        [self.auxiliaryOperations removeObjectsAtIndexes:cancelled];
-        if (self.auxiliaryOperations.count>=64) { [transfer finish:RVDeArrowBlockerQueueFull errorCode:0];return; }
-        [self.auxiliaryOperations addObject:@{@"transfer":transfer,@"url":url,@"timeout":@(timeout),@"queued_at":@(RVDANow()),
-            @"admit":[^{ admitted=YES; } copy]}];[self pump];
+        BOOL done;@synchronized(subscriber) { done=subscriber.completed; }if (done) return;
+        if (!RVDAEndpoint(url)) { [subscriber finish:RVDeArrowBlockerInvalidOptions errorCode:0];return; }
+        NSString *key=[NSString stringWithFormat:@"%llu|%lu|%.3f|%@",(unsigned long long)self.configurationRevision,(unsigned long)subscriber.limit,timeout,url.absoluteString];
+        RVDAAuxiliaryFlight *flight=self.auxiliaryFlights[key];
+        if (flight) { @synchronized(flight.transfer) { done=flight.transfer.completed; }if (done) flight=nil; }
+        if (flight && flight.subscribers.count>=32) { [subscriber finish:RVDeArrowBlockerQueueFull errorCode:0];return; }
+        if (!flight) {
+            NSIndexSet *cancelled=[self.auxiliaryOperations indexesOfObjectsPassingTest:^BOOL(NSDictionary *op,NSUInteger index,BOOL *stop) {
+                RVDAHTTP *pending=op[@"transfer"];@synchronized(pending) { return pending.completed; }
+            }];
+            [self.auxiliaryOperations removeObjectsAtIndexes:cancelled];
+            if (self.auxiliaryFlights.count>=64) { [subscriber finish:RVDeArrowBlockerQueueFull errorCode:0];return; }
+            flight=[RVDAAuxiliaryFlight new];flight.subscribers=[NSMutableArray array];flight.transfer=[RVDAHTTP new];flight.transfer.limit=subscriber.limit;
+            self.auxiliaryFlights[key]=flight;__weak RVDAAuxiliaryFlight *weakFlight=flight;__weak RVDeArrowBackend *weakSelf=self;__block BOOL admitted=NO;
+            flight.transfer.onStart=^{
+                RVDAAuxiliaryFlight *current=weakFlight;if (!current) return;current.started=YES;
+                for (RVDAHTTP *ticket in current.subscribers.copy) {
+                    void (^start)(void);@synchronized(ticket) { start=ticket.onStart;ticket.onStart=nil; }if (start) start();
+                }
+            };
+            RVDAAuxiliaryFlight *ownedFlight=flight;
+            flight.transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
+                RVDeArrowBackend *backend=weakSelf;if (!backend) return;
+                dispatch_async(backend.queue,^{
+                    RVDAAuxiliaryFlight *current=ownedFlight;
+                    if (admitted && backend.activeTransfers) backend.activeTransfers--;
+                    if (current && backend.auxiliaryFlights[key]==current) [backend.auxiliaryFlights removeObjectForKey:key];
+                    NSArray *tickets=current.subscribers.copy;[current.subscribers removeAllObjects];
+                    for (RVDAHTTP *ticket in tickets) {
+                        [ticket finishData:data response:response blocker:blocker errorCode:code];
+                    }
+                    [backend pump];
+                });
+            };
+            [self.auxiliaryOperations addObject:@{@"transfer":flight.transfer,@"url":url,@"timeout":@(timeout),@"queued_at":@(RVDANow()),@"admit":[^{ admitted=YES; } copy]}];
+        }
+        __weak RVDAHTTP *weakSubscriber=subscriber;__weak RVDAAuxiliaryFlight *weakFlight=flight;__weak RVDeArrowBackend *weakSelf=self;
+        @synchronized(subscriber) {
+        if (subscriber.completed) { if (!flight.subscribers.count) [flight.transfer cancel];return; }
+        void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger)=subscriber.completion;
+        subscriber.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
+            RVDeArrowBackend *backend=weakSelf;if (!backend) return;
+            dispatch_async(backend.queue,^{
+                RVDAAuxiliaryFlight *current=weakFlight;RVDAHTTP *ticket=weakSubscriber;
+                if (current && ticket) [current.subscribers removeObjectIdenticalTo:ticket];
+                if (current && !current.subscribers.count) [current.transfer cancel];
+                if (completion) completion(data,response,blocker,code);
+            });
+        };
+        [flight.subscribers addObject:subscriber];
+        }
+        if (flight.started) { void (^start)(void);@synchronized(subscriber) { start=subscriber.onStart;subscriber.onStart=nil; }if (start) start(); }
+        [self pump];
     });
 }
 - (void)pump {

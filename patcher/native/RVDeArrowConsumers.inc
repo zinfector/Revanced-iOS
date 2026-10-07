@@ -25,7 +25,7 @@ static void RVDAUIRetireConsumers(RVDAUIBinding *binding) {
     RVDBGRecord(@"native_consumers_retired",binding.generation,binding.surface,nil);
     for (RVDAUIConsumerLease *lease in binding.consumerLeases) [lease retire];
     [binding.consumerLeases removeAllObjects];binding.consumerEpoch++;
-    binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;
+    binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;binding.nativeThumbnailNode=nil;
     binding.nativeOwnerCheckpoint=nil;binding.consumerCheckpoint=nil;binding.nativeFactoryElement=nil;binding.nativeExpectedElement=nil;
     binding.nativeFactoryController=nil;binding.nativeFactoryInput=nil;binding.factoryProvenanceVerified=NO;
     binding.imageWitnesses=nil;binding.imageWitnessSource=nil;binding.nativeTitleProjected=NO;binding.nativeImageProjected=NO;
@@ -352,10 +352,11 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         if (imageClass && [node isKindOfClass:imageClass] && binding.profile.imageRole) {
             images++;NSString *url=RVDAUIConsumerURL(node);
             imageMatches+=url && [urls containsObject:url];
+            if (url && [urls containsObject:url]) binding.nativeThumbnailNode=node;
             UIImage *decoded=RVObject(node,"image");
             if (expectedBytes && [decoded isKindOfClass:UIImage.class] && decoded.size.width>0 && decoded.size.height>0) {
                 [decodedImages addObject:decoded];id witness=[binding.imageWitnesses objectForKey:decoded];
-                if ([binding.imageWitnessSource isEqual:expectedBytes] && [witness isKindOfClass:NSNumber.class] && [witness boolValue]) { imageApplied++;imageVisible|=RVDAUIConsumerVisible(node); }
+                if ([binding.imageWitnessSource isEqual:expectedBytes] && [witness isKindOfClass:NSNumber.class] && [witness boolValue]) { binding.nativeThumbnailNode=node;imageApplied++;imageVisible|=RVDAUIConsumerVisible(node); }
             }
         }
     }
@@ -388,6 +389,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         RVDADiagRecord(@"D10_live_replacement_visible",binding,nil,@{@"title":@(titleVisible && titleApplied==1),@"image":@(imageVisible && imageApplied==1)});
         [binding.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
     }
+    RVDAUIFallbackWake(binding);
     if (changed) RVDAUIRefresh(binding);
     // Only bootstrap uses finite polling. Native load/layout events remain live.
     if (attempt<3 && (blocker || (expected && titleApplied!=1) || (expectedBytes && imageApplied!=1))) RVDAUIScheduleConsumers(binding,.15);

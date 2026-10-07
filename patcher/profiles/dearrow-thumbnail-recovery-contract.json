@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "release": "0.3.47",
+  "canonical_timestamp": {
+    "metadata": "randomTime * videoDuration; no re-adjustment or millisecond rounding",
+    "missing_random_time": "seedrandom/Alea first output; subtract 0.9 only when generated fraction exceeds 0.9",
+    "query_precision": "17 significant decimal digits",
+    "official_time": "true only for default branding endpoint"
+  },
+  "recovery": {
+    "burst_seconds": 150,
+    "retries_per_burst": 12,
+    "retry_delay_seconds": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "cooldown_seconds": [
+      30,
+      60,
+      120,
+      240,
+      300
+    ],
+    "generation_failure_cooldown_seconds": 300,
+    "visibility_wake_seconds": 2,
+    "foreground_only": true,
+    "offscreen": "pause transfer ticket and retry epoch; retain canonical request identity",
+    "terminal": "invalid timestamp/image/options/data remain terminal; transient service/network failures deferred"
+  },
+  "coalescing": {
+    "key": [
+      "backend_revision",
+      "url",
+      "byte_limit",
+      "timeout"
+    ],
+    "max_flights": 64,
+    "max_subscribers": 32,
+    "max_active_transfers": 4,
+    "cancellation": "independent subscriber tickets; cancel network only after last ticket retires",
+    "body": "immutable response bytes shared without per-subscriber copies"
+  },
+  "binding_report_fields": [
+    "fallback_http",
+    "fallback_network_error_code",
+    "fallback_cycles",
+    "fallback_cooldown_seconds",
+    "fallback_timestamp_source",
+    "fallback_timestamp_requested",
+    "fallback_timestamp_returned",
+    "fallback_request_key",
+    "fallback_row_visible"
+  ],
+  "events": [
+    "D08_random_time_selected",
+    "D08_fallback_deferred",
+    "D08_fallback_resumed",
+    "D08_fallback_cache_hit",
+    "D08_fallback_timestamp_response"
+  ],
+  "device_verified": false,
+  "tests_run": false
+}

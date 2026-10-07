@@ -1,8 +1,8 @@
-name: Build wired live debugger payload with Xcode
+name: Build DeArrow thumbnail recovery payload with Xcode
 
 on:
   push:
-    branches: [fix/wired-live-debugger-0.3.46]
+    branches: [fix/dearrow-thumbnail-recovery-0.3.47]
 
 permissions:
   contents: read

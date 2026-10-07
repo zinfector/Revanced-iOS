@@ -2,28 +2,86 @@
 // Decoded fallback/effect requests are per-video, bounded and generation guarded.
 static NSCache *RVDAUIAuxiliaryCache;
 static void RVDAUIResolveFallback(RVDAUIBinding *state,uint64_t generation);
+static NSTimer *RVDAUIFallbackTimer;
+static BOOL RVDAUIFallbackVisible(RVDAUIBinding *state) {
+    if (UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return NO;
+    if (RVDAUIConsumerVisible(state.nativeThumbnailNode) || RVDAUIConsumerVisible(state.nativeFactoryRoot)) return YES;
+    UIView *view=state.imageView;
+    if (![view isKindOfClass:UIView.class] || !view.window || CGRectIsEmpty(view.bounds)) return NO;
+    for (UIView *parent=view;parent;parent=parent.superview) if (parent.hidden || parent.alpha<.05) return NO;
+    return !CGRectIsEmpty(CGRectIntersection([view convertRect:view.bounds toView:view.window],view.window.bounds));
+}
+static BOOL RVDAUIFallbackPending(RVDAUIBinding *state) {
+    return state.result.isFinal && (state.parts&RVDeArrowPartsThumbnail) &&
+        [@[@"waiting_visibility",@"deferred",@"selecting",@"queued",@"fetching",@"retry_wait"] containsObject:state.fallbackPhase];
+}
+static void RVDAUIFallbackEnsureTimer(void) {
+    if (RVDAUIFallbackTimer) return;
+    RVDAUIFallbackTimer=[NSTimer timerWithTimeInterval:2 repeats:YES block:^(NSTimer *timer) {
+        BOOL pending=NO;
+        for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
+            if (!RVDAUIFallbackPending(state) || RVDAUIOriginal(state) || !RVDAUICurrent(state)) continue;
+            pending=YES;RVDAUIFallbackWake(state);
+        }
+        if (!pending) { [timer invalidate];RVDAUIFallbackTimer=nil; }
+    }];
+    [NSRunLoop.mainRunLoop addTimer:RVDAUIFallbackTimer forMode:NSRunLoopCommonModes];
+}
+static void RVDAUIFallbackDefer(RVDAUIBinding *state,NSString *reason,NSTimeInterval cooldown) {
+    // Retire this burst, not the row binding or its title/consumer permissions.
+    state.fallbackEpoch++;state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackDeadline=0;
+    state.fallbackNextAttempt=MAX(state.fallbackNextAttempt,RVDANow()+cooldown);
+    state.fallbackPhase=cooldown>0 ? @"deferred" : @"waiting_visibility";state.imageBlocker=reason;
+    RVDAHTTP *transfer=state.fallbackTransfer;state.fallbackTransfer=nil;[transfer cancel];
+    if ([state.imageOrigin isEqual:@"pending"] || state.encodedImage==RVDABlankImage()) {
+        state.imageRevision++;state.presentationImage=nil;state.imageBytes=nil;state.encodedImage=nil;state.imageOrigin=nil;
+    }
+    state.pendingExpired=YES;
+    RVDADiagRecord(@"D08_fallback_deferred",state,reason,@{@"recoverable":@YES,@"cooldown_seconds":@(cooldown),@"cycle":@(state.fallbackCycles),@"row_visible":@(RVDAUIFallbackVisible(state))});
+    RVDAUIFallbackEnsureTimer();RVDAUIRefresh(state);
+}
+static NSTimeInterval RVDAUIFallbackCooldown(RVDAUIBinding *state) {
+    return MAX(state.fallbackRetryAfter,MIN(300,30*pow(2,MIN(state.fallbackCycles ? state.fallbackCycles-1 : 0,4u))));
+}
+static void RVDAUIFallbackWake(RVDAUIBinding *state) {
+    if (!NSThread.isMainThread || !RVDAUIFallbackPending(state) || RVDAUIOriginal(state) || !RVDAUICurrent(state)) return;
+    if (!RVDAUIFallbackVisible(state)) {
+        if (state.fallbackStarted) RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",0);
+        return;
+    }
+    if (state.fallbackStarted) {
+        if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline)
+            RVDAUIFallbackDefer(state,@"fallback_burst_deferred",RVDAUIFallbackCooldown(state));
+        return;
+    }
+    if (RVDANow()<state.fallbackNextAttempt) return;
+    RVDADiagRecord(@"D08_fallback_resumed",state,nil,@{@"prior_cycle":@(state.fallbackCycles),@"row_visible":@YES});
+    RVDAUIResolveFallback(state,state.generation);
+}
 static void RVDAUIFallbackFailure(RVDAUIBinding *state,NSString *blocker,BOOL retryable,uint64_t generation,void (^retry)(RVDAUIBinding *)) {
     if (!state || state.generation!=generation || !RVDAUICurrent(state)) return;
     state.imageBlocker=blocker;
     NSTimeInterval remaining=state.fallbackDeadline-RVDANow();
     NSTimeInterval delay=MAX(MIN(16,2*pow(2,MIN(state.fallbackRetries,4u))),state.fallbackRetryAfter);
+    if (retryable && !RVDAUIFallbackVisible(state)) { RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",delay);return; }
     if (retryable && retry && !state.fallbackRetryScheduled && state.fallbackRetries<12 && remaining>delay) {
         state.fallbackRetries++;state.fallbackRetryScheduled=YES;state.fallbackPhase=@"retry_wait";
-        RVDADiagRecord(@"D08_fallback_retry_scheduled",state,blocker,@{@"retry_attempt":@(state.fallbackRetries),@"delay_seconds":@(delay),@"remaining_seconds":@(MAX(0,remaining)),@"elapsed_seconds":@(MAX(0,150-remaining)),@"retry_limit":@12});
-        __weak RVDAUIBinding *weak=state;
+        RVDADiagRecord(@"D08_fallback_retry_scheduled",state,blocker,@{@"retry_attempt":@(state.fallbackRetries),@"delay_seconds":@(delay),@"remaining_seconds":@(MAX(0,remaining)),@"cycle":@(state.fallbackCycles),@"retry_limit":@12});
+        __weak RVDAUIBinding *weak=state;uint64_t epoch=state.fallbackEpoch;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(delay*NSEC_PER_SEC)),dispatch_get_main_queue(),^{
-            RVDAUIBinding *current=weak;if (!current || current.generation!=generation) return;
+            RVDAUIBinding *current=weak;if (!current || current.generation!=generation || current.fallbackEpoch!=epoch) return;
             current.fallbackRetryScheduled=NO;
-            if ([current.fallbackPhase isEqual:@"failed"] || RVDANow()>=current.fallbackDeadline) return;
             NSString *stale=RVDAUICurrentBlocker(current);
             if (stale || RVDAUIOriginal(current)) { RVDAUIEvent(@"D11_fallback_retry_discarded",current,stale ?: @"original_selected");return; }
+            if (!RVDAUIFallbackVisible(current)) { RVDAUIFallbackDefer(current,@"fallback_waiting_visibility",0);return; }
+            if (RVDANow()>=current.fallbackDeadline) { RVDAUIFallbackDefer(current,@"fallback_burst_deferred",RVDAUIFallbackCooldown(current));return; }
             retry(current);
         });
+    } else if (retryable) {
+        RVDAUIFallbackDefer(state,@"fallback_generation_deferred",RVDAUIFallbackCooldown(state));
     } else {
-        state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackPhase=@"failed";
-        NSString *terminal=retryable && remaining<=delay ? @"fallback_deadline_expired" : retryable && state.fallbackRetries>=12 ? @"fallback_retry_budget_exhausted" : blocker;
-        state.imageBlocker=terminal;
-        RVDADiagRecord(@"D08_fallback_rejected",state,terminal,@{@"last_response_blocker":blocker ?: @"unknown",@"remaining_seconds":@(MAX(0,remaining)),@"retries":@(state.fallbackRetries)});RVDAUIRefresh(state);
+        state.fallbackEpoch++;state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackPhase=@"failed";
+        RVDADiagRecord(@"D08_fallback_rejected",state,blocker,@{@"last_response_blocker":blocker ?: @"unknown",@"recoverable":@NO,@"retries":@(state.fallbackRetries)});RVDAUIRefresh(state);
     }
 }
 static BOOL RVDAUIRetryableTransfer(RVDeArrowBlocker blocker,NSInteger status) {
@@ -44,7 +102,7 @@ static double RVDAUIOwnedDuration(RVDAUIBinding *state) {
 static void RVDAUIApplyImage(RVDAUIBinding *state,UIImage *image,NSString *origin,uint64_t generation) {
     if (!image || RVDAUIOriginal(state)) return;
     uint64_t revision=++state.imageRevision;NSInteger saturation=[RVSetting(@"dearrow_thumbnail_saturation") integerValue];
-    state.encodedImage=image;__weak RVDAUIBinding *weak=state;
+    state.encodedImage=image;if (![origin isEqual:@"pending"]) state.fallbackPhase=@"encoding";__weak RVDAUIBinding *weak=state;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
         @autoreleasepool {
             UIImage *source=[origin isEqual:@"upcoming_avatar"] ? RVDACoverImage(image) : image;
@@ -54,9 +112,9 @@ static void RVDAUIApplyImage(RVDAUIBinding *state,UIImage *image,NSString *origi
                 RVDAUIBinding *current=weak;NSString *blocker=RVDAUICurrentBlocker(current);
                 if (!blocker && (current.generation!=generation || current.imageRevision!=revision || RVDAUIOriginal(current))) blocker=@"image_effect_generation_changed";
                 if (blocker) { RVDAUIEvent(@"D08_image_encoding_rejected",current,blocker);return; }
-                if (!bytes.length || bytes.length>1024*1024) { current.imageBlocker=@"presentation_image_byte_limit";RVDAUIEvent(@"D08_image_received",current,current.imageBlocker);return; }
+                if (!bytes.length || bytes.length>1024*1024) { current.fallbackPhase=@"failed";current.imageBlocker=@"presentation_image_byte_limit";RVDAUIEvent(@"D08_image_received",current,current.imageBlocker);return; }
                 current.presentationImage=colored;current.imageBytes=bytes;current.imageOrigin=origin;
-                current.fallbackPhase=@"ready";
+                if (![origin isEqual:@"pending"]) current.fallbackPhase=@"ready";
                 RVDADiagRecord(@"D08_image_encoded",current,nil,@{@"byte_length":@(bytes.length),@"image_origin":origin,@"saturation":@(saturation)});RVDAUIRefresh(current);
             });
         }
@@ -66,16 +124,16 @@ static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uin
     if (!url || !RVDAUICurrent(state) || state.generation!=generation) return;
     RVDAHTTP *transfer=[RVDAHTTP new];transfer.limit=limit;state.fallbackTransfer=transfer;
     state.fallbackPhase=@"queued";RVDAUIEvent(@"D08_fallback_queued",state,nil);
-    __weak RVDAUIBinding *weak=state;__weak RVDAHTTP *weakTransfer=transfer;
+    __weak RVDAUIBinding *weak=state;__weak RVDAHTTP *weakTransfer=transfer;uint64_t epoch=state.fallbackEpoch;
     transfer.onStart=^{ dispatch_async(dispatch_get_main_queue(),^{
-        RVDAUIBinding *current=weak;if (!current || current.generation!=generation || !RVDAUICurrent(current)) return;
+        RVDAUIBinding *current=weak;if (!current || current.generation!=generation || current.fallbackEpoch!=epoch || !RVDAUICurrent(current)) return;
         current.fallbackPhase=@"fetching";RVDAUIEvent(@"D08_fallback_transport_started",current,nil);
     }); };
     transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
         dispatch_async(dispatch_get_main_queue(),^{
             RVDAUIBinding *current=weak;
-            if (!current || current.generation!=generation || current.fallbackTransfer!=weakTransfer || !RVDAUICurrent(current)) return;
-            current.fallbackTransfer=nil;
+            if (!current || current.generation!=generation || current.fallbackEpoch!=epoch || !current.fallbackTransfer || current.fallbackTransfer!=weakTransfer || !RVDAUICurrent(current)) return;
+            current.fallbackTransfer=nil;current.fallbackNetworkErrorCode=code;
             RVDADiagRecord(@"D08_fallback_transport_finished",current,blocker ? RVDABlockerName(blocker) : nil,@{@"http_status":@(response.statusCode),@"network_error_code":@(code)});
             completion(data,response,blocker);
         });
@@ -84,31 +142,42 @@ static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uin
 }
 static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NSNumber *timestamp,uint64_t generation) {
     if (!url || RVDAUIOriginal(state)) return;
-    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackFailure(state,@"fallback_deadline_expired",NO,generation,nil);return; }
+    state.fallbackTimestampRequested=timestamp;state.fallbackTimestampReturned=nil;state.fallbackRequestKey=RVDADiagVideo(url.absoluteString);
+    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackDefer(state,@"fallback_burst_deferred",RVDAUIFallbackCooldown(state));return; }
     if (!RVDAUIAuxiliaryCache) { RVDAUIAuxiliaryCache=[NSCache new];RVDAUIAuxiliaryCache.countLimit=128;RVDAUIAuxiliaryCache.totalCostLimit=24*1024*1024; }
     NSDictionary *cached=[RVDAUIAuxiliaryCache objectForKey:url.absoluteString];
-    if ([cached[@"expires"] doubleValue]>RVDANow()) { RVDAUIApplyImage(state,cached[@"image"],origin,generation);return; }
+    if ([cached[@"expires"] doubleValue]>RVDANow()) {
+        state.fallbackResponseReason=@"decoded_cache_hit";state.fallbackTimestampReturned=[cached[@"timestamp"] isKindOfClass:NSNumber.class] ? cached[@"timestamp"] : nil;state.imageBlocker=@"ready";
+        RVDADiagRecord(@"D08_fallback_cache_hit",state,nil,@{@"request_key":state.fallbackRequestKey,@"timestamp_requested":timestamp ?: NSNull.null});
+        RVDAUIApplyImage(state,cached[@"image"],origin,generation);return;
+    }
     __weak RVDAUIBinding *weak=state;
     RVDAUIAuxiliary(state,url,RVDAImageLimit,generation,^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker) {
         RVDAUIBinding *current=weak;if (!current) return;
+        current.fallbackHTTPStatus=response.statusCode;
         if (blocker!=RVDeArrowBlockerNone || response.statusCode!=200) {
             NSString *failure=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
+            BOOL generationFailed=timestamp && response.statusCode==204 && [failure containsString:@"failed to generate"];
             BOOL pending=timestamp && response.statusCode==204 && ([failure containsString:@"not generated"] || [failure containsString:@"not cached"] || [failure containsString:@"timeout"] || [failure containsString:@"queue"]);
             NSString *reason=[failure containsString:@"not generated"] ? @"not_generated_yet" : [failure containsString:@"not cached"] ? @"not_cached" :
                 [failure containsString:@"queue"] ? @"queue_busy" : [failure containsString:@"timeout"] ? @"generation_timeout" :
                 [failure containsString:@"fail"] ? @"generation_failed" : response.statusCode==204 ? @"generation_unavailable" : @"other";
             NSString *retryHeader=RVDAHeader(response,@"Retry-After");NSScanner *retryScan=[NSScanner scannerWithString:retryHeader ?: @""];double retryAfter=0;
-            current.fallbackRetryAfter=[retryScan scanDouble:&retryAfter] && retryScan.isAtEnd && isfinite(retryAfter) && retryAfter>0 ? MIN(30,retryAfter) : 0;
+            current.fallbackRetryAfter=[retryScan scanDouble:&retryAfter] && retryScan.isAtEnd && isfinite(retryAfter) && retryAfter>0 ? MIN(300,retryAfter) : 0;
+            if (generationFailed) current.fallbackRetryAfter=MAX(300,current.fallbackRetryAfter);
             current.fallbackResponseReason=reason;
-            RVDADiagRecord(@"D08_fallback_image_response",current,nil,@{@"http_status":@(response.statusCode),@"generation_reason":pending ? @"generation_pending" : @"unavailable",
+            RVDADiagRecord(@"D08_fallback_image_response",current,nil,@{@"http_status":@(response.statusCode),@"generation_reason":pending ? @"generation_pending" : generationFailed ? @"generation_failed" : @"unavailable",
                 @"failure_category":reason,@"retry_after_seconds":@(current.fallbackRetryAfter),@"remaining_seconds":@(MAX(0,current.fallbackDeadline-RVDANow())),@"timestamp_requested":@(timestamp!=nil)});
-            RVDAUIFallbackFailure(current,pending ? @"fallback_generation_pending" : RVDABlockerName(blocker==RVDeArrowBlockerNone ? RVDeArrowBlockerImageHTTP : blocker),pending || RVDAUIRetryableTransfer(blocker,response.statusCode),generation,^(RVDAUIBinding *next) { RVDAUIFetchImage(next,url,origin,timestamp,generation); });return;
+            RVDAUIFallbackFailure(current,pending ? @"fallback_generation_pending" : generationFailed ? @"fallback_generation_backoff" : RVDABlockerName(blocker==RVDeArrowBlockerNone ? RVDeArrowBlockerImageHTTP : blocker),pending || generationFailed || RVDAUIRetryableTransfer(blocker,response.statusCode),generation,^(RVDAUIBinding *next) { RVDAUIFetchImage(next,url,origin,timestamp,generation); });return;
         }
-        current.fallbackResponseReason=@"image_received";current.fallbackRetryAfter=0;
+        current.fallbackResponseReason=@"image_received";current.fallbackRetryAfter=0;current.fallbackPhase=@"encoding";
         if (timestamp) {
             NSString *header=RVDAHeader(response,@"X-Timestamp");NSScanner *scan=[NSScanner scannerWithString:header ?: @""];double value=0;
             scan.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-            if (![scan scanDouble:&value] || !scan.isAtEnd || !isfinite(value) || fabs(value-timestamp.doubleValue)>.001) {
+            BOOL parsed=[scan scanDouble:&value] && scan.isAtEnd && isfinite(value);
+            current.fallbackTimestampReturned=parsed ? @(value) : nil;
+            RVDADiagRecord(@"D08_fallback_timestamp_response",current,nil,@{@"requested":timestamp,@"returned":current.fallbackTimestampReturned ?: NSNull.null,@"delta":parsed ? @(value-timestamp.doubleValue) : NSNull.null,@"http_status":@(response.statusCode)});
+            if (!parsed || fabs(value-timestamp.doubleValue)>.001) {
                 RVDAUIFallbackFailure(current,@"fallback_timestamp_mismatch",NO,generation,nil);return;
             }
             RVDAUIEvent(@"D08_fallback_timestamp_matched",current,nil);
@@ -120,60 +189,75 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
                 RVDAUIBinding *latest=weak;if (!latest || latest.generation!=generation || !RVDAUICurrent(latest)) return;
                 if (!image) { RVDAUIFallbackFailure(latest,@"fallback_decode_failed",NO,generation,nil);return; }
                 RVDAUIEvent(@"D08_fallback_image_decoded",latest,nil);
-                [RVDAUIAuxiliaryCache setObject:@{@"image":image,@"expires":@(RVDANow()+1800)} forKey:url.absoluteString cost:cost];
+                [RVDAUIAuxiliaryCache setObject:@{@"image":image,@"expires":@(RVDANow()+1800),@"timestamp":latest.fallbackTimestampReturned ?: NSNull.null} forKey:url.absoluteString cost:cost];
                 latest.imageBlocker=@"ready";RVDAUIApplyImage(latest,image,origin,generation);
             });
         });
     });
 }
+/* Alea/Mash attribution: Copyright (C) 2010 Johannes Baagoe.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+// Alea first output, matching seedrandom/alea used by DeArrow when metadata has
+// no randomTime. Mash is Johannes Baagoe's MIT-licensed algorithm (2010).
+static double RVDAUIMash(NSString *text,double *n) {
+    for (NSUInteger index=0;index<text.length;index++) {
+        *n+=[text characterAtIndex:index];double h=.02519603282416938*(*n);
+        *n=(uint32_t)(uint64_t)h;h-=*n;h*=*n;*n=(uint32_t)(uint64_t)h;h-=*n;
+        *n+=h*4294967296.0;
+    }
+    return (uint32_t)(uint64_t)(*n)*2.3283064365386963e-10;
+}
+static double RVDAUIAleaFraction(NSString *video) {
+    double n=0xefc8249d,s0=RVDAUIMash(@" ",&n);
+    (void)RVDAUIMash(@" ",&n);(void)RVDAUIMash(@" ",&n);
+    s0-=RVDAUIMash(video,&n);if (s0<0) s0+=1;
+    volatile double product=2091639*s0;double t=product+2.3283064365386963e-10;
+    double fraction=t-floor(t);return fraction>.9 ? fraction-.9 : fraction;
+}
 static void RVDAUIRandomImage(RVDAUIBinding *state,uint64_t generation) {
     double duration=RVDAUIOwnedDuration(state);
     if (!duration) { RVDAUIFallbackFailure(state,@"fallback_duration_unavailable",YES,generation,^(RVDAUIBinding *next) { RVDAUIRandomImage(next,generation); });return; }
-    double fraction=state.result.randomTime ? state.result.randomTime.doubleValue : strtoul([[RVDAHash(state.video) substringToIndex:8] UTF8String],NULL,16)/(double)UINT32_MAX;
-    if (fraction>.9) fraction-=.9;
-    double chosen=fraction*duration;
-    NSURLComponents *segments=[NSURLComponents componentsWithString:@"https://sponsor.ajay.app/api/skipSegments"];
-    segments.queryItems=@[[NSURLQueryItem queryItemWithName:@"videoID" value:state.video],[NSURLQueryItem queryItemWithName:@"categories" value:@"[\"sponsor\",\"selfpromo\",\"interaction\"]"]];
-    __weak RVDAUIBinding *weak=state;
-    RVDAUIAuxiliary(state,segments.URL,RVDAMetadataLimit,generation,^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker) {
-        RVDAUIBinding *current=weak;if (!current) return;
-        id records=response.statusCode==404 ? @[] : data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
-        RVDADiagRecord(@"D08_fallback_segments_received",current,nil,@{@"http_status":@(response.statusCode),@"shape_valid":@([records isKindOfClass:NSArray.class]),@"empty_404":@(response.statusCode==404)});
-        if (blocker || ![@[@200,@404] containsObject:@(response.statusCode)] || ![records isKindOfClass:NSArray.class] || [records count]>512) {
-            RVDAUIFallbackFailure(current,@"fallback_segment_data_unavailable",RVDAUIRetryableTransfer(blocker,response.statusCode),generation,^(RVDAUIBinding *next) { RVDAUIRandomImage(next,generation); });return;
-        }
-        NSMutableArray *intervals=[NSMutableArray array];BOOL valid=YES;
-        for (id record in records) {
-            id span=[record isKindOfClass:NSDictionary.class] ? record[@"segment"] : nil;
-            if (![span isKindOfClass:NSArray.class] || [span count]!=2 || !RVDANumber(span[0]) || !RVDANumber(span[1]) || [span[0] doubleValue]<0 || [span[1] doubleValue]<[span[0] doubleValue] || [span[1] doubleValue]>duration+1) { valid=NO;break; }
-            [intervals addObject:span];
-        }
-        double time=chosen;BOOL safe=NO;
-        for (NSUInteger pass=0;valid && pass<=intervals.count;pass++) {
-            safe=YES;for (NSArray *span in intervals) if (time>=[span[0] doubleValue] && time<=[span[1] doubleValue]) { safe=NO;time=[span[1] doubleValue]+.1;if (time>=duration*.9) time=fmod(time+.37*duration,duration*.9);break; }
-            if (safe) break;
-        }
-        if (!valid || !safe) { RVDAUIFallbackFailure(current,@"fallback_safe_time_unavailable",NO,generation,nil);return; }
-        NSNumber *timestamp=@(round(time*1000)/1000);
-        NSURL *endpoint=[NSURL URLWithString:RVSetting(@"dearrow_url")];NSURLComponents *image=[NSURLComponents componentsWithURL:RVDAURL(endpoint,current.video,timestamp,NO) resolvingAgainstBaseURL:NO];
-        NSMutableArray *query=[image.queryItems mutableCopy];[query addObject:[NSURLQueryItem queryItemWithName:@"generateNow" value:@"true"]];image.queryItems=query;
-        RVDADiagRecord(@"D08_random_time_selected",current,nil,@{@"duration_present":@YES,@"segment_count":@(intervals.count),@"video_scoped":@YES});
-        RVDAUIFetchImage(current,image.URL,@"random_time",timestamp,generation);
-    });
+    // Server randomTime already avoids promotional intervals. Do not resample,
+    // re-adjust that value or round upward into a different cached millisecond.
+    BOOL metadataTime=state.result.randomTime!=nil;
+    double fraction=metadataTime ? state.result.randomTime.doubleValue : RVDAUIAleaFraction(state.video);
+    NSNumber *timestamp=@(fraction*duration);
+    state.fallbackTimestampSource=metadataTime ? @"dearrow_metadata" : @"upstream_alea";
+    NSURL *endpoint=[NSURL URLWithString:RVSetting(@"dearrow_url")];
+    NSURLComponents *image=[NSURLComponents componentsWithURL:RVDAURL(endpoint,state.video,timestamp,NO) resolvingAgainstBaseURL:NO];
+    NSMutableArray *query=[image.queryItems mutableCopy];
+    [query addObject:[NSURLQueryItem queryItemWithName:@"generateNow" value:@"true"]];
+    BOOL official=[RVSetting(@"dearrow_branding_url") isEqual:@"https://sponsor.ajay.app/api/branding"];
+    [query addObject:[NSURLQueryItem queryItemWithName:@"officialTime" value:official ? @"true" : @"false"]];image.queryItems=query;
+    RVDADiagRecord(@"D08_random_time_selected",state,nil,@{@"duration_present":@YES,@"timestamp_source":state.fallbackTimestampSource,
+        @"timestamp_requested":timestamp,@"cache_millisecond":@(floor(timestamp.doubleValue*1000)/1000),@"official_time":@(official),@"video_scoped":@YES});
+    RVDAUIFetchImage(state,image.URL,@"random_time",timestamp,generation);
 }
 static void RVDAUIResolveFallback(RVDAUIBinding *state,uint64_t generation) {
     if (RVDAUIOriginal(state) || !(state.parts&RVDeArrowPartsThumbnail) || state.fallbackStarted) return;
-    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackFailure(state,@"fallback_deadline_expired",NO,generation,nil);return; }
-    state.fallbackStarted=YES;
-    if (!state.fallbackDeadline) {
-        state.fallbackDeadline=RVDANow()+150;__weak RVDAUIBinding *weak=state;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,150*NSEC_PER_SEC),dispatch_get_main_queue(),^{
-            RVDAUIBinding *current=weak;if (!current || current.generation!=generation || !RVDAUICurrent(current) ||
-                [@[@"ready",@"failed",@"retained_original"] containsObject:current.fallbackPhase]) return;
-            current.fallbackDeadline=RVDANow();[current.fallbackTransfer cancel];current.fallbackTransfer=nil;
-            RVDAUIFallbackFailure(current,@"fallback_deadline_expired",NO,generation,nil);
-        });
+    if (!RVDAUIFallbackVisible(state)) {
+        if (![state.fallbackPhase isEqual:@"waiting_visibility"]) RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",0);
+        return;
     }
+    if (RVDANow()<state.fallbackNextAttempt) { RVDAUIFallbackEnsureTimer();return; }
+    state.fallbackStarted=YES;state.fallbackEpoch++;state.fallbackCycles++;
+    state.fallbackRetries=0;state.fallbackRetryScheduled=NO;state.fallbackNextAttempt=0;state.fallbackDeadline=RVDANow()+150;
+    RVDAUIFallbackEnsureTimer();
     state.fallbackPhase=@"selecting";
     state.pendingExpired=YES;
     if ([state.imageOrigin isEqual:@"pending"] || state.encodedImage==RVDABlankImage()) { state.imageRevision++;state.presentationImage=nil;state.imageBytes=nil;state.imageOrigin=nil; }

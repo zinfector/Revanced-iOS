@@ -30,7 +30,7 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 static void RVDAWatchReset(void);
 static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
-@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot;
+@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode;
 @property(nonatomic,strong) id originalEntry;
 @property(nonatomic,strong) RVDAProjection *profile;
 @property(nonatomic,strong) RVDeArrowRequest *request;
@@ -44,7 +44,12 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
 @property(nonatomic) uint64_t imageRevision;
-@property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter;
+@property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter,fallbackNextAttempt;
+@property(nonatomic) uint64_t fallbackEpoch;
+@property(nonatomic) NSUInteger fallbackCycles;
+@property(nonatomic) NSInteger fallbackHTTPStatus,fallbackNetworkErrorCode;
+@property(nonatomic,strong) NSNumber *fallbackTimestampRequested,*fallbackTimestampReturned;
+@property(nonatomic,copy) NSString *fallbackTimestampSource,*fallbackRequestKey;
 @property(nonatomic,copy) NSString *fallbackResponseReason;
 @property(nonatomic) NSUInteger fallbackRetries;
 @property(nonatomic) BOOL fallbackRetryScheduled;
@@ -219,6 +224,7 @@ static void RVDAUIRefresh(RVDAUIBinding *binding) {
         [state.request recordCheckpoint:RVDeArrowCheckpointNativeLayout blocker:RVDeArrowBlockerNone];
     });
 }
+static void RVDAUIFallbackWake(RVDAUIBinding *binding);
 #include "RVDeArrowConsumers.inc"
 static void RVDAUIConfigureBackend(void) {
     RVDeArrowOptions *options=RVDeArrowOptions.defaultOptions;
@@ -233,6 +239,9 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
+    binding.fallbackEpoch++;binding.fallbackNextAttempt=0;binding.fallbackCycles=0;
+    binding.fallbackHTTPStatus=0;binding.fallbackNetworkErrorCode=0;binding.fallbackTimestampRequested=nil;binding.fallbackTimestampReturned=nil;
+    binding.fallbackTimestampSource=nil;binding.fallbackRequestKey=nil;
     binding.fallbackDeadline=0;binding.fallbackRetryAfter=0;binding.fallbackResponseReason=nil;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
     binding.titleConsumerVerified=NO;binding.imageConsumerVerified=NO;
     binding.generation=++RVDAUIGeneration;binding.settingsRevision=RVDAUISettingsRevision;
@@ -319,6 +328,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         for (RVDAUIBinding *current in RVDAUIRowBindings(prior)) {
             BOOL changed=![surface isEqual:current.surface];if (changed) current.surface=surface;
             if (changed || current.settingsRevision!=RVDAUISettingsRevision) RVDAUIRequest(current);
+            else RVDAUIFallbackWake(current);
         }return prior;
     }
     for (RVDAUIBinding *current in RVDAUIRowBindings(prior)) { [current.request cancel];[current.fallbackTransfer cancel];RVDAUIRetireConsumers(current); }
@@ -476,7 +486,7 @@ static void RVDAUILegacyView(id view,id renderer,void (^configure)(id)) {
     NSString *blocker=RVDAUICurrentBlocker(state);if (blocker) { RVDAUIEvent(@"D09_legacy_target_rejected",state,blocker);return; }
     NSString *title=RVDAUITitle(state);titleView=RVObject(view,"titleLabel") ?: RVObject(RVObject(view,"metadataView"),"titleLabel");
     RVDAUIApplyAccessibility(titleView,title);
-    imageView=RVObject(RVObject(view,"thumbnailView"),"imageView");
+    imageView=RVObject(RVObject(view,"thumbnailView"),"imageView");state.imageView=imageView;RVDAUIFallbackWake(state);
     if (RVDAUIImage(state) && RVCan(imageView,"setImage:animated:",@"v@:@B")) {
         state.nativeImage=RVObject(imageView,"image");state.imageView=imageView;
         RVDAUIImageLease *lease=[RVDAUIImageLease new];lease.binding=state;
@@ -507,6 +517,11 @@ static NSDictionary *RVDAUIReport(void) {
             @"local_title_changed":@(RVDAUITitle(state)!=nil),@"casual_original_selected":@(RVDAUICasual(state)),
             @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),
             @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),@"fallback_response_reason":state.fallbackResponseReason ?: @"none",@"fallback_remaining_seconds":@(state.fallbackDeadline ? MAX(0,state.fallbackDeadline-RVDANow()) : 0),
+            @"fallback_http":@(state.fallbackHTTPStatus),@"fallback_network_error_code":@(state.fallbackNetworkErrorCode),
+            @"fallback_cycles":@(state.fallbackCycles),@"fallback_cooldown_seconds":@(MAX(0,state.fallbackNextAttempt-RVDANow())),
+            @"fallback_timestamp_source":state.fallbackTimestampSource ?: @"not_applicable",
+            @"fallback_timestamp_requested":state.fallbackTimestampRequested ?: NSNull.null,@"fallback_timestamp_returned":state.fallbackTimestampReturned ?: NSNull.null,
+            @"fallback_request_key":state.fallbackRequestKey ?: @"none",@"fallback_row_visible":@(RVDAUIFallbackVisible(state)),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
             @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],@"command_type":state.profile.commandType ?: @"explicit_or_legacy",@"component_path":state.profile.componentPath ?: @[],@"row_bindings":@(RVDAUIRowBindings(state).count),
