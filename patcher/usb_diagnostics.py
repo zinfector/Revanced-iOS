@@ -362,21 +362,37 @@ def summarize(response):
     for item in dearrow.get('attempt_samples', []):
         failures[str(item.get('blocker', 'unspecified'))] += int(item.get('occurrences', 1))
     bindings = []
-    keys = ('surface', 'route', 'video_hash', 'adapter', 'ownership_blocker', 'requested_parts', 'title_input_blocker',
+    keys = ('surface', 'route', 'video_hash', 'adapter', 'command_type', 'identity_path', 'component_path', 'row_bindings', 'ownership_blocker', 'requested_parts', 'title_input_blocker',
             'image_input_blocker', 'title_consumer_verified', 'image_consumer_verified', 'title_blocker', 'image_blocker',
             'result_present', 'image_origin', 'encoded_image_ready', 'fallback_phase', 'duration_source',
             'refresh_requests', 'native_materializations', 'last_checkpoint', 'last_blocker', 'consumer_checkpoint')
     for item in dearrow.get('bindings', [])[:32]:
-        bindings.append({key: item[key] for key in keys if key in item})
+        binding = {key: item[key] for key in keys if key in item}
+        consumer = item.get('consumer_checkpoint', {})
+        stages = [('owner', item.get('current_source') is True),
+                  ('input', item.get('title_role') is True or item.get('image_role') is True),
+                  ('native_consumer', item.get('title_consumer_verified') is True or item.get('image_consumer_verified') is True),
+                  ('result', item.get('result_present') is True),
+                  ('consumed', consumer.get('title_replacement_consumed') is True or consumer.get('image_replacement_consumed') is True),
+                  ('visible', consumer.get('title_visible') is True or consumer.get('image_visible') is True)]
+        binding['observed_stages'] = {name: observed for name, observed in stages}
+        binding['first_unobserved_stage'] = next((name for name, observed in stages if not observed), None)
+        bindings.append(binding)
     directed = []
-    for item in dearrow.get('live_contract_capture', {}).get('roots', [])[:12]:
+    for item in dearrow.get('live_contract_capture', {}).get('roots', [])[:24]:
         contract = item.get('directed_card_contract', {})
         directed.append({'resource': item.get('resource_key'), 'surface': item.get('surface'),
+                         'ordinary_priority': item.get('ordinary_priority'), 'command_type': contract.get('command_type'),
+                         'command_extension': contract.get('command_extension'), 'identity_path': contract.get('identity_path'),
+                         'failed_step': contract.get('failed_step'), 'failed_parent_shape': contract.get('failed_parent_shape'),
+                         'primary_command_shape': contract.get('primary_command_shape'),
+                         'direct_watch_present': contract.get('direct_watch_present'), 'cowatch_present': contract.get('cowatch_present'),
+                         'browse_present': contract.get('browse_present'),
                          'blocker': contract.get('blocker'), 'video_id_valid': contract.get('video_id_valid'),
                          'thumbnail_identity_matches': contract.get('thumbnail_identity_matches'),
                          'failed_probes': [{key: probe.get(key) for key in ('role', 'status', 'path', 'failed_field', 'failed_step')}
                                            for probe in contract.get('probes', []) if probe.get('status') != 'path_resolved']})
-    return {'schema': 1, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
+    return {'schema': 2, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
             'build_source_sha256': root.get('build_source_sha256'), 'bridge': response.get('bridge', {}),
             'dearrow': {'capture_armed': dearrow.get('capture_armed'), 'counts': dearrow.get('counts', {}),
                        'backend_counts': dearrow.get('backend', {}).get('counts', {}),

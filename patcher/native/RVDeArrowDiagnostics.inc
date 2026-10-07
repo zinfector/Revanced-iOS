@@ -183,15 +183,24 @@ static void RVDADiagAttempt(id controller,id entry,id section,NSInteger index,NS
             RVDALiveCaptureRoot(data,ownerClass,surface ?: RVDAUIOwnerSurface(controller,NO,NULL),watchVideo);
     }
     NSData *uri=[data isKindOfClass:NSData.class] && data.length<=128*1024 ? RVDAPath(data,@[@1,@168777401,@3,@172035250,@1]) : nil;
-    NSString *key=[NSString stringWithFormat:@"%@/%@/%@/%@",ownerClass,entryClass,blocker,RVDADiagHash(uri)];
+    NSString *surface=NSThread.isMainThread ? RVDAUIOwnerSurface(controller,NO,NULL) : nil;
+    surface=surface ?: @"unknown";BOOL ordinary=[ownerClass isEqual:@"YTVideoElementCellController"];
+    NSData *model=RVDAPath(data,@[@1,@168777401,@5]);
+    NSDictionary *navigation=RVDALiveCardNavigation(model);
+    NSString *shape=RVDALiveSampleShape(model,RVDAText(uri));
+    NSString *key=[NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@",surface,ownerClass,entryClass,blocker,RVDADiagHash(uri),shape];
     @synchronized(RVDAUIBinding.class) {
         if (!RVDAUISamples) RVDAUISamples=[NSMutableDictionary dictionary];
         if (RVDAUISamples[key]) { NSMutableDictionary *prior=[RVDAUISamples[key] mutableCopy];prior[@"occurrences"]=@([prior[@"occurrences"] unsignedLongLongValue]+1);RVDAUISamples[key]=prior;return; }
-        if (RVDAUISamples.count>=64) return;
+        NSUInteger count=0;for (NSDictionary *sample in RVDAUISamples.allValues)
+            count+=[sample[@"surface"] isEqual:surface] && [sample[@"ordinary_priority"] boolValue]==ordinary;
+        if (RVDAUISamples.count>=128 || count>=8) return;
         NSMutableArray *components=[NSMutableArray array];NSUInteger budget=32;
         if ([data isKindOfClass:NSData.class] && data.length<=128*1024) RVDADiagWalk(data,0,&budget,components);
         id viewModel=NSThread.isMainThread ? RVObject(section,"viewModel") : nil;
         RVDAUISamples[key]=@{@"blocker":blocker,@"entry_class":entryClass,@"controller_class":ownerClass,
+            @"surface":surface,@"ordinary_priority":@(ordinary),@"structural_fingerprint":shape,
+            @"command_type":navigation[@"command_type"] ?: @"unresolved",@"command_extension":navigation[@"command_extension"] ?: @0,@"failed_step":navigation[@"failed_step"] ?: @(-1),
             @"section_class":section ? NSStringFromClass([section class]) : @"absent",@"index":@(index),
             @"main_thread":@(NSThread.isMainThread),@"section_scope_present":@(section!=nil),@"occurrences":@1,
             @"view_model_class":viewModel ? NSStringFromClass([viewModel class]) : @"absent",

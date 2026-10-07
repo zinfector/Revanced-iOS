@@ -1,26 +1,16 @@
 {
-  "schema": 1,
-  "release": "0.3.40",
+  "schema": 2,
+  "release": "0.3.43",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
-  "trigger": "Report 211 rejected live revision 8b6ace8495ab586b before identity or service request; watch controls reported visible but unresponsive, cause unconfirmed.",
+  "trigger": "USB report 20261007-074152: zero accepted bindings; detailed Library roots are native BrowseEndpoints; shared feed quota omitted the ordinary Home primary command.",
   "selection": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "adapters": [
     {
-      "id": "live_video_lockup_v1",
+      "id": "live_primary_watch_v2",
       "basename": "video_lockup_with_attachment.eml",
       "variant": "fe",
-      "identity_path": [
-        232954548,
-        18,
-        4,
-        169495254,
-        462702848,
-        1,
-        48687757,
-        1
-      ],
       "title_path": [
         232954548,
         18,
@@ -48,8 +38,27 @@
         "Navigation ID valid and optional presentation ID agrees.",
         "Title singular UTF-8 content; optional tap title agrees; no command runs; unambiguous configuration.",
         "Each static image source belongs to the navigation ID; no composite/local/procedural input.",
-        "One matching already materialized headline/image owned by this factory component before enabling that role."
-      ]
+        "One matching already materialized headline/image owned by this factory component before enabling that role.",
+        "Presentation-restored complete native model equals the immutable original; exactly one matching component, even for repeated videos."
+      ],
+      "primary_command_path": [
+        232954548,
+        18,
+        4,
+        169495254
+      ],
+      "command_extensions": {
+        "watch": 48687757,
+        "cowatch": 462702848,
+        "browse": 48687626
+      },
+      "identity": "Exactly one primary command extension; direct WatchEndpoint.videoId field 1, or at most two verified CoWatch wrappers through YTICommand field 1. Store selected path and command kind; rerun resolver in native owner check. Never execute commands or search arbitrary ID-like strings.",
+      "candidate_basenames": [
+        "video_lockup_with_attachment.eml",
+        "video_card.eml",
+        "video_card_content.eml"
+      ],
+      "candidate_policy": "Candidate family is not permission. FE cards must satisfy this same complete reviewed 232954548 semantic recipe; no use of old 232903841 bundled paths solely because a basename matches."
     },
     {
       "id": "watch_metadata_v1",
@@ -102,15 +111,20 @@
     }
   },
   "capture": {
-    "schema": 3,
-    "sampling": "resource + surface + structural shape",
-    "roots": 12,
-    "bucket_slots": 3,
+    "schema": 4,
+    "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
+    "roots": 24,
+    "ordinary_slots": 2,
+    "generic_slots": 1,
     "buckets": [
-      "feed",
+      "home",
+      "library",
+      "search",
+      "subscriptions",
       "related",
       "watch_title",
-      "watch_other"
+      "watch_other",
+      "unknown"
     ],
     "directed_paths_independent_of_bfs_budget": true,
     "model_values_exported": false
@@ -156,13 +170,25 @@
     "Interactive titles need command-range remapping and remain original.",
     "Player cover is excluded; watch metadata supports titles only.",
     "Unknown watch owner or model layout remains original with directed checkpoints.",
-    "No device validation yet; watch interaction root cause remains unconfirmed."
+    "Actual Home primary command was not captured in the input report; unknown wrappers remain original and emit the failed parent fields.",
+    "Opaque serialized horizontal-shelf child layouts remain unreviewed; only independently addressed generic Element children are enabled.",
+    "User reports watch controls work. Native interaction forwarding is retained; DeArrow visible replacement is not device-verified."
   ],
   "device_capture": [
-    "Start DeArrow diagnostic capture in Settings, then close Settings.",
-    "Scroll newly configured Home cards, open a video, and scroll related rows.",
-    "Tap a description timestamp/chapter and Comments. Wait for replacement/fallback.",
-    "Copy DeArrow checkpoints; identify the first missing D stage and the W trace for each failed tap.",
-    "If taps still fail, repeat with both DeArrow title/thumbnail options disabled and a fresh app launch."
-  ]
+    "Start DeArrow capture using the saved USB collector; close Settings and keep YouTube foreground.",
+    "Scroll new Home videos, wait for titles/images, then open one video and related rows.",
+    "Fetch the compressed report; inspect Home command/failed-parent shapes, accepted bindings, native consumer confirmation, backend/fallback result and D10 visibility."
+  ],
+  "children": {
+    "path": "Reviewed generic Element.children field 3 only, field/occurrence steps for repeated siblings",
+    "limits": {
+      "profiles": 16,
+      "children_per_message": 16,
+      "depth": 16,
+      "elements": 128
+    },
+    "binding": "Per-row/controller retained group, independent component path, video, service request and generation; source changes retire all old bindings. Unique matching native component required.",
+    "projection": "Compose each accepted component projection on a copy of the original row; never mutate original section entries. Shared row refresh coalesces updates.",
+    "opaque_shelf_models": "Unsupported until reviewed native child-element contracts are captured; no arbitrary model descent."
+  }
 }

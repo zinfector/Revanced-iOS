@@ -1,8 +1,8 @@
-name: Build USB diagnostics payload with Xcode
+name: Build DeArrow semantic payload with Xcode
 
 on:
   push:
-    branches: [feature/usb-reconnect-0.3.42]
+    branches: [fix/dearrow-semantic-0.3.43]
 
 permissions:
   contents: read

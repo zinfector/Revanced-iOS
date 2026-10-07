@@ -16,6 +16,7 @@ static void RVDAUIRetireConsumers(RVDAUIBinding *binding) {
     for (RVDAUIConsumerLease *lease in binding.consumerLeases) [lease retire];
     [binding.consumerLeases removeAllObjects];binding.consumerEpoch++;
     binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;
+    binding.nativeOwnerCheckpoint=nil;
 }
 static id RVDAUIConsumerRoot(id node,RVDAUIBinding *binding) {
     id component=RVObject(RVObject(node,"nodeController"),"owningComponent");
@@ -29,24 +30,48 @@ static id RVDAUIConsumerRoot(id node,RVDAUIBinding *binding) {
 static BOOL RVDAUIConsumerOwned(id node,RVDAUIBinding *binding) {
     return binding.nativeRootComponent && RVDAUIConsumerRoot(node,binding)==binding.nativeRootComponent;
 }
+static BOOL RVDAUINativeModelMatches(RVDAUIBinding *binding,NSData *model) {
+    RVDAProjection *profile=binding.profile;
+    NSData *original=RVDAPath(profile.source,[profile.componentPath arrayByAddingObject:@5]);
+    if (!original || !model) return NO;
+    if (!profile.watchTitle) {
+        NSDictionary *identity=RVDALiveCardNavigation(model);
+        if (![identity[@"blocker"] isEqual:@"ready"] || ![identity[@"video"] isEqual:binding.video] ||
+            ![identity[@"identity_path"] isEqual:profile.identityPath] || ![identity[@"command_type"] isEqual:profile.commandType]) return NO;
+    }
+    // ID equality alone cannot distinguish two occurrences of the same video.
+    // Restore only permitted presentation inputs, then compare the complete model.
+    NSMutableArray *paths=[NSMutableArray array];
+    if (profile.titleRole) { [paths addObject:profile.titlePath];if (profile.titleEntityPath) [paths addObject:profile.titleEntityPath]; }
+    if (profile.imageRole) [paths addObject:[profile.imagePath arrayByAddingObject:@1]];
+    if (!profile.watchTitle && profile.titleRole && RVDAChild(RVDAPath(original,@[@232954548,@18]),2)) [paths addObject:@[@232954548,@18,@2]];
+    NSData *restored=model;
+    for (NSArray *path in paths) {
+        NSData *value=RVDAPath(original,path);if (value) restored=RVDASetPath(restored,path,value);
+        if (!restored) return NO;
+    }return [restored isEqual:original];
+}
 static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
     if (!root || !RVDAUICurrent(binding)) return;
     NSMutableArray *queue=[NSMutableArray arrayWithObject:root];
+    NSHashTable *matches=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
+    NSHashTable *inspected=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
+    NSMutableArray *samples=[NSMutableArray array];
     for (NSUInteger index=0;index<queue.count && index<256;index++) {
         id node=queue[index],component=RVDAUIConsumerRoot(node,binding);
-        NSData *data=RVObject(RVObject(component,"element"),"data"),*model=RVDAPath(data,@[@1,@168777401,@5]);
-        BOOL matches=NO;
-        if (binding.profile.watchTitle) {
-            NSData *original=RVDAPath(binding.profile.source,[binding.profile.componentPath arrayByAddingObject:@5]);
-            NSData *title=RVDAPath(original,binding.profile.titlePath);
-            // Even a projected watch root must retain every other native branch.
-            NSData *restored=title ? RVDASetPath(model,binding.profile.titlePath,title) : nil;
-            matches=restored && [restored isEqual:original];
-        } else matches=[RVDAText(RVDAPath(model,binding.profile.identityPath)) isEqual:binding.video];
-        if (component && matches) { binding.nativeRootComponent=component;return; }
+        if (component && ![inspected containsObject:component]) {
+            [inspected addObject:component];
+            id element=RVObject(component,"element");NSData *data=RVObject(element,"data"),*model=RVDAPath(data,@[@1,@168777401,@5]);
+            BOOL accepted=RVDAUINativeModelMatches(binding,model);if (accepted) [matches addObject:component];
+            if (RVDADiagEnabled() && samples.count<4) [samples addObject:@{@"component_class":NSStringFromClass([component class]),
+                @"element_class":element ? NSStringFromClass([element class]) : @"absent",@"data_contract":@(RVCan(element,"data",@"@@:")),
+                @"element_shape":RVDADiagShape(data),@"model_shape":RVDADiagShape(model),@"complete_model_matches":@(accepted)}];
+        }
         id children=RVObject(node,"subnodes");if ([children isKindOfClass:NSArray.class])
             for (id child in children) if (queue.count<256 && [queue indexOfObjectIdenticalTo:child]==NSNotFound) [queue addObject:child];
-    }binding.nativeRootComponent=nil;
+    }binding.nativeRootComponent=matches.count==1 ? matches.anyObject : nil;
+    binding.nativeOwnerCheckpoint=@{@"inspected_components":@(inspected.count),@"matching_components":@(matches.count),@"nodes":@(queue.count),@"candidates":samples};
+    if (matches.count>1) RVDAUIEvent(@"D04_native_component_rejected",binding,@"live_native_component_ambiguous");
 }
 static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t generation,NSUInteger attempt);
 static void RVDAUIScheduleConsumers(RVDAUIBinding *binding,NSTimeInterval delay) {
@@ -131,7 +156,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
     NSString *blocker=!owned ? @"live_native_owned_descendants_missing" :
         (binding.parts&RVDeArrowPartsTitle) && !binding.titleConsumerVerified ? (titleMatches>1 ? @"live_native_headline_ambiguous" : @"live_native_headline_unconfirmed") :
         (binding.parts&RVDeArrowPartsThumbnail) && !binding.imageConsumerVerified ? (imageMatches>1 ? @"live_native_thumbnail_ambiguous" : @"live_native_thumbnail_unconfirmed") : nil;
-    binding.consumerCheckpoint=@{@"attempt":@(attempt+1),@"nodes":@(queue.count),@"factory_root_bound":@(binding.nativeRootComponent!=nil),@"owned_nodes":@(owned),@"text_nodes":@(texts),@"image_nodes":@(images),
+    binding.consumerCheckpoint=@{@"attempt":@(attempt+1),@"nodes":@(queue.count),@"factory_root_bound":@(binding.nativeRootComponent!=nil),@"native_owner":binding.nativeOwnerCheckpoint ?: @{},@"owned_nodes":@(owned),@"text_nodes":@(texts),@"image_nodes":@(images),
         @"title_matches":@(titleMatches),@"image_matches":@(imageMatches),@"title_confirmed":@(binding.titleConsumerVerified),@"thumbnail_confirmed":@(binding.imageConsumerVerified),
         @"title_replacement_consumed":@(titleApplied==1),@"image_replacement_consumed":@(imageApplied==1),@"title_visible":@(titleVisible && titleApplied==1),@"image_visible":@(imageVisible && imageApplied==1),
         @"keyed_leases":@(binding.consumerLeases.count),@"blocker":blocker ?: @"ready"};

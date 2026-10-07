@@ -1,7 +1,7 @@
 {
-  "schema": 2,
-  "release": "0.3.40",
-  "trigger": "DeArrow Report 211",
+  "schema": 3,
+  "release": "0.3.43",
+  "trigger": "USB report 20261007-074152",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
@@ -10,17 +10,7 @@
     "native/RVDeArrowConsumers.inc",
     "native/RVDeArrowLiveCapture.inc"
   ],
-  "resource_key": "Revision diagnostic only; video_lockup_with_attachment.eml-fe family",
-  "identity_path": [
-    232954548,
-    18,
-    4,
-    169495254,
-    462702848,
-    1,
-    48687757,
-    1
-  ],
+  "resource_key": "FE candidate card families with complete reviewed semantic model, independent of revision",
   "presentation_path": [
     232954548,
     18,
@@ -42,7 +32,7 @@
     1,
     1
   ],
-  "identity_contract": "Original iOS descriptors: CoWatchWatchEndpointWrapperCommand extension 462702848, watchEndpoint command field 1; YTIWatchEndpoint extension 48687757, videoId field 1. Require one length-delimited field at each step and a valid 11-character ID. Do not borrow current playback identity.",
+  "identity_contract": "Exactly one primary command extension; direct WatchEndpoint.videoId field 1, or at most two verified CoWatch wrappers through YTICommand field 1. Store selected path and command kind; rerun resolver in native owner check. Never execute commands or search arbitrary ID-like strings.",
   "admission": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "native_consumers": {
     "strategy": "Private keyed ELMNodeController callbacks on accepted factory-owned descendants; no global ELMTextNode/ELMImageNode setElement observers.",
@@ -68,15 +58,20 @@
     }
   },
   "capture": {
-    "schema": 3,
-    "sampling": "resource + surface + structural shape",
-    "roots": 12,
-    "bucket_slots": 3,
+    "schema": 4,
+    "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
+    "roots": 24,
+    "ordinary_slots": 2,
+    "generic_slots": 1,
     "buckets": [
-      "feed",
+      "home",
+      "library",
+      "search",
+      "subscriptions",
       "related",
       "watch_title",
-      "watch_other"
+      "watch_other",
+      "unknown"
     ],
     "directed_paths_independent_of_bfs_budget": true,
     "model_values_exported": false
@@ -98,5 +93,17 @@
     "D10_live_replacement_visible"
   ],
   "remaining_scope": "New structural families need a reviewed recipe; no arbitrary protobuf search authorizes writes.; Existing legacy bundled compact/card/context recipes remain pinned.; Interactive titles need command-range remapping and remain original.; Player cover is excluded; watch metadata supports titles only.; Unknown watch owner or model layout remains original with directed checkpoints.; No device validation yet; watch interaction root cause remains unconfirmed.",
-  "replaced_by": "dearrow-adaptive-contract.json"
+  "replaced_by": "dearrow-adaptive-contract.json",
+  "primary_command_path": [
+    232954548,
+    18,
+    4,
+    169495254
+  ],
+  "command_extensions": {
+    "watch": 48687757,
+    "cowatch": 462702848,
+    "browse": 48687626
+  },
+  "native_model_ownership": "Presentation-restored complete native model equals the immutable original; exactly one matching component, even for repeated videos."
 }

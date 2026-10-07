@@ -3,6 +3,7 @@
 #include "RVDeArrowProjection.inc"
 #include "RVDeArrowOptions.inc"
 static const void *RVDAUIBindingKey=&RVDAUIBindingKey,*RVDAUIDataKey=&RVDAUIDataKey;
+static const void *RVDAUIBindingGroupKey=&RVDAUIBindingGroupKey;
 static const void *RVDAUIModelKey=&RVDAUIModelKey,*RVDAUIImageKey=&RVDAUIImageKey;
 static const void *RVDAUIAccessibilityKey=&RVDAUIAccessibilityKey;
 static NSHashTable *RVDAUIBindings;
@@ -56,6 +57,7 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) BOOL titleConsumerVerified,imageConsumerVerified;
 @property(nonatomic) NSUInteger consumerObservations;
 @property(nonatomic,strong) NSDictionary *consumerCheckpoint;
+@property(nonatomic,strong) NSDictionary *nativeOwnerCheckpoint;
 @property(nonatomic,strong) NSMutableArray<RVDAUIConsumerLease *> *consumerLeases;
 @property(nonatomic) BOOL consumerQueued,consumerCallbackPending;
 @property(nonatomic) NSUInteger consumerPasses;
@@ -65,6 +67,10 @@ static NSDictionary *RVDAWatchReport(void);
 @implementation RVDAUIBinding
 - (void)dealloc { [_request cancel];[_fallbackTransfer cancel];for (RVDAUIConsumerLease *lease in _consumerLeases) [lease retire]; }
 @end
+static NSArray<RVDAUIBinding *> *RVDAUIRowBindings(RVDAUIBinding *binding) {
+    id group=objc_getAssociatedObject(binding.controller,RVDAUIBindingGroupKey);
+    return [group isKindOfClass:NSArray.class] && [group containsObject:binding] ? group : binding ? @[binding] : @[];
+}
 @interface RVDAUIImageLease : NSObject
 @property(nonatomic,weak) RVDAUIBinding *binding;
 @end
@@ -124,7 +130,8 @@ static NSString *RVDAUICurrentBlocker(RVDAUIBinding *binding) {
     if (!NSThread.isMainThread) return @"ownership_check_off_main";
     if (binding.settingsRevision!=RVDAUISettingsRevision) return @"settings_revision_changed";
     if (!binding.controller) return @"controller_released";
-    if (objc_getAssociatedObject(binding.controller,RVDAUIBindingKey)!=binding) return @"binding_replaced";
+    if (objc_getAssociatedObject(binding.controller,RVDAUIBindingKey)!=binding &&
+        ![objc_getAssociatedObject(binding.controller,RVDAUIBindingGroupKey) containsObject:binding]) return @"binding_replaced";
     id section=binding.section;
     if (!section) return @"section_released";
     if (binding.index<0 || !RVCan(section,"cellControllerAtIndex:",@"@@:q")) return @"controller_lookup_contract_missing";
@@ -182,6 +189,8 @@ static BOOL RVDAUIFrameFallback(RVDAUIBinding *binding) {
     return NO;
 }
 static void RVDAUIRefresh(RVDAUIBinding *binding) {
+    RVDAUIBinding *row=objc_getAssociatedObject(binding.controller,RVDAUIBindingKey);
+    if (row && row!=binding && [RVDAUIRowBindings(row) containsObject:binding]) { RVDAUIRefresh(row);return; }
     if (!NSThread.isMainThread || binding.refreshQueued) return;binding.refreshQueued=YES;
     __weak RVDAUIBinding *weak=binding;uint64_t generation=binding.generation;
     dispatch_async(dispatch_get_main_queue(),^{
@@ -296,11 +305,16 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
     if (prior && sameSource && prior.originalEntry==entry && prior.section==section && prior.index==index) {
         RVDADiagCount(@"binding_reused");
         NSString *surface=RVDAUIOwnerSurface(controller,prior.modern ? prior.profile.watchTitle : [prior.surface isEqual:@"player"],NULL);
-        BOOL changed=![surface isEqual:prior.surface];if (changed) prior.surface=surface;
-        if (changed || prior.settingsRevision!=RVDAUISettingsRevision) RVDAUIRequest(prior);return prior;
+        for (RVDAUIBinding *current in RVDAUIRowBindings(prior)) {
+            BOOL changed=![surface isEqual:current.surface];if (changed) current.surface=surface;
+            if (changed || current.settingsRevision!=RVDAUISettingsRevision) RVDAUIRequest(current);
+        }return prior;
     }
-    [prior.request cancel];RVDAUIRetireConsumers(prior);
+    for (RVDAUIBinding *current in RVDAUIRowBindings(prior)) { [current.request cancel];[current.fallbackTransfer cancel];RVDAUIRetireConsumers(current); }
+    objc_setAssociatedObject(controller,RVDAUIBindingKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(controller,RVDAUIBindingGroupKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     RVDAUIBinding *state=[RVDAUIBinding new];state.controller=controller;state.section=section;state.index=index;state.originalEntry=entry;
+    NSArray<RVDAProjection *> *profiles=nil;
     state.route=NSStringFromClass([entry class]);state.surface=RVDAUIOwnerSurface(controller,NO,NULL);
     if (RVDADiagEnabled()) state.ownerSummary=@{@"controller":NSStringFromClass([controller class]),@"section":NSStringFromClass([section class]),@"chain":RVDADiagOwners(controller)};
     id element=RVAdRootElement(entry);NSString *watchVideo=nil;
@@ -317,7 +331,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
             NSString *captureSurface=RVDALiveWatchFamily(resource) ? RVDAUIOwnerSurface(controller,YES,NULL) : state.surface;
             RVDALiveCaptureRoot(data,NSStringFromClass([controller class]),captureSurface,watchVideo);
         }
-        state.profile=RVDAProfile(data,watchVideo);state.modern=YES;
+        profiles=RVDAProfiles(data,watchVideo);state.profile=profiles.firstObject;state.modern=YES;
         if (!state.profile) {
             BOOL shared=RVDAPath(data,@[@1,@484616221])!=nil;
             return RVDAUIReject(state,@"D04_role_bound",shared ? @"shared_component_input_unavailable" : RVDAProfileFailure(data));
@@ -325,12 +339,6 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         state.video=state.profile.video;state.route=state.profile.route;
         state.originalTitle=state.profile.originalTitle;state.untranslatedTitle=state.profile.untranslatedTitle;
         state.originalImageURL=state.profile.originalImageURL;state.duration=state.profile.duration;
-        if (state.profile.liveCard) RVDADiagRecord(@"D04_live_card_input_verified",state,nil,
-            @{@"identity_path":state.profile.identityPath ?: @[],@"presentation_path":state.profile.videoDataPath ?: @[],
-              @"title_hash":RVDADiagHash([state.originalTitle dataUsingEncoding:NSUTF8StringEncoding]),
-              @"thumbnail_identity_matches":@(state.profile.imageRole),@"native_consumer_confirmation_pending":@YES,
-              @"adapter":state.profile.adapterID ?: @"unknown",@"structural_fingerprint":state.profile.structuralFingerprint ?: @"unknown",
-              @"title_input_valid":@(state.profile.titleRole),@"image_input_valid":@(state.profile.imageRole)});
         state.surface=RVDAUIOwnerSurface(controller,state.profile.watchTitle,&watchVideo);
         state.titleBlocker=state.profile.titleRole ? @"awaiting_metadata" : state.profile.blocker ?: @"title_role_unknown";
         state.imageBlocker=state.profile.imageRole ? @"awaiting_metadata" : state.profile.blocker ?: @"image_role_unknown";
@@ -370,16 +378,35 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
     if (!RVVideoIDValid(state.video)) return RVDAUIReject(state,@"D03_video_bound",@"video_id_missing_or_invalid");
     if (!state.surface) return RVDAUIReject(state,@"D02_owner_bound",@"owner_surface_unknown");
     objc_setAssociatedObject(controller,RVDAUIBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [RVDAUIBindings addObject:state];RVDAUIEvent(@"D02_owner_bound",state,nil);RVDAUIEvent(@"D03_video_bound",state,nil);
-    RVDADiagCount([NSString stringWithFormat:@"accepted.surface.%@",state.surface]);
-    RVDAUIEvent(@"D04_role_bound",state,state.profile.blocker);RVDAUIRequest(state);return state;
+    NSMutableArray *group=[NSMutableArray arrayWithObject:state];
+    for (NSUInteger i=1;i<profiles.count;i++) {
+        RVDAProjection *profile=profiles[i];RVDAUIBinding *child=[RVDAUIBinding new];
+        child.controller=controller;child.section=section;child.index=index;child.originalEntry=entry;
+        child.modern=YES;child.profile=profile;child.video=profile.video;child.route=profile.route;child.surface=state.surface;
+        child.ownerSummary=state.ownerSummary;child.originalTitle=profile.originalTitle;child.untranslatedTitle=profile.untranslatedTitle;
+        child.originalImageURL=profile.originalImageURL;child.duration=profile.duration;[group addObject:child];
+    }
+    objc_setAssociatedObject(controller,RVDAUIBindingGroupKey,group.copy,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    for (RVDAUIBinding *current in group) {
+        if (current.profile.liveCard) RVDADiagRecord(@"D04_live_card_input_verified",current,nil,
+            @{@"identity_path":current.profile.identityPath ?: @[],@"command_type":current.profile.commandType ?: @"explicit_watch_owner",@"component_path":current.profile.componentPath ?: @[],
+              @"adapter":current.profile.adapterID,@"title_input_valid":@(current.profile.titleRole),@"image_input_valid":@(current.profile.imageRole),@"native_consumer_confirmation_pending":@YES});
+        [RVDAUIBindings addObject:current];RVDAUIEvent(@"D02_owner_bound",current,nil);RVDAUIEvent(@"D03_video_bound",current,nil);
+        RVDADiagCount([NSString stringWithFormat:@"accepted.surface.%@",current.surface]);
+        RVDAUIEvent(@"D04_role_bound",current,current.profile.blocker);RVDAUIRequest(current);
+    }return state;
 }
 static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
-    if (!state || state.settingsRevision!=RVDAUISettingsRevision || RVDAUIOriginal(state)) return state.originalEntry;
+    if (!state || state.settingsRevision!=RVDAUISettingsRevision) return state.originalEntry;
     NSString *title=RVDAUITitle(state);NSData *image=RVDAUIImage(state) ? state.imageBytes : nil;
     if (state.modern) {
-        NSInteger lines=(state.parts&RVDeArrowPartsTitle) && !state.profile.watchTitle && !state.profile.liveCard ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
-        NSData *next=RVDAProject(state.profile,title,image,RVDAUIFrameFallback(state),lines);
+        NSData *next=state.profile.source;
+        for (RVDAUIBinding *current in RVDAUIRowBindings(state)) {
+            if (!RVDAUICurrent(current) || RVDAUIOriginal(current)) continue;
+            NSString *headline=RVDAUITitle(current);NSData *bytes=RVDAUIImage(current) ? current.imageBytes : nil;
+            NSInteger lines=(current.parts&RVDeArrowPartsTitle) && !current.profile.watchTitle && !current.profile.liveCard ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
+            next=RVDAProjectOnSource(current.profile,next,headline,bytes,RVDAUIFrameFallback(current),lines) ?: next;
+        }
         if (!next || [next isEqual:state.profile.source]) {
             if (title || image || RVDAUIFrameFallback(state)) RVDAUIEvent(@"D09_projection_blocked",state,@"projection_made_no_change");
             else RVDADiagCount(@"presentation_waiting_for_replacement");return state.originalEntry;
@@ -394,6 +421,7 @@ static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
         }
         RVDAUIEvent(@"presentation_model_projected",state,nil);return result;
     }
+    if (RVDAUIOriginal(state)) return state.originalEntry;
     BOOL fallback=RVDAUIFrameFallback(state);
     BOOL lines=(state.parts&RVDeArrowPartsTitle) && ![state.surface isEqual:@"player"];
     if (!title && !fallback && !lines && !RVDAUIImage(state)) return state.originalEntry;
@@ -470,9 +498,10 @@ static NSDictionary *RVDAUIReport(void) {
             @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
-            @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],
+            @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],@"command_type":state.profile.commandType ?: @"explicit_or_legacy",@"component_path":state.profile.componentPath ?: @[],@"row_bindings":@(RVDAUIRowBindings(state).count),
             @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
             @"consumer_observations":@(state.consumerObservations),@"consumer_checkpoint":state.consumerCheckpoint ?: @{},
+            @"native_owner_checkpoint":state.nativeOwnerCheckpoint ?: @{},
             @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"adapter":state.profile.adapterID ?: @"legacy_pinned",
             @"structural_fingerprint":state.profile.structuralFingerprint ?: @"not_applicable",@"watch_title_contract":@(state.profile.watchTitle),
             @"title_input_blocker":state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.profile.imageRoleBlocker ?: @"not_applicable",
@@ -606,14 +635,14 @@ static void RVInstallDeArrowUI(void) {
             id next=state ? RVDAUIProjectedEntry(state) : entry;
             id (^native)(void)=((id(*)(id,SEL,id,id,id,id,id))original)(cls,sel,next,responder,observable,registry,provider);
             if (!state || (!state.profile.liveCard && next==entry) || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
-            __weak RVDAUIBinding *weak=state;uint64_t generation=state.generation;
+            NSHashTable *weakStates=[NSHashTable weakObjectsHashTable];NSMutableDictionary *generations=[NSMutableDictionary dictionary];
+            for (RVDAUIBinding *current in RVDAUIRowBindings(state)) { [weakStates addObject:current];generations[[NSValue valueWithNonretainedObject:current]]=@(current.generation); }
             // Native block descriptor: @8@?0. Native construction may run off
             // main; ownership diagnostics return to main after it completes.
             return [^id(void) {
                 id node=native();__weak id weakNode=node;
                 dispatch_async(dispatch_get_main_queue(),^{
-                    RVDAUIBinding *current=weak;
-                    if (current && weakNode && current.generation==generation && RVDAUICurrent(current)) {
+                    for (RVDAUIBinding *current in weakStates.allObjects) if (weakNode && current.generation==[generations[[NSValue valueWithNonretainedObject:current]] unsignedLongLongValue] && RVDAUICurrent(current)) {
                         current.materializations++;
                         if (current.profile.liveCard && current.parts && !RVDAUIOriginal(current)) {
                             RVDAUIRetireConsumers(current);current.nativeFactoryRoot=weakNode;

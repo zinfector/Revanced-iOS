@@ -5,20 +5,36 @@
 static NSData *RVDAChild(NSData *data,uint32_t number) {
     return RVVoteOne(RVVoteFields(data),number,2).value;
 }
-static NSData *RVDAPath(NSData *data,NSArray<NSNumber *> *path) {
-    for (NSNumber *number in path) { data=RVDAChild(data,number.unsignedIntValue);if (!data) return nil; }return data;
+static NSData *RVDAPathChild(NSData *data,id step) {
+    if ([step isKindOfClass:NSNumber.class]) return RVDAChild(data,[step unsignedIntValue]);
+    if (![step isKindOfClass:NSDictionary.class]) return nil;
+    NSUInteger wanted=[step[@"occurrence"] unsignedIntegerValue],index=0;uint32_t number=[step[@"field"] unsignedIntValue];
+    if (!number || wanted>=16) return nil;
+    for (RVVoteField *field in RVVoteFields(data)) if (field.number==number) {
+        if (field.wire!=2) return nil;if (index++==wanted) return field.value;
+    }return nil;
+}
+static NSData *RVDAPath(NSData *data,NSArray *path) {
+    for (id step in path) { data=RVDAPathChild(data,step);if (!data) return nil; }return data;
 }
 static NSData *RVDASet(NSData *data,uint32_t number,NSData *value) {
     if (!data || !value) return nil;
     NSArray *fields=RVVoteFields(data);if (!fields || !RVVoteSingularFields(fields,@[@(number)])) return nil;
     return RVVoteReplace(fields,@{@(number):RVVoteMessageField(number,value)},nil);
 }
-static NSData *RVDASetPath(NSData *data,NSArray<NSNumber *> *path,NSData *value) {
+static NSData *RVDASetPath(NSData *data,NSArray *path,NSData *value) {
     if (!data || !value) return nil;
     if (!path.count) return value;
-    uint32_t number=[path[0] unsignedIntValue];NSData *child=RVDAChild(data,number);if (!child) return nil;
+    id step=path[0];NSData *child=RVDAPathChild(data,step);if (!child) return nil;
     NSData *next=RVDASetPath(child,[path subarrayWithRange:NSMakeRange(1,path.count-1)],value);
-    return next ? RVDASet(data,number,next) : nil;
+    if (!next) return nil;
+    if ([step isKindOfClass:NSNumber.class]) return RVDASet(data,[step unsignedIntValue],next);
+    uint32_t number=[step[@"field"] unsignedIntValue];NSUInteger wanted=[step[@"occurrence"] unsignedIntegerValue],index=0;
+    NSArray *fields=RVVoteFields(data);if (!fields) return nil;NSMutableData *result=[NSMutableData data];BOOL replaced=NO;
+    for (RVVoteField *field in fields) {
+        if (field.number==number && index++==wanted) { [result appendData:RVVoteMessageField(number,next)];replaced=YES; }
+        else [result appendData:field.raw];
+    }return replaced ? result : nil;
 }
 static NSString *RVDAText(NSData *data) {
     return data.length<=4096 ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
@@ -108,6 +124,7 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @property(nonatomic) BOOL watchTitle,titleRole,imageRole;
 @property(nonatomic) BOOL contextSlots;
 @property(nonatomic) BOOL liveCard;
+@property(nonatomic,copy) NSString *commandType;
 @property(nonatomic,copy) NSString *adapterID,*structuralFingerprint,*titleRoleBlocker,*imageRoleBlocker;
 @property(nonatomic,strong) NSArray<NSNumber *> *titlePath,*imagePath,*titleEntityPath;
 @property(nonatomic,copy) NSArray<NSString *> *imageURLs;
@@ -139,13 +156,19 @@ static BOOL RVDAResourceFamily(NSString *raw,NSString *basename,NSString *varian
     return [parts[@"basename"] isEqual:basename] && [parts[@"variant"] isEqual:variant];
 }
 static BOOL RVDALiveCardFamily(NSString *raw) { return RVDAResourceFamily(raw,@"video_lockup_with_attachment.eml",@"fe"); }
+static BOOL RVDALiveCardCandidate(NSString *raw) {
+    if (RVDALiveCardFamily(raw)) return YES;
+    NSDictionary *parts=RVDAResourceParts(raw);
+    return [parts[@"variant"] isEqual:@"fe"] &&
+        [@[@"video_lockup_with_attachment.eml",@"video_card.eml",@"video_card_content.eml"] containsObject:parts[@"basename"] ?: @""];
+}
 static BOOL RVDALiveWatchFamily(NSString *raw) {
     NSDictionary *parts=RVDAResourceParts(raw);
     return [@[@"video_metadata.eml",@"video_metadata_inner.eml"] containsObject:parts[@"basename"] ?: @""];
 }
 static NSString *RVDAResourceProfileStatus(NSString *raw) {
     NSDictionary *parts=RVDAResourceParts(raw);if (!parts) return @"template_uri_grammar_rejected";
-    if (RVDALiveCardFamily(raw) || RVDALiveWatchFamily(raw)) return @"structural_model_validation_required";
+    if (RVDALiveCardCandidate(raw) || RVDALiveWatchFamily(raw)) return @"structural_model_validation_required";
     NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
         @"video_with_context_slots.eml-js|7f46bdff852ff164"];
     if ([pinned containsObject:parts[@"key"]]) return @"pinned_uri_model_validation_required";
@@ -159,7 +182,7 @@ static NSString *RVDAProfileFailure(NSData *data) {
     NSData *component=RVDAPath(data,@[@1,@168777401]);
     if (!component) return @"serialized_component_root_unresolved";
     NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
-    if (RVDALiveCardFamily(raw)) return RVDALiveCardFailure(RVDAChild(component,5));
+    if (RVDALiveCardCandidate(raw)) return RVDALiveCardFailure(RVDAChild(component,5));
     if (RVDALiveWatchFamily(raw)) return RVDALiveWatchFailure(RVDAChild(component,5));
     NSString *status=RVDAResourceProfileStatus(raw);
     return [status isEqual:@"pinned_uri_model_validation_required"] ? @"video_model_path_unresolved" : status;
@@ -205,13 +228,13 @@ static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
     }return result;
 }
 #include "RVDeArrowLiveCard.inc"
-static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArray<RVDAProjection *> *found,
+static void RVDADiscover(NSData *element,NSArray *path,NSMutableArray<RVDAProjection *> *found,
                        NSUInteger depth,NSUInteger *budget,NSString *watchVideo) {
-    if (depth>16 || !*budget || found.count>1) return;(*budget)--;
+    if (depth>16 || !*budget || found.count>16) return;(*budget)--;
     NSArray *fields=RVVoteFields(element);if (!fields) return;
     NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *name=RVDATemplate(component);
-    if (RVDALiveCardFamily(name) || RVDALiveWatchFamily(name)) {
-        RVDAProjection *profile=RVDALiveCardFamily(name) ? RVDALiveCardProfile(RVDAChild(component,5),name) : RVDALiveWatchProfile(RVDAChild(component,5),name,watchVideo);
+    if (RVDALiveCardCandidate(name) || RVDALiveWatchFamily(name)) {
+        RVDAProjection *profile=RVDALiveCardCandidate(name) ? RVDALiveCardProfile(RVDAChild(component,5),name) : RVDALiveWatchProfile(RVDAChild(component,5),name,watchVideo);
         if (profile) { profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile]; }
         return;
     }
@@ -249,20 +272,28 @@ static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArra
         }
         [found addObject:profile];return;
     }
-    for (RVVoteField *field in fields) if (field.number==3 && field.wire==2) {
-        // A numeric path cannot distinguish repeated siblings. Requiring a single
-        // child prevents replacing an unrelated video in a shelf/multi-video root.
-        NSUInteger children=0;for (RVVoteField *candidate in fields) children+=candidate.number==3;
-        if (children==1) RVDADiscover(field.value,[path arrayByAddingObject:@3],found,depth+1,budget,watchVideo);
+    NSUInteger children=0,occurrence=0;for (RVVoteField *field in fields) if (field.number==3) children++;
+    if (children>16) { *budget=0;return; }
+    for (RVVoteField *field in fields) if (field.number==3) {
+        if (field.wire!=2) { *budget=0;return; }
+        id step=children==1 ? (id)@3 : @{@"field":@3,@"occurrence":@(occurrence)};occurrence++;
+        // Only the reviewed generic Element.children field is traversed. Opaque
+        // serialized shelf-model fields do not authorize a descendant rewrite.
+        RVDADiscover(field.value,[path arrayByAddingObject:step],found,depth+1,budget,watchVideo);
     }
 }
-static RVDAProjection *RVDAProfile(NSData *data,NSString *watchVideo) {
-    NSMutableArray *found=[NSMutableArray array];NSUInteger budget=64;
+static NSArray<RVDAProjection *> *RVDAProfiles(NSData *data,NSString *watchVideo) {
+    NSMutableArray *found=[NSMutableArray array];NSUInteger budget=128;
     RVDADiscover(data,@[],found,0,&budget,watchVideo);
-    if (found.count!=1) return nil;RVDAProjection *profile=found[0];profile.source=data;return profile;
+    if (!budget || found.count>16) return @[];
+    if (found.count>1) for (RVDAProjection *profile in found) if (!profile.liveCard || profile.watchTitle) return @[];
+    for (RVDAProjection *profile in found) profile.source=data;return found.copy;
 }
-static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
-    NSData *component=RVDAPath(profile.source,profile.componentPath),*model=RVDAChild(component,5),*next=model;
+static RVDAProjection *RVDAProfile(NSData *data,NSString *watchVideo) {
+    NSArray *found=RVDAProfiles(data,watchVideo);return found.count==1 ? found[0] : nil;
+}
+static NSData *RVDAProjectOnSource(RVDAProjection *profile,NSData *source,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
+    NSData *component=RVDAPath(source,profile.componentPath),*model=RVDAChild(component,5),*next=model;
     if (profile.watchTitle && title && profile.titleRole) {
         NSArray *path=profile.titlePath ?: @[@377581260,@6,@1019,@1];NSData *original=RVDAPath(model,path);
         next=RVDASetPath(model,path,RVDAAttributed(original,title)) ?: model;
@@ -301,9 +332,9 @@ static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image
         if (!profile.watchTitle && title && RVDAChild(RVDAPath(model,@[@232954548,@18]),2)) [paths addObject:@[@232954548,@18,@2]];
         NSData *restored=next;
         for (NSArray *path in paths) { NSData *original=RVDAPath(model,path);if (original) restored=RVDASetPath(restored,path,original); }
-        if (![restored isEqual:model]) return profile.source;
+        if (![restored isEqual:model]) return source;
     }
-    if ([next isEqual:model]) return profile.source;
+    if ([next isEqual:model]) return source;
     NSData *projected=RVDASet(component,5,next);
-    return projected ? RVDASetPath(profile.source,profile.componentPath,projected) ?: profile.source : profile.source;
+    return projected ? RVDASetPath(source,profile.componentPath,projected) ?: source : source;
 }

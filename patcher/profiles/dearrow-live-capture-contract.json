@@ -1,7 +1,7 @@
 {
-  "schema": 3,
-  "release": "0.3.40",
-  "trigger": "DeArrow Report 246: native -fe keys rejected; ordinary extension 232954548 yields no old-path VideoData candidate",
+  "schema": 4,
+  "release": "0.3.43",
+  "trigger": "USB report 20261007-074152; reserve Home ordinary evidence instead of sharing Library feed slots",
   "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
   "tests_run": false,
@@ -25,7 +25,7 @@
     "live_fe_policy": "Do not query global legacy serialized-config provider for FE keys; record native_consumers_required and inspect the owned materialized inputs."
   },
   "bounds": {
-    "owned_roots": 12,
+    "owned_roots": 24,
     "model_bytes": 2097152,
     "fields_per_message": 4096,
     "displayed_fields_per_message": 32,
@@ -35,7 +35,9 @@
     "configuration_bytes_per_resource": 196608,
     "configuration_bytes_per_capture": 786432,
     "native_observed_resource_keys": 64,
-    "slots_per_surface_bucket": 3
+    "slots_per_surface_bucket": 3,
+    "ordinary_slots_per_surface": 2,
+    "generic_slots_per_surface": 1
   },
   "ownership": "Capture only main-thread matched controller entries with section/index scope, ordinary YTVideoElementCellController or explicit watch metadata owner, and a checked negative ad-presence flag",
   "model_inventory": "Breadth-first structural paths include field and occurrence index. Store field/wire/count/length, first failed candidate step and salted candidate-ID hashes. No model base64, titles, personal IDs or thumbnail URLs.",
@@ -75,12 +77,16 @@
   "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not",
   "live_card_contract": "dearrow-live-card-contract.json",
   "adaptive_contract": "dearrow-adaptive-contract.json",
-  "sampling": "resource + surface + structural shape",
+  "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
   "capture_buckets": [
-    "feed",
+    "home",
+    "library",
+    "search",
+    "subscriptions",
     "related",
     "watch_title",
-    "watch_other"
+    "watch_other",
+    "unknown"
   ],
   "watch_trace": {
     "activation": "Explicit Start DeArrow diagnostic capture only",
@@ -100,5 +106,6 @@
       "SponsorBlock host"
     ],
     "opaque_command_payloads_exported": false
-  }
+  },
+  "directed_navigation": "Selected semantic identity path and command type/extension; direct/watch/cowatch/browse presence, failed step and failed parent field/wire/count/length summary. Values are salted hashes, never raw IDs, titles or URLs."
 }

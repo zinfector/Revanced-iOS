@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.42'
+VERSION = '0.3.43'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'usb-diagnostics',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-semantic',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Diagnostics-only USB reconnect: no session expiry, persistent trusted PCs in iPhone keychain and Windows DPAPI, opt-in foreground listener resumes after background or relaunch, UDID-pinned collector rediscovers cable connections and retries reports, continuous recording with directed failure summaries. Existing DeArrow adapters retained; no UI automation. Apple production build; no tests; reconnect confirmation pending. Prior USB delivery and watch controls confirmed by user.'}
-    (ROOT/'build/package-manifest-0.3.42.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'DeArrow semantic primary-command repair: support verified direct WatchEndpoint and CoWatch wrappers; classify browse and unknown unions; rerun semantic identity and complete presentation-restored model equality for native ownership. FE video_card/content candidates require the same reviewed semantic model, never a bundled-layout alias. Independent generic Element child occurrences, bindings and copied projections; unique native component required, row refresh coalesced. Separate Home/Library/Search/Subscriptions/Related/Watch sampling with reserved ordinary slots, failed-parent command shapes and directed USB summaries. Existing watch controls, saved USB reconnect and random-frame pipeline retained. Opaque shelf layouts and actual Home wrapper still need device evidence. Apple production build; no tests; DeArrow device confirmation pending.'}
+    (ROOT/'build/package-manifest-0.3.43.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

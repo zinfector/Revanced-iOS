@@ -5,7 +5,7 @@ static NSMutableDictionary *RVDALiveRoots,*RVDALiveConfigurations;
 static NSMutableSet *RVDALiveObservedKeys,*RVDALiveRootResources;
 static uint64_t RVDALiveEpoch=1;
 static NSUInteger RVDALiveExportedBytes;
-enum { RVDALiveRootLimit=12,RVDALiveModelLimit=2*1024*1024,
+enum { RVDALiveRootLimit=24,RVDALiveModelLimit=2*1024*1024,
        RVDALiveConfigLimit=192*1024,RVDALiveSessionLimit=768*1024 };
 
 @interface RVDALiveSpan : NSObject
@@ -80,7 +80,10 @@ static NSDictionary *RVDALivePathProbe(NSData *model,NSArray<NSNumber *> *path) 
 }
 static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     // These semantic paths bypass both the 96-node queue and depth-6 limit.
-    NSDictionary *paths=@{@"navigation_video_id":RVDALiveCardIdentityPath(),@"presentation":@[@232954548,@18,@1],
+    NSDictionary *contract=RVDALiveCardContract(model);
+    NSDictionary *paths=@{@"navigation_video_id":contract[@"identity_path"] ?: RVDALiveCardCommandPath(),
+        @"direct_watch_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@48687757,@1]],
+        @"cowatch_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@462702848,@1,@48687757,@1]],@"presentation":@[@232954548,@18,@1],
         @"attributed_title":@[@232954548,@18,@1,@21,@8178,@1],@"title_content":@[@232954548,@18,@1,@21,@8178,@1,@1],
         @"tap_video_title":@[@232954548,@18,@4,@169495254,@462702848,@4],
         @"thumbnail":@[@232954548,@18,@1,@1],@"image_sources":@[@232954548,@18,@1,@1,@1],
@@ -91,14 +94,22 @@ static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
         NSData *value=RVDACheckedPath(model,path,&failure,&failed);NSString *text=RVDAText(value);
         NSMutableDictionary *probe=[@{@"role":role,@"path":path,@"status":failure ?: @"path_resolved",
             @"byte_length":@(value.length),@"utf8_valid":@(text!=nil),@"shape":RVDALiveShape(value)} mutableCopy];
-        if (failure) { probe[@"failed_step"]=@(failed);probe[@"failed_field"]=path[failed]; }
+        if (failure) { probe[@"failed_step"]=@(failed);probe[@"failed_field"]=path[failed];
+            probe[@"failed_parent_shape"]=RVDALiveShape(RVDAPath(model,[path subarrayWithRange:NSMakeRange(0,failed)])); }
         if ([role isEqual:@"navigation_video_id"]) { probe[@"video_id_valid"]=@(RVVideoIDValid(text));probe[@"video_hash"]=RVDADiagVideo(text); }
         if ([role isEqual:@"title_content"] || [role isEqual:@"tap_video_title"]) probe[@"text_hash"]=RVDADiagHash(value);
         if ([role isEqual:@"duration_text"]) probe[@"duration_valid"]=@(RVDADurationText(text)>0);
         [probes addObject:probe.copy];
     }
-    NSDictionary *contract=RVDALiveCardContract(model);
-    return @{@"schema":@1,@"probes":probes,@"blocker":contract[@"blocker"] ?: @"unresolved",
+    NSArray *identityPath=contract[@"identity_path"] ?: @[];
+    NSUInteger failedStep=MIN([contract[@"failed_step"] unsignedIntegerValue],identityPath.count);
+    NSData *command=RVDAPath(model,RVDALiveCardCommandPath());
+    return @{@"schema":@2,@"probes":probes,@"blocker":contract[@"blocker"] ?: @"unresolved",
+        @"command_type":contract[@"command_type"] ?: @"unresolved",@"command_extension":contract[@"command_extension"] ?: @0,
+        @"identity_path":identityPath,@"failed_step":contract[@"failed_step"] ?: @(-1),
+        @"failed_parent_shape":contract[@"failed_step"] ? RVDALiveShape(RVDAPath(model,[identityPath subarrayWithRange:NSMakeRange(0,failedStep)])) : @{},
+        @"primary_command_shape":RVDALiveShape(command),@"direct_watch_present":@(RVDAChild(command,48687757)!=nil),
+        @"cowatch_present":@(RVDAChild(command,462702848)!=nil),@"browse_present":@(RVDAChild(command,48687626)!=nil),
         @"video_id_valid":@(RVVideoIDValid(contract[@"video"])),@"video_hash":RVDADiagVideo(contract[@"video"]),
         @"title_input_valid":contract[@"title_role"] ?: @NO,@"thumbnail_identity_matches":contract[@"image_role"] ?: @NO,
         @"title_blocker":contract[@"title_blocker"] ?: @"identity_unresolved",@"image_blocker":contract[@"image_blocker"] ?: @"identity_unresolved",
@@ -234,9 +245,10 @@ static NSString *RVDALiveSampleShape(NSData *model,NSString *key) {
             [fields addObject:@{@"field":field[@"field"],@"wires":field[@"wires"],@"occurrences":field[@"occurrences"]}];
         [shape addObject:@{@"path":path,@"fields":fields}];
     }
-    if (RVDALiveCardFamily(key)) {
+    if (RVDALiveCardCandidate(key)) {
         NSDictionary *contract=RVDALiveCardContract(model);
-        [shape addObject:@{@"semantic_status":contract[@"blocker"] ?: @"unresolved",@"title_role":contract[@"title_role"] ?: @NO,@"image_role":contract[@"image_role"] ?: @NO}];
+        [shape addObject:@{@"semantic_status":contract[@"blocker"] ?: @"unresolved",@"command_type":contract[@"command_type"] ?: @"unresolved",@"command_extension":contract[@"command_extension"] ?: @0,
+            @"failed_step":contract[@"failed_step"] ?: @(-1),@"title_role":contract[@"title_role"] ?: @NO,@"image_role":contract[@"image_role"] ?: @NO}];
     }
     return [RVDALiveDigest([NSJSONSerialization dataWithJSONObject:shape options:NSJSONWritingSortedKeys error:nil]) substringToIndex:24];
 }
@@ -244,11 +256,13 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     if (!RVDAUIDiagnosticsArmed || !NSThread.isMainThread || ![data isKindOfClass:NSData.class] || data.length>RVDALiveModelLimit) return;
     NSData *component=RVDAPath(data,@[@1,@168777401]);NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
     NSString *key=RVDALiveKey(raw);if (!key) return;
-    BOOL card=RVDALiveCardFamily(key),watch=RVDALiveWatchFamily(key);
+    BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key);
     if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"]) return;
-    NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" : [surface isEqual:@"related"] ? @"related" : @"feed";
+    BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo);
+    NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" :
+        [@[@"home",@"library",@"search",@"subscriptions",@"related"] containsObject:surface ?: @""] ? surface : @"unknown";
     NSData *model=RVDAChild(component,5);NSString *fingerprint=RVDALiveSampleShape(model,key);
-    NSString *sample=[NSString stringWithFormat:@"%@/%@/%@",key,surface ?: @"unknown",fingerprint];
+    NSString *sample=[NSString stringWithFormat:@"%@/%@/%@/%@",key,surface ?: @"unknown",ordinary ? @"ordinary" : @"generic",fingerprint];
     @synchronized(RVDAUIBinding.class) {
         if (!RVDALiveRoots) RVDALiveRoots=[NSMutableDictionary dictionary];
         if (!RVDALiveRootResources) RVDALiveRootResources=[NSMutableSet set];
@@ -256,8 +270,11 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
         if (prior) {
             NSMutableDictionary *next=[prior mutableCopy];next[@"occurrences"]=@([prior[@"occurrences"] unsignedIntegerValue]+1);RVDALiveRoots[sample]=next.copy;
         } else {
-            NSUInteger count=0;for (NSDictionary *record in RVDALiveRoots.allValues) count+=[record[@"capture_bucket"] isEqual:bucket];
-            if (RVDALiveRoots.count>=RVDALiveRootLimit || count>=3) return;
+            NSUInteger count=0;for (NSDictionary *record in RVDALiveRoots.allValues)
+                count+=[record[@"capture_bucket"] isEqual:bucket] && [record[@"ordinary_priority"] boolValue]==ordinary;
+            // Two ordinary-video slots and one generic slot are reserved for
+            // each surface. Library browse rows cannot consume Home's evidence.
+            if (RVDALiveRoots.count>=RVDALiveRootLimit || count>=(ordinary ? 2u : 1u)) { RVDADiagCount([@"capture.quota_rejected." stringByAppendingString:bucket]);return; }
             NSArray<RVDALiveSpan *> *fields=RVDALiveFields(model,NULL);
             NSMutableArray *paths=[@[@[@232971250,@25,@1],@[@232903841,@1,@1],RVDALiveWatchTitlePath()] mutableCopy];
             if (fields.count==1 && fields[0].wire==2) [paths addObject:@[@(fields[0].field),@1,@1]];
@@ -265,12 +282,12 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
             NSMutableArray *nodes=[NSMutableArray array];NSUInteger budget=96,bytes=4*1024*1024;
             RVDALiveModelWalk(model,@[],0,&budget,&bytes,nodes);
             RVDALiveRoots[sample]=@{@"resource_key":key,@"resource_parts":RVDAResourceParts(raw),@"controller_class":controller,
-                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
+                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"ordinary_priority":@(ordinary),@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
                 @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
-                @"sample_policy":@"resource + surface + structural shape; 3 slots per feed/related/watch-title/watch-other bucket"};
+                @"sample_policy":@"resource + surface + semantic command/failure + shape; 2 ordinary and 1 generic slot per surface"};
             [RVDALiveRootResources addObject:key];
         }
     }
@@ -284,7 +301,7 @@ static void RVDALiveReset(void) {
 }
 static NSDictionary *RVDALiveReport(void) {
     @synchronized(RVDAUIBinding.class) {
-        return @{@"schema":@3,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
+        return @{@"schema":@4,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
             @"configuration_bytes_exported":@(RVDALiveExportedBytes),@"root_limit":@(RVDALiveRootLimit),
             @"model_byte_limit":@(RVDALiveModelLimit),@"configuration_byte_limit":@(RVDALiveConfigLimit),@"session_byte_limit":@(RVDALiveSessionLimit),
             @"model_values_exported":@NO,@"automatic_role_authorization":@NO};
