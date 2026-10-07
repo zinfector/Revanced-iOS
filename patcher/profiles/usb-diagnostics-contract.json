@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "release": "0.3.41",
-  "status": "implemented_device_confirmation_pending",
+  "release": "0.3.42",
+  "status": "implemented_reconnect_device_confirmation_pending",
   "tests_run": false,
   "native_source": "native/RVUSBDiagnostics.inc",
   "collector": "usb_diagnostics.py",
@@ -18,15 +18,15 @@
     "frames": "4-byte big-endian JSON byte length followed by UTF-8 JSON; one request/response per USB connection",
     "protocol_reference": "https://github.com/doronz88/pymobiledevice3/blob/master/pymobiledevice3/usbmux.py"
   },
-  "activation": "Explicit Settings > ReVanced > USB diagnostics > Enable session; no socket or endpoint at launch.",
+  "activation": "Explicit first opt-in; enabled preference persists. Foreground listener automatically resumes after background or relaunch, until manually disabled.",
   "authentication": {
     "code": "8 random UUID hexadecimal characters shown only in app UI",
-    "token": "32 random UUID hexadecimal characters returned only after pairing",
+    "token": "Independent 32-hex credential per saved PC, issued on one-time pairing",
     "pairing_attempt_limit": 8,
-    "expiry_seconds": 1800,
-    "stop_on": "Background, manual disable, process termination or expiry",
-    "persisted_in_app": false,
-    "pc_storage": "Windows current-user DPAPI protected token; no token in reports or stdout"
+    "expiry_seconds": null,
+    "stop_on": "Background pauses listener; disable stops automatic resumption; forget saved computers revokes all tokens.",
+    "persisted_in_app": "Private keychain item, WhenUnlockedThisDeviceOnly; default signer access group; maximum 8 computers.",
+    "pc_storage": "Windows current-user DPAPI plus per-iPhone UDID/client identity. No credentials in reports/stdout/argv."
   },
   "operations": {
     "status": "Bridge status without traversing UI",
@@ -42,10 +42,10 @@
     "socket_timeout_seconds": 10,
     "main_queue_wait_seconds": 5,
     "pending_main_jobs": 1,
-    "record_seconds_max": 1800,
-    "poll_interval_seconds_min": 1
+    "poll_interval_seconds_min": 1,
+    "recording": "Default continuous until Ctrl+C; optional finite positive duration."
   },
-  "lifecycle": "Private socket queues; snapshot work only on main with generation/foreground check. Shutdown interrupts owned clients. Expired generation cannot operate a later session. A timed-out pending main job is cancelled and remains the sole queued job until main resumes.",
+  "lifecycle": "Foreground opt-in listener, no session expiry, saved credentials independent of listener generation. Background shutdown interrupts workers; foreground retries listener binding and re-arms owned capture without clearing evidence. Revoked tokens rechecked on main before snapshots or commands. Collector pins UDID, rediscovers USB IDs, retries availability/report failures indefinitely. Socket/main-queue fault bounds retained to keep the app responsive. Ambiguous capture-start/probe delivery is not replayed automatically.",
   "reports": "Compressed complete JSON transport envelope plus compact checkpoint summary saved outside IPA output. Exclusive filenames prevent replacement of older reports.",
-  "completion": "Apple compilation and production packaging; wired discovery permitted, no regression/static-hook/GUI/archive tests or UI automation. End-to-end bridge requires installation of the new IPA and explicit session activation."
+  "completion": "Prior 0.3.41 USB report confirmed delivery. Latest report: 179 rejected bindings, 116 live_card_identity_field_absent, no service jobs. User reports watch controls work. Apple compilation and production packaging; no tests. 0.3.42 persistent pairing/reconnect needs upgraded IPA, one-time pair and device confirmation."
 }

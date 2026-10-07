@@ -207,12 +207,15 @@ static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigati
 }
 - (void)usbDiagnostics {
     RVUSBDiagnostics *bridge=RVUSBDiagnostics.shared;BOOL enabled=[bridge.status[@"enabled"] boolValue];
-    NSString *text=enabled ? [NSString stringWithFormat:@"Session code: %@\n\nEnter this code in YouTube-USB-Diagnostics on your PC. Keep YouTube in the foreground while collecting reports. This session expires in 30 minutes or when the app goes into the background.",bridge.accessCode]
-        : @"Connect your iPhone to your PC by USB. Enable this session, then open YouTube-USB-Diagnostics on the PC to collect reports directly. Playback and account controls are not exposed.";
+    NSString *text=enabled ? [NSString stringWithFormat:@"Pairing code: %@\n\nSaved computers: %lu\n%@\n\nEnter the code once on a new PC. Saved PCs reconnect without a code. No session expiry. Collection pauses in the background and resumes when YouTube returns to the foreground, including after relaunch.",bridge.accessCode,(unsigned long)bridge.savedComputers.count,[bridge.savedComputers componentsJoinedByString:@", "]]
+        : @"Connect your iPhone to your PC by USB. Enable diagnostics, then open YouTube-USB-Diagnostics on the PC. Pair once; saved computers reconnect automatically. Playback and account controls are not exposed.";
     UIAlertController *alert=[UIAlertController alertControllerWithTitle:@"USB diagnostics" message:text preferredStyle:UIAlertControllerStyleAlert];
-    if (enabled) [alert addAction:[UIAlertAction actionWithTitle:@"Disable session" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [bridge stop]; }]];
-    else [alert addAction:[UIAlertAction actionWithTitle:@"Enable session" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    if (enabled) [alert addAction:[UIAlertAction actionWithTitle:@"Disable diagnostics" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [bridge stop]; }]];
+    else [alert addAction:[UIAlertAction actionWithTitle:@"Enable diagnostics" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSString *error=[bridge start];if (error) [self message:@"USB diagnostics unavailable" text:error];else [self usbDiagnostics];
+    }]];
+    if (enabled && bridge.savedComputers.count) [alert addAction:[UIAlertAction actionWithTitle:@"Forget saved computers" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        NSString *error=[bridge forgetComputers];if (error) [self message:@"USB diagnostics" text:error];else [self usbDiagnostics];
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"Done" style:UIAlertActionStyleCancel handler:nil]];[self presentPreferenceAlert:alert];
 }

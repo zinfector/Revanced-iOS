@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.41"
+#define RV_PORT_VERSION @"0.3.42"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
@@ -435,6 +435,7 @@ __attribute__((constructor)) static void RVStart(void) {
         if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
+            RVUSBResumeSavedDiagnostics();
             [[NSNotificationCenter defaultCenter] addObserver:entrance selector:@selector(attach) name:UIApplicationDidBecomeActiveNotification object:nil];
             [entrance attach];
         });

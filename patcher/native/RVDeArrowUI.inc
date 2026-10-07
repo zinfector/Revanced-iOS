@@ -510,6 +510,13 @@ static void RVDAUIStopCapture(void) {
     [RVDeArrowBackend.sharedBackend setDiagnosticsEnabled:RVDADiagEnabled()];
     // Retain the last captured evidence; normal presentation requests are untouched.
 }
+static void RVDAUIResumeCapture(void) {
+    // Foreground reconnect continues existing evidence without clearing counters,
+    // bindings, captured structures, normal requests or presentation decisions.
+    RVDAUIDiagnosticsArmed=YES;
+    [RVDeArrowBackend.sharedBackend setDiagnosticsEnabled:YES];
+    RVDAUIEvent(@"D00_capture_resumed",nil,nil);
+}
 static BOOL RVDAUIProbeCurrentService(void) {
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");
     if (!RVVideoIDValid(video) || !RVOrdinaryContent(RVCurrentPlayback) || !RVCompatible) return NO;

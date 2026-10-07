@@ -6,8 +6,43 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#import <Security/Security.h>
 
 enum { RVUSBPort=49629,RVUSBRequestLimit=8192,RVUSBResponseLimit=16*1024*1024,RVUSBClientLimit=4 };
+static NSString *const RVUSBEnabledPreference=@"rvport.usb-diagnostics.enabled";
+static NSDictionary *RVUSBPairingQuery(void) {
+    // Omit access-group: the signer supplies the app's default private group.
+    return @{(__bridge id)kSecClass:(__bridge id)kSecClassGenericPassword,
+        (__bridge id)kSecAttrService:@"RVPort USB diagnostics",(__bridge id)kSecAttrAccount:@"trusted-computers-v1"};
+}
+static NSMutableDictionary *RVUSBLoadPairings(OSStatus *status) {
+    NSMutableDictionary *query=[RVUSBPairingQuery() mutableCopy];
+    query[(__bridge id)kSecReturnData]=@YES;query[(__bridge id)kSecMatchLimit]=(__bridge id)kSecMatchLimitOne;
+    CFTypeRef result=NULL;*status=SecItemCopyMatching((__bridge CFDictionaryRef)query,&result);
+    if (*status==errSecItemNotFound) { *status=errSecSuccess;return [NSMutableDictionary dictionary]; }
+    if (*status!=errSecSuccess) return nil;
+    NSData *data=CFBridgingRelease(result);
+    id value=[data isKindOfClass:NSData.class] && data.length<16384 ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
+    id clients=[value isKindOfClass:NSDictionary.class] ? value[@"clients"] : nil;
+    if (![clients isKindOfClass:NSDictionary.class] || [clients count]>8) { *status=errSecDecode;return nil; }
+    for (id key in clients) {
+        id record=clients[key];id token=[record isKindOfClass:NSDictionary.class] ? record[@"token"] : nil;
+        id name=[record isKindOfClass:NSDictionary.class] ? record[@"name"] : nil;
+        if (![key isKindOfClass:NSString.class] || ![token isKindOfClass:NSString.class] || [token length]!=32 || ![name isKindOfClass:NSString.class]) { *status=errSecDecode;return nil; }
+    }
+    return [clients mutableCopy];
+}
+static OSStatus RVUSBSavePairings(NSDictionary *clients) {
+    if (!clients.count) { OSStatus status=SecItemDelete((__bridge CFDictionaryRef)RVUSBPairingQuery());return status==errSecItemNotFound ? errSecSuccess : status; }
+    NSData *data=[NSJSONSerialization dataWithJSONObject:@{@"schema":@1,@"clients":clients} options:0 error:nil];
+    if (!data || data.length>=16384) return errSecParam;
+    NSDictionary *attributes=@{(__bridge id)kSecValueData:data,
+        (__bridge id)kSecAttrAccessible:(__bridge id)kSecAttrAccessibleWhenUnlockedThisDeviceOnly};
+    NSMutableDictionary *item=[RVUSBPairingQuery() mutableCopy];[item addEntriesFromDictionary:attributes];
+    OSStatus status=SecItemAdd((__bridge CFDictionaryRef)item,NULL);
+    if (status==errSecDuplicateItem) status=SecItemUpdate((__bridge CFDictionaryRef)RVUSBPairingQuery(),(__bridge CFDictionaryRef)attributes);
+    return status;
+}
 static NSDictionary *RVDiagnosticsSnapshot(NSString *topic) {
     if (!NSThread.isMainThread) return nil;
     NSDictionary *data=nil;
@@ -58,19 +93,25 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
 
 @interface RVUSBDiagnostics : NSObject
 @property(nonatomic) BOOL enabled,ownsCapture,snapshotPending;
+@property(nonatomic) BOOL resumeCapture,resumeScheduled;
 @property(nonatomic) int listener;
 @property(nonatomic) uint64_t generation;
 @property(nonatomic) NSUInteger failedPairings;
-@property(nonatomic) NSTimeInterval deadline;
-@property(nonatomic,copy) NSString *accessCode,*sessionToken,*sessionID;
+@property(nonatomic,copy) NSString *accessCode,*sessionID;
+@property(nonatomic,strong) NSMutableDictionary *pairings;
+@property(nonatomic) OSStatus pairingStorageStatus;
 @property(nonatomic,strong) NSMutableSet<NSNumber *> *clients;
 @property(nonatomic,strong) dispatch_source_t source;
 @property(nonatomic,strong) dispatch_queue_t ioQueue,clientQueue;
-@property(nonatomic,strong) id backgroundObserver;
+@property(nonatomic,strong) id backgroundObserver,foregroundObserver;
 + (instancetype)shared;
 - (NSDictionary *)status;
 - (NSString *)start;
 - (void)stop;
+- (void)pause;
+- (void)resume;
+- (NSString *)forgetComputers;
+- (NSArray *)savedComputers;
 - (void)acceptFrom:(int)listener generation:(uint64_t)generation;
 - (void)serve:(int)fd generation:(uint64_t)generation;
 - (NSDictionary *)process:(NSDictionary *)request generation:(uint64_t)generation;
@@ -84,13 +125,17 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
         service.clientQueue=dispatch_queue_create("rvport.usb.clients",DISPATCH_QUEUE_CONCURRENT);
         __weak RVUSBDiagnostics *weak=service;
         service.backgroundObserver=[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
-            object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) { [weak stop]; }];
+            object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) { [weak pause]; }];
+        service.foregroundObserver=[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
+            object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) { [weak resume]; }];
     });return service;
 }
 - (NSDictionary *)status {
     @synchronized(self) {
         return @{@"schema":@1,@"enabled":@(self.enabled),@"port":@(RVUSBPort),@"transport":@"device_loopback_via_usbmux",
-            @"session":self.sessionID ?: @"inactive",@"remaining_seconds":@(self.enabled ? MAX(0,self.deadline-NSProcessInfo.processInfo.systemUptime) : 0),
+            @"session":self.sessionID ?: @"inactive",@"session_expires":@NO,
+            @"resume_enabled":@([NSUserDefaults.standardUserDefaults boolForKey:RVUSBEnabledPreference]),
+            @"saved_computers":@(self.pairings.count),@"pairing_storage_status":@(self.pairingStorageStatus),
             @"clients":@(self.clients.count),@"snapshot_pending":@(self.snapshotPending),
             @"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
             @"operations":@[@"status",@"report",@"capture-start",@"capture-stop",@"probe"]};
@@ -99,6 +144,9 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
 - (NSString *)start {
     if (!NSThread.isMainThread || !RVCompatible || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return @"Open the supported YouTube app in the foreground first.";
     if (self.enabled) return nil;
+    OSStatus storageStatus=errSecSuccess;NSMutableDictionary *pairings=RVUSBLoadPairings(&storageStatus);
+    self.pairingStorageStatus=storageStatus;
+    if (!pairings) return @"Could not read saved computers from the iPhone keychain. Unlock your iPhone and try again.";
     int fd=socket(AF_INET,SOCK_STREAM,0);if (fd<0) return @"Could not create the diagnostics socket.";
     int yes=1;setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(yes));
     struct sockaddr_in address={0};address.sin_len=sizeof(address);address.sin_family=AF_INET;
@@ -112,23 +160,57 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     @synchronized(self) {
         self.listener=fd;self.enabled=YES;generation=++self.generation;self.failedPairings=0;
         self.accessCode=[[NSUUID.UUID.UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""] substringToIndex:8];
-        self.sessionToken=[NSUUID.UUID.UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        self.sessionID=NSUUID.UUID.UUIDString;self.deadline=NSProcessInfo.processInfo.systemUptime+1800;self.source=source;
+        self.pairings=pairings;self.sessionID=NSUUID.UUID.UUIDString;self.source=source;
     }
     __weak RVUSBDiagnostics *weak=self;
     dispatch_source_set_event_handler(source,^{ [weak acceptFrom:fd generation:generation]; });
     dispatch_source_set_cancel_handler(source,^{ close(fd); });dispatch_resume(source);
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,1800*NSEC_PER_SEC),dispatch_get_main_queue(),^{
-        RVUSBDiagnostics *current=weak;if (current.generation==generation) [current stop];
-    });return nil;
+    [NSUserDefaults.standardUserDefaults setBool:YES forKey:RVUSBEnabledPreference];
+    if (self.resumeCapture) { self.resumeCapture=NO;RVDAUIResumeCapture();self.ownsCapture=YES; }
+    return nil;
 }
 - (void)stop {
     if (!NSThread.isMainThread) { __weak RVUSBDiagnostics *weak=self;dispatch_async(dispatch_get_main_queue(),^{ [weak stop]; });return; }
+    [NSUserDefaults.standardUserDefaults setBool:NO forKey:RVUSBEnabledPreference];
+    [self pause];self.resumeCapture=NO;
+}
+- (void)resume {
+    if (!NSThread.isMainThread || ![NSUserDefaults.standardUserDefaults boolForKey:RVUSBEnabledPreference] || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
+    NSString *error=[self start];
+    if (error && !self.resumeScheduled) {
+        self.resumeScheduled=YES;__weak RVUSBDiagnostics *weak=self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,2*NSEC_PER_SEC),dispatch_get_main_queue(),^{
+            weak.resumeScheduled=NO;[weak resume];
+        });
+    }
+}
+- (NSArray *)savedComputers {
+    @synchronized(self) {
+        NSMutableArray *names=[NSMutableArray array];
+        for (NSDictionary *record in self.pairings.allValues) [names addObject:record[@"name"] ?: @"Paired computer"];
+        return names.copy;
+    }
+}
+- (NSString *)forgetComputers {
+    if (!NSThread.isMainThread) return @"Open diagnostics settings to forget computers.";
+    @synchronized(self) {
+        self.pairingStorageStatus=RVUSBSavePairings(@{});
+        if (self.pairingStorageStatus!=errSecSuccess) return @"Could not remove saved computers from the keychain. Unlock the iPhone and try again.";
+        [self.pairings removeAllObjects];
+        self.failedPairings=0;
+        self.accessCode=[[NSUUID.UUID.UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""] substringToIndex:8];
+        for (NSNumber *client in self.clients) shutdown(client.intValue,SHUT_RDWR);
+    }
+    return nil;
+}
+- (void)pause {
+    if (!NSThread.isMainThread) { __weak RVUSBDiagnostics *weak=self;dispatch_async(dispatch_get_main_queue(),^{ [weak pause]; });return; }
     BOOL owned=NO;dispatch_source_t source;
     @synchronized(self) {
         if (!self.enabled) return;
-        self.enabled=NO;self.generation++;self.accessCode=nil;self.sessionToken=nil;self.deadline=0;
+        self.enabled=NO;self.generation++;self.accessCode=nil;
         source=self.source;self.source=nil;self.listener=-1;owned=self.ownsCapture;self.ownsCapture=NO;
+        self.resumeCapture=owned && RVDAUIDiagnosticsArmed;
         // Workers own close(). shutdown() interrupts their bounded read/write.
         for (NSNumber *client in self.clients) shutdown(client.intValue,SHUT_RDWR);
     }
@@ -153,22 +235,29 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
 }
 - (NSDictionary *)process:(NSDictionary *)request generation:(uint64_t)generation {
     if (![request isKindOfClass:NSDictionary.class] || ![request[@"schema"] isEqual:@1]) return RVUSBError(@"invalid_request_schema");
-    for (NSString *key in request) if (![@[@"schema",@"operation",@"credential",@"topic"] containsObject:key]) return RVUSBError(@"unsupported_request_field");
+    for (NSString *key in request) if (![@[@"schema",@"operation",@"credential",@"topic",@"client_id",@"client_name"] containsObject:key]) return RVUSBError(@"unsupported_request_field");
     NSString *operation=request[@"operation"],*credential=request[@"credential"],*topic=request[@"topic"] ?: @"dearrow";
     if (![operation isKindOfClass:NSString.class] || ![credential isKindOfClass:NSString.class] || credential.length>64 || ![topic isKindOfClass:NSString.class]) return RVUSBError(@"invalid_request_values");
-    BOOL lockout=NO;
     @synchronized(self) {
-        if (!self.enabled || self.generation!=generation || NSProcessInfo.processInfo.systemUptime>=self.deadline) return RVUSBError(@"session_expired");
-        if (self.failedPairings>=8) return RVUSBError(@"pairing_locked_enable_new_session");
+        if (!self.enabled || self.generation!=generation) return RVUSBError(@"bridge_paused");
         if ([operation isEqual:@"pair"]) {
+            if (self.failedPairings>=8) return RVUSBError(@"pairing_locked_enable_new_session");
             if (![credential.lowercaseString isEqual:self.accessCode.lowercaseString]) {
-                lockout=++self.failedPairings>=8;
-            } else return @{@"schema":@1,@"ok":@YES,@"operation":operation,@"token":self.sessionToken,@"data":[self status]};
-        } else if (![credential isEqual:self.sessionToken]) return RVUSBError(@"authentication_required");
-    }
-    if ([operation isEqual:@"pair"]) {
-        if (lockout) { __weak RVUSBDiagnostics *weak=self;dispatch_async(dispatch_get_main_queue(),^{ if (weak.generation==generation) [weak stop]; }); }
-        return RVUSBError(lockout ? @"pairing_locked_enable_new_session" : @"incorrect_session_code");
+                return RVUSBError(++self.failedPairings>=8 ? @"pairing_locked_enable_new_session" : @"incorrect_session_code");
+            }
+            NSString *client=request[@"client_id"],*name=request[@"client_name"] ?: @"Paired computer";
+            if (![client isKindOfClass:NSString.class] || client.length!=32 || ![name isKindOfClass:NSString.class] || !name.length || name.length>64) return RVUSBError(@"invalid_pairing_identity");
+            if (!self.pairings[client] && self.pairings.count>=8) return RVUSBError(@"saved_computer_limit_forget_computers");
+            NSString *token=[NSUUID.UUID.UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            NSMutableDictionary *updated=[self.pairings mutableCopy];updated[client]=@{@"token":token,@"name":name};
+            self.pairingStorageStatus=RVUSBSavePairings(updated);
+            if (self.pairingStorageStatus!=errSecSuccess) return RVUSBError(@"pairing_keychain_write_failed");
+            self.pairings=updated;self.failedPairings=0;
+            return @{@"schema":@1,@"ok":@YES,@"operation":operation,@"token":token,@"data":[self status]};
+        }
+        BOOL authenticated=NO;
+        for (NSDictionary *record in self.pairings.allValues) if ([credential isEqual:record[@"token"]]) { authenticated=YES;break; }
+        if (!authenticated) return RVUSBError(@"authentication_required");
     }
     if ([operation isEqual:@"status"]) return @{@"schema":@1,@"ok":@YES,@"operation":operation,@"data":[self status]};
     if (![@[@"report",@"capture-start",@"capture-stop",@"probe"] containsObject:operation]) return RVUSBError(@"unsupported_operation");
@@ -177,8 +266,12 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     RVUSBDiagnosticTicket *ticket=[RVUSBDiagnosticTicket new];dispatch_semaphore_t completed=dispatch_semaphore_create(0);
     dispatch_async(dispatch_get_main_queue(),^{
         @try {
-            BOOL valid;@synchronized(self) { valid=self.enabled && self.generation==generation && NSProcessInfo.processInfo.systemUptime<self.deadline; }
-            if (!valid || ticket.cancelled) ticket.result=RVUSBError(@"session_expired");
+            BOOL valid;@synchronized(self) {
+                valid=self.enabled && self.generation==generation;
+                BOOL trusted=NO;for (NSDictionary *record in self.pairings.allValues) if ([credential isEqual:record[@"token"]]) { trusted=YES;break; }
+                valid=valid && trusted;
+            }
+            if (!valid || ticket.cancelled) ticket.result=RVUSBError(@"bridge_paused");
             else if (UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) ticket.result=RVUSBError(@"app_not_foreground");
             else {
                 NSDictionary *data;
@@ -212,3 +305,8 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     @finally { @synchronized(self) { [self.clients removeObject:@(fd)];close(fd); } }
 }
 @end
+
+static void RVUSBResumeSavedDiagnostics(void) {
+    // No listener for users who never opted in, or manually disabled it.
+    if (RVCompatible && [NSUserDefaults.standardUserDefaults boolForKey:RVUSBEnabledPreference]) [RVUSBDiagnostics.shared resume];
+}

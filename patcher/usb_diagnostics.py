@@ -10,6 +10,7 @@ import gzip
 import hashlib
 import json
 import os
+import math
 from pathlib import Path
 import plistlib
 import socket
@@ -28,12 +29,20 @@ class DiagnosticError(Exception):
     pass
 
 
+class RetryableError(DiagnosticError):
+    pass
+
+
+class AuthenticationError(DiagnosticError):
+    pass
+
+
 def receive(sock, count):
     result = bytearray()
     while len(result) < count:
         chunk = sock.recv(min(count-len(result), 65536))
         if not chunk:
-            raise DiagnosticError('Connection closed. Keep YouTube foreground and enable its USB diagnostics session.')
+            raise RetryableError('Connection closed. Keep YouTube foreground with USB diagnostics enabled.')
         result.extend(chunk)
     return bytes(result)
 
@@ -47,7 +56,7 @@ def mux_socket():
         sock.connect('/var/run/usbmuxd')
         return sock
     except OSError as error:
-        raise DiagnosticError('Apple USB service is unavailable. Start Apple Mobile Device Service and connect the iPhone.') from error
+        raise RetryableError('Apple USB service is unavailable. Start Apple Mobile Device Service and connect the iPhone.') from error
 
 
 def mux_send(sock, version, kind, body=b''):
@@ -116,14 +125,33 @@ def devices():
     return list(found.values())
 
 
+def saved_devices():
+    result = []
+    for path in sorted((ROOT/'.tools/usb-diagnostics').glob('*.json')):
+        if path.stat().st_size > 16384:
+            continue
+        try:
+            value = json.loads(path.read_text(encoding='utf-8'))
+            if value.get('device_udid'):
+                result.append({'udid': value['device_udid'], 'name': value.get('device_name', 'iPhone'),
+                               'paired_utc': value.get('paired_utc'), 'path': path})
+        except (OSError, ValueError, TypeError):
+            continue
+    return result
+
+
 def choose_device(udid=None):
     available = devices()
     if udid:
         available = [item for item in available if item['serial'].replace('-', '').lower() == udid.replace('-', '').lower()]
     if not available:
-        raise DiagnosticError('No matching wired iPhone. Connect, unlock and trust this PC.')
+        raise RetryableError('No matching wired iPhone. Connect, unlock and trust this PC.')
     if len(available) != 1:
-        raise DiagnosticError('Multiple wired devices. Select one using --udid from the devices command.')
+        known = {item['udid'] for item in saved_devices()}
+        remembered = [item for item in available if item['serial'] in known]
+        if len(remembered) == 1:
+            return remembered[0]
+        raise DiagnosticError('Multiple wired devices. Select one using --udid from the devices or saved command.')
     return available[0]
 
 
@@ -135,12 +163,12 @@ def connect(device, port):
             response = mux_plist(sock, 'Connect', DeviceID=device['id'], PortNumber=encoded_port)
             code = response.get('Number', -1) if response else -1
             if not response or response.get('MessageType') != 'Result' or code:
-                raise DiagnosticError('Open YouTube and enable Settings > ReVanced > USB diagnostics. USB connection error: '+str(code))
+                raise RetryableError('Waiting for YouTube in the foreground with USB diagnostics enabled. USB connection error: '+str(code))
         else:
             mux_send(sock, 0, 2, struct.pack('<IHH', device['id'], encoded_port, 0))
             version, kind, tag, body = mux_read(sock)
             if version != 0 or kind != 1 or tag != 1 or len(body) != 4 or struct.unpack('<I', body)[0]:
-                raise DiagnosticError('Open YouTube and enable Settings > ReVanced > USB diagnostics.')
+                raise RetryableError('Waiting for YouTube in the foreground with USB diagnostics enabled.')
         sock.settimeout(15)
         return sock
     except BaseException:
@@ -148,8 +176,8 @@ def connect(device, port):
         raise
 
 
-def request(device, port, operation, credential, topic='dearrow'):
-    encoded = json.dumps({'schema': 1, 'operation': operation, 'credential': credential, 'topic': topic},
+def request(device, port, operation, credential, topic='dearrow', **fields):
+    encoded = json.dumps({'schema': 1, 'operation': operation, 'credential': credential, 'topic': topic, **fields},
                          separators=(',', ':')).encode()
     with connect(device, port) as sock:
         sock.sendall(struct.pack('!I', len(encoded))+encoded)
@@ -161,8 +189,11 @@ def request(device, port, operation, credential, topic='dearrow'):
         raise DiagnosticError('Unsupported app diagnostic protocol.')
     if response.get('ok') is not True:
         reason = str(response.get('error', 'unknown_error'))
-        hint = ' Enable a new session and run pair again.' if reason in ('authentication_required', 'session_expired') else ''
-        raise DiagnosticError(reason+hint)
+        if reason == 'authentication_required':
+            raise AuthenticationError('This PC pairing is missing or was revoked. Pair once with the code shown in YouTube.')
+        if reason in ('session_expired', 'bridge_paused', 'app_not_foreground', 'main_queue_snapshot_pending', 'main_queue_snapshot_timeout'):
+            raise RetryableError(reason)
+        raise DiagnosticError(reason)
     return response
 
 
@@ -187,10 +218,10 @@ def dpapi(value, decrypt=False):
         function = crypt.CryptProtectData
         function.argtypes = [ctypes.POINTER(Blob), ctypes.c_wchar_p, ctypes.POINTER(Blob),
                              ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob)]
-        args = (ctypes.byref(source), 'RVPort USB diagnostic session', None, None, None, 1, ctypes.byref(output))
+        args = (ctypes.byref(source), 'RVPort USB diagnostic pairing', None, None, None, 1, ctypes.byref(output))
     function.restype = wintypes.BOOL
     if not function(*args):
-        raise DiagnosticError('Windows could not protect/read the local session credential.')
+        raise DiagnosticError('Windows could not protect/read the saved pairing credential.')
     try:
         return ctypes.string_at(output.data, output.size)
     finally:
@@ -202,25 +233,34 @@ def credential_path(device):
     return ROOT/'.tools/usb-diagnostics'/name
 
 
-def save_credential(device, token):
+def save_credential(device, token, client_id):
     path = credential_path(device)
     path.parent.mkdir(parents=True, exist_ok=True)
     secret = token.encode('ascii')
     mode = 'windows-dpapi' if os.name == 'nt' else 'owner-only'
     if os.name == 'nt':
         secret = dpapi(secret)
-    # Session token is never printed, placed in a report or sent in argv.
-    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
-        json.dump({'schema': 1, 'protection': mode, 'credential': base64.b64encode(secret).decode('ascii')}, stream)
-    if os.name != 'nt':
-        path.chmod(0o600)
+    # Long-lived pairing credential is never printed, reported or sent in argv.
+    temporary = path.with_suffix('.'+uuid.uuid4().hex+'.tmp')
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
+            json.dump({'schema': 2, 'protection': mode, 'credential': base64.b64encode(secret).decode('ascii'),
+                       'device_udid': device['serial'], 'device_name': 'iPhone', 'client_id': client_id,
+                       'paired_utc': datetime.now(timezone.utc).isoformat()}, stream)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        if os.name != 'nt':
+            path.chmod(0o600)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def load_credential(device):
     path = credential_path(device)
     if not path.is_file():
-        raise DiagnosticError('No PC session. Enable USB diagnostics on the phone, then run pair.')
+        raise AuthenticationError('No saved pairing for this iPhone. Enable USB diagnostics on the phone, then run pair once.')
     if path.stat().st_size > 16384:
         raise DiagnosticError('Invalid stored diagnostic credential.')
     value = json.loads(path.read_text(encoding='utf-8'))
@@ -228,24 +268,90 @@ def load_credential(device):
     if value['protection'] == 'windows-dpapi' and os.name == 'nt':
         secret = dpapi(secret, decrypt=True)
     elif value['protection'] != 'owner-only' or os.name == 'nt':
-        raise DiagnosticError('Stored session belongs to another platform; pair again.')
+        raise DiagnosticError('Stored pairing belongs to another platform; pair again.')
     token = secret.decode('ascii')
     if len(token) != 32 or any(character not in '0123456789abcdefABCDEF' for character in token):
-        raise DiagnosticError('Invalid session token; pair again.')
+        raise DiagnosticError('Invalid pairing credential; pair again.')
     return token
 
 
 def pair(device, port, code=None):
     code = (code or getpass.getpass('Session code shown in YouTube: ')).strip()
     if len(code) != 8 or any(character not in '0123456789abcdefABCDEF' for character in code):
-        raise DiagnosticError('The session code must contain eight hexadecimal characters.')
-    response = request(device, port, 'pair', code)
+        raise DiagnosticError('The pairing code must contain eight hexadecimal characters.')
+    path = credential_path(device)
+    previous = json.loads(path.read_text(encoding='utf-8')) if path.is_file() and path.stat().st_size < 16384 else {}
+    client_id = previous.get('client_id')
+    if not isinstance(client_id, str) or len(client_id) != 32 or any(c not in '0123456789abcdef' for c in client_id):
+        client_id = uuid.uuid4().hex
+    response = request(device, port, 'pair', code, client_id=client_id, client_name=socket.gethostname()[:64] or 'Windows PC')
     token = response.get('token')
     if not isinstance(token, str) or len(token) != 32:
-        raise DiagnosticError('The app did not provide a valid session credential.')
-    save_credential(device, token)
-    print('Connected. Keep YouTube foreground; session expires after 30 minutes or backgrounding.')
+        raise DiagnosticError('The app did not provide a valid pairing credential.')
+    save_credential(device, token, client_id)
+    print('Paired and saved. No session expiry. This PC reconnects without a code; keep YouTube foreground to collect.')
     return token
+
+
+class DiagnosticConnection:
+    """Pin a saved iPhone by UDID and rediscover its changing USB device ID."""
+    def __init__(self, args):
+        self.port = args.port
+        self.udid = args.udid
+        known = saved_devices()
+        if not self.udid and len(known) == 1:
+            self.udid = known[0]['udid']
+        self.token = None
+        self.waiting = False
+
+    def wait_device(self):
+        while True:
+            try:
+                device = choose_device(self.udid)
+                self.udid = device['serial']
+                return device
+            except (RetryableError, OSError) as error:
+                self.retry(error)
+
+    def retry(self, error):
+        if not self.waiting:
+            print('Disconnected or app unavailable. Reconnecting automatically; Ctrl+C cancels. '+str(error), file=sys.stderr)
+            self.waiting = True
+        time.sleep(2)
+
+    def call(self, operation, topic='dearrow'):
+        while True:
+            device = self.wait_device()
+            if self.token is None:
+                self.token = load_credential(device)
+            try:
+                # Confirm the app is accepting this pairing before commands.
+                request(device, self.port, 'status', self.token)
+            except (RetryableError, OSError) as error:
+                self.retry(error)
+                continue
+            if self.waiting:
+                print('Reconnected to saved iPhone.')
+                self.waiting = False
+            try:
+                return request(device, self.port, operation, self.token, topic)
+            except (RetryableError, OSError) as error:
+                if operation in ('capture-start', 'probe'):
+                    # A lost response may mean the command already ran. Do not
+                    # reset capture evidence or repeat a probe automatically.
+                    raise DiagnosticError('Command delivery was interrupted; its result is unknown. Connection will resume on the next command. Fetch a report before repeating it.') from error
+                self.retry(error)
+
+
+def record_reports(connection, args, topic='dearrow', duration=0, interval=5):
+    deadline = time.monotonic()+duration if duration else None
+    print('Recording until Ctrl+C.' if deadline is None else 'Recording for '+str(duration)+' seconds.')
+    while True:
+        save_report(connection.call('report', topic), args.reports, args.uncompressed)
+        remaining = deadline-time.monotonic() if deadline is not None else None
+        if remaining is not None and remaining <= 0:
+            return
+        time.sleep(interval if remaining is None else min(interval, remaining))
 
 
 def summarize(response):
@@ -262,11 +368,20 @@ def summarize(response):
             'refresh_requests', 'native_materializations', 'last_checkpoint', 'last_blocker', 'consumer_checkpoint')
     for item in dearrow.get('bindings', [])[:32]:
         bindings.append({key: item[key] for key in keys if key in item})
+    directed = []
+    for item in dearrow.get('live_contract_capture', {}).get('roots', [])[:12]:
+        contract = item.get('directed_card_contract', {})
+        directed.append({'resource': item.get('resource_key'), 'surface': item.get('surface'),
+                         'blocker': contract.get('blocker'), 'video_id_valid': contract.get('video_id_valid'),
+                         'thumbnail_identity_matches': contract.get('thumbnail_identity_matches'),
+                         'failed_probes': [{key: probe.get(key) for key in ('role', 'status', 'path', 'failed_field', 'failed_step')}
+                                           for probe in contract.get('probes', []) if probe.get('status') != 'path_resolved']})
     return {'schema': 1, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
             'build_source_sha256': root.get('build_source_sha256'), 'bridge': response.get('bridge', {}),
             'dearrow': {'capture_armed': dearrow.get('capture_armed'), 'counts': dearrow.get('counts', {}),
                        'backend_counts': dearrow.get('backend', {}).get('counts', {}),
-                       'attempt_blockers': dict(failures), 'bindings': bindings, 'service_probe': dearrow.get('service_probe', {})},
+                       'attempt_blockers': dict(failures), 'bindings': bindings, 'directed_contracts': directed,
+                       'service_probe': dearrow.get('service_probe', {})},
             'watch': {'counts': watch.get('counts', {}), 'last_stages': watch.get('last_stages', {}),
                       'hooks': watch.get('hooks', []), 'active_watch': watch.get('active_watch')},
             'note': 'Full evidence retained separately. A bridge response or successful probe does not prove visible replacement or successful taps.'}
@@ -292,15 +407,15 @@ def save_report(response, folder, uncompressed=False):
 
 
 def interactive(args):
-    print('Enable Settings > ReVanced > USB diagnostics on the wired iPhone.')
-    device = choose_device(args.udid)
+    print('Enable Settings > ReVanced > USB diagnostics on the wired iPhone. Saved devices reconnect without a code.')
+    connection = DiagnosticConnection(args)
     try:
-        token = load_credential(device)
-        request(device, args.port, 'status', token)
-        print('Using the current USB session.')
-    except DiagnosticError:
-        token = pair(device, args.port)
-    menu = '\n1 Start DeArrow capture\n2 Fetch DeArrow report\n3 Fetch full report\n4 Fetch watch tap trace\n5 Show bridge status\n6 Stop capture\n7 Probe current video service\n0 Exit\n'
+        connection.call('status')
+        print('Using the saved PC pairing.')
+    except AuthenticationError:
+        device = connection.wait_device()
+        connection.token = pair(device, args.port)
+    menu = '\n1 Start DeArrow capture\n2 Fetch DeArrow report\n3 Fetch full report\n4 Fetch watch tap trace\n5 Show bridge status\n6 Stop capture\n7 Probe current video service\n8 Continuous recording (Ctrl+C returns to menu)\n9 List saved devices\n0 Exit\n'
     while True:
         print(menu)
         choice = input('Choose: ').strip()
@@ -309,10 +424,17 @@ def interactive(args):
         try:
             if choice in ('2', '3', '4'):
                 topic = {'2': 'dearrow', '3': 'all', '4': 'watch'}[choice]
-                save_report(request(device, args.port, 'report', token, topic), args.reports, args.uncompressed)
+                save_report(connection.call('report', topic), args.reports, args.uncompressed)
             elif choice in ('1', '5', '6', '7'):
                 operation = {'1': 'capture-start', '5': 'status', '6': 'capture-stop', '7': 'probe'}[choice]
-                print(json.dumps(request(device, args.port, operation, token)['data'], indent=2))
+                print(json.dumps(connection.call(operation)['data'], indent=2))
+            elif choice == '8':
+                try:
+                    record_reports(connection, args)
+                except KeyboardInterrupt:
+                    print('\nRecording stopped. Reports retained.')
+            elif choice == '9':
+                print(json.dumps([{key: value for key, value in item.items() if key != 'path'} for item in saved_devices()], indent=2))
             else:
                 print('Choose one of the listed diagnostics commands.')
         except DiagnosticError as error:
@@ -327,7 +449,8 @@ def main():
     parser.add_argument('--uncompressed', action='store_true', help='Save full JSON instead of gzip JSON.')
     commands = parser.add_subparsers(dest='command')
     commands.add_parser('devices', help='List wired devices through Apple USB service.')
-    pairing = commands.add_parser('pair', help='Enter the short session code displayed in YouTube.')
+    commands.add_parser('saved', help='List remembered iPhones without printing pairing credentials.')
+    pairing = commands.add_parser('pair', help='Pair a new PC once using the code displayed in YouTube.')
     pairing.add_argument('--code-file', type=Path, help='Read the eight-character code from a local file instead of prompting.')
     for command in ('status', 'start', 'stop', 'probe'):
         commands.add_parser(command)
@@ -335,7 +458,7 @@ def main():
     fetch.add_argument('--topic', choices=TOPICS, default='dearrow')
     record = commands.add_parser('record', help='Poll and save diagnostics while you reproduce the issue.')
     record.add_argument('--topic', choices=TOPICS, default='dearrow')
-    record.add_argument('--duration', type=float, default=60)
+    record.add_argument('--duration', type=float, default=0, help='Seconds to record; 0 means until Ctrl+C (default).')
     record.add_argument('--interval', type=float, default=5)
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
@@ -347,29 +470,25 @@ def main():
         if args.command == 'devices':
             print(json.dumps([{'udid': item['serial'], 'connection': 'USB', 'protocol': item['protocol']} for item in devices()], indent=2))
             return 0
-        device = choose_device(args.udid)
+        if args.command == 'saved':
+            print(json.dumps([{key: value for key, value in item.items() if key != 'path'} for item in saved_devices()], indent=2))
+            return 0
+        connection = DiagnosticConnection(args)
         if args.command == 'pair':
             if args.code_file and args.code_file.stat().st_size > 256:
                 raise DiagnosticError('Session-code file is too large.')
             code = args.code_file.read_text(encoding='utf-8-sig') if args.code_file else None
-            pair(device, args.port, code)
+            pair(connection.wait_device(), args.port, code)
             return 0
-        token = load_credential(device)
         if args.command == 'fetch':
-            save_report(request(device, args.port, 'report', token, args.topic), args.reports, args.uncompressed)
+            save_report(connection.call('report', args.topic), args.reports, args.uncompressed)
         elif args.command == 'record':
-            if not 1 <= args.duration <= 1800 or not 1 <= args.interval <= 60:
-                raise DiagnosticError('Duration must be 1..1800 seconds and interval 1..60 seconds.')
-            deadline = time.monotonic()+args.duration
-            while True:
-                save_report(request(device, args.port, 'report', token, args.topic), args.reports, args.uncompressed)
-                remaining = deadline-time.monotonic()
-                if remaining <= 0:
-                    break
-                time.sleep(min(args.interval, remaining))
+            if not math.isfinite(args.duration) or args.duration < 0 or not math.isfinite(args.interval) or not 1 <= args.interval <= 60:
+                raise DiagnosticError('Duration must be 0 (continuous) or positive seconds; interval must be 1..60 seconds.')
+            record_reports(connection, args, args.topic, args.duration, args.interval)
         else:
             operation = {'status': 'status', 'start': 'capture-start', 'stop': 'capture-stop', 'probe': 'probe'}[args.command]
-            print(json.dumps(request(device, args.port, operation, token)['data'], indent=2))
+            print(json.dumps(connection.call(operation)['data'], indent=2))
         return 0
     except (KeyboardInterrupt, EOFError):
         print('\nCollector stopped. Existing reports retained.')

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.41'
+VERSION = '0.3.42'
 
 
 def digest(path):
@@ -45,6 +45,7 @@ def main():
         'standalone_archive_test_run': False, 'device_playback_verified': False,
         'device_dearrow_verified': False, 'signing_required': True,
         'wired_device_discovery_verified': True, 'device_bridge_verified': False,
+        'prior_0_3_41_usb_report_delivery_verified': True, 'persistent_reconnect_device_verified': False,
         'scope': package['scope'], 'native_build': native,
         'ci': {'run_id': run['id'], 'url': run['html_url'],
                'conclusion': run['conclusion'],
@@ -53,7 +54,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'packages': package['packages'], 'artifacts': artifacts,
-        'interaction_issue': 'Passive trace implemented; visible-but-unresponsive watch control cause remains unconfirmed pending a new device capture.'}
+        'interaction_issue': 'User reports watch-page controls now work. Latest 0.3.41 USB report has no active watch page/tap events; no causal claim or playback changes in this diagnostics release.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

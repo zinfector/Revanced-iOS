@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.41'
+VERSION = '0.3.42'
 
 
 def digest(path):
@@ -54,8 +54,8 @@ def main():
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Foreground opt-in device-loopback diagnostic bridge via USB multiplexer, session-code authentication, reports and DeArrow capture/probe controls, Windows standalone collector with DPAPI-protected token and compressed full evidence plus checkpoint summaries. No UI automation. Existing presentation adapters retained. Apple production build; no tests; device bridge confirmation pending.'}
-    (ROOT/'build/package-manifest-0.3.41.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Diagnostics-only USB reconnect: no session expiry, persistent trusted PCs in iPhone keychain and Windows DPAPI, opt-in foreground listener resumes after background or relaunch, UDID-pinned collector rediscovers cable connections and retries reports, continuous recording with directed failure summaries. Existing DeArrow adapters retained; no UI automation. Apple production build; no tests; reconnect confirmation pending. Prior USB delivery and watch controls confirmed by user.'}
+    (ROOT/'build/package-manifest-0.3.42.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

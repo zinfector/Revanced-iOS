@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.41**, `YouTube-21.39.4-RVPort-0.3.41-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.42**, `YouTube-21.39.4-RVPort-0.3.42-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -8,36 +8,37 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.41. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.42. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
-DeArrow 0.3.41 validates live video-card and watch-metadata structure independently of server template revisions. Titles and thumbnails have separate ownership checks, native load/layout callbacks are scoped to accepted cards, and unrelated command branches must remain unchanged. Directed checkpoints include random-frame fallback and a separate watch tap trace. Device confirmation remains pending. [Adapter contract](patcher/profiles/dearrow-adaptive-contract.json).
+DeArrow 0.3.42 validates live video-card and watch-metadata structure independently of server template revisions. Titles and thumbnails have separate ownership checks, native load/layout callbacks are scoped to accepted cards, and unrelated command branches must remain unchanged. Directed checkpoints include random-frame fallback and a separate watch tap trace. Device confirmation remains pending. [Adapter contract](patcher/profiles/dearrow-adaptive-contract.json).
 
 ## USB diagnostics
 
 1. Install the current IPA and connect your iPhone to Windows by USB. Unlock it and trust the PC if prompted.
-2. Open **Settings → ReVanced → USB diagnostics → Enable session** in YouTube. Note the eight-character session code.
-3. Run `patcher/dist/YouTube-USB-Diagnostics.exe` on the PC and enter that code. Close the settings alert and reproduce the issue while keeping YouTube foreground.
+2. Open **Settings → ReVanced → USB diagnostics → Enable diagnostics** in YouTube. Note the eight-character pairing code for the first connection on a new PC.
+3. Run `patcher/dist/YouTube-USB-Diagnostics.exe` on the PC and enter that code once. Saved pairings survive cable reconnects, foreground transitions and app relaunches. Close the settings alert and reproduce the issue while keeping YouTube foreground.
 4. Use the collector to start DeArrow capture, fetch reports, inspect watch checkpoints, or probe the current video's branding service. Full reports are saved as compressed JSON with small checkpoint summaries in `ReVanced/Reports`.
 
-The bridge starts only when enabled in the app, listens on the device loopback interface, and expires after 30 minutes or when YouTube backgrounds. Credentials are scoped to that session and protected using the Windows user account. Only diagnostics commands are exposed.
+The bridge listens on device loopback and has no session expiry. After the initial opt-in it resumes automatically whenever YouTube is foreground, including after relaunch. Saved computer credentials use the iPhone keychain and Windows current-user DPAPI. Backgrounding pauses collection without removing pairings. Disable diagnostics to stop automatic resumption; use **Forget saved computers** to revoke all saved pairings. The collector pins the saved iPhone's UDID, rediscovers USB device IDs after reconnects, and retries report collection until the connection returns or you press Ctrl+C. It never automatically repeats an ambiguously delivered capture reset or probe. Only diagnostics commands are exposed.
 
 For direct collection from the workspace:
 
 ```powershell
 python ReVanced/patcher/usb_diagnostics.py devices
 python ReVanced/patcher/usb_diagnostics.py pair
+python ReVanced/patcher/usb_diagnostics.py saved
 python ReVanced/patcher/usb_diagnostics.py start
 python ReVanced/patcher/usb_diagnostics.py fetch --topic dearrow
-python ReVanced/patcher/usb_diagnostics.py record --topic dearrow --duration 60 --interval 5
+python ReVanced/patcher/usb_diagnostics.py record --topic dearrow --interval 5
 python ReVanced/patcher/usb_diagnostics.py fetch --topic watch
 python ReVanced/patcher/usb_diagnostics.py stop
 ```
 
-The collector uses the installed Apple Mobile Device USB service directly and needs no extra Python packages, WebDriverAgent or developer tunnel. A new IPA installation and an enabled session are required before the collector can fetch app reports. USB report delivery remains pending device confirmation.
+The collector uses the installed Apple Mobile Device USB service directly and needs no extra Python packages, WebDriverAgent or developer tunnel. Version 0.3.41 USB report delivery was confirmed by the user's device report. Version 0.3.42 saved pairing and reconnection behavior awaits device confirmation. Pair once after this upgrade because the earlier app used temporary session credentials. Keep the same signing identity and installed app data to preserve pairings across later IPA upgrades. Continuous recording runs until Ctrl+C; `--duration` remains available for a bounded capture.
 
 ## Porting progress
 
-Status reflects the merged 0.3.41 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.42 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.
