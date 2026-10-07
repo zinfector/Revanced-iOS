@@ -119,17 +119,56 @@ static BOOL RVDAUIComponentMatches(RVDAUIBinding *binding,id component) {
     return binding.factoryProvenanceVerified && expected && expected==RVDAUIElementIdentity(RVObject(component,"element")) &&
         [RVDAResourceName(RVObject(component,"templateURI")) isEqual:binding.profile.route];
 }
-static id RVDAUIConsumerRoot(id node,RVDAUIBinding *binding) {
-    id component=RVObject(RVObject(node,"nodeController"),"owningComponent");
+// Controller.parent and owningComponent are independent native edges. A
+// primitive controller can have no direct owningComponent and still belong to
+// the proven row through its structural parent. Never force lazy node creation.
+static id RVDAUIResolveConsumerRoot(id object,RVDAUIBinding *binding,NSDictionary **details) {
+    Class componentClass=NSClassFromString(@"ELMComponent"),controllerClass=NSClassFromString(@"ASNodeController"),nodeClass=NSClassFromString(@"ASDisplayNode");
+    id start=nodeClass && [object isKindOfClass:nodeClass] ? RVObject(object,"nodeController") : object;
+    BOOL typed=start && ((componentClass && [start isKindOfClass:componentClass]) || (controllerClass && [start isKindOfClass:controllerClass]));
+    NSMutableArray *queue=[NSMutableArray array],*paths=details ? [NSMutableArray array] : nil;
     NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
-    for (NSUInteger depth=0;component && depth<24;depth++) {
-        if ([seen containsObject:component]) return nil;[seen addObject:component];
-        if (RVDAUIComponentMatches(binding,component)) return component;
-        component=RVObject(component,"parent") ?: RVObject(component,"owningComponent");
-    }return nil;
+    NSHashTable *matches=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
+    BOOL foreign=NO,truncated=NO;NSUInteger duplicates=0;NSArray *resolvedPath=nil;
+    if (typed) { [queue addObject:@{@"object":start,@"depth":@0}];[seen addObject:start];if (paths) [paths addObject:@[NSStringFromClass([start class])]]; }
+    NSArray *siblings=RVDAUIRowBindings(binding);
+    for (NSUInteger index=0;index<queue.count;index++) {
+        id current=queue[index][@"object"];NSUInteger depth=[queue[index][@"depth"] unsignedIntegerValue];
+        BOOL component=componentClass && [current isKindOfClass:componentClass];
+        if (component && RVDAUIComponentMatches(binding,current)) {
+            [matches addObject:current];if (!resolvedPath && paths) resolvedPath=paths[index];
+            // This is the exact occurrence boundary, not a route-name guess.
+            continue;
+        }
+        BOOL other=NO;
+        if (component) for (RVDAUIBinding *sibling in siblings) {
+            if (sibling!=binding && RVDAUICurrent(sibling) && sibling.factoryProvenanceVerified && RVDAUIComponentMatches(sibling,current)) { other=YES;break; }
+        }
+        if (other) { foreign=YES;continue; }
+        for (NSString *edge in @[@"parent",@"owningComponent"]) {
+            id next=RVObject(current,edge.UTF8String);
+            if (!next || !((componentClass && [next isKindOfClass:componentClass]) || (controllerClass && [next isKindOfClass:controllerClass]))) continue;
+            if ([seen containsObject:next]) { duplicates++;continue; }
+            if (depth>=31 || queue.count>=96) { truncated=YES;continue; }
+            [seen addObject:next];[queue addObject:@{@"object":next,@"depth":@(depth+1)}];
+            if (paths) [paths addObject:[paths[index] arrayByAddingObject:[NSString stringWithFormat:@"%@:%@",edge,NSStringFromClass([next class])]]];
+        }
+    }
+    id result=!foreign && !truncated && matches.count==1 ? matches.anyObject : nil;
+    if (details) {
+        NSString *reason=!typed ? @"native_controller_absent_or_untyped" : foreign ? @"competing_occurrence_ancestor" : truncated ? @"ancestry_budget_exceeded" : matches.count>1 ? @"ancestry_ambiguous" : !matches.count ? @"proven_occurrence_not_reached" : @"owned";
+        *details=@{@"reason":reason,@"controller_class":start ? NSStringFromClass([start class]) : @"absent",
+            @"direct_owner_present":@(typed && RVObject(start,"owningComponent")!=nil),@"parent_present":@(typed && RVObject(start,"parent")!=nil),
+            @"ancestor_objects":@(queue.count),@"duplicate_edges":@(duplicates),@"matching_roots":@(matches.count),
+            @"competing_occurrence":@(foreign),@"truncated":@(truncated),@"resolved_path":resolvedPath ?: @[]};
+    }return result;
 }
-static BOOL RVDAUIConsumerOwned(id node,RVDAUIBinding *binding) {
-    return binding.nativeRootComponent && RVDAUIConsumerRoot(node,binding)==binding.nativeRootComponent;
+static id RVDAUIConsumerRoot(id object,RVDAUIBinding *binding) { return RVDAUIResolveConsumerRoot(object,binding,NULL); }
+static BOOL RVDAUIConsumerOwned(id object,RVDAUIBinding *binding) {
+    return binding.nativeRootComponent && RVDAUIConsumerRoot(object,binding)==binding.nativeRootComponent;
+}
+static NSString *RVDAUIConsumerURL(id node) {
+    id value=RVObject(node,"URL");return [value isKindOfClass:NSURL.class] ? [value absoluteString] : [value isKindOfClass:NSString.class] ? value : nil;
 }
 static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
     if (!root || !RVDAUICurrent(binding)) return;
@@ -265,23 +304,55 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
     if (!NSThread.isMainThread || !binding.profile.liveCard || !binding.parts || RVDAUIOriginal(binding) || binding.generation!=generation || !RVDAUICurrent(binding)) return;
     RVDAUIRegisterController(binding,binding.nativeFactoryController);
     if (!binding.nativeRootComponent) RVDAUIBindConsumerRoot(binding,root);
-    Class textClass=NSClassFromString(@"ELMTextNode"),imageClass=NSClassFromString(@"ELMImageNode");NSArray *urls=binding.profile.imageURLs;
+    Class textClass=NSClassFromString(@"ELMTextNode"),imageClass=NSClassFromString(@"ELMImageNode"),allTextClass=NSClassFromString(@"ASTextNode");NSArray *urls=binding.profile.imageURLs;
+    Class expandableClass=NSClassFromString(@"ELMExpandableTextNode"),canaryClass=NSClassFromString(@"ELMExpandableTextNodeCanary");
     NSArray *graph=RVDAUINativeGraph(binding,root);NSUInteger owned=0,texts=0,images=0,titleMatches=0,imageMatches=0,titleApplied=0,imageApplied=0;
     BOOL titleVisible=NO,imageVisible=NO;NSString *expected=RVDAUITitle(binding);
     NSData *model=RVDAPath(binding.nativeFactoryInput,[binding.profile.componentPath arrayByAddingObject:@5]);
     NSData *expectedBytes=RVDAUIImage(binding) ? binding.imageBytes : nil;
     NSData *projectedBytes=binding.profile.imageRole ? RVDACheckedPath(model,[binding.profile.imagePath arrayByAddingObjectsFromArray:@[@1,@1,@2]],NULL,NULL) : nil;
     if (![expectedBytes isEqual:projectedBytes]) expectedBytes=nil;
-    NSMutableArray *decodedImages=[NSMutableArray array];
-    for (id node in graph) if (RVDAUIConsumerOwned(node,binding)) {
+    NSMutableArray *decodedImages=[NSMutableArray array],*candidateSamples=[NSMutableArray array];
+    NSMutableDictionary *classCounts=[NSMutableDictionary dictionary],*rejections=[NSMutableDictionary dictionary];
+    NSMutableSet *sampleReasons=[NSMutableSet set];BOOL diagnostic=RVDADiagEnabled();
+    NSUInteger allTexts=0,allImages=0,allExpandable=0,allTitleMatches=0,allImageMatches=0,sampleOmitted=0;
+    for (id node in graph) {
+        BOOL text=textClass && [node isKindOfClass:textClass],image=imageClass && [node isKindOfClass:imageClass];
+        BOOL anyText=allTextClass && [node isKindOfClass:allTextClass];
+        BOOL expandable=(expandableClass && [node isKindOfClass:expandableClass]) || (canaryClass && [node isKindOfClass:canaryClass]);
+        allTexts+=anyText;allImages+=image;allExpandable+=expandable;
+        id attributed=anyText ? RVObject(node,"attributedText") : nil;
+        NSString *originalText=[attributed isKindOfClass:NSAttributedString.class] ? [attributed string] : nil;
+        NSString *originalURL=image ? RVDAUIConsumerURL(node) : nil;
+        BOOL titleMatch=originalText && [originalText isEqual:binding.originalTitle],imageMatch=originalURL && [urls containsObject:originalURL];
+        allTitleMatches+=titleMatch;allImageMatches+=imageMatch;
+        NSDictionary *ancestry=nil;id resolved=RVDAUIResolveConsumerRoot(node,binding,diagnostic && (anyText || image || expandable) ? &ancestry : NULL);
+        BOOL isOwned=binding.nativeRootComponent && resolved==binding.nativeRootComponent;
+        if (diagnostic) {
+            NSString *name=NSStringFromClass([node class]);classCounts[name]=@([classCounts[name] unsignedIntegerValue]+1);
+            if (anyText || image || expandable) {
+                NSString *reason=!isOwned ? ancestry[@"reason"] ?: @"native_root_unconfirmed" : expandable || (anyText && !text) ? @"text_adapter_not_reviewed" : (titleMatch || imageMatch) ? @"original_role_match" : @"original_role_mismatch";
+                NSString *sampleKey=[NSString stringWithFormat:@"%@/%@",image ? @"image" : expandable ? @"expandable" : @"text",reason];
+                rejections[sampleKey]=@([rejections[sampleKey] unsignedIntegerValue]+1);
+                if (candidateSamples.count<8 && ![sampleReasons containsObject:sampleKey]) {
+                    [sampleReasons addObject:sampleKey];
+                    [candidateSamples addObject:@{@"node_class":name,@"role_kind":image ? @"image" : expandable ? @"expandable_text" : @"text",
+                        @"owned":@(isOwned),@"loaded":@(RVBool(node,"isNodeLoaded")),@"content_present":@(image ? originalURL!=nil : originalText!=nil),
+                        @"original_title_matches":@(titleMatch),@"original_thumbnail_matches":@(imageMatch),@"reviewed_adapter":@(text || image),
+                        @"reason":reason,@"ancestry":ancestry ?: @{}}];
+                }else sampleOmitted++;
+            }
+        }
+        if (!isOwned) continue;
         owned++;RVDAUIRegisterController(binding,RVObject(node,"nodeController"));
+        if ([node isKindOfClass:NSClassFromString(@"ASNodeController")]) RVDAUIRegisterController(binding,node);
         if (textClass && [node isKindOfClass:textClass] && binding.profile.titleRole) {
             texts++;id attributed=RVObject(node,"attributedText");NSString *value=[attributed isKindOfClass:NSAttributedString.class] ? [attributed string] : nil;
             titleMatches+=[value isEqual:binding.originalTitle];
             if (expected && [value isEqual:expected]) { titleApplied++;titleVisible|=RVDAUIConsumerVisible(node); }
         }
         if (imageClass && [node isKindOfClass:imageClass] && binding.profile.imageRole) {
-            images++;id value=RVObject(node,"URL");NSString *url=[value isKindOfClass:NSURL.class] ? [value absoluteString] : [value isKindOfClass:NSString.class] ? value : nil;
+            images++;NSString *url=RVDAUIConsumerURL(node);
             imageMatches+=url && [urls containsObject:url];
             UIImage *decoded=RVObject(node,"image");
             if (expectedBytes && [decoded isKindOfClass:UIImage.class] && decoded.size.width>0 && decoded.size.height>0) {
@@ -304,7 +375,12 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         @"root_loaded":@(RVBool(root,"isNodeLoaded")),@"controller_loaded":@(RVBool(controller,"isNodeOnControllerLoaded")),
         @"controller_children":@([controllerChildren isKindOfClass:NSArray.class] ? controllerChildren.count : 0),@"attached_subnodes":@([attached isKindOfClass:NSArray.class] ? attached.count : 0),@"yoga_children":@([yoga isKindOfClass:NSArray.class] ? yoga.count : 0),
         @"owned_nodes":@(owned),@"text_nodes":@(texts),@"image_nodes":@(images),@"title_matches":@(titleMatches),@"image_matches":@(imageMatches),
+        @"primitive_census_schema":@1,@"all_text_nodes":@(allTexts),@"all_image_nodes":@(allImages),@"all_expandable_nodes":@(allExpandable),
+        @"all_original_title_matches":@(allTitleMatches),@"all_original_thumbnail_matches":@(allImageMatches),
+        @"graph_limit_reached":@(graph.count>=256),@"graph_class_counts":classCounts,@"candidate_reasons":rejections,
+        @"candidate_samples":candidateSamples,@"candidate_samples_omitted":@(sampleOmitted),
         @"title_confirmed":@(binding.titleConsumerVerified),@"thumbnail_confirmed":@(binding.imageConsumerVerified),@"image_factory_bytes_match":@(expectedBytes!=nil),
+        @"title_factory_content_match":@(binding.nativeTitleProjected),@"thumbnail_factory_content_match":@(binding.nativeImageProjected),
         @"title_replacement_matches":@(titleApplied),@"image_replacement_matches":@(imageApplied),@"image_witness_candidates":@(decodedImages.count),
         @"title_replacement_consumed":@(titleApplied==1),@"image_replacement_consumed":@(imageApplied==1),@"title_visible":@(titleVisible && titleApplied==1),@"image_visible":@(imageVisible && imageApplied==1),
         @"keyed_leases":@(binding.consumerLeases.count),@"blocker":blocker ?: @"ready"};

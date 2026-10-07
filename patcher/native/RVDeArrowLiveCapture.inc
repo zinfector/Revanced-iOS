@@ -260,7 +260,8 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key);
     if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"]) return;
     NSData *model=RVDAChild(component,5);NSDictionary *semantic=card ? RVDALiveCardContract(model) : nil;
-    BOOL accepted=card && [semantic[@"blocker"] isEqual:@"ready"];
+    NSDictionary *watchContract=watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : nil;
+    BOOL accepted=(card && [semantic[@"blocker"] isEqual:@"ready"]) || (watch && [watchContract[@"title_input_valid"] boolValue] && RVVideoIDValid(watchVideo));
     BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo) || accepted;
     NSString *category=accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
     NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" :
@@ -286,7 +287,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
             NSMutableArray *nodes=[NSMutableArray array];NSUInteger budget=96,bytes=4*1024*1024;
             RVDALiveModelWalk(model,@[],0,&budget,&bytes,nodes);
             RVDALiveRoots[sample]=@{@"resource_key":key,@"resource_parts":RVDAResourceParts(raw),@"controller_class":controller,
-                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"ordinary_priority":@(ordinary),@"capture_category":category,@"semantic_video_accepted":@(accepted),@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
+                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"ordinary_priority":@(ordinary),@"capture_category":category,@"semantic_video_accepted":@(accepted),@"semantic_acceptance_kind":watch && accepted ? @"explicit_watch_title" : card && accepted ? @"primary_watch_card" : @"none",@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},

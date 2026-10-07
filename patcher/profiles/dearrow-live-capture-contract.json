@@ -1,7 +1,7 @@
 {
   "schema": 5,
-  "release": "0.3.44",
-  "trigger": "USB report 20261007-082300: unhandled InlineMuted wrapper; absent ELMElement.data getter; zero lifecycle leases; four pending frame responses.",
+  "release": "0.3.45",
+  "trigger": "USB report 20261007-090823: all 18 retained native roots proven; zero owned title/thumbnail matches despite successful metadata, four custom title decisions and six random-frame decodes.",
   "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
   "tests_run": false,
@@ -110,5 +110,26 @@
     ],
     "opaque_command_payloads_exported": false
   },
-  "directed_navigation": "Complete bounded typed wrapper chain, terminal WatchEndpoint extension, validated salted identity and failure path/parent shape. No raw IDs, titles or URLs."
+  "directed_navigation": "Complete bounded typed wrapper chain, terminal WatchEndpoint extension, validated salted identity and failure path/parent shape. No raw IDs, titles or URLs.",
+  "primitive_ancestry": {
+    "start": "Native node controller, or the typed component/controller itself.",
+    "edges": [
+      "parent",
+      "owningComponent"
+    ],
+    "max_objects": 96,
+    "max_depth": 32,
+    "scope": "Exact native ELMElement occurrence and current row/generation; independent edge traversal; reject competing accepted row occurrences, ambiguity and truncation. Stop at the proven occurrence boundary.",
+    "materialization": "Read-only existing graph. Preserve loaded-state guard; no guessed memory layout, lazy node forcing, global setter hooks or view-tree ancestry."
+  },
+  "primitive_diagnostics": {
+    "schema": 1,
+    "before_ownership_filter": true,
+    "class_histogram": true,
+    "candidate_samples": 8,
+    "sample_per": "role kind + reason",
+    "exported": "Class/edge names, bounded resolved ancestry, original-role equality booleans, loaded/content presence, counts and truncation. No raw content, IDs, URLs or addresses.",
+    "role_adapters": "ELMTextNode and ELMImageNode remain reviewed consumers. ASTextNode and expandable text candidates are observed without authorizing unreviewed title roles."
+  },
+  "watch_title_classification": "A supported watch title with validated explicit watch video and title input uses the accepted semantic slot."
 }

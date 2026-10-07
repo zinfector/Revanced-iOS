@@ -396,9 +396,12 @@ def summarize(response):
             requested = bool(int(item.get('requested_parts', 0)) & mask)
             image = role == 'thumbnail'
             checks = {'owner': flag('current_source'), 'input': flag('image_role' if image else 'title_role'),
-                      'factory_provenance': flag('factory_provenance_verified') if live else None, 'native_consumer': flag(confirmed) if live else None,
+                      'factory_provenance': flag('factory_provenance_verified') if live else None,
+                      'primitive_discovered': int(consumer.get('all_image_nodes' if image else 'all_text_nodes', 0)) > 0 if live and 'primitive_census_schema' in consumer else None,
+                      'original_role_matched': int(consumer.get('image_matches' if image else 'title_matches', 0)) == 1 if live and not flag(confirmed) else None,
+                      'native_consumer': flag(confirmed) if live else None,
                       'metadata': flag('result_present'), 'image_encoded': flag('encoded_image_ready') if image else None,
-                      'projected': flag(projected), 'consumed': consumed('image_replacement_consumed' if image else 'title_replacement_consumed'),
+                      'projected': flag(projected), 'factory_content_matched': consumed('thumbnail_factory_content_match' if image else 'title_factory_content_match') if live else None, 'consumed': consumed('image_replacement_consumed' if image else 'title_replacement_consumed'),
                       'visible': consumed('image_visible' if image else 'title_visible')}
             role_stages[role] = {'requested': requested, 'observed': checks,
                                 'first_unobserved_stage': next((name for name, observed in checks.items() if observed is False), None) if requested else 'not_requested',
@@ -422,7 +425,7 @@ def summarize(response):
                          'thumbnail_identity_matches': contract.get('thumbnail_identity_matches'),
                          'failed_probes': [{key: probe.get(key) for key in ('role', 'status', 'path', 'failed_field', 'failed_step')}
                                            for probe in contract.get('probes', []) if probe.get('status') != 'path_resolved']})
-    return {'schema': 3, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
+    return {'schema': 4, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
             'build_source_sha256': root.get('build_source_sha256'), 'bridge': response.get('bridge', {}),
             'dearrow': {'capture_armed': dearrow.get('capture_armed'), 'counts': dearrow.get('counts', {}),
                        'backend_counts': dearrow.get('backend', {}).get('counts', {}),

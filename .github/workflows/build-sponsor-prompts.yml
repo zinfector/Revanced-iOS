@@ -1,8 +1,8 @@
-name: Build DeArrow native ownership payload with Xcode
+name: Build DeArrow primitive ancestry payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-native-owner-0.3.44]
+    branches: [fix/dearrow-primitive-ancestry-0.3.45]
 
 permissions:
   contents: read

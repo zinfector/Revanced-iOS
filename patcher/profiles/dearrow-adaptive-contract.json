@@ -1,10 +1,10 @@
 {
   "schema": 3,
-  "release": "0.3.44",
+  "release": "0.3.45",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
-  "trigger": "USB report 20261007-082300: unhandled InlineMuted wrapper; absent ELMElement.data getter; zero lifecycle leases; four pending frame responses.",
+  "trigger": "USB report 20261007-090823: all 18 retained native roots proven; zero owned title/thumbnail matches despite successful metadata, four custom title decisions and six random-frame decodes.",
   "selection": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "adapters": [
     {
@@ -179,9 +179,9 @@
     "Home/Search InlineMuted terminal command is resolved dynamically; this build still needs a report proving consumer roles and visible replacement on each requested surface."
   ],
   "device_capture": [
-    "Start DeArrow capture using the saved USB collector and keep YouTube foreground.",
-    "Scroll fresh Home cards and leave a card visible for frame generation; then open a video and inspect its title and related cards.",
-    "Fetch compressed report and compare per-role factory provenance, controller topology, input/consumer/metadata/encoded/projection/consumed/visible stages."
+    "Start saved USB capture, scroll ordinary Home cards, leave a card visible and open a video.",
+    "Inspect per-role primitive census, original-role matches, ancestry rejection samples, projection, native factory content, consumption and visibility.",
+    "Use chapters/comments and revisit recycled cards to inspect preserved interactions and original restoration."
   ],
   "children": {
     "path": "Reviewed generic Element.children field 3 only, field/occurrence steps for repeated siblings",
@@ -200,7 +200,7 @@
     "input": "Copied exact row factory argument; restore only allowed presentation paths and compare complete immutable source, including all accepted occurrences.",
     "element": "Native factory ELMElement.instance opaque identity; childElements follow reviewed generic Element.children occurrence paths. Arena lifetime retained. No data getter, C++ aggregate calls, guessed offsets or debug-text parsing.",
     "controller": "Register keyed native load callback before consumer-role proof; register layout when materialized controller exists. Traverse read-only materializedInstance/controller children/attached subnodes/yoga children with identity deduplication and 256-object bound. node getter only after loaded flag.",
-    "role": "One owned original headline string and one owned original thumbnail URL. Source/configuration/generation changes retire callback leases and permissions. Duplicate matches stay blocked.",
+    "role": "Traverse both native controller parent and owningComponent edges, resolve the exact factory occurrence, require one original headline/thumbnail match. Title and thumbnail permissions are independent. Duplicate, conflicting and over-budget matches stay blocked.",
     "consumption": "Owned headline equals projected title; native thumbnail decoded pixels equal decoded projected image bytes, with exact immutable factory image payload and generation/epoch guards. Encoding alone never proves visibility."
   },
   "random_frame": {
@@ -220,5 +220,25 @@
       "retry_budget_exhausted",
       "stale_owner_or_generation"
     ]
+  },
+  "primitive_ancestry": {
+    "start": "Native node controller, or the typed component/controller itself.",
+    "edges": [
+      "parent",
+      "owningComponent"
+    ],
+    "max_objects": 96,
+    "max_depth": 32,
+    "scope": "Exact native ELMElement occurrence and current row/generation; independent edge traversal; reject competing accepted row occurrences, ambiguity and truncation. Stop at the proven occurrence boundary.",
+    "materialization": "Read-only existing graph. Preserve loaded-state guard; no guessed memory layout, lazy node forcing, global setter hooks or view-tree ancestry."
+  },
+  "primitive_diagnostics": {
+    "schema": 1,
+    "before_ownership_filter": true,
+    "class_histogram": true,
+    "candidate_samples": 8,
+    "sample_per": "role kind + reason",
+    "exported": "Class/edge names, bounded resolved ancestry, original-role equality booleans, loaded/content presence, counts and truncation. No raw content, IDs, URLs or addresses.",
+    "role_adapters": "ELMTextNode and ELMImageNode remain reviewed consumers. ASTextNode and expandable text candidates are observed without authorizing unreviewed title roles."
   }
 }
