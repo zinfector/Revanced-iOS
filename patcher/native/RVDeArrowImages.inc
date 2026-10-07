@@ -5,20 +5,25 @@ static void RVDAUIResolveFallback(RVDAUIBinding *state,uint64_t generation);
 static void RVDAUIFallbackFailure(RVDAUIBinding *state,NSString *blocker,BOOL retryable,uint64_t generation,void (^retry)(RVDAUIBinding *)) {
     if (!state || state.generation!=generation || !RVDAUICurrent(state)) return;
     state.imageBlocker=blocker;
-    NSTimeInterval delay=MIN(16,2*pow(2,state.fallbackRetries));
-    if (retryable && !state.fallbackRetryScheduled && state.fallbackRetries<4 && RVDANow()+delay<state.fallbackDeadline) {
+    NSTimeInterval remaining=state.fallbackDeadline-RVDANow();
+    NSTimeInterval delay=MAX(MIN(16,2*pow(2,MIN(state.fallbackRetries,4u))),state.fallbackRetryAfter);
+    if (retryable && retry && !state.fallbackRetryScheduled && state.fallbackRetries<12 && remaining>delay) {
         state.fallbackRetries++;state.fallbackRetryScheduled=YES;state.fallbackPhase=@"retry_wait";
-        RVDADiagRecord(@"D08_fallback_retry_scheduled",state,blocker,@{@"retry_attempt":@(state.fallbackRetries),@"delay_seconds":@(delay)});
+        RVDADiagRecord(@"D08_fallback_retry_scheduled",state,blocker,@{@"retry_attempt":@(state.fallbackRetries),@"delay_seconds":@(delay),@"remaining_seconds":@(MAX(0,remaining)),@"elapsed_seconds":@(MAX(0,150-remaining)),@"retry_limit":@12});
         __weak RVDAUIBinding *weak=state;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(delay*NSEC_PER_SEC)),dispatch_get_main_queue(),^{
             RVDAUIBinding *current=weak;if (!current || current.generation!=generation) return;
-            current.fallbackRetryScheduled=NO;NSString *stale=RVDAUICurrentBlocker(current);
+            current.fallbackRetryScheduled=NO;
+            if ([current.fallbackPhase isEqual:@"failed"] || RVDANow()>=current.fallbackDeadline) return;
+            NSString *stale=RVDAUICurrentBlocker(current);
             if (stale || RVDAUIOriginal(current)) { RVDAUIEvent(@"D11_fallback_retry_discarded",current,stale ?: @"original_selected");return; }
             retry(current);
         });
     } else {
-        state.fallbackStarted=NO;state.fallbackPhase=@"failed";
-        RVDAUIEvent(@"D08_fallback_rejected",state,blocker);RVDAUIRefresh(state);
+        state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackPhase=@"failed";
+        NSString *terminal=retryable && remaining<=delay ? @"fallback_deadline_expired" : retryable && state.fallbackRetries>=12 ? @"fallback_retry_budget_exhausted" : blocker;
+        state.imageBlocker=terminal;
+        RVDADiagRecord(@"D08_fallback_rejected",state,terminal,@{@"last_response_blocker":blocker ?: @"unknown",@"remaining_seconds":@(MAX(0,remaining)),@"retries":@(state.fallbackRetries)});RVDAUIRefresh(state);
     }
 }
 static BOOL RVDAUIRetryableTransfer(RVDeArrowBlocker blocker,NSInteger status) {
@@ -79,6 +84,7 @@ static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uin
 }
 static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NSNumber *timestamp,uint64_t generation) {
     if (!url || RVDAUIOriginal(state)) return;
+    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackFailure(state,@"fallback_deadline_expired",NO,generation,nil);return; }
     if (!RVDAUIAuxiliaryCache) { RVDAUIAuxiliaryCache=[NSCache new];RVDAUIAuxiliaryCache.countLimit=128;RVDAUIAuxiliaryCache.totalCostLimit=24*1024*1024; }
     NSDictionary *cached=[RVDAUIAuxiliaryCache objectForKey:url.absoluteString];
     if ([cached[@"expires"] doubleValue]>RVDANow()) { RVDAUIApplyImage(state,cached[@"image"],origin,generation);return; }
@@ -88,10 +94,17 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
         if (blocker!=RVDeArrowBlockerNone || response.statusCode!=200) {
             NSString *failure=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
             BOOL pending=timestamp && response.statusCode==204 && ([failure containsString:@"not generated"] || [failure containsString:@"not cached"] || [failure containsString:@"timeout"] || [failure containsString:@"queue"]);
-            NSString *reason=pending ? @"generation_pending" : response.statusCode==204 ? @"generation_unavailable" : @"other";
-            RVDADiagRecord(@"D08_fallback_image_response",current,nil,@{@"http_status":@(response.statusCode),@"generation_reason":reason});
+            NSString *reason=[failure containsString:@"not generated"] ? @"not_generated_yet" : [failure containsString:@"not cached"] ? @"not_cached" :
+                [failure containsString:@"queue"] ? @"queue_busy" : [failure containsString:@"timeout"] ? @"generation_timeout" :
+                [failure containsString:@"fail"] ? @"generation_failed" : response.statusCode==204 ? @"generation_unavailable" : @"other";
+            NSString *retryHeader=RVDAHeader(response,@"Retry-After");NSScanner *retryScan=[NSScanner scannerWithString:retryHeader ?: @""];double retryAfter=0;
+            current.fallbackRetryAfter=[retryScan scanDouble:&retryAfter] && retryScan.isAtEnd && isfinite(retryAfter) && retryAfter>0 ? MIN(30,retryAfter) : 0;
+            current.fallbackResponseReason=reason;
+            RVDADiagRecord(@"D08_fallback_image_response",current,nil,@{@"http_status":@(response.statusCode),@"generation_reason":pending ? @"generation_pending" : @"unavailable",
+                @"failure_category":reason,@"retry_after_seconds":@(current.fallbackRetryAfter),@"remaining_seconds":@(MAX(0,current.fallbackDeadline-RVDANow())),@"timestamp_requested":@(timestamp!=nil)});
             RVDAUIFallbackFailure(current,pending ? @"fallback_generation_pending" : RVDABlockerName(blocker==RVDeArrowBlockerNone ? RVDeArrowBlockerImageHTTP : blocker),pending || RVDAUIRetryableTransfer(blocker,response.statusCode),generation,^(RVDAUIBinding *next) { RVDAUIFetchImage(next,url,origin,timestamp,generation); });return;
         }
+        current.fallbackResponseReason=@"image_received";current.fallbackRetryAfter=0;
         if (timestamp) {
             NSString *header=RVDAHeader(response,@"X-Timestamp");NSScanner *scan=[NSScanner scannerWithString:header ?: @""];double value=0;
             scan.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
@@ -150,6 +163,7 @@ static void RVDAUIRandomImage(RVDAUIBinding *state,uint64_t generation) {
 }
 static void RVDAUIResolveFallback(RVDAUIBinding *state,uint64_t generation) {
     if (RVDAUIOriginal(state) || !(state.parts&RVDeArrowPartsThumbnail) || state.fallbackStarted) return;
+    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackFailure(state,@"fallback_deadline_expired",NO,generation,nil);return; }
     state.fallbackStarted=YES;
     if (!state.fallbackDeadline) {
         state.fallbackDeadline=RVDANow()+150;__weak RVDAUIBinding *weak=state;

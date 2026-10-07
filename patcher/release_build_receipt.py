@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.43'
+VERSION = '0.3.44'
 
 
 def digest(path):
@@ -54,7 +54,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'packages': package['packages'], 'artifacts': artifacts,
-        'interaction_issue': 'User reports watch-page controls now work. Latest 0.3.41 USB report has no active watch page/tap events; no causal claim or native interaction-hook changes in this release.'}
+        'interaction_issue': 'User reports watch-page controls now work. Latest 0.3.43 USB report has no active watch page/tap events; no causal claim or native interaction-hook changes in this release.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

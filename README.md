@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.43**, `YouTube-21.39.4-RVPort-0.3.43-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.44**, `YouTube-21.39.4-RVPort-0.3.44-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -8,9 +8,9 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.43. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.44. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
-DeArrow 0.3.43 resolves primary direct WatchEndpoint and CoWatch commands rather than requiring one wrapper. Browse destinations retain their original UI. Each accepted card requires matching native component ownership, independent title/image confirmation and immutable command branches. Generic child cards have separate occurrence bindings; FE card variants require the reviewed semantic model. Unknown opaque shelf layouts retain originals. USB summaries now show per-surface command failures and the first unobserved consumer/result/visible stage. Actual Home replacement and random-frame delivery still require device confirmation. [Adapter contract](patcher/profiles/dearrow-adaptive-contract.json).
+DeArrow 0.3.44 handles verified Direct Watch, CoWatch and InlineMuted navigation wrappers. Native ownership comes from YouTube’s factory callback and exact element occurrence, with early load/layout observation. Title and thumbnail replacements still require independent native role confirmation; thumbnail consumption compares the decoded native image with the projected bytes. Random-frame generation uses the 150-second deadline with bounded retries. USB reports separate input, factory ownership, consumers, metadata, projection, consumption and visibility for each role. Unsupported compact/grid and opaque shelf layouts retain originals. Visible replacements still require device confirmation. [Adapter contract](patcher/profiles/dearrow-adaptive-contract.json).
 
 ## USB diagnostics
 
@@ -38,7 +38,7 @@ The collector uses the installed Apple Mobile Device USB service directly and ne
 
 ## Porting progress
 
-Status reflects the merged 0.3.43 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.44 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.

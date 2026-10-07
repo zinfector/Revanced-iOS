@@ -354,6 +354,12 @@ def record_reports(connection, args, topic='dearrow', duration=0, interval=5):
         time.sleep(interval if remaining is None else min(interval, remaining))
 
 
+def diagnostic_flag(value):
+    # Native BOOL expressions may arrive as JSON true or numeric 0/1. Strings
+    # and other nonempty objects are not evidence of a successful checkpoint.
+    return value is True or type(value) in (int, float) and value == 1
+
+
 def summarize(response):
     root = response['data']
     dearrow = root.get('dearrow', root if 'backend' in root and 'bindings' in root else {})
@@ -365,25 +371,49 @@ def summarize(response):
     keys = ('surface', 'route', 'video_hash', 'adapter', 'command_type', 'identity_path', 'component_path', 'row_bindings', 'ownership_blocker', 'requested_parts', 'title_input_blocker',
             'image_input_blocker', 'title_consumer_verified', 'image_consumer_verified', 'title_blocker', 'image_blocker',
             'result_present', 'image_origin', 'encoded_image_ready', 'fallback_phase', 'duration_source',
-            'refresh_requests', 'native_materializations', 'last_checkpoint', 'last_blocker', 'consumer_checkpoint')
+            'refresh_requests', 'native_materializations', 'last_checkpoint', 'last_blocker', 'consumer_checkpoint',
+            'factory_provenance_verified', 'factory_callback_count', 'native_title_projected', 'native_thumbnail_projected',
+            'fallback_retries', 'fallback_retry_scheduled', 'fallback_response_reason', 'fallback_remaining_seconds',
+            'title_decision', 'image_decision', 'metadata_http', 'image_http', 'live_card_contract')
     for item in dearrow.get('bindings', [])[:32]:
         binding = {key: item[key] for key in keys if key in item}
         consumer = item.get('consumer_checkpoint', {})
-        stages = [('owner', item.get('current_source') is True),
-                  ('input', item.get('title_role') is True or item.get('image_role') is True),
-                  ('native_consumer', item.get('title_consumer_verified') is True or item.get('image_consumer_verified') is True),
-                  ('result', item.get('result_present') is True),
-                  ('consumed', consumer.get('title_replacement_consumed') is True or consumer.get('image_replacement_consumed') is True),
-                  ('visible', consumer.get('title_visible') is True or consumer.get('image_visible') is True)]
-        binding['observed_stages'] = {name: observed for name, observed in stages}
-        binding['first_unobserved_stage'] = next((name for name, observed in stages if not observed), None)
+        flag = lambda name: diagnostic_flag(item.get(name))
+        consumed = lambda name: diagnostic_flag(consumer.get(name))
+        live = flag('live_card_contract')
+        stages = [('owner', flag('current_source')),
+                  ('input', flag('title_role') or flag('image_role')),
+                  ('factory_provenance', flag('factory_provenance_verified') if live else None),
+                  ('native_consumer', (flag('title_consumer_verified') or flag('image_consumer_verified')) if live else None),
+                  ('result', flag('result_present')),
+                  ('consumed', consumed('title_replacement_consumed') or consumed('image_replacement_consumed')),
+                  ('visible', consumed('title_visible') or consumed('image_visible'))]
+        binding['observed_stages'] = dict(stages)
+        binding['first_unobserved_stage'] = next((name for name, observed in stages if observed is False), None)
+        role_stages = {}
+        for role, mask, confirmed, projected in [('title', 1, 'title_consumer_verified', 'native_title_projected'),
+                                                 ('thumbnail', 2, 'image_consumer_verified', 'native_thumbnail_projected')]:
+            requested = bool(int(item.get('requested_parts', 0)) & mask)
+            image = role == 'thumbnail'
+            checks = {'owner': flag('current_source'), 'input': flag('image_role' if image else 'title_role'),
+                      'factory_provenance': flag('factory_provenance_verified') if live else None, 'native_consumer': flag(confirmed) if live else None,
+                      'metadata': flag('result_present'), 'image_encoded': flag('encoded_image_ready') if image else None,
+                      'projected': flag(projected), 'consumed': consumed('image_replacement_consumed' if image else 'title_replacement_consumed'),
+                      'visible': consumed('image_visible' if image else 'title_visible')}
+            role_stages[role] = {'requested': requested, 'observed': checks,
+                                'first_unobserved_stage': next((name for name, observed in checks.items() if observed is False), None) if requested else 'not_requested',
+                                'selection_decision': item.get('image_decision' if image else 'title_decision'),
+                                'fallback_phase': item.get('fallback_phase') if image else None,
+                                'blocker': item.get('image_blocker' if image else 'title_blocker')}
+        binding['role_stages'] = role_stages
         bindings.append(binding)
     directed = []
     for item in dearrow.get('live_contract_capture', {}).get('roots', [])[:24]:
         contract = item.get('directed_card_contract', {})
         directed.append({'resource': item.get('resource_key'), 'surface': item.get('surface'),
                          'ordinary_priority': item.get('ordinary_priority'), 'command_type': contract.get('command_type'),
-                         'command_extension': contract.get('command_extension'), 'identity_path': contract.get('identity_path'),
+                         'command_extension': contract.get('command_extension'), 'wrapper_chain': contract.get('wrapper_chain', []),
+                         'wrapper_depth': contract.get('wrapper_depth'), 'terminal_extension': contract.get('terminal_extension'), 'identity_path': contract.get('identity_path'),
                          'failed_step': contract.get('failed_step'), 'failed_parent_shape': contract.get('failed_parent_shape'),
                          'primary_command_shape': contract.get('primary_command_shape'),
                          'direct_watch_present': contract.get('direct_watch_present'), 'cowatch_present': contract.get('cowatch_present'),
@@ -392,7 +422,7 @@ def summarize(response):
                          'thumbnail_identity_matches': contract.get('thumbnail_identity_matches'),
                          'failed_probes': [{key: probe.get(key) for key in ('role', 'status', 'path', 'failed_field', 'failed_step')}
                                            for probe in contract.get('probes', []) if probe.get('status') != 'path_resolved']})
-    return {'schema': 2, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
+    return {'schema': 3, 'topic': response.get('topic'), 'patcher_version': root.get('patcher_version'),
             'build_source_sha256': root.get('build_source_sha256'), 'bridge': response.get('bridge', {}),
             'dearrow': {'capture_armed': dearrow.get('capture_armed'), 'counts': dearrow.get('counts', {}),
                        'backend_counts': dearrow.get('backend', {}).get('counts', {}),

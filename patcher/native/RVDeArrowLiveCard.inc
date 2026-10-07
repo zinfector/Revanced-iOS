@@ -23,11 +23,13 @@ static NSDictionary *RVDALiveCardNavigation(NSData *model) {
         result[@"blocker"]=[@"live_card_identity_" stringByAppendingString:failure ?: @"unresolved"];
         result[@"failed_step"]=@(failed);return result;
     }
-    // Direct WatchEndpoint and the proven CoWatch wrapper are both legitimate.
-    // A browse target is intentionally non-video. Unknown unions pass through.
-    for (NSUInteger depth=0;depth<3;depth++) {
+    // The registry contains only native descriptor-proven transparent identity
+    // wrappers. Their flags and command payloads are never changed or executed.
+    NSMutableArray *chain=[NSMutableArray array];result[@"wrapper_chain"]=chain;
+    for (NSUInteger depth=0;depth<=6;depth++) {
         NSArray<RVVoteField *> *fields=RVVoteFields(command);NSMutableArray *extensions=[NSMutableArray array];
         for (RVVoteField *field in fields) if (field.number>=1000000) [extensions addObject:field];
+        result[@"wrapper_depth"]=@(depth);
         if (!fields || extensions.count!=1 || [extensions[0] wire]!=2) {
             result[@"command_type"]=extensions.count>1 ? @"ambiguous" : @"unsupported";
             result[@"blocker"]=!fields ? @"live_card_command_invalid" : extensions.count>1 ? @"live_card_command_ambiguous" : @"live_card_command_unsupported";
@@ -41,27 +43,33 @@ static NSDictionary *RVDALiveCardNavigation(NSData *model) {
         if (extension.number==48687757) {
             NSArray *identity=[path arrayByAddingObjectsFromArray:@[@48687757,@1]];
             NSData *value=RVDACheckedPath(model,identity,&failure,&failed);NSString *video=RVDAText(value);
-            result[@"identity_path"]=identity;result[@"command_type"]=depth ? @"cowatch_watch" : @"direct_watch";
+            NSMutableArray *names=[NSMutableArray array];for (NSDictionary *wrapper in chain) [names addObject:wrapper[@"type"]];
+            [names addObject:@"watch"];result[@"command_type"]=depth ? [names componentsJoinedByString:@"_"] : @"direct_watch";
+            result[@"identity_path"]=identity;result[@"terminal_extension"]=@48687757;
             if (!value || !RVVideoIDValid(video)) {
                 result[@"blocker"]=value ? @"live_card_identity_invalid" : [@"live_card_identity_" stringByAppendingString:failure ?: @"unresolved"];
                 result[@"failed_step"]=@(failed);return result;
             }
             result[@"video"]=video;result[@"blocker"]=@"ready";return result;
         }
-        if (extension.number!=462702848 || depth==2) {
-            result[@"command_type"]=@"unsupported";result[@"blocker"]=@"live_card_command_unsupported";
+        NSString *kind=extension.number==462702848 ? @"cowatch" : extension.number==200453700 ? @"inline_muted" : nil;
+        if (!kind || depth==6) {
+            result[@"command_type"]=@"unsupported";result[@"blocker"]=depth==6 && kind ? @"live_card_wrapper_depth_limit" : @"live_card_command_unsupported";
             result[@"identity_path"]=path;result[@"failed_step"]=@(path.count);return result;
         }
-        if (!depth) result[@"tap_title_path"]=[path arrayByAddingObjectsFromArray:@[@462702848,@4]];
-        path=[path arrayByAddingObjectsFromArray:@[@462702848,@1]];
+        if (!result[@"tap_title_path"] && extension.number==462702848)
+            result[@"tap_title_path"]=[path arrayByAddingObjectsFromArray:@[@462702848,@4]];
+        [chain addObject:@{@"type":kind,@"extension":@(extension.number),@"command_path":path,@"child_field":@1}];
+        path=[path arrayByAddingObjectsFromArray:@[@(extension.number),@1]];
         command=RVDACheckedPath(model,path,&failure,&failed);
         if (!command) {
-            result[@"command_type"]=@"cowatch_unresolved";result[@"identity_path"]=path;
+            result[@"command_type"]=[kind stringByAppendingString:@"_unresolved"];result[@"identity_path"]=path;
             result[@"blocker"]=[@"live_card_identity_" stringByAppendingString:failure ?: @"unresolved"];
             result[@"failed_step"]=@(failed);return result;
         }
     }return result;
 }
+
 static NSArray<NSString *> *RVDALiveCardImageURLs(NSData *image,NSString *video) {
     NSArray<RVVoteField *> *fields=RVVoteFields(image);if (!fields) return nil;
     NSMutableArray *urls=[NSMutableArray array];
@@ -131,7 +139,7 @@ static NSDictionary *RVDALiveCardContract(NSData *model) {
 static NSString *RVDALiveCardFailure(NSData *model) { return RVDALiveCardContract(model)[@"blocker"] ?: @"live_card_input_unresolved"; }
 static RVDAProjection *RVDALiveCardProfile(NSData *model,NSString *key) {
     NSDictionary *contract=RVDALiveCardContract(model);if (![contract[@"blocker"] isEqual:@"ready"]) return nil;
-    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=key;profile.adapterID=@"live_primary_watch_v2";
+    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=key;profile.adapterID=@"live_primary_watch_v3";
     profile.video=contract[@"video"];profile.identityPath=contract[@"identity_path"];profile.commandType=contract[@"command_type"];profile.videoDataPath=@[@232954548,@18,@1];
     profile.titlePath=contract[@"title_path"];profile.imagePath=contract[@"image_path"];profile.titleEntityPath=contract[@"title_entity_path"];
     profile.titleRole=[contract[@"title_role"] boolValue];profile.imageRole=[contract[@"image_role"] boolValue];

@@ -1,7 +1,7 @@
 {
-  "schema": 3,
-  "release": "0.3.43",
-  "trigger": "USB report 20261007-074152",
+  "schema": 4,
+  "release": "0.3.44",
+  "trigger": "USB report 20261007-082300: unhandled InlineMuted wrapper; absent ELMElement.data getter; zero lifecycle leases; four pending frame responses.",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
@@ -32,7 +32,7 @@
     1,
     1
   ],
-  "identity_contract": "Exactly one primary command extension; direct WatchEndpoint.videoId field 1, or at most two verified CoWatch wrappers through YTICommand field 1. Store selected path and command kind; rerun resolver in native owner check. Never execute commands or search arbitrary ID-like strings.",
+  "identity_contract": "Exactly one primary YTICommand extension. Resolve Direct WatchEndpoint.videoId field 1, or up to six native descriptor-proven CoWatch/InlineMutedWatchEndpointMutationCommand wrappers through YTICommand field 1. Require singular message fields and validated terminal WatchEndpoint. Preserve all flags/navigation bytes; unknown wrappers remain blocked.",
   "admission": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "native_consumers": {
     "strategy": "Private keyed ELMNodeController callbacks on accepted factory-owned descendants; no global ELMTextNode/ELMImageNode setElement observers.",
@@ -58,11 +58,14 @@
     }
   },
   "capture": {
-    "schema": 4,
-    "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
+    "schema": 5,
+    "sampling": "resource + surface + accepted semantic video/rejected ordinary/generic + command chain/failure + structural shape",
     "roots": 24,
-    "ordinary_slots": 2,
-    "generic_slots": 1,
+    "slots_per_surface": {
+      "accepted_video": 1,
+      "ordinary_rejected": 1,
+      "generic": 1
+    },
     "buckets": [
       "home",
       "library",
@@ -103,7 +106,15 @@
   "command_extensions": {
     "watch": 48687757,
     "cowatch": 462702848,
-    "browse": 48687626
+    "browse": 48687626,
+    "inline_muted": 200453700
   },
-  "native_model_ownership": "Presentation-restored complete native model equals the immutable original; exactly one matching component, even for repeated videos."
+  "native_model_ownership": {
+    "factory": "ELMCellNode +cellNodeWithElementInternal:context:controllerUpdateBlock:; guarded @@:@@@? ABI",
+    "input": "Copied exact row factory argument; restore only allowed presentation paths and compare complete immutable source, including all accepted occurrences.",
+    "element": "Native factory ELMElement.instance opaque identity; childElements follow reviewed generic Element.children occurrence paths. Arena lifetime retained. No data getter, C++ aggregate calls, guessed offsets or debug-text parsing.",
+    "controller": "Register keyed native load callback before consumer-role proof; register layout when materialized controller exists. Traverse read-only materializedInstance/controller children/attached subnodes/yoga children with identity deduplication and 256-object bound. node getter only after loaded flag.",
+    "role": "One owned original headline string and one owned original thumbnail URL. Source/configuration/generation changes retire callback leases and permissions. Duplicate matches stay blocked.",
+    "consumption": "Owned headline equals projected title; native thumbnail decoded pixels equal decoded projected image bytes, with exact immutable factory image payload and generation/epoch guards. Encoding alone never proves visibility."
+  }
 }

@@ -106,6 +106,7 @@ static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     NSData *command=RVDAPath(model,RVDALiveCardCommandPath());
     return @{@"schema":@2,@"probes":probes,@"blocker":contract[@"blocker"] ?: @"unresolved",
         @"command_type":contract[@"command_type"] ?: @"unresolved",@"command_extension":contract[@"command_extension"] ?: @0,
+        @"wrapper_chain":contract[@"wrapper_chain"] ?: @[],@"wrapper_depth":contract[@"wrapper_depth"] ?: @0,@"terminal_extension":contract[@"terminal_extension"] ?: @0,
         @"identity_path":identityPath,@"failed_step":contract[@"failed_step"] ?: @(-1),
         @"failed_parent_shape":contract[@"failed_step"] ? RVDALiveShape(RVDAPath(model,[identityPath subarrayWithRange:NSMakeRange(0,failedStep)])) : @{},
         @"primary_command_shape":RVDALiveShape(command),@"direct_watch_present":@(RVDAChild(command,48687757)!=nil),
@@ -258,11 +259,14 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     NSString *key=RVDALiveKey(raw);if (!key) return;
     BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key);
     if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"]) return;
-    BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo);
+    NSData *model=RVDAChild(component,5);NSDictionary *semantic=card ? RVDALiveCardContract(model) : nil;
+    BOOL accepted=card && [semantic[@"blocker"] isEqual:@"ready"];
+    BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo) || accepted;
+    NSString *category=accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
     NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" :
         [@[@"home",@"library",@"search",@"subscriptions",@"related"] containsObject:surface ?: @""] ? surface : @"unknown";
-    NSData *model=RVDAChild(component,5);NSString *fingerprint=RVDALiveSampleShape(model,key);
-    NSString *sample=[NSString stringWithFormat:@"%@/%@/%@/%@",key,surface ?: @"unknown",ordinary ? @"ordinary" : @"generic",fingerprint];
+    NSString *fingerprint=RVDALiveSampleShape(model,key);
+    NSString *sample=[NSString stringWithFormat:@"%@/%@/%@/%@",key,surface ?: @"unknown",category,fingerprint];
     @synchronized(RVDAUIBinding.class) {
         if (!RVDALiveRoots) RVDALiveRoots=[NSMutableDictionary dictionary];
         if (!RVDALiveRootResources) RVDALiveRootResources=[NSMutableSet set];
@@ -271,10 +275,10 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
             NSMutableDictionary *next=[prior mutableCopy];next[@"occurrences"]=@([prior[@"occurrences"] unsignedIntegerValue]+1);RVDALiveRoots[sample]=next.copy;
         } else {
             NSUInteger count=0;for (NSDictionary *record in RVDALiveRoots.allValues)
-                count+=[record[@"capture_bucket"] isEqual:bucket] && [record[@"ordinary_priority"] boolValue]==ordinary;
-            // Two ordinary-video slots and one generic slot are reserved for
-            // each surface. Library browse rows cannot consume Home's evidence.
-            if (RVDALiveRoots.count>=RVDALiveRootLimit || count>=(ordinary ? 2u : 1u)) { RVDADiagCount([@"capture.quota_rejected." stringByAppendingString:bucket]);return; }
+                count+=[record[@"capture_bucket"] isEqual:bucket] && [record[@"capture_category"] isEqual:category];
+            // Reserve accepted semantic evidence even for a generic controller.
+            // Browse/unknown failures cannot consume that surface's accepted slot.
+            if (RVDALiveRoots.count>=RVDALiveRootLimit || count>=1u) { RVDADiagCount([@"capture.quota_rejected." stringByAppendingString:bucket]);return; }
             NSArray<RVDALiveSpan *> *fields=RVDALiveFields(model,NULL);
             NSMutableArray *paths=[@[@[@232971250,@25,@1],@[@232903841,@1,@1],RVDALiveWatchTitlePath()] mutableCopy];
             if (fields.count==1 && fields[0].wire==2) [paths addObject:@[@(fields[0].field),@1,@1]];
@@ -282,12 +286,12 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
             NSMutableArray *nodes=[NSMutableArray array];NSUInteger budget=96,bytes=4*1024*1024;
             RVDALiveModelWalk(model,@[],0,&budget,&bytes,nodes);
             RVDALiveRoots[sample]=@{@"resource_key":key,@"resource_parts":RVDAResourceParts(raw),@"controller_class":controller,
-                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"ordinary_priority":@(ordinary),@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
+                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"ordinary_priority":@(ordinary),@"capture_category":category,@"semantic_video_accepted":@(accepted),@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
                 @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
-                @"sample_policy":@"resource + surface + semantic command/failure + shape; 2 ordinary and 1 generic slot per surface"};
+                @"sample_policy":@"resource + surface + semantic command/failure + shape; 1 accepted semantic video, 1 rejected ordinary and 1 generic slot per surface"};
             [RVDALiveRootResources addObject:key];
         }
     }
@@ -301,7 +305,7 @@ static void RVDALiveReset(void) {
 }
 static NSDictionary *RVDALiveReport(void) {
     @synchronized(RVDAUIBinding.class) {
-        return @{@"schema":@4,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
+        return @{@"schema":@5,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
             @"configuration_bytes_exported":@(RVDALiveExportedBytes),@"root_limit":@(RVDALiveRootLimit),
             @"model_byte_limit":@(RVDALiveModelLimit),@"configuration_byte_limit":@(RVDALiveConfigLimit),@"session_byte_limit":@(RVDALiveSessionLimit),
             @"model_values_exported":@NO,@"automatic_role_authorization":@NO};

@@ -1,8 +1,8 @@
-name: Build DeArrow semantic payload with Xcode
+name: Build DeArrow native ownership payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-semantic-0.3.43]
+    branches: [fix/dearrow-native-owner-0.3.44]
 
 permissions:
   contents: read

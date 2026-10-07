@@ -1,7 +1,7 @@
 {
-  "schema": 4,
-  "release": "0.3.43",
-  "trigger": "USB report 20261007-074152; reserve Home ordinary evidence instead of sharing Library feed slots",
+  "schema": 5,
+  "release": "0.3.44",
+  "trigger": "USB report 20261007-082300: unhandled InlineMuted wrapper; absent ELMElement.data getter; zero lifecycle leases; four pending frame responses.",
   "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
   "tests_run": false,
@@ -36,8 +36,11 @@
     "configuration_bytes_per_capture": 786432,
     "native_observed_resource_keys": 64,
     "slots_per_surface_bucket": 3,
-    "ordinary_slots_per_surface": 2,
-    "generic_slots_per_surface": 1
+    "slots_per_surface": {
+      "accepted_video": 1,
+      "ordinary_rejected": 1,
+      "generic": 1
+    }
   },
   "ownership": "Capture only main-thread matched controller entries with section/index scope, ordinary YTVideoElementCellController or explicit watch metadata owner, and a checked negative ad-presence flag",
   "model_inventory": "Breadth-first structural paths include field and occurrence index. Store field/wire/count/length, first failed candidate step and salted candidate-ID hashes. No model base64, titles, personal IDs or thumbnail URLs.",
@@ -77,7 +80,7 @@
   "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not",
   "live_card_contract": "dearrow-live-card-contract.json",
   "adaptive_contract": "dearrow-adaptive-contract.json",
-  "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
+  "sampling": "resource + surface + accepted semantic video/rejected ordinary/generic + command chain/failure + structural shape",
   "capture_buckets": [
     "home",
     "library",
@@ -107,5 +110,5 @@
     ],
     "opaque_command_payloads_exported": false
   },
-  "directed_navigation": "Selected semantic identity path and command type/extension; direct/watch/cowatch/browse presence, failed step and failed parent field/wire/count/length summary. Values are salted hashes, never raw IDs, titles or URLs."
+  "directed_navigation": "Complete bounded typed wrapper chain, terminal WatchEndpoint extension, validated salted identity and failure path/parent shape. No raw IDs, titles or URLs."
 }

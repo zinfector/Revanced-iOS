@@ -11,7 +11,7 @@ static NSMutableArray *RVDAUIHistory;
 static NSMutableArray *RVDAUIHooks;
 static NSMutableSet<NSString *> *RVDAUIOriginalVideos;
 static NSMutableSet<NSString *> *RVDAUICustomVideos;
-static uint64_t RVDAUIGeneration,RVDAUISettingsRevision=1;
+static uint64_t RVDAUIGeneration,RVDAUIFactorySerial,RVDAUISettingsRevision=1;
 static NSTimeInterval RVDAUIStarted;
 static RVDeArrowRequest *RVDAUIProbeRequest;
 static NSDictionary *RVDAUIProbeResult;
@@ -23,6 +23,8 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 @interface RVDAUIConsumerLease : NSObject
 @property(nonatomic,weak) id controller;
 @property(nonatomic,copy) NSString *key;
+@property(nonatomic,copy) void (^callback)(id,id);
+@property(nonatomic) BOOL layoutRegistered;
 - (void)retire;
 @end
 static void RVDAWatchReset(void);
@@ -42,7 +44,8 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
 @property(nonatomic) uint64_t imageRevision;
-@property(nonatomic) NSTimeInterval fallbackDeadline;
+@property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter;
+@property(nonatomic,copy) NSString *fallbackResponseReason;
 @property(nonatomic) NSUInteger fallbackRetries;
 @property(nonatomic) BOOL fallbackRetryScheduled;
 @property(nonatomic,copy) NSString *fallbackPhase,*durationSource;
@@ -58,6 +61,13 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) NSUInteger consumerObservations;
 @property(nonatomic,strong) NSDictionary *consumerCheckpoint;
 @property(nonatomic,strong) NSDictionary *nativeOwnerCheckpoint;
+@property(nonatomic,strong) id nativeFactoryElement,nativeExpectedElement;
+@property(nonatomic,weak) id nativeFactoryController;
+@property(nonatomic,strong) NSData *nativeFactoryInput,*imageWitnessSource;
+@property(nonatomic,strong) NSMapTable *imageWitnesses;
+@property(nonatomic) BOOL factoryProvenanceVerified,nativeTitleProjected,nativeImageProjected;
+@property(nonatomic) NSUInteger factoryCallbackCount;
+@property(nonatomic) uint64_t factorySerial;
 @property(nonatomic,strong) NSMutableArray<RVDAUIConsumerLease *> *consumerLeases;
 @property(nonatomic) BOOL consumerQueued,consumerCallbackPending;
 @property(nonatomic) NSUInteger consumerPasses;
@@ -223,7 +233,8 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
-    binding.fallbackDeadline=0;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
+    binding.fallbackDeadline=0;binding.fallbackRetryAfter=0;binding.fallbackResponseReason=nil;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
+    binding.titleConsumerVerified=NO;binding.imageConsumerVerified=NO;
     binding.generation=++RVDAUIGeneration;binding.settingsRevision=RVDAUISettingsRevision;
     BOOL title=(!binding.modern || binding.profile.titleRole) && RVDAUIPolicy(binding.surface,YES);
     BOOL image=(!binding.modern || binding.profile.imageRole) && RVDAUIPolicy(binding.surface,NO) && ![binding.surface isEqual:@"player"];
@@ -495,13 +506,13 @@ static NSDictionary *RVDAUIReport(void) {
             @"original_title_bound":@(state.originalTitle.length>0),@"untranslated_title_bound":@(state.untranslatedTitle.length>0),
             @"local_title_changed":@(RVDAUITitle(state)!=nil),@"casual_original_selected":@(RVDAUICasual(state)),
             @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),
-            @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),
+            @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),@"fallback_response_reason":state.fallbackResponseReason ?: @"none",@"fallback_remaining_seconds":@(state.fallbackDeadline ? MAX(0,state.fallbackDeadline-RVDANow()) : 0),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
             @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],@"command_type":state.profile.commandType ?: @"explicit_or_legacy",@"component_path":state.profile.componentPath ?: @[],@"row_bindings":@(RVDAUIRowBindings(state).count),
             @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
             @"consumer_observations":@(state.consumerObservations),@"consumer_checkpoint":state.consumerCheckpoint ?: @{},
-            @"native_owner_checkpoint":state.nativeOwnerCheckpoint ?: @{},
+            @"native_owner_checkpoint":state.nativeOwnerCheckpoint ?: @{},@"factory_provenance_verified":@(state.factoryProvenanceVerified),@"factory_callback_count":@(state.factoryCallbackCount),@"factory_serial":@(state.factorySerial),@"native_title_projected":@(state.nativeTitleProjected),@"native_thumbnail_projected":@(state.nativeImageProjected),
             @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"adapter":state.profile.adapterID ?: @"legacy_pinned",
             @"structural_fingerprint":state.profile.structuralFingerprint ?: @"not_applicable",@"watch_title_contract":@(state.profile.watchTitle),
             @"title_input_blocker":state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.profile.imageRoleBlocker ?: @"not_applicable",
@@ -615,6 +626,20 @@ static void RVInstallDeArrowUI(void) {
             if (next) RVDADiagCount(@"projected_element_data_consumed");return next ?: native;
         };
     });
+    RVDAUIHook(@"ELMCellNode",@"cellNodeWithElementInternal:context:controllerUpdateBlock:",@"@@:@@@?",YES,^id(IMP original,SEL sel) {
+        return ^id(id cls,id element,id context,void (^nativeUpdate)(id)) {
+            RVDAUIFactoryCapture *capture=RVDAUIFactoryScope;
+            if (!capture || capture.entered) return ((id(*)(id,SEL,id,id,id))original)(cls,sel,element,context,nativeUpdate);
+            // The native callback is synchronous and takes one controller. Its
+            // original behavior/order is preserved; no UI graph reads run here.
+            capture.entered=YES;capture.element=element;
+            void (^observe)(id)=^(id controller) {
+                if (nativeUpdate) nativeUpdate(controller);
+                capture.callbacks++;capture.controller=controller;
+            };
+            return ((id(*)(id,SEL,id,id,id))original)(cls,sel,element,context,observe);
+        };
+    });
     // Consumer observation is registered on accepted factory-owned nodes only.
     RVDAWatchInstall();
     // Only the materialization argument changes; native controller entries and
@@ -634,19 +659,27 @@ static void RVInstallDeArrowUI(void) {
             RVDAUIBinding *state=RVDAUIBind(responder,entry,RVDAUISection,RVDAUIIndex);
             id next=state ? RVDAUIProjectedEntry(state) : entry;
             id (^native)(void)=((id(*)(id,SEL,id,id,id,id,id))original)(cls,sel,next,responder,observable,registry,provider);
-            if (!state || (!state.profile.liveCard && next==entry) || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
+            BOOL observeLive=NO;for (RVDAUIBinding *current in RVDAUIRowBindings(state)) observeLive|=current.profile.liveCard && current.parts && !RVDAUIOriginal(current);
+            if (!state || (!observeLive && next==entry) || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
             NSHashTable *weakStates=[NSHashTable weakObjectsHashTable];NSMutableDictionary *generations=[NSMutableDictionary dictionary];
             for (RVDAUIBinding *current in RVDAUIRowBindings(state)) { [weakStates addObject:current];generations[[NSValue valueWithNonretainedObject:current]]=@(current.generation); }
-            // Native block descriptor: @8@?0. Native construction may run off
-            // main; ownership diagnostics return to main after it completes.
+            // Validate the exact immutable argument handed to the native factory
+            // while row ownership is on main; retain only an immutable snapshot.
+            NSData *factoryInput=[RVObject(RVAdRootElement(next),"elementData") copy];
+            BOOL inputVerified=state.profile.liveCard && RVDAUIFactoryInputAccepted(RVDAUIRowBindings(state),factoryInput);
+            uint64_t factorySerial=++RVDAUIFactorySerial;for (RVDAUIBinding *current in RVDAUIRowBindings(state)) current.factorySerial=factorySerial;
+            // Native block descriptor: @8@?0. Capture construction provenance on
+            // its thread, then observe only existing controllers/nodes on main.
             return [^id(void) {
-                id node=native();__weak id weakNode=node;
+                RVDAUIFactoryCapture *capture=[RVDAUIFactoryCapture new];capture.input=factoryInput;capture.inputVerified=inputVerified;
+                RVDAUIFactoryCapture *prior=RVDAUIFactoryScope;RVDAUIFactoryScope=inputVerified ? capture : nil;id node=nil;
+                @try { node=native(); } @finally { RVDAUIFactoryScope=prior; }
+                __weak id weakNode=node;
                 dispatch_async(dispatch_get_main_queue(),^{
-                    for (RVDAUIBinding *current in weakStates.allObjects) if (weakNode && current.generation==[generations[[NSValue valueWithNonretainedObject:current]] unsignedLongLongValue] && RVDAUICurrent(current)) {
+                    for (RVDAUIBinding *current in weakStates.allObjects) if (weakNode && current.factorySerial==factorySerial && current.generation==[generations[[NSValue valueWithNonretainedObject:current]] unsignedLongLongValue] && RVDAUICurrent(current)) {
                         current.materializations++;
                         if (current.profile.liveCard && current.parts && !RVDAUIOriginal(current)) {
-                            RVDAUIRetireConsumers(current);current.nativeFactoryRoot=weakNode;
-                            RVDAUIBindConsumerRoot(current,weakNode);RVDAUIScheduleConsumers(current,0);
+                            RVDAUIAcceptFactory(current,weakNode,capture);
                         }
                         if (next!=entry) {
                             RVDAUIEvent(@"D09_native_target_materialized",current,nil);

@@ -1,14 +1,14 @@
 {
-  "schema": 2,
-  "release": "0.3.43",
+  "schema": 3,
+  "release": "0.3.44",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
-  "trigger": "USB report 20261007-074152: zero accepted bindings; detailed Library roots are native BrowseEndpoints; shared feed quota omitted the ordinary Home primary command.",
+  "trigger": "USB report 20261007-082300: unhandled InlineMuted wrapper; absent ELMElement.data getter; zero lifecycle leases; four pending frame responses.",
   "selection": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "adapters": [
     {
-      "id": "live_primary_watch_v2",
+      "id": "live_primary_watch_v3",
       "basename": "video_lockup_with_attachment.eml",
       "variant": "fe",
       "title_path": [
@@ -39,7 +39,7 @@
         "Title singular UTF-8 content; optional tap title agrees; no command runs; unambiguous configuration.",
         "Each static image source belongs to the navigation ID; no composite/local/procedural input.",
         "One matching already materialized headline/image owned by this factory component before enabling that role.",
-        "Presentation-restored complete native model equals the immutable original; exactly one matching component, even for repeated videos."
+        "Immutable presentation-restored factory argument equals source; unique native element occurrence within the captured factory controller."
       ],
       "primary_command_path": [
         232954548,
@@ -50,9 +50,10 @@
       "command_extensions": {
         "watch": 48687757,
         "cowatch": 462702848,
-        "browse": 48687626
+        "browse": 48687626,
+        "inline_muted": 200453700
       },
-      "identity": "Exactly one primary command extension; direct WatchEndpoint.videoId field 1, or at most two verified CoWatch wrappers through YTICommand field 1. Store selected path and command kind; rerun resolver in native owner check. Never execute commands or search arbitrary ID-like strings.",
+      "identity": "Exactly one primary YTICommand extension. Resolve Direct WatchEndpoint.videoId field 1, or up to six native descriptor-proven CoWatch/InlineMutedWatchEndpointMutationCommand wrappers through YTICommand field 1. Require singular message fields and validated terminal WatchEndpoint. Preserve all flags/navigation bytes; unknown wrappers remain blocked.",
       "candidate_basenames": [
         "video_lockup_with_attachment.eml",
         "video_card.eml",
@@ -111,11 +112,14 @@
     }
   },
   "capture": {
-    "schema": 4,
-    "sampling": "resource + surface + ordinary priority + semantic command/failed step + structural shape",
+    "schema": 5,
+    "sampling": "resource + surface + accepted semantic video/rejected ordinary/generic + command chain/failure + structural shape",
     "roots": 24,
-    "ordinary_slots": 2,
-    "generic_slots": 1,
+    "slots_per_surface": {
+      "accepted_video": 1,
+      "ordinary_rejected": 1,
+      "generic": 1
+    },
     "buckets": [
       "home",
       "library",
@@ -170,14 +174,14 @@
     "Interactive titles need command-range remapping and remain original.",
     "Player cover is excluded; watch metadata supports titles only.",
     "Unknown watch owner or model layout remains original with directed checkpoints.",
-    "Actual Home primary command was not captured in the input report; unknown wrappers remain original and emit the failed parent fields.",
     "Opaque serialized horizontal-shelf child layouts remain unreviewed; only independently addressed generic Element children are enabled.",
-    "User reports watch controls work. Native interaction forwarding is retained; DeArrow visible replacement is not device-verified."
+    "User reports watch controls work. Native interaction forwarding is retained; DeArrow visible replacement is not device-verified.",
+    "Home/Search InlineMuted terminal command is resolved dynamically; this build still needs a report proving consumer roles and visible replacement on each requested surface."
   ],
   "device_capture": [
-    "Start DeArrow capture using the saved USB collector; close Settings and keep YouTube foreground.",
-    "Scroll new Home videos, wait for titles/images, then open one video and related rows.",
-    "Fetch the compressed report; inspect Home command/failed-parent shapes, accepted bindings, native consumer confirmation, backend/fallback result and D10 visibility."
+    "Start DeArrow capture using the saved USB collector and keep YouTube foreground.",
+    "Scroll fresh Home cards and leave a card visible for frame generation; then open a video and inspect its title and related cards.",
+    "Fetch compressed report and compare per-role factory provenance, controller topology, input/consumer/metadata/encoded/projection/consumed/visible stages."
   ],
   "children": {
     "path": "Reviewed generic Element.children field 3 only, field/occurrence steps for repeated siblings",
@@ -187,8 +191,34 @@
       "depth": 16,
       "elements": 128
     },
-    "binding": "Per-row/controller retained group, independent component path, video, service request and generation; source changes retire all old bindings. Unique matching native component required.",
+    "binding": "Per-row/controller retained group, independent component path/video/request/generation; generic childElements occurrence identity under the accepted factory source. Source changes retire all old bindings.",
     "projection": "Compose each accepted component projection on a copy of the original row; never mutate original section entries. Shared row refresh coalesces updates.",
     "opaque_shelf_models": "Unsupported until reviewed native child-element contracts are captured; no arbitrary model descent."
+  },
+  "native_ownership": {
+    "factory": "ELMCellNode +cellNodeWithElementInternal:context:controllerUpdateBlock:; guarded @@:@@@? ABI",
+    "input": "Copied exact row factory argument; restore only allowed presentation paths and compare complete immutable source, including all accepted occurrences.",
+    "element": "Native factory ELMElement.instance opaque identity; childElements follow reviewed generic Element.children occurrence paths. Arena lifetime retained. No data getter, C++ aggregate calls, guessed offsets or debug-text parsing.",
+    "controller": "Register keyed native load callback before consumer-role proof; register layout when materialized controller exists. Traverse read-only materializedInstance/controller children/attached subnodes/yoga children with identity deduplication and 256-object bound. node getter only after loaded flag.",
+    "role": "One owned original headline string and one owned original thumbnail URL. Source/configuration/generation changes retire callback leases and permissions. Duplicate matches stay blocked.",
+    "consumption": "Owned headline equals projected title; native thumbnail decoded pixels equal decoded projected image bytes, with exact immutable factory image payload and generation/epoch guards. Encoding alone never proves visibility."
+  },
+  "random_frame": {
+    "deadline_seconds": 150,
+    "max_retries": 12,
+    "backoff_seconds": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "retry_after_max_seconds": 30,
+    "proof": "Valid owner-scoped duration; SponsorBlock exclusions; requested timestamp response match; native image decode/encode; projected factory input; decoded native consumption; actual visibility.",
+    "terminal_statuses": [
+      "unavailable",
+      "deadline_expired",
+      "retry_budget_exhausted",
+      "stale_owner_or_generation"
+    ]
   }
 }

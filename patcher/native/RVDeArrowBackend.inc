@@ -445,7 +445,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     __block NSDictionary *report;
     [self sync:^{
         report=@{@"schema":@1,@"backend_implemented":@YES,@"presentation_observed":@([self.state[@"presentation_observed"] boolValue]),@"device_verified":@NO,
-            @"diagnostics_enabled":@(self.options.diagnosticsEnabled),@"configuration_revision":@(self.configurationRevision),
+            @"presentation_observed_meaning":@"adapter_checkpoint_only_not_visible_replacement",@"diagnostics_enabled":@(self.options.diagnosticsEnabled),@"configuration_revision":@(self.configurationRevision),
             @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),@"queued_auxiliary_transfers":@(self.auxiliaryOperations.count),
             @"metadata_cache_entries":@(self.metadataCache.count),@"image_cache_entries":@(self.imageCache.count),@"decoded_image_bytes":@(self.imageCost),
             @"counts":self.counts.copy,@"state":self.state.copy,@"recent_events":self.events.copy};
