@@ -84,7 +84,7 @@
   "checkpoints": [
     "D04_live_card_input_verified",
     "D04_live_native_consumers",
-    "D05_service_requested",
+    "D05_metadata_requested",
     "D08_result_accepted",
     "D08_duration_resolved",
     "D08_random_time_selected",
@@ -92,7 +92,7 @@
     "D08_fallback_timestamp_matched",
     "D08_fallback_image_decoded",
     "D08_image_encoded",
-    "D09_presentation_model_projected",
+    "presentation_model_projected",
     "D09_native_target_materialized",
     "D09_live_native_replacement_consumed",
     "D10_live_replacement_visible"

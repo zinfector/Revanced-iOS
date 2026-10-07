@@ -18,12 +18,13 @@ static void RVDAWatchRecord(NSString *checkpoint,NSDictionary *details) {
     if (!RVDAWatchCounts) RVDAWatchCounts=[NSMutableDictionary dictionary];
     if (RVDAWatchOwner!=RVCurrentWatch || RVDAWatchPlayback!=RVCurrentPlayback || ![hash isEqual:RVDAWatchVideoHash]) {
         RVDAWatchOwner=RVCurrentWatch;RVDAWatchPlayback=RVCurrentPlayback;RVDAWatchVideoHash=hash;RVDAWatchGeneration++;
+        if (RVDAWatchHistory.count>=64) [RVDAWatchHistory removeObjectAtIndex:0];
         [RVDAWatchHistory addObject:@{@"checkpoint":@"W00_watch_bound",@"generation":@(RVDAWatchGeneration),@"video_hash":hash,
-            @"watch_class":RVCurrentWatch ? NSStringFromClass([RVCurrentWatch class]) : @"absent",@"elapsed_ms":@(MAX(0,1000*(RVDANow()-RVDAUIStarted)))}];
+            @"watch_class":RVCurrentWatch ? NSStringFromClass([RVCurrentWatch class]) : @"absent",@"elapsed_ms":@(MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-RVDAUIStarted)))}];
     }
     RVDAWatchCounts[checkpoint]=@([RVDAWatchCounts[checkpoint] unsignedLongLongValue]+1);
     NSMutableDictionary *event=[@{@"checkpoint":checkpoint,@"generation":@(RVDAWatchGeneration),@"video_hash":hash,
-        @"elapsed_ms":@(MAX(0,1000*(RVDANow()-RVDAUIStarted)))} mutableCopy];
+        @"elapsed_ms":@(MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-RVDAUIStarted)))} mutableCopy];
     if (details) [event addEntriesFromDictionary:details];
     if (RVDAWatchHistory.count>=64) [RVDAWatchHistory removeObjectAtIndex:0];
     [RVDAWatchHistory addObject:event.copy];
