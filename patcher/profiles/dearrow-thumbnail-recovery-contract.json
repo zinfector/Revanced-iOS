@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "0.3.47",
+  "release": "0.3.48",
   "canonical_timestamp": {
     "metadata": "randomTime * videoDuration; no re-adjustment or millisecond rounding",
     "missing_random_time": "seedrandom/Alea first output; subtract 0.9 only when generated fraction exceeds 0.9",
@@ -27,7 +27,11 @@
     "visibility_wake_seconds": 2,
     "foreground_only": true,
     "offscreen": "pause transfer ticket and retry epoch; retain canonical request identity",
-    "terminal": "invalid timestamp/image/options/data remain terminal; transient service/network failures deferred"
+    "terminal": "invalid timestamp/image/options/data remain terminal; transient service/network failures deferred",
+    "same_binding_visibility_grace_seconds": 3,
+    "minimum_visibility_resume_delay_seconds": 2,
+    "cooldown_growth": "Only exhausted service retry bursts, never ordinary visibility pauses",
+    "deferral_native_refresh": "Only to restore an actual pending placeholder; otherwise scheduler state only"
   },
   "coalescing": {
     "key": [
@@ -51,7 +55,9 @@
     "fallback_timestamp_requested",
     "fallback_timestamp_returned",
     "fallback_request_key",
-    "fallback_row_visible"
+    "fallback_row_visible",
+    "fallback_exhaustions",
+    "fallback_visibility_grace_seconds"
   ],
   "events": [
     "D08_random_time_selected",
@@ -61,5 +67,12 @@
     "D08_fallback_timestamp_response"
   ],
   "device_verified": false,
-  "tests_run": false
+  "tests_run": false,
+  "request_key": "Salted full URL hash, independent of video-ID validation",
+  "previous_release_live_issue": {
+    "release": "0.3.47",
+    "one_row_cycles": 1010,
+    "native_refresh_requests": 1015,
+    "diagnosis": "visibility pause -> native reload -> newly unloaded root -> pause loop"
+  }
 }

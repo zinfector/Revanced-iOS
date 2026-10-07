@@ -11,6 +11,14 @@ static BOOL RVDAUIFallbackVisible(RVDAUIBinding *state) {
     for (UIView *parent=view;parent;parent=parent.superview) if (parent.hidden || parent.alpha<.05) return NO;
     return !CGRectIsEmpty(CGRectIntersection([view convertRect:view.bounds toView:view.window],view.window.bounds));
 }
+// A native rematerialization can briefly detach an otherwise visible row.
+// Keep one existing burst alive through that gap; do not treat it as recycling.
+static BOOL RVDAUIFallbackMayRun(RVDAUIBinding *state) {
+    if (UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return NO;
+    NSTimeInterval now=NSProcessInfo.processInfo.systemUptime;
+    if (RVDAUIFallbackVisible(state)) { state.fallbackLastVisible=now;return YES; }
+    return state.fallbackLastVisible>0 && now-state.fallbackLastVisible<3;
+}
 static BOOL RVDAUIFallbackPending(RVDAUIBinding *state) {
     return state.result.isFinal && (state.parts&RVDeArrowPartsThumbnail) &&
         [@[@"waiting_visibility",@"deferred",@"selecting",@"queued",@"fetching",@"retry_wait"] containsObject:state.fallbackPhase];
@@ -30,28 +38,36 @@ static void RVDAUIFallbackEnsureTimer(void) {
 static void RVDAUIFallbackDefer(RVDAUIBinding *state,NSString *reason,NSTimeInterval cooldown) {
     // Retire this burst, not the row binding or its title/consumer permissions.
     state.fallbackEpoch++;state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackDeadline=0;
-    state.fallbackNextAttempt=MAX(state.fallbackNextAttempt,RVDANow()+cooldown);
+    state.fallbackNextAttempt=MAX(state.fallbackNextAttempt,RVDANow()+MAX(2,cooldown));
     state.fallbackPhase=cooldown>0 ? @"deferred" : @"waiting_visibility";state.imageBlocker=reason;
     RVDAHTTP *transfer=state.fallbackTransfer;state.fallbackTransfer=nil;[transfer cancel];
+    BOOL restorePending=state.presentationImage && [state.imageOrigin isEqual:@"pending"];
     if ([state.imageOrigin isEqual:@"pending"] || state.encodedImage==RVDABlankImage()) {
         state.imageRevision++;state.presentationImage=nil;state.imageBytes=nil;state.encodedImage=nil;state.imageOrigin=nil;
     }
     state.pendingExpired=YES;
     RVDADiagRecord(@"D08_fallback_deferred",state,reason,@{@"recoverable":@YES,@"cooldown_seconds":@(cooldown),@"cycle":@(state.fallbackCycles),@"row_visible":@(RVDAUIFallbackVisible(state))});
-    RVDAUIFallbackEnsureTimer();RVDAUIRefresh(state);
+    RVDAUIFallbackEnsureTimer();
+    // Most deferrals change scheduler state only. Reloading an unchanged native
+    // row here creates a load -> invisible -> pause -> reload feedback loop.
+    if (restorePending) RVDAUIRefresh(state);
 }
 static NSTimeInterval RVDAUIFallbackCooldown(RVDAUIBinding *state) {
-    return MAX(state.fallbackRetryAfter,MIN(300,30*pow(2,MIN(state.fallbackCycles ? state.fallbackCycles-1 : 0,4u))));
+    return MAX(state.fallbackRetryAfter,MIN(300,30*pow(2,MIN(state.fallbackExhaustions ? state.fallbackExhaustions-1 : 0,4u))));
+}
+static void RVDAUIFallbackExhausted(RVDAUIBinding *state,NSString *reason) {
+    state.fallbackExhaustions++;
+    RVDAUIFallbackDefer(state,reason,RVDAUIFallbackCooldown(state));
 }
 static void RVDAUIFallbackWake(RVDAUIBinding *state) {
     if (!NSThread.isMainThread || !RVDAUIFallbackPending(state) || RVDAUIOriginal(state) || !RVDAUICurrent(state)) return;
-    if (!RVDAUIFallbackVisible(state)) {
+    if (!RVDAUIFallbackMayRun(state)) {
         if (state.fallbackStarted) RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",0);
         return;
     }
     if (state.fallbackStarted) {
         if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline)
-            RVDAUIFallbackDefer(state,@"fallback_burst_deferred",RVDAUIFallbackCooldown(state));
+            RVDAUIFallbackExhausted(state,@"fallback_burst_deferred");
         return;
     }
     if (RVDANow()<state.fallbackNextAttempt) return;
@@ -63,7 +79,7 @@ static void RVDAUIFallbackFailure(RVDAUIBinding *state,NSString *blocker,BOOL re
     state.imageBlocker=blocker;
     NSTimeInterval remaining=state.fallbackDeadline-RVDANow();
     NSTimeInterval delay=MAX(MIN(16,2*pow(2,MIN(state.fallbackRetries,4u))),state.fallbackRetryAfter);
-    if (retryable && !RVDAUIFallbackVisible(state)) { RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",delay);return; }
+    if (retryable && !RVDAUIFallbackMayRun(state)) { RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",delay);return; }
     if (retryable && retry && !state.fallbackRetryScheduled && state.fallbackRetries<12 && remaining>delay) {
         state.fallbackRetries++;state.fallbackRetryScheduled=YES;state.fallbackPhase=@"retry_wait";
         RVDADiagRecord(@"D08_fallback_retry_scheduled",state,blocker,@{@"retry_attempt":@(state.fallbackRetries),@"delay_seconds":@(delay),@"remaining_seconds":@(MAX(0,remaining)),@"cycle":@(state.fallbackCycles),@"retry_limit":@12});
@@ -73,12 +89,12 @@ static void RVDAUIFallbackFailure(RVDAUIBinding *state,NSString *blocker,BOOL re
             current.fallbackRetryScheduled=NO;
             NSString *stale=RVDAUICurrentBlocker(current);
             if (stale || RVDAUIOriginal(current)) { RVDAUIEvent(@"D11_fallback_retry_discarded",current,stale ?: @"original_selected");return; }
-            if (!RVDAUIFallbackVisible(current)) { RVDAUIFallbackDefer(current,@"fallback_waiting_visibility",0);return; }
-            if (RVDANow()>=current.fallbackDeadline) { RVDAUIFallbackDefer(current,@"fallback_burst_deferred",RVDAUIFallbackCooldown(current));return; }
+            if (!RVDAUIFallbackMayRun(current)) { RVDAUIFallbackDefer(current,@"fallback_waiting_visibility",0);return; }
+            if (RVDANow()>=current.fallbackDeadline) { RVDAUIFallbackExhausted(current,@"fallback_burst_deferred");return; }
             retry(current);
         });
     } else if (retryable) {
-        RVDAUIFallbackDefer(state,@"fallback_generation_deferred",RVDAUIFallbackCooldown(state));
+        RVDAUIFallbackExhausted(state,@"fallback_generation_deferred");
     } else {
         state.fallbackEpoch++;state.fallbackStarted=NO;state.fallbackRetryScheduled=NO;state.fallbackPhase=@"failed";
         RVDADiagRecord(@"D08_fallback_rejected",state,blocker,@{@"last_response_blocker":blocker ?: @"unknown",@"recoverable":@NO,@"retries":@(state.fallbackRetries)});RVDAUIRefresh(state);
@@ -142,8 +158,8 @@ static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uin
 }
 static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NSNumber *timestamp,uint64_t generation) {
     if (!url || RVDAUIOriginal(state)) return;
-    state.fallbackTimestampRequested=timestamp;state.fallbackTimestampReturned=nil;state.fallbackRequestKey=RVDADiagVideo(url.absoluteString);
-    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackDefer(state,@"fallback_burst_deferred",RVDAUIFallbackCooldown(state));return; }
+    state.fallbackTimestampRequested=timestamp;state.fallbackTimestampReturned=nil;state.fallbackRequestKey=[RVDAHash([NSString stringWithFormat:@"%@|%@",RVDAUISalt,url.absoluteString]) substringToIndex:12];
+    if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackExhausted(state,@"fallback_burst_deferred");return; }
     if (!RVDAUIAuxiliaryCache) { RVDAUIAuxiliaryCache=[NSCache new];RVDAUIAuxiliaryCache.countLimit=128;RVDAUIAuxiliaryCache.totalCostLimit=24*1024*1024; }
     NSDictionary *cached=[RVDAUIAuxiliaryCache objectForKey:url.absoluteString];
     if ([cached[@"expires"] doubleValue]>RVDANow()) {
@@ -250,7 +266,7 @@ static void RVDAUIRandomImage(RVDAUIBinding *state,uint64_t generation) {
 }
 static void RVDAUIResolveFallback(RVDAUIBinding *state,uint64_t generation) {
     if (RVDAUIOriginal(state) || !(state.parts&RVDeArrowPartsThumbnail) || state.fallbackStarted) return;
-    if (!RVDAUIFallbackVisible(state)) {
+    if (!RVDAUIFallbackMayRun(state)) {
         if (![state.fallbackPhase isEqual:@"waiting_visibility"]) RVDAUIFallbackDefer(state,@"fallback_waiting_visibility",0);
         return;
     }

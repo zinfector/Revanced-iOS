@@ -44,9 +44,9 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
 @property(nonatomic) uint64_t imageRevision;
-@property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter,fallbackNextAttempt;
+@property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter,fallbackNextAttempt,fallbackLastVisible;
 @property(nonatomic) uint64_t fallbackEpoch;
-@property(nonatomic) NSUInteger fallbackCycles;
+@property(nonatomic) NSUInteger fallbackCycles,fallbackExhaustions;
 @property(nonatomic) NSInteger fallbackHTTPStatus,fallbackNetworkErrorCode;
 @property(nonatomic,strong) NSNumber *fallbackTimestampRequested,*fallbackTimestampReturned;
 @property(nonatomic,copy) NSString *fallbackTimestampSource,*fallbackRequestKey;
@@ -239,7 +239,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
-    binding.fallbackEpoch++;binding.fallbackNextAttempt=0;binding.fallbackCycles=0;
+    binding.fallbackEpoch++;binding.fallbackNextAttempt=0;binding.fallbackCycles=0;binding.fallbackExhaustions=0;binding.fallbackLastVisible=0;
     binding.fallbackHTTPStatus=0;binding.fallbackNetworkErrorCode=0;binding.fallbackTimestampRequested=nil;binding.fallbackTimestampReturned=nil;
     binding.fallbackTimestampSource=nil;binding.fallbackRequestKey=nil;
     binding.fallbackDeadline=0;binding.fallbackRetryAfter=0;binding.fallbackResponseReason=nil;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
@@ -518,7 +518,8 @@ static NSDictionary *RVDAUIReport(void) {
             @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),
             @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),@"fallback_response_reason":state.fallbackResponseReason ?: @"none",@"fallback_remaining_seconds":@(state.fallbackDeadline ? MAX(0,state.fallbackDeadline-RVDANow()) : 0),
             @"fallback_http":@(state.fallbackHTTPStatus),@"fallback_network_error_code":@(state.fallbackNetworkErrorCode),
-            @"fallback_cycles":@(state.fallbackCycles),@"fallback_cooldown_seconds":@(MAX(0,state.fallbackNextAttempt-RVDANow())),
+            @"fallback_cycles":@(state.fallbackCycles),@"fallback_exhaustions":@(state.fallbackExhaustions),
+            @"fallback_visibility_grace_seconds":@(state.fallbackLastVisible ? MAX(0,3-(NSProcessInfo.processInfo.systemUptime-state.fallbackLastVisible)) : 0),@"fallback_cooldown_seconds":@(MAX(0,state.fallbackNextAttempt-RVDANow())),
             @"fallback_timestamp_source":state.fallbackTimestampSource ?: @"not_applicable",
             @"fallback_timestamp_requested":state.fallbackTimestampRequested ?: NSNull.null,@"fallback_timestamp_returned":state.fallbackTimestampReturned ?: NSNull.null,
             @"fallback_request_key":state.fallbackRequestKey ?: @"none",@"fallback_row_visible":@(RVDAUIFallbackVisible(state)),
