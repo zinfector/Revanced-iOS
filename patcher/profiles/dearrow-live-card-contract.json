@@ -1,7 +1,7 @@
 {
-  "schema": 1,
-  "release": "0.3.39",
-  "trigger": "DeArrow Report 620",
+  "schema": 2,
+  "release": "0.3.40",
+  "trigger": "DeArrow Report 211",
   "status": "implemented_device_confirmation_pending",
   "tests_run": false,
   "device_verified": false,
@@ -10,7 +10,7 @@
     "native/RVDeArrowConsumers.inc",
     "native/RVDeArrowLiveCapture.inc"
   ],
-  "resource_key": "video_lockup_with_attachment.eml-fe|72cb15f170efbde1",
+  "resource_key": "Revision diagnostic only; video_lockup_with_attachment.eml-fe family",
   "identity_path": [
     232954548,
     18,
@@ -43,59 +43,60 @@
     1
   ],
   "identity_contract": "Original iOS descriptors: CoWatchWatchEndpointWrapperCommand extension 462702848, watchEndpoint command field 1; YTIWatchEndpoint extension 48687757, videoId field 1. Require one length-delimited field at each step and a valid 11-character ID. Do not borrow current playback identity.",
-  "admission": "Exact key and revision, existing owned non-ad section/controller entry, valid title input, optional named CoWatch videoTitle agreement, every static image source belongs to the navigation ID; reject conflicting old field-7 identity and composite images.",
+  "admission": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
   "native_consumers": {
-    "factory_root": "Only the root returned by this entry?s original factory block can establish its component instance. Child consumers must belong to that exact component object, not just another instance of the same video. Existing source and generation guards remain active.",
-    "headline": "ELMTextNode.attributedText must equal the original title before title writes. Later compare the expected replacement to native attributedText.",
-    "image": "ELMImageNode.URL must equal one verified original image source before image writes. Later compare ImageType.sources1.imageData2 to the encoded replacement.",
-    "safe_accessors": [
-      "ASDisplayNode.nodeController @@:",
-      "ELMNodeController.owningComponent @@:",
-      "ELMComponent.parent @@:",
-      "ELMComponent.element @@:",
-      "ELMComponent.templateURI @@:",
-      "ASDisplayNode.subnodes @@:",
-      "ELMTextNode.setElement: v@:@",
-      "ELMImageNode.setElement: v@:@"
+    "strategy": "Private keyed ELMNodeController callbacks on accepted factory-owned descendants; no global ELMTextNode/ELMImageNode setElement observers.",
+    "callbacks": [
+      "setOnNodeDidLoad:forKey:",
+      "setOnNodeDidLayout:forKey:"
     ],
-    "scheduling": "Inspect existing nodes on main after native construction; do not force component.node or call C++ aggregate-return accessors. Observe lazy descendants through their checked native element setters.",
+    "abi": "v@:@?@",
+    "block_arguments": [
+      "controller",
+      "context"
+    ],
+    "main_queue_coalesced": true,
+    "generation_and_epoch_checked": true,
+    "retirement": "Remove only private keys on new source/factory/settings generation and binding destruction; weak node/controller references.",
     "bounds": {
       "nodes": 256,
       "ancestor_hops": 24,
-      "delayed_attempts": 4,
-      "delay_seconds": 0.15
+      "leases": 64,
+      "passes_per_epoch": 32,
+      "initial_retry_delays": 3,
+      "retry_seconds": 0.15
     }
   },
   "capture": {
-    "live_contract_schema": 2,
-    "directed_paths_ignore_bfs_depth_and_queue_budget": true,
-    "failure_details": [
-      "role",
-      "path",
-      "failed_step",
-      "failed_field",
-      "status",
-      "utf8_valid",
-      "video_id_valid",
-      "video_hash",
-      "text_hash",
-      "thumbnail_identity_matches"
+    "schema": 3,
+    "sampling": "resource + surface + structural shape",
+    "roots": 12,
+    "bucket_slots": 3,
+    "buckets": [
+      "feed",
+      "related",
+      "watch_title",
+      "watch_other"
     ],
+    "directed_paths_independent_of_bfs_budget": true,
     "model_values_exported": false
   },
   "checkpoints": [
     "D04_live_card_input_verified",
     "D04_live_native_consumers",
     "D05_service_requested",
+    "D08_result_accepted",
     "D08_duration_resolved",
     "D08_random_time_selected",
     "D08_fallback_transport_finished",
     "D08_fallback_timestamp_matched",
     "D08_fallback_image_decoded",
     "D08_image_encoded",
-    "presentation_model_projected",
-    "D09_live_native_replacement_consumed"
+    "D09_presentation_model_projected",
+    "D09_native_target_materialized",
+    "D09_live_native_replacement_consumed",
+    "D10_live_replacement_visible"
   ],
-  "remaining_scope": "Device confirmation; exact watch-title FE contract not established by Home capture. Player cover replacements remain excluded by existing policy.",
-  "native_initialization_evidence": "Both ELMImageNode and ELMTextNode constructors call setElement: via original stub 0x10858fce0. Observe the void setter after native execution; initializer ownership conventions remain untouched."
+  "remaining_scope": "New structural families need a reviewed recipe; no arbitrary protobuf search authorizes writes.; Existing legacy bundled compact/card/context recipes remain pinned.; Interactive titles need command-range remapping and remain original.; Player cover is excluded; watch metadata supports titles only.; Unknown watch owner or model layout remains original with directed checkpoints.; No device validation yet; watch interaction root cause remains unconfirmed.",
+  "replaced_by": "dearrow-adaptive-contract.json"
 }

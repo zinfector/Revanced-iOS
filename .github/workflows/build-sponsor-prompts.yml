@@ -1,8 +1,8 @@
-name: Build DeArrow live card payload with Xcode
+name: Build adaptable DeArrow payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-live-card-0.3.39]
+    branches: [fix/dearrow-adaptive-0.3.40]
 
 permissions:
   contents: read

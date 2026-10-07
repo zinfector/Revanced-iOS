@@ -2,10 +2,10 @@
 // Read-only native resource/configuration capture. This never grants a role,
 // mutates a renderer, invokes a C++ aggregate ABI, or exports browsing models.
 static NSMutableDictionary *RVDALiveRoots,*RVDALiveConfigurations;
-static NSMutableSet *RVDALiveObservedKeys;
+static NSMutableSet *RVDALiveObservedKeys,*RVDALiveRootResources;
 static uint64_t RVDALiveEpoch=1;
 static NSUInteger RVDALiveExportedBytes;
-enum { RVDALiveRootLimit=8,RVDALiveModelLimit=2*1024*1024,
+enum { RVDALiveRootLimit=12,RVDALiveModelLimit=2*1024*1024,
        RVDALiveConfigLimit=192*1024,RVDALiveSessionLimit=768*1024 };
 
 @interface RVDALiveSpan : NSObject
@@ -100,7 +100,8 @@ static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     NSDictionary *contract=RVDALiveCardContract(model);
     return @{@"schema":@1,@"probes":probes,@"blocker":contract[@"blocker"] ?: @"unresolved",
         @"video_id_valid":@(RVVideoIDValid(contract[@"video"])),@"video_hash":RVDADiagVideo(contract[@"video"]),
-        @"title_input_valid":@([contract[@"title"] length]>0),@"thumbnail_identity_matches":@([contract[@"image_urls"] count]>0),
+        @"title_input_valid":contract[@"title_role"] ?: @NO,@"thumbnail_identity_matches":contract[@"image_role"] ?: @NO,
+        @"title_blocker":contract[@"title_blocker"] ?: @"identity_unresolved",@"image_blocker":contract[@"image_blocker"] ?: @"identity_unresolved",
         @"native_consumer_confirmation_required":@YES,@"model_values_exported":@NO};
 }
 static void RVDALiveModelWalk(NSData *data,NSArray *path,NSUInteger depth,NSUInteger *budget,NSUInteger *bytes,
@@ -147,7 +148,7 @@ static void RVDALiveLookup(NSString *key,NSString *nativeKey,uint64_t epoch,NSUI
 static void RVDALiveSchedule(NSString *key,NSString *nativeKey) {
     if (!key || !nativeKey || !RVDAUIDiagnosticsArmed) return;uint64_t epoch;
     @synchronized(RVDAUIBinding.class) {
-        if (!RVDALiveRoots[key] || RVDALiveConfigurations[key]) return;
+        if (![RVDALiveRootResources containsObject:key] || RVDALiveConfigurations[key]) return;
         if (!RVDALiveConfigurations) RVDALiveConfigurations=[NSMutableDictionary dictionary];epoch=RVDALiveEpoch;
         if ([RVDAResourceParts(key)[@"variant"] isEqual:@"fe"]) {
             RVDALiveConfigurations[key]=@{@"resource_key":key,@"state":@"native_consumers_required",@"payload_exported":@NO,
@@ -161,7 +162,7 @@ static void RVDALiveSchedule(NSString *key,NSString *nativeKey) {
     dispatch_async(dispatch_get_main_queue(),^{ RVDALiveLookup(key,nativeKey,epoch,1); });
 }
 static void RVDALiveLookup(NSString *key,NSString *nativeKey,uint64_t epoch,NSUInteger attempt) {
-    @synchronized(RVDAUIBinding.class) { if (epoch!=RVDALiveEpoch || !RVDALiveRoots[key] || !RVDAUIDiagnosticsArmed) return; }
+    @synchronized(RVDAUIBinding.class) { if (epoch!=RVDALiveEpoch || ![RVDALiveRootResources containsObject:key] || !RVDAUIDiagnosticsArmed) return; }
     Class cls=NSClassFromString(@"ELMTemplateProcessorResolver");id resolver=RVObject(cls,"sharedInstance");
     BOOL abi=RVCan(resolver,"getSerializedTemplateConfig:withError:",@"@@:@^@");
     NSData *data=nil;NSError *error=nil;NSString *blocker=nil;
@@ -179,7 +180,7 @@ static void RVDALiveLookup(NSString *key,NSString *nativeKey,uint64_t epoch,NSUI
         @"state":data ? @"available" : @"unavailable",@"blocker":blocker ?: @"ready",
         @"error_code":@([error isKindOfClass:NSError.class] ? error.code : 0)} mutableCopy];
     @synchronized(RVDAUIBinding.class) {
-        if (epoch!=RVDALiveEpoch || !RVDALiveRoots[key]) return;
+        if (epoch!=RVDALiveEpoch || ![RVDALiveRootResources containsObject:key]) return;
         if (data) {
             BOOL bounded=data.length<=RVDALiveConfigLimit && data.length<=RVDALiveSessionLimit-RVDALiveExportedBytes;
             if (data.length<=RVDALiveModelLimit) {
@@ -210,35 +211,67 @@ static void RVDALiveNativeURI(NSString *raw) {
     @synchronized(RVDAUIBinding.class) {
         if (!RVDALiveObservedKeys) RVDALiveObservedKeys=[NSMutableSet set];
         if (RVDALiveObservedKeys.count<64) [RVDALiveObservedKeys addObject:key];
-        if (RVDALiveRoots[key]) {
-            NSMutableDictionary *record=[RVDALiveRoots[key] mutableCopy];record[@"native_uri_observed"]=@YES;RVDALiveRoots[key]=record.copy;
+        for (NSString *sample in RVDALiveRoots.allKeys) if ([RVDALiveRoots[sample][@"resource_key"] isEqual:key]) {
+            NSMutableDictionary *record=[RVDALiveRoots[sample] mutableCopy];record[@"native_uri_observed"]=@YES;RVDALiveRoots[sample]=record.copy;
         }
     }
     RVDALiveSchedule(key,raw);
+}
+static NSDictionary *RVDALiveDirectedWatchProbes(NSData *model,NSString *watchVideo) {
+    NSArray *path=RVDALiveWatchTitlePath();NSString *failure=nil;NSUInteger failed=0;
+    NSData *title=RVDACheckedPath(model,path,&failure,&failed);
+    NSString *role=title ? RVDALiveTitleFailure(title) : failure;
+    return @{@"schema":@1,@"title_path":path,@"path_status":failure ?: @"path_resolved",@"failed_step":@(failed),
+        @"title_shape":RVDALiveShape(title),@"title_text_hash":RVDADiagHash(RVDAChild(title,1)),
+        @"title_input_valid":@(!role),@"explicit_watch_id_valid":@(RVVideoIDValid(watchVideo)),@"watch_video_hash":RVDADiagVideo(watchVideo),
+        @"blocker":role ?: (RVVideoIDValid(watchVideo) ? @"native_consumer_confirmation_required" : @"explicit_watch_owner_required"),@"presentation_authorized":@NO};
+}
+static NSString *RVDALiveSampleShape(NSData *model,NSString *key) {
+    NSMutableArray *shape=[NSMutableArray array];
+    for (NSArray *path in @[@[],@[@232954548,@18],@[@232954548,@18,@1],@[@232954548,@18,@4],@[@232954548,@18,@1,@21,@8178],@[@377581260,@6,@1019]]) {
+        NSMutableArray *fields=[NSMutableArray array];
+        for (NSDictionary *field in RVDALiveShape(RVDAPath(model,path))[@"fields"])
+            [fields addObject:@{@"field":field[@"field"],@"wires":field[@"wires"],@"occurrences":field[@"occurrences"]}];
+        [shape addObject:@{@"path":path,@"fields":fields}];
+    }
+    if (RVDALiveCardFamily(key)) {
+        NSDictionary *contract=RVDALiveCardContract(model);
+        [shape addObject:@{@"semantic_status":contract[@"blocker"] ?: @"unresolved",@"title_role":contract[@"title_role"] ?: @NO,@"image_role":contract[@"image_role"] ?: @NO}];
+    }
+    return [RVDALiveDigest([NSJSONSerialization dataWithJSONObject:shape options:NSJSONWritingSortedKeys error:nil]) substringToIndex:24];
 }
 static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surface,NSString *watchVideo) {
     if (!RVDAUIDiagnosticsArmed || !NSThread.isMainThread || ![data isKindOfClass:NSData.class] || data.length>RVDALiveModelLimit) return;
     NSData *component=RVDAPath(data,@[@1,@168777401]);NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
     NSString *key=RVDALiveKey(raw);if (!key) return;
+    BOOL card=RVDALiveCardFamily(key),watch=RVDALiveWatchFamily(key);
+    if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"]) return;
+    NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" : [surface isEqual:@"related"] ? @"related" : @"feed";
+    NSData *model=RVDAChild(component,5);NSString *fingerprint=RVDALiveSampleShape(model,key);
+    NSString *sample=[NSString stringWithFormat:@"%@/%@/%@",key,surface ?: @"unknown",fingerprint];
     @synchronized(RVDAUIBinding.class) {
         if (!RVDALiveRoots) RVDALiveRoots=[NSMutableDictionary dictionary];
-        NSDictionary *prior=RVDALiveRoots[key];
+        if (!RVDALiveRootResources) RVDALiveRootResources=[NSMutableSet set];
+        NSDictionary *prior=RVDALiveRoots[sample];
         if (prior) {
-            NSMutableDictionary *next=[prior mutableCopy];next[@"occurrences"]=@([prior[@"occurrences"] unsignedIntegerValue]+1);RVDALiveRoots[key]=next.copy;
+            NSMutableDictionary *next=[prior mutableCopy];next[@"occurrences"]=@([prior[@"occurrences"] unsignedIntegerValue]+1);RVDALiveRoots[sample]=next.copy;
         } else {
-            if (RVDALiveRoots.count>=RVDALiveRootLimit) return;
-            NSData *model=RVDAChild(component,5);NSArray<RVDALiveSpan *> *fields=RVDALiveFields(model,NULL);
-            NSMutableArray *paths=[@[@[@232971250,@25,@1],@[@232903841,@1,@1],@[@377581260,@6,@1019,@1]] mutableCopy];
+            NSUInteger count=0;for (NSDictionary *record in RVDALiveRoots.allValues) count+=[record[@"capture_bucket"] isEqual:bucket];
+            if (RVDALiveRoots.count>=RVDALiveRootLimit || count>=3) return;
+            NSArray<RVDALiveSpan *> *fields=RVDALiveFields(model,NULL);
+            NSMutableArray *paths=[@[@[@232971250,@25,@1],@[@232903841,@1,@1],RVDALiveWatchTitlePath()] mutableCopy];
             if (fields.count==1 && fields[0].wire==2) [paths addObject:@[@(fields[0].field),@1,@1]];
             NSMutableArray *probes=[NSMutableArray array];for (NSArray *path in paths) [probes addObject:RVDALivePathProbe(model,path)];
             NSMutableArray *nodes=[NSMutableArray array];NSUInteger budget=96,bytes=4*1024*1024;
             RVDALiveModelWalk(model,@[],0,&budget,&bytes,nodes);
-            RVDALiveRoots[key]=@{@"resource_key":key,@"resource_parts":RVDAResourceParts(raw),@"controller_class":controller,
-                @"surface":surface ?: @"unknown",@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
+            RVDALiveRoots[sample]=@{@"resource_key":key,@"resource_parts":RVDAResourceParts(raw),@"controller_class":controller,
+                @"surface":surface ?: @"unknown",@"capture_bucket":bucket,@"structural_fingerprint":fingerprint,@"watch_video_hash":RVDADiagVideo(watchVideo),@"occurrences":@1,@"element_bytes":@(data.length),@"model":RVDALiveShape(model),
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
-                @"directed_card_contract":[key isEqual:RVDALiveCardKey()] ? RVDALiveDirectedCardProbes(model) : @{},
-                @"sample_policy":@"first_model_per_resource; later observations counted"};
+                @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
+                @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
+                @"sample_policy":@"resource + surface + structural shape; 3 slots per feed/related/watch-title/watch-other bucket"};
+            [RVDALiveRootResources addObject:key];
         }
     }
     RVDALiveSchedule(key,raw);
@@ -246,12 +279,12 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
 static void RVDALiveReset(void) {
     @synchronized(RVDAUIBinding.class) {
         RVDALiveEpoch++;RVDALiveRoots=[NSMutableDictionary dictionary];RVDALiveConfigurations=[NSMutableDictionary dictionary];
-        RVDALiveObservedKeys=[NSMutableSet set];RVDALiveExportedBytes=0;
+        RVDALiveObservedKeys=[NSMutableSet set];RVDALiveRootResources=[NSMutableSet set];RVDALiveExportedBytes=0;
     }
 }
 static NSDictionary *RVDALiveReport(void) {
     @synchronized(RVDAUIBinding.class) {
-        return @{@"schema":@2,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
+        return @{@"schema":@3,@"armed":@(RVDAUIDiagnosticsArmed),@"roots":RVDALiveRoots.allValues.copy ?: @[],@"configurations":RVDALiveConfigurations.allValues.copy ?: @[],
             @"configuration_bytes_exported":@(RVDALiveExportedBytes),@"root_limit":@(RVDALiveRootLimit),
             @"model_byte_limit":@(RVDALiveModelLimit),@"configuration_byte_limit":@(RVDALiveConfigLimit),@"session_byte_limit":@(RVDALiveSessionLimit),
             @"model_values_exported":@NO,@"automatic_role_authorization":@NO};

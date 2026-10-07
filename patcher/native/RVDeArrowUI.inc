@@ -19,8 +19,15 @@ static _Thread_local __unsafe_unretained id RVDAUISection;
 static _Thread_local NSInteger RVDAUIIndex;
 static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 
+@interface RVDAUIConsumerLease : NSObject
+@property(nonatomic,weak) id controller;
+@property(nonatomic,copy) NSString *key;
+- (void)retire;
+@end
+static void RVDAWatchReset(void);
+static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
-@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent;
+@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot;
 @property(nonatomic,strong) id originalEntry;
 @property(nonatomic,strong) RVDAProjection *profile;
 @property(nonatomic,strong) RVDeArrowRequest *request;
@@ -49,10 +56,14 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 @property(nonatomic) BOOL titleConsumerVerified,imageConsumerVerified;
 @property(nonatomic) NSUInteger consumerObservations;
 @property(nonatomic,strong) NSDictionary *consumerCheckpoint;
+@property(nonatomic,strong) NSMutableArray<RVDAUIConsumerLease *> *consumerLeases;
+@property(nonatomic) BOOL consumerQueued,consumerCallbackPending;
+@property(nonatomic) NSUInteger consumerPasses;
+@property(nonatomic) uint64_t consumerEpoch;
 @property(nonatomic,strong) NSDictionary *ownerSummary;
 @end
 @implementation RVDAUIBinding
-- (void)dealloc { [_request cancel];[_fallbackTransfer cancel]; }
+- (void)dealloc { [_request cancel];[_fallbackTransfer cancel];for (RVDAUIConsumerLease *lease in _consumerLeases) [lease retire]; }
 @end
 @interface RVDAUIImageLease : NSObject
 @property(nonatomic,weak) RVDAUIBinding *binding;
@@ -199,6 +210,7 @@ static void RVDAUIConfigureBackend(void) {
 }
 #include "RVDeArrowImages.inc"
 static void RVDAUIRequest(RVDAUIBinding *binding) {
+    RVDAUIRetireConsumers(binding);
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
@@ -209,8 +221,9 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     binding.parts=(title ? RVDeArrowPartsTitle : 0)|(image ? RVDeArrowPartsThumbnail : 0);
     binding.serviceParts=binding.parts;
     if (!RVEnabled(@"dearrow_use_crowdsourced_titles") && ![RVSetting(@"dearrow_mode") isEqual:@"casual"]) binding.serviceParts&=~RVDeArrowPartsTitle;
-    binding.titleBlocker=title ? @"awaiting_metadata" : (binding.modern && !binding.profile.titleRole ? binding.profile.blocker ?: @"title_role_unknown" : @"policy_off");
-    binding.imageBlocker=image ? @"awaiting_metadata" : (binding.modern && !binding.profile.imageRole ? binding.profile.blocker ?: @"image_role_unknown" : @"policy_off");
+    binding.titleBlocker=title ? @"awaiting_metadata" : (binding.modern && !binding.profile.titleRole ? binding.profile.titleRoleBlocker ?: binding.profile.blocker ?: @"title_role_unknown" : @"policy_off");
+    binding.imageBlocker=image ? @"awaiting_metadata" : (binding.modern && !binding.profile.imageRole ? binding.profile.imageRoleBlocker ?: binding.profile.blocker ?: @"image_role_unknown" : @"policy_off");
+    if (binding.profile.liveCard && binding.parts && !RVDAUIOriginal(binding) && binding.nativeFactoryRoot) RVDAUIScheduleConsumers(binding,0);
     if (RVDAUIOriginal(binding)) { binding.titleBlocker=@"original_selected";binding.imageBlocker=@"original_selected"; }
     RVDADiagRecord(@"D05_policy_evaluated",binding,!binding.parts ? @"policy_or_role_off" : RVDAUIOriginal(binding) ? @"original_selected" : nil,
         @{@"title_policy":@(RVDAUIPolicy(binding.surface,YES)),@"image_policy":@(RVDAUIPolicy(binding.surface,NO)),@"parts":@(binding.parts),@"service_parts":@(binding.serviceParts)});
@@ -286,7 +299,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         BOOL changed=![surface isEqual:prior.surface];if (changed) prior.surface=surface;
         if (changed || prior.settingsRevision!=RVDAUISettingsRevision) RVDAUIRequest(prior);return prior;
     }
-    [prior.request cancel];
+    [prior.request cancel];RVDAUIRetireConsumers(prior);
     RVDAUIBinding *state=[RVDAUIBinding new];state.controller=controller;state.section=section;state.index=index;state.originalEntry=entry;
     state.route=NSStringFromClass([entry class]);state.surface=RVDAUIOwnerSurface(controller,NO,NULL);
     if (RVDADiagEnabled()) state.ownerSummary=@{@"controller":NSStringFromClass([controller class]),@"section":NSStringFromClass([section class]),@"chain":RVDADiagOwners(controller)};
@@ -299,9 +312,11 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         if (RVBool(options,"hasAdLoggingData")) return RVDAUIReject(state,@"D03_video_bound",@"ad_root");
         NSData *data=RVAdResolvedObject(element,"elementData");
         if (![data isKindOfClass:NSData.class] || !data.length) return RVDAUIReject(state,@"D04_role_bound",@"element_data_missing_or_wrong_type");
-        if (RVDAUIDiagnosticsArmed && RVObject(controller,"entry")==entry &&
-            [RVDATemplate(RVDAPath(data,@[@1,@168777401])) isEqual:RVDALiveCardKey()])
-            RVDALiveCaptureRoot(data,NSStringFromClass([controller class]),state.surface,watchVideo);
+        if (RVDAUIDiagnosticsArmed && RVObject(controller,"entry")==entry) {
+            NSString *resource=RVDATemplate(RVDAPath(data,@[@1,@168777401]));
+            NSString *captureSurface=RVDALiveWatchFamily(resource) ? RVDAUIOwnerSurface(controller,YES,NULL) : state.surface;
+            RVDALiveCaptureRoot(data,NSStringFromClass([controller class]),captureSurface,watchVideo);
+        }
         state.profile=RVDAProfile(data,watchVideo);state.modern=YES;
         if (!state.profile) {
             BOOL shared=RVDAPath(data,@[@1,@484616221])!=nil;
@@ -311,9 +326,11 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         state.originalTitle=state.profile.originalTitle;state.untranslatedTitle=state.profile.untranslatedTitle;
         state.originalImageURL=state.profile.originalImageURL;state.duration=state.profile.duration;
         if (state.profile.liveCard) RVDADiagRecord(@"D04_live_card_input_verified",state,nil,
-            @{@"identity_path":state.profile.identityPath,@"presentation_path":state.profile.videoDataPath,
+            @{@"identity_path":state.profile.identityPath ?: @[],@"presentation_path":state.profile.videoDataPath ?: @[],
               @"title_hash":RVDADiagHash([state.originalTitle dataUsingEncoding:NSUTF8StringEncoding]),
-              @"thumbnail_identity_matches":@YES,@"native_consumer_confirmation_pending":@YES});
+              @"thumbnail_identity_matches":@(state.profile.imageRole),@"native_consumer_confirmation_pending":@YES,
+              @"adapter":state.profile.adapterID ?: @"unknown",@"structural_fingerprint":state.profile.structuralFingerprint ?: @"unknown",
+              @"title_input_valid":@(state.profile.titleRole),@"image_input_valid":@(state.profile.imageRole)});
         state.surface=RVDAUIOwnerSurface(controller,state.profile.watchTitle,&watchVideo);
         state.titleBlocker=state.profile.titleRole ? @"awaiting_metadata" : state.profile.blocker ?: @"title_role_unknown";
         state.imageBlocker=state.profile.imageRole ? @"awaiting_metadata" : state.profile.blocker ?: @"image_role_unknown";
@@ -361,7 +378,7 @@ static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
     if (!state || state.settingsRevision!=RVDAUISettingsRevision || RVDAUIOriginal(state)) return state.originalEntry;
     NSString *title=RVDAUITitle(state);NSData *image=RVDAUIImage(state) ? state.imageBytes : nil;
     if (state.modern) {
-        NSInteger lines=(state.parts&RVDeArrowPartsTitle) && !state.profile.watchTitle ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
+        NSInteger lines=(state.parts&RVDeArrowPartsTitle) && !state.profile.watchTitle && !state.profile.liveCard ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
         NSData *next=RVDAProject(state.profile,title,image,RVDAUIFrameFallback(state),lines);
         if (!next || [next isEqual:state.profile.source]) {
             if (title || image || RVDAUIFrameFallback(state)) RVDAUIEvent(@"D09_projection_blocked",state,@"projection_made_no_change");
@@ -456,6 +473,9 @@ static NSDictionary *RVDAUIReport(void) {
             @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],
             @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
             @"consumer_observations":@(state.consumerObservations),@"consumer_checkpoint":state.consumerCheckpoint ?: @{},
+            @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"adapter":state.profile.adapterID ?: @"legacy_pinned",
+            @"structural_fingerprint":state.profile.structuralFingerprint ?: @"not_applicable",@"watch_title_contract":@(state.profile.watchTitle),
+            @"title_input_blocker":state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.profile.imageRoleBlocker ?: @"not_applicable",
             @"last_checkpoint":state.lastCheckpoint ?: @"none",@"last_blocker":state.lastBlocker ?: @"ready",@"owners":state.ownerSummary ?: @{},
             @"result_present":@(result!=nil),@"title_decision":RVDADecisionName(result.titleDecision),
             @"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_state":@(result.imageState),
@@ -470,13 +490,14 @@ static NSDictionary *RVDAUIReport(void) {
         @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
         @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,
         @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
+        @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"global_setter_observers":@NO,
         @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
 }
 static void RVDAUIStartCapture(void) {
     [RVDAUIProbeRequest cancel];RVDAUIProbeRequest=nil;RVDAUIProbeResult=nil;RVDAUIProbeGeneration++;
     RVDAUIDiagnosticsArmed=YES;
-    RVDALiveReset();
+    RVDALiveReset();RVDAWatchReset();
     @synchronized(RVDAUIBinding.class) { RVDAUICounts=[NSMutableDictionary dictionary];RVDAUILastStages=[NSMutableDictionary dictionary];RVDAUISamples=[NSMutableDictionary dictionary];RVDAUITemplateSamples=[NSMutableDictionary dictionary];RVDAUIHistory=[NSMutableArray array]; }
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;RVDAUIPreferencesChanged();RVDAUIEvent(@"D00_capture_started",nil,nil);
 }
@@ -535,6 +556,7 @@ static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL
         @"class_present":@(cls!=Nil),@"installed":@(installed)}];return installed;
 }
 
+#include "RVDeArrowWatchDiagnostics.inc"
 static void RVInstallDeArrowUI(void) {
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;
     RVDAUISalt=NSUUID.UUID.UUIDString;
@@ -548,19 +570,8 @@ static void RVInstallDeArrowUI(void) {
             if (next) RVDADiagCount(@"projected_element_data_consumed");return next ?: native;
         };
     });
-    // Lazy descendants may appear after the factory block has returned. Observe
-    // already-created nodes later on main; never force ASNodeController.node.
-    for (NSString *name in @[@"ELMTextNode",@"ELMImageNode"]) RVDAUIHook(name,@"setElement:",@"v@:@",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id element) {
-            ((void(*)(id,SEL,id))original)(object,sel,element);__weak id weak=object;
-            dispatch_async(dispatch_get_main_queue(),^{
-                id current=weak;if (!current) return;
-                id owner=RVDAUIConsumerRoot(current);
-                for (RVDAUIBinding *state in RVDAUIBindings.allObjects) if (state.profile.liveCard && owner && owner==state.nativeRootComponent && RVDAUICurrent(state))
-                    RVDAUIObserveConsumers(state,current,state.generation,0);
-            });
-        };
-    });
+    // Consumer observation is registered on accepted factory-owned nodes only.
+    RVDAWatchInstall();
     // Only the materialization argument changes; native controller entries and
     // the shared response graph remain the authoritative original identities.
     RVDAUIHook(@"YTSectionController",@"nodeBlockForItemAtIndex:",@"@?@:q",NO,^id(IMP original,SEL sel) {
@@ -588,7 +599,10 @@ static void RVInstallDeArrowUI(void) {
                     RVDAUIBinding *current=weak;
                     if (current && weakNode && current.generation==generation && RVDAUICurrent(current)) {
                         current.materializations++;
-                        if (current.profile.liveCard) { RVDAUIBindConsumerRoot(current,weakNode);RVDAUIObserveConsumers(current,weakNode,generation,0); }
+                        if (current.profile.liveCard && current.parts && !RVDAUIOriginal(current)) {
+                            RVDAUIRetireConsumers(current);current.nativeFactoryRoot=weakNode;
+                            RVDAUIBindConsumerRoot(current,weakNode);RVDAUIScheduleConsumers(current,0);
+                        }
                         if (next!=entry) {
                             RVDAUIEvent(@"D09_native_target_materialized",current,nil);
                             if (!current.profile.liveCard) [current.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];

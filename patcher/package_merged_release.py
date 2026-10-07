@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.39'
+VERSION = '0.3.40'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-live-card',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-adaptive',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Report 620 dedicated live FE card contract: typed navigation identity separate from presentation field 18, matching thumbnail ownership, native factory-owned headline/image verification before writes, directed semantic checkpoints beyond BFS budgets, and decoded fallback delivery through the existing coordinator. Watch-title mapping remains separate. No tests run; device confirmation pending.'}
-    (ROOT/'build/package-manifest-0.3.39.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Revision-independent live-card and watch-metadata structural recipes, independent title/image roles, owned native keyed lifecycle callbacks, invariant command branches, directed capture per resource/surface/shape, and passive watch touch/gesture/command checkpoints. Apple production build; no tests. Device confirmation pending.'}
+    (ROOT/'build/package-manifest-0.3.40.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

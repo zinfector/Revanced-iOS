@@ -1,6 +1,6 @@
 {
-  "schema": 2,
-  "release": "0.3.39",
+  "schema": 3,
+  "release": "0.3.40",
   "trigger": "DeArrow Report 246: native -fe keys rejected; ordinary extension 232954548 yields no old-path VideoData candidate",
   "status": "live_card_contract_implemented_device_confirmation_pending",
   "device_verified": false,
@@ -11,7 +11,7 @@
     "syntax": "Strict resource basename, optional -js, optional observed -fe variant, delimiter and exact 1..16 hexadecimal revision",
     "normalization": "Preserve -fe in canonical resource key; never alias a native compiled variant to an old bundled role profile",
     "diagnostic_disclosure": "New native resource identifiers matching strict syntax may be disclosed without the bundled-only basename allowlist. Paths, URLs and arbitrary strings remain excluded.",
-    "production_role_authorization": "Existing pinned contracts plus exact live-card revision, semantic navigation/thumbnail validation and factory-instance native consumer checks."
+    "production_role_authorization": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes."
   },
   "native_lookup": {
     "executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
@@ -25,7 +25,7 @@
     "live_fe_policy": "Do not query global legacy serialized-config provider for FE keys; record native_consumers_required and inspect the owned materialized inputs."
   },
   "bounds": {
-    "owned_roots": 8,
+    "owned_roots": 12,
     "model_bytes": 2097152,
     "fields_per_message": 4096,
     "displayed_fields_per_message": 32,
@@ -34,7 +34,8 @@
     "aggregate_model_inspection_bytes_per_resource": 4194304,
     "configuration_bytes_per_resource": 196608,
     "configuration_bytes_per_capture": 786432,
-    "native_observed_resource_keys": 64
+    "native_observed_resource_keys": 64,
+    "slots_per_surface_bucket": 3
   },
   "ownership": "Capture only main-thread matched controller entries with section/index scope, ordinary YTVideoElementCellController or explicit watch metadata owner, and a checked negative ad-presence flag",
   "model_inventory": "Breadth-first structural paths include field and occurrence index. Store field/wire/count/length, first failed candidate step and salted candidate-ID hashes. No model base64, titles, personal IDs or thumbnail URLs.",
@@ -65,11 +66,39 @@
     "D05_policy_evaluated through service/fallback/projection/refresh remain downstream of verified roles"
   ],
   "next_device_capture": [
-    "Start capture explicitly, then close Settings and scroll newly configured ordinary Home rows.",
-    "Open an ordinary video and scroll its related rows so player/related owners are captured separately.",
-    "Wait at least three seconds for native configuration lookup retries, then copy DeArrow checkpoints.",
-    "Inspect exact live resource keys, candidate-path failed steps, nested model fields and exported native configurations to derive new title/image consumers."
+    "Start DeArrow diagnostic capture in Settings, then close Settings.",
+    "Scroll newly configured Home cards, open a video, and scroll related rows.",
+    "Tap a description timestamp/chapter and Comments. Wait for replacement/fallback.",
+    "Copy DeArrow checkpoints; identify the first missing D stage and the W trace for each failed tap.",
+    "If taps still fail, repeat with both DeArrow title/thumbnail options disabled and a fresh app launch."
   ],
   "activation": "Only explicit Start DeArrow diagnostic capture enables expensive live model/configuration inspection; general diagnostics alone does not",
-  "live_card_contract": "dearrow-live-card-contract.json"
+  "live_card_contract": "dearrow-live-card-contract.json",
+  "adaptive_contract": "dearrow-adaptive-contract.json",
+  "sampling": "resource + surface + structural shape",
+  "capture_buckets": [
+    "feed",
+    "related",
+    "watch_title",
+    "watch_other"
+  ],
+  "watch_trace": {
+    "activation": "Explicit Start DeArrow diagnostic capture only",
+    "history_limit": 64,
+    "stages": {
+      "W00": "Watch binding/generation",
+      "W01": "Native window touch with receiving view/ancestor/recognizer state",
+      "W02": "Original gesture decision, preserved unchanged",
+      "W03": "Native node tap or text-link path",
+      "W04": "Elements command bridge entry/return; original arguments and completion forwarded unchanged",
+      "W05": "Native presentation or seek requested; no inference of successful completion"
+    },
+    "context": [
+      "Existing first-launch watch configuration",
+      "Vote normalization",
+      "Ad mutations",
+      "SponsorBlock host"
+    ],
+    "opaque_command_payloads_exported": false
+  }
 }

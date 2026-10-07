@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-// Pinned serialized presentation contracts: profiles/dearrow-ui-contract.json.
+// Semantic live contracts: profiles/dearrow-adaptive-contract.json.
+// Legacy bundled recipes retain their independently established contracts.
 // Reuse the bounded, unknown-field-preserving protobuf helpers used by RYD.
 static NSData *RVDAChild(NSData *data,uint32_t number) {
     return RVVoteOne(RVVoteFields(data),number,2).value;
@@ -78,16 +79,17 @@ static NSData *RVDAVideoData(NSData *data,NSString *video,NSString *title,NSData
     }
     return next;
 }
-static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoPath,NSString *title) {
+static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoPath,NSString *title,NSString *originalTitle) {
     if (!title || videoPath.count<2) return model;
     NSArray *path=[videoPath subarrayWithRange:NSMakeRange(0,videoPath.count-1)];NSData *holder=RVDAPath(model,path);
     NSString *label=RVDAText(RVDAChild(holder,2));if (!label) return model;
     NSData *metadata=RVDAChild(RVDAPath(model,videoPath),2);
-    NSString *plain=RVDAText(RVDAChild(metadata,1)) ?: RVDAText(RVDAPath(metadata,@[@27,@1]));
+    NSString *plain=originalTitle ?: RVDAText(RVDAChild(metadata,1)) ?: RVDAText(RVDAPath(metadata,@[@27,@1]));
     NSRange range=plain.length ? [label rangeOfString:plain] : NSMakeRange(NSNotFound,0);
     NSString *next;
     if (range.location!=NSNotFound) next=[label stringByReplacingCharactersInRange:range withString:title];
     else {
+        if (originalTitle) return model; // Preserve the original accessibility details.
         NSMutableArray *parts=[NSMutableArray arrayWithObject:title];
         for (NSNumber *field in @[@2,@3]) { NSString *value=RVDAText(RVDAChild(metadata,field.unsignedIntValue));if (value.length) [parts addObject:value]; }
         next=[parts componentsJoinedByString:@", "];
@@ -106,14 +108,17 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @property(nonatomic) BOOL watchTitle,titleRole,imageRole;
 @property(nonatomic) BOOL contextSlots;
 @property(nonatomic) BOOL liveCard;
+@property(nonatomic,copy) NSString *adapterID,*structuralFingerprint,*titleRoleBlocker,*imageRoleBlocker;
+@property(nonatomic,strong) NSArray<NSNumber *> *titlePath,*imagePath,*titleEntityPath;
+@property(nonatomic,copy) NSArray<NSString *> *imageURLs;
 @end
 @implementation RVDAProjection @end
 
 static NSDictionary *RVDAResourceParts(NSString *uri) {
     if (!uri.length || uri.length>2048) return nil;
     // The service can supply a resource path, while bundled filenames use an
-    // underscore revision separator. Keep the exact revision; never admit an
-    // arbitrary downloaded revision by basename alone.
+    // underscore revision separator. Keep the revision for diagnostics and native
+    // instance matching; a family match alone never authorizes a model rewrite.
     NSString *leaf=[uri.lastPathComponent stringByRemovingPercentEncoding];if (!leaf) return nil;
     static NSRegularExpression *regex;static dispatch_once_t once;
     dispatch_once(&once,^{ regex=[NSRegularExpression regularExpressionWithPattern:@"^([A-Za-z0-9_]+\\.eml(?:-js)?)(-fe)?[_|]([0-9a-fA-F]{1,16})$" options:0 error:nil]; });
@@ -129,23 +134,33 @@ static NSDictionary *RVDAResourceParts(NSString *uri) {
 static NSString *RVDAResourceName(NSString *uri) {
     return RVDAResourceParts(uri)[@"key"];
 }
+static BOOL RVDAResourceFamily(NSString *raw,NSString *basename,NSString *variant) {
+    NSDictionary *parts=RVDAResourceParts(raw);
+    return [parts[@"basename"] isEqual:basename] && [parts[@"variant"] isEqual:variant];
+}
+static BOOL RVDALiveCardFamily(NSString *raw) { return RVDAResourceFamily(raw,@"video_lockup_with_attachment.eml",@"fe"); }
+static BOOL RVDALiveWatchFamily(NSString *raw) {
+    NSDictionary *parts=RVDAResourceParts(raw);
+    return [@[@"video_metadata.eml",@"video_metadata_inner.eml"] containsObject:parts[@"basename"] ?: @""];
+}
 static NSString *RVDAResourceProfileStatus(NSString *raw) {
     NSDictionary *parts=RVDAResourceParts(raw);if (!parts) return @"template_uri_grammar_rejected";
+    if (RVDALiveCardFamily(raw) || RVDALiveWatchFamily(raw)) return @"structural_model_validation_required";
     NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
-        @"video_with_context_slots.eml-js|7f46bdff852ff164",@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7",
-        @"video_lockup_with_attachment.eml-fe|72cb15f170efbde1"];
+        @"video_with_context_slots.eml-js|7f46bdff852ff164"];
     if ([pinned containsObject:parts[@"key"]]) return @"pinned_uri_model_validation_required";
-    for (NSString *key in pinned) if ([[key componentsSeparatedByString:@"|"][0] isEqual:parts[@"basename"]])
-        return [parts[@"variant"] isEqual:@"fe"] ? @"template_variant_unmapped" : @"template_revision_unmapped";
+    for (NSString *key in pinned) if ([RVDAResourceParts(key)[@"basename"] isEqual:parts[@"basename"]])
+        return [RVDAResourceParts(key)[@"variant"] isEqual:parts[@"variant"]] ? @"template_revision_unmapped" : @"template_variant_unmapped";
     return @"template_resource_unmapped";
 }
 static NSString *RVDALiveCardFailure(NSData *model);
+static NSString *RVDALiveWatchFailure(NSData *model);
 static NSString *RVDAProfileFailure(NSData *data) {
     NSData *component=RVDAPath(data,@[@1,@168777401]);
     if (!component) return @"serialized_component_root_unresolved";
     NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
-    if ([RVDAResourceName(raw) isEqual:@"video_lockup_with_attachment.eml-fe|72cb15f170efbde1"])
-        return RVDALiveCardFailure(RVDAChild(component,5));
+    if (RVDALiveCardFamily(raw)) return RVDALiveCardFailure(RVDAChild(component,5));
+    if (RVDALiveWatchFamily(raw)) return RVDALiveWatchFailure(RVDAChild(component,5));
     NSString *status=RVDAResourceProfileStatus(raw);
     return [status isEqual:@"pinned_uri_model_validation_required"] ? @"video_model_path_unresolved" : status;
 }
@@ -195,8 +210,8 @@ static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArra
     if (depth>16 || !*budget || found.count>1) return;(*budget)--;
     NSArray *fields=RVVoteFields(element);if (!fields) return;
     NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *name=RVDATemplate(component);
-    if ([name isEqual:RVDALiveCardKey()]) {
-        RVDAProjection *profile=RVDALiveCardProfile(RVDAChild(component,5));
+    if (RVDALiveCardFamily(name) || RVDALiveWatchFamily(name)) {
+        RVDAProjection *profile=RVDALiveCardFamily(name) ? RVDALiveCardProfile(RVDAChild(component,5),name) : RVDALiveWatchProfile(RVDAChild(component,5),name,watchVideo);
         if (profile) { profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile]; }
         return;
     }
@@ -210,20 +225,17 @@ static void RVDADiscover(NSData *element,NSArray<NSNumber *> *path,NSMutableArra
         NSArray<RVVoteField *> *extensions=RVVoteFields(model);
         if (extensions.count==1 && [extensions[0] wire]==2) modelPath=@[@([extensions[0] number]),@1,@1];
     }
-    BOOL watch=[@[@"video_metadata.eml|5eb7b56b3539d373",@"video_metadata_inner.eml|e50f36a914ed35f7"] containsObject:name];
     NSData *videoData=modelPath ? RVDAPath(model,modelPath) : nil;
     NSString *video=RVDAText(RVDAChild(videoData,7));
-    if (watch && RVVideoIDValid(watchVideo) && RVDAPath(model,@[@377581260,@6,@1019,@1])) video=watchVideo;
     if (RVVideoIDValid(video)) {
-        RVDAProjection *profile=[RVDAProjection new];profile.video=video;profile.route=name;profile.watchTitle=watch;
+        RVDAProjection *profile=[RVDAProjection new];profile.video=video;profile.route=name;
         profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];
-        profile.videoDataPath=modelPath;profile.titleRole=watch || RVDAChild(videoData,2) || RVDAPath(videoData,@[@21,@8178,@1]);
+        profile.videoDataPath=modelPath;profile.titleRole=RVDAChild(videoData,2) || RVDAPath(videoData,@[@21,@8178,@1]);
         NSData *thumbnail=RVDAChild(videoData,1);
         // sourcesArray is repeated; preview metadata owns a separate preview.
-        profile.imageRole=!watch && RVDAChild(thumbnail,1) && !RVDAChild(thumbnail,60);
+        profile.imageRole=RVDAChild(thumbnail,1) && !RVDAChild(thumbnail,60);
         NSData *metadata=RVDAChild(videoData,2);
-        profile.originalTitle=watch ? RVDAText(RVDAPath(model,@[@377581260,@6,@1019,@1,@1])) :
-            RVDAText(RVDAChild(metadata,1)) ?: RVDAText(RVDAPath(metadata,@[@27,@1])) ?: RVDAText(RVDAPath(videoData,@[@21,@8178,@1,@1]));
+        profile.originalTitle=RVDAText(RVDAChild(metadata,1)) ?: RVDAText(RVDAPath(metadata,@[@27,@1])) ?: RVDAText(RVDAPath(videoData,@[@21,@8178,@1,@1]));
         profile.untranslatedTitle=RVDAText(RVDAChild(metadata,30));
         profile.duration=RVDADurationText(RVDAText(RVDAChild(thumbnail,2)));
         profile.originalImageURL=RVDAImageURL(RVDAChild(thumbnail,1),video);
@@ -252,12 +264,25 @@ static RVDAProjection *RVDAProfile(NSData *data,NSString *watchVideo) {
 static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image,BOOL fallback,NSInteger lines) {
     NSData *component=RVDAPath(profile.source,profile.componentPath),*model=RVDAChild(component,5),*next=model;
     if (profile.watchTitle && title && profile.titleRole) {
-        NSArray *path=@[@377581260,@6,@1019,@1];NSData *original=RVDAPath(model,path);
+        NSArray *path=profile.titlePath ?: @[@377581260,@6,@1019,@1];NSData *original=RVDAPath(model,path);
         next=RVDASetPath(model,path,RVDAAttributed(original,title)) ?: model;
     } else if (profile.videoDataPath) {
         NSData *original=RVDAPath(model,profile.videoDataPath);
-        NSData *value=RVDAVideoData(original,profile.video,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
-        next=RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil);
+        NSData *value=original;
+        if (profile.liveCard) {
+            if (title && profile.titleRole) {
+                NSData *attributed=RVDAAttributed(RVDAPath(model,profile.titlePath),title);
+                NSArray *relative=[profile.titlePath subarrayWithRange:NSMakeRange(profile.videoDataPath.count,profile.titlePath.count-profile.videoDataPath.count)];
+                if (attributed) value=RVDASetPath(value,relative,attributed) ?: value;
+                if (profile.titleEntityPath) {
+                    NSArray *entityPath=[profile.titleEntityPath subarrayWithRange:NSMakeRange(profile.videoDataPath.count,profile.titleEntityPath.count-profile.videoDataPath.count)];
+                    NSData *config=RVDAPath(value,entityPath);
+                    if (config) value=RVDASetPath(value,entityPath,RVVoteReplace(RVVoteFields(config),@{},[NSSet setWithObject:@7])) ?: value;
+                }
+            }
+            if (image && profile.imageRole) value=RVDASet(value,1,RVDAStaticImage(RVDAChild(value,1),image)) ?: value;
+        } else value=RVDAVideoData(original,profile.video,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
+        next=RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil,profile.liveCard ? profile.originalTitle : nil);
         next=RVDASetPath(next,profile.videoDataPath,value) ?: next;
         if (profile.contextSlots) {
             NSArray *path=@[profile.videoDataPath[0],@5];NSData *slots=RVDAPath(next,path);
@@ -266,6 +291,17 @@ static NSData *RVDAProject(RVDAProjection *profile,NSString *title,NSData *image
                 if (filtered) next=RVDASetPath(next,path,filtered) ?: next;
             }
         }
+    }
+    // The entire graph outside explicitly owned presentation roles is invariant.
+    if (profile.liveCard) {
+        NSMutableArray *paths=[NSMutableArray array];
+        if (title && profile.titleRole) { [paths addObject:profile.titlePath];if (profile.titleEntityPath) [paths addObject:profile.titleEntityPath]; }
+        if (image && profile.imageRole) [paths addObject:[profile.imagePath arrayByAddingObject:@1]];
+        // The card accessibility label has no command ranges; its value may change.
+        if (!profile.watchTitle && title && RVDAChild(RVDAPath(model,@[@232954548,@18]),2)) [paths addObject:@[@232954548,@18,@2]];
+        NSData *restored=next;
+        for (NSArray *path in paths) { NSData *original=RVDAPath(model,path);if (original) restored=RVDASetPath(restored,path,original); }
+        if (![restored isEqual:model]) return profile.source;
     }
     if ([next isEqual:model]) return profile.source;
     NSData *projected=RVDASet(component,5,next);

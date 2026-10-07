@@ -1,11 +1,16 @@
-"""Record 0.3.39 build artifacts without executing regression or smoke tests."""
+"""Record production artifacts; do not execute tests or smoke checks."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.39'
+VERSION = '0.3.40'
+
+
+def digest(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
 def main():
@@ -15,70 +20,38 @@ def main():
     args = parser.parse_args()
     run = json.loads(args.run.read_text(encoding='utf-8'))
     jobs = json.loads(args.jobs.read_text(encoding='utf-8'))
-    native = json.loads((ROOT/'build/build-manifest.json').read_text(encoding='utf-8'))
-    names = ['build.py', 'build/RVPort.dylib', 'dist/YouTube-iOS-Patcher.exe', 
-             'build/build-manifest.json', 'build/build.log',
-             'native/RVPort.m', 'native/RVExtras.inc', 'native/RVSettingsUI.inc',
-             'native/RVAuthentication.inc', 'native/RVAuthenticationSupport.h',
-             'SPONSORBLOCK_SCHEME.md', 'profiles/sponsorblock-evidence.json',
-             'profiles/sponsorblock-response-evidence.json', 'profiles/device-sponsorblock-0.3.5-failure.json',
-             'coverage.json', 'COVERAGE.md', 'native/RVMiniplayer.inc',
-             'native/RVFeatures.h', 'native/RVSettingsCatalog.h', 'MINIPLAYER_SCHEME.md',
-             'profiles/miniplayer-controls-evidence.json', 'features.py', 'settings_catalog.py', 'native/RVNativeDislikes.inc',
-             'NATIVE_DISLIKES_SCHEME.md', 'profiles/native-dislikes-evidence.json',
-             'native/RVSettingsNativeUI.inc', 'native/RVSettingsRows.inc', 'native/RVSettingsIcon.inc',
-             'native/assets/ReVancedSettings.png', 'native/RVDislikesUI.inc', 'SETTINGS_UI_FIX_SCHEME.md',
-             'profiles/settings-ui-evidence.json', 'profiles/parallel-ui-snapshot-0.3.9.json',
-             'profiles/ryd-native-vote-contracts.json', 'native/RVElementDislikes.inc', 'ELEMENT_DISLIKES_SCHEME.md', 'profiles/element-dislikes-evidence.json', 'profiles/device-0.3.9-ryd-display-failure.json', 'profiles/device-0.3.10-vote-display-failure.json', 'profiles/device-0.3.11-vote-display-failure.json', 'profiles/parallel-ui-snapshot-0.3.12.json', 'native/RVSettingsBridge.inc', 'native/RVSettingsNavigation.inc', 'native/RVDislikesDiagnostics.inc', 'RYD_CHECKPOINTS.md', 'profiles/ryd-checkpoints-evidence.json', 'profiles/device-report-541-ryd-render.json', 'profiles/device-report-615-ryd-mount.json', 'profiles/device-report-635-ryd-lifecycle.json', 'profiles/ryd-lifecycle-evidence.json', 'profiles/ryd-speed-polish-evidence.json', 'native/RVSpeed.inc', 'native/RVSpeedBridge.inc', 'profiles/device-report-728-startup.json', 'profiles/startup-bridge-evidence.json', 'PLAYBACK_SPEED_SCHEME.md', 'profiles/parallel-ui-snapshot-0.3.14.json', 'profiles/device-0.3.12-ryd-render-failure.json']
-    names += ['native/RVNavigation.inc', 'profiles/navigation-options-evidence.json']
-    names += ['native/RVAdElements.inc', 'ADBLOCK_ELEMENTS_INLINE_IMPLEMENTATION.md', 'profiles/device-adblock-report-408.json', 'profiles/adblock-elements-inline-evidence.json']
-    names += ['native/RVSpeedContext.inc', 'native/RVShortsLayout.inc', 'SPEED_CONTEXT_IMPLEMENTATION.md', 'SHORTS_LAYOUT_IMPLEMENTATION.md', 'profiles/merged-speed-shorts-source.json']
-    names += ['native/RVSpeedDiagnostics.inc', 'SPEED_CHECKPOINTS.md', 'profiles/speed-checkpoints-evidence.json', 'profiles/device-report-755-speed.json']
-    names += ['native/RVVoteLayoutCompatibility.inc', 'VOTE_LAYOUT_SCHEME.md', 'profiles/vote-layout-compatibility-evidence.json', 'profiles/device-report-823-vote-layout.json']
-    names += ['native/RVVoteModel.inc', 'native/RVVoteLifecycle.inc', 'VOTE_COUNTER_FIX_SCHEME.md', 'VOTE_STARTUP_INVESTIGATION.md', 'profiles/vote-model-implementation-evidence.json', 'profiles/vote-startup-investigation.json', 'profiles/vote-counter-fix-scheme.json']
-    names += ['configs/defaults.json', 'configs/expanded.json', 'configs/sideload-auth.json', 'configs/all-candidates.json']
-    names += ['native/RVVoteFirstLaunch.inc', 'FIRST_LAUNCH_UI_SCHEME.md', 'profiles/first-launch-ui-evidence.json']
-    names += [f'output/YouTube-21.39.4-RVPort-{VERSION}-unsigned.ipa']
-    names += ['native/RVAds.inc', 'native/RVAdFeed.inc', 'native/RVAdsDiagnostics.inc', 'configs/adblock-native.json', 'ADBLOCK_IMPLEMENTATION.md', 'ADBLOCK_PORT_SCHEME.md', 'profiles/adblock-port-evidence.json', 'profiles/adblock-implementation-evidence.json', 'profiles/adblock-merge-0.3.23.json']
-    names += ['native/RVAdCoordinator.inc', 'ADBLOCK_HANDOFF_SCHEME.md', 'ADBLOCK_HANDOFF_IMPLEMENTATION.md', 'profiles/adblock-handoff-evidence.json', 'profiles/adblock-handoff-implementation-evidence.json', 'profiles/adblock-handoff-decompiled.txt', 'profiles/device-adblock-report-1251.json']
-    names += ['native/RVAdDisplay.inc', 'native/RVAdDisplayDiagnostics.inc', 'ADBLOCK_DISPLAY_SCHEME.md', 'ADBLOCK_DISPLAY_IMPLEMENTATION.md', 'profiles/adblock-display-evidence.json', 'profiles/adblock-display-protobuf-fields.json', 'profiles/adblock-display-decompiled.txt', 'profiles/adblock-display-implementation-evidence.json']
-    names += ['native/RVSponsorPrompt.inc', 'native/RVSponsorPromptUI.inc', 'SPONSORBLOCK_NATIVE_PROMPTS_SCHEME.md', 'SPONSORBLOCK_NATIVE_PROMPTS_IMPLEMENTATION.md', 'profiles/sponsor-prompt-evidence.json', 'profiles/sponsor-prompts-implementation-evidence.json', 'MERGED_DISPLAY_SPONSOR_IMPLEMENTATION.md', 'profiles/merged-display-sponsor-source.json', 'package_merged_release.py', 'build/cloud-build.json']
-    names += ['native/RVAdWatchOwnership.inc', 'ADBLOCK_OWNERSHIP_FIX.md', 'profiles/device-adblock-report-348.json', 'profiles/adblock-ownership-evidence.json']
-    # Internal Markdown stays local and is excluded from public release receipts.
-    names = [name for name in names if Path(name).suffix.lower() != '.md']
-    names += ['native/RVSpeedThreeX.inc', 'profiles/speed-three-x-evidence.json',
-              'native/RVDeArrowBackend.h','native/RVDeArrowBackend.inc','native/RVDeArrowProjection.inc','native/RVDeArrowUI.inc','native/RVDeArrowDiagnostics.inc','native/RVDeArrowOptions.inc','native/RVDeArrowImages.inc',
-              'profiles/dearrow-ui-contract.json','profiles/device-dearrow-report-105.json','profiles/dearrow-options-scheme.json','profiles/dearrow-diagnostics-contract.json','profiles/dearrow-backend-contract.json']
-    names += ['native/RVSettingsMenuIcons.inc','native/RVSettingsBrandIcons.inc','native/RVSettingsBrandIconData.h',
-              'native/assets/settings/DearrowLogo.svg','native/assets/settings/LogoSponsorBlock256px.png',
-              'native/assets/settings/ReturnYTDislike.png','profiles/settings-menu-icons-evidence.json','settings_brand_icons.py']
-    names += ['native/RVDeArrowTemplateNames.inc','native/RVDeArrowLiveCapture.inc','profiles/dearrow-live-capture-contract.json','profiles/dearrow-recovery-scheme.json','profiles/settings-modal-header-evidence.json']
-    names += ['native/RVDeArrowLiveCard.inc','native/RVDeArrowConsumers.inc','profiles/dearrow-live-card-contract.json']
+    package = json.loads((ROOT/f'build/package-manifest-{VERSION}.json').read_text(encoding='utf-8'))
+    native = package['native_build']
+    names = ['build.py', 'package_merged_release.py', 'release_build_receipt.py',
+             'build/RVPort.dylib', 'build/build-manifest.json', 'build/build.log',
+             'build/cloud-build.json', f'build/package-manifest-{VERSION}.json',
+             'dist/YouTube-iOS-Patcher.exe', 'coverage.json', 'features.py',
+             'settings_catalog.py', 'configs/adblock-native.json',
+             'profiles/dearrow-adaptive-contract.json', 'profiles/dearrow-live-card-contract.json',
+             'profiles/dearrow-live-capture-contract.json']
+    names += ['native/'+name for name in native['source_files']]
+    names += ['output/'+item['filename'] for item in package['packages']]
     artifacts = {}
     for name in names:
         path = ROOT/name
-        with path.open('rb') as stream:
-            digest = hashlib.file_digest(stream, 'sha256').hexdigest()
-        artifacts[name] = {'sha256': digest, 'size': path.stat().st_size}
+        artifacts[name] = {'sha256': digest(path), 'size': path.stat().st_size}
     receipt = {
         'version': VERSION, 'supported_youtube_version': '21.39.4',
-        'feature_switches': 87, 'runtime_preferences': 146,
-        'build_only': True, 'tests_run': False, 'tests_passed': None,
+        'source_commit': package['source_commit'], 'build_only': True,
+        'tests_run': False, 'tests_passed': None,
         'test_skip_reason': 'User explicitly instructed: Do not run tests.',
         'gui_smoke_test_run': False, 'static_hook_check_run': False,
-        'standalone_archive_test_run': False,
-        'packaging': 'IPAs created by the production patcher with its normal source/config/payload validation; no regression or integration test suite executed.',
-        'device_playback_verified': False, 'signing_required': True,
-        'authentication_login': 'Previously user-reported working; authentication implementation unchanged.',
-        'source_commit': run['head_sha'],
+        'standalone_archive_test_run': False, 'device_playback_verified': False,
+        'device_dearrow_verified': False, 'signing_required': True,
+        'scope': package['scope'], 'native_build': native,
         'ci': {'run_id': run['id'], 'url': run['html_url'],
                'conclusion': run['conclusion'],
                'jobs': [{'name': job['name'], 'conclusion': job['conclusion'],
                          'steps': [{'name': step['name'], 'conclusion': step['conclusion']}
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
-        'native_build': native, 'artifacts': artifacts,
-        'remaining_scope': 'Report 620 dedicated live FE card contract: typed navigation identity separate from presentation field 18, matching thumbnail ownership, native factory-owned headline/image verification before writes, directed semantic checkpoints beyond BFS budgets, and decoded fallback delivery through the existing coordinator. Watch-title mapping remains separate. No tests run; device confirmation pending.'}
+        'packages': package['packages'], 'artifacts': artifacts,
+        'interaction_issue': 'Passive trace implemented; visible-but-unresponsive watch control cause remains unconfirmed pending a new device capture.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

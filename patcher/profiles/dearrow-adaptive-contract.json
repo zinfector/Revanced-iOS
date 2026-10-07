@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "release": "0.3.40",
+  "status": "implemented_device_confirmation_pending",
+  "tests_run": false,
+  "device_verified": false,
+  "trigger": "Report 211 rejected live revision 8b6ace8495ab586b before identity or service request; watch controls reported visible but unresponsive, cause unconfirmed.",
+  "selection": "Resource family + singular typed semantic paths + per-instance native consumer ownership. Revision remains diagnostic/instance identity, never an admission allowlist for the two live recipes.",
+  "adapters": [
+    {
+      "id": "live_video_lockup_v1",
+      "basename": "video_lockup_with_attachment.eml",
+      "variant": "fe",
+      "identity_path": [
+        232954548,
+        18,
+        4,
+        169495254,
+        462702848,
+        1,
+        48687757,
+        1
+      ],
+      "title_path": [
+        232954548,
+        18,
+        1,
+        21,
+        8178,
+        1
+      ],
+      "image_path": [
+        232954548,
+        18,
+        1,
+        1
+      ],
+      "title_entity_path": [
+        232954548,
+        18,
+        1,
+        21,
+        8178,
+        50001
+      ],
+      "independent_roles": true,
+      "checks": [
+        "Navigation ID valid and optional presentation ID agrees.",
+        "Title singular UTF-8 content; optional tap title agrees; no command runs; unambiguous configuration.",
+        "Each static image source belongs to the navigation ID; no composite/local/procedural input.",
+        "One matching already materialized headline/image owned by this factory component before enabling that role."
+      ]
+    },
+    {
+      "id": "watch_metadata_v1",
+      "basenames": [
+        "video_metadata.eml",
+        "video_metadata_inner.eml"
+      ],
+      "variants": [
+        "bundled",
+        "fe"
+      ],
+      "title_path": [
+        377581260,
+        6,
+        1019,
+        1
+      ],
+      "identity": "Explicit owning YTSlimVideoMetadataSectionController/YTSlimVideoInformationCellController videoID, never guessed from global playback.",
+      "checks": [
+        "Non-interactive attributed title.",
+        "Matching native component model with only title restored equals immutable original.",
+        "Unique original native headline and current source/owner/generation before writes."
+      ],
+      "image_role": false
+    }
+  ],
+  "fingerprint": "Bounded cached recipe/capability identity; not an instance permission or content hash. Each model and native role is validated again. Capture uses a separate field/wire/occurrence structural fingerprint.",
+  "projection": "Copied factory input only. Restore explicitly allowed title, title-entity configuration, static image and matching accessibility fields and require byte equality with the original model; unrelated navigation, menu, tap and visibility branches remain invariant.",
+  "lifecycle": {
+    "strategy": "Private keyed ELMNodeController callbacks on accepted factory-owned descendants; no global ELMTextNode/ELMImageNode setElement observers.",
+    "callbacks": [
+      "setOnNodeDidLoad:forKey:",
+      "setOnNodeDidLayout:forKey:"
+    ],
+    "abi": "v@:@?@",
+    "block_arguments": [
+      "controller",
+      "context"
+    ],
+    "main_queue_coalesced": true,
+    "generation_and_epoch_checked": true,
+    "retirement": "Remove only private keys on new source/factory/settings generation and binding destruction; weak node/controller references.",
+    "bounds": {
+      "nodes": 256,
+      "ancestor_hops": 24,
+      "leases": 64,
+      "passes_per_epoch": 32,
+      "initial_retry_delays": 3,
+      "retry_seconds": 0.15
+    }
+  },
+  "capture": {
+    "schema": 3,
+    "sampling": "resource + surface + structural shape",
+    "roots": 12,
+    "bucket_slots": 3,
+    "buckets": [
+      "feed",
+      "related",
+      "watch_title",
+      "watch_other"
+    ],
+    "directed_paths_independent_of_bfs_budget": true,
+    "model_values_exported": false
+  },
+  "checkpoints": [
+    "D04_live_card_input_verified",
+    "D04_live_native_consumers",
+    "D05_service_requested",
+    "D08_result_accepted",
+    "D08_duration_resolved",
+    "D08_random_time_selected",
+    "D08_fallback_transport_finished",
+    "D08_fallback_timestamp_matched",
+    "D08_fallback_image_decoded",
+    "D08_image_encoded",
+    "D09_presentation_model_projected",
+    "D09_native_target_materialized",
+    "D09_live_native_replacement_consumed",
+    "D10_live_replacement_visible"
+  ],
+  "watch_trace": {
+    "activation": "Explicit Start DeArrow diagnostic capture only",
+    "history_limit": 64,
+    "stages": {
+      "W00": "Watch binding/generation",
+      "W01": "Native window touch with receiving view/ancestor/recognizer state",
+      "W02": "Original gesture decision, preserved unchanged",
+      "W03": "Native node tap or text-link path",
+      "W04": "Elements command bridge entry/return; original arguments and completion forwarded unchanged",
+      "W05": "Native presentation or seek requested; no inference of successful completion"
+    },
+    "context": [
+      "Existing first-launch watch configuration",
+      "Vote normalization",
+      "Ad mutations",
+      "SponsorBlock host"
+    ],
+    "opaque_command_payloads_exported": false
+  },
+  "limitations": [
+    "New structural families need a reviewed recipe; no arbitrary protobuf search authorizes writes.",
+    "Existing legacy bundled compact/card/context recipes remain pinned.",
+    "Interactive titles need command-range remapping and remain original.",
+    "Player cover is excluded; watch metadata supports titles only.",
+    "Unknown watch owner or model layout remains original with directed checkpoints.",
+    "No device validation yet; watch interaction root cause remains unconfirmed."
+  ],
+  "device_capture": [
+    "Start DeArrow diagnostic capture in Settings, then close Settings.",
+    "Scroll newly configured Home cards, open a video, and scroll related rows.",
+    "Tap a description timestamp/chapter and Comments. Wait for replacement/fallback.",
+    "Copy DeArrow checkpoints; identify the first missing D stage and the W trace for each failed tap.",
+    "If taps still fail, repeat with both DeArrow title/thumbnail options disabled and a fresh app launch."
+  ]
+}

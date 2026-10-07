@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-// Report 620 root + shared APK extension; original iOS GPB command descriptors.
-// Native consumer verification in RVDeArrowConsumers.inc gates every write.
-static NSString *RVDALiveCardKey(void) { return @"video_lockup_with_attachment.eml-fe|72cb15f170efbde1"; }
+// Semantic recipes, independent of a server revision. All writes also require
+// per-instance materialized native role confirmation and immutable owner identity.
 static NSArray *RVDALiveCardIdentityPath(void) { return @[@232954548,@18,@4,@169495254,@462702848,@1,@48687757,@1]; }
+static NSArray *RVDALiveWatchTitlePath(void) { return @[@377581260,@6,@1019,@1]; }
 static NSData *RVDACheckedPath(NSData *data,NSArray *path,NSString **failure,NSUInteger *failedStep) {
     NSUInteger step=0;
     for (NSNumber *number in path) {
@@ -18,14 +18,31 @@ static NSArray<NSString *> *RVDALiveCardImageURLs(NSData *image,NSString *video)
     NSMutableArray *urls=[NSMutableArray array];
     for (RVVoteField *field in fields) if (field.number==1) {
         if (field.wire!=2 || urls.count>=16) return nil;
-        // Validate every source, not just the largest matching source. A mixed
-        // video image or an ambiguous source oneof cannot own this card.
         NSArray *source=RVVoteFields(field.value);
         if (!source || !RVVoteSingularFields(source,@[@1,@2,@3,@4,@5,@6]) ||
             RVDAChild(field.value,2) || RVDAChild(field.value,3) || RVDAChild(field.value,6)) return nil;
         NSString *url=RVDAImageURL(RVVoteMessageField(1,field.value),video);
         if (!url) return nil;[urls addObject:url];
     }return urls.count ? urls.copy : nil;
+}
+static NSString *RVDALiveTitleFailure(NSData *attributed) {
+    NSArray *fields=RVVoteFields(attributed);
+    NSString *title=RVDAText(RVVoteOne(fields,1,2).value);
+    if (!title.length || !RVVoteSingularFields(fields,@[@1])) return @"title_input_invalid";
+    // Interactive text requires range remapping. Never erase its command runs.
+    for (RVVoteField *field in fields) if (field.number==5) return @"interactive_title_requires_range_adapter";
+    return nil;
+}
+static NSString *RVDAStructuralFingerprint(NSString *adapter,BOOL title,BOOL image) {
+    // Recipe selection cache contains no values, IDs or instance permissions.
+    // Unknown optional fields and byte lengths cannot invalidate a compatible recipe.
+    static NSCache *cache;static dispatch_once_t once;dispatch_once(&once,^{cache=[NSCache new];cache.countLimit=64;});
+    NSString *shape=[NSString stringWithFormat:@"%@/title:%d/image:%d",adapter,title,image],*fingerprint=[cache objectForKey:shape];
+    if (!fingerprint) {
+        NSData *data=[shape dataUsingEncoding:NSUTF8StringEncoding];unsigned char digest[CC_SHA256_DIGEST_LENGTH];CC_SHA256(data.bytes,(CC_LONG)data.length,digest);
+        NSMutableString *value=[NSMutableString string];for (NSUInteger i=0;i<12;i++) [value appendFormat:@"%02x",digest[i]];
+        fingerprint=value.copy;[cache setObject:fingerprint forKey:shape];
+    }return fingerprint;
 }
 static NSDictionary *RVDALiveCardContract(NSData *model) {
     NSMutableDictionary *result=[NSMutableDictionary dictionary];NSString *failure=nil;NSUInteger failed=0;
@@ -37,34 +54,57 @@ static NSDictionary *RVDALiveCardContract(NSData *model) {
     result[@"video"]=video;
     NSData *data=RVDACheckedPath(model,@[@232954548,@18,@1],&failure,&failed);
     if (!data) { result[@"blocker"]=@"live_card_presentation_input_unresolved";return result; }
-    NSArray *fields=RVVoteFields(data);
-    if (!RVVoteSingularFields(fields,@[@1,@2,@7,@21])) { result[@"blocker"]=@"live_card_presentation_input_ambiguous";return result; }
     NSString *legacyID=RVDAText(RVDAChild(data,7));
-    if (RVDAChild(data,7) && ![legacyID isEqual:video]) { result[@"blocker"]=@"live_card_identity_conflict";return result; }
-    NSData *attributed=RVDACheckedPath(data,@[@21,@8178,@1],&failure,&failed);
-    NSArray *titleFields=RVVoteFields(attributed);
-    NSString *title=RVDAText(RVVoteOne(titleFields,1,2).value);
-    if (!title.length || !RVVoteSingularFields(titleFields,@[@1])) { result[@"blocker"]=@"live_card_title_input_invalid";return result; }
-    // The CoWatch wrapper's videoTitle is independently named in the iOS
-    // descriptor. Require agreement when populated; do not replace a byline.
-    NSString *tapTitle=RVDAText(RVDAPath(model,@[@232954548,@18,@4,@169495254,@462702848,@4]));
-    if (tapTitle && ![tapTitle isEqual:title]) { result[@"blocker"]=@"live_card_title_identity_conflict";return result; }
-    NSData *thumbnail=RVDAChild(data,1),*image=RVDAChild(thumbnail,1);
-    NSArray *thumbnailFields=RVVoteFields(thumbnail);
-    NSArray *urls=RVDALiveCardImageURLs(image,video);
-    if (!thumbnailFields || !RVVoteSingularFields(thumbnailFields,@[@1,@2,@14,@60]) || RVDAChild(thumbnail,60) || !urls) {
-        result[@"blocker"]=@"live_card_thumbnail_identity_unverified";return result;
+    NSArray *fields=RVVoteFields(data);
+    if (!RVVoteSingularFields(fields,@[@7])) { result[@"blocker"]=@"live_card_identity_conflict";return result; }
+    for (RVVoteField *field in fields) if (field.number==7 && (field.wire!=2 || ![legacyID isEqual:video])) {
+        result[@"blocker"]=@"live_card_identity_conflict";return result;
     }
-    NSData *config=RVDAPath(data,@[@21,@8178,@50001]);
-    if (config && !RVVoteSingularFields(RVVoteFields(config),@[@7])) { result[@"blocker"]=@"live_card_title_entity_ambiguous";return result; }
-    result[@"title"]=title;result[@"image_url"]=RVDAImageURL(image,video);result[@"image_urls"]=urls;
-    result[@"duration"]=@(RVDADurationText(RVDAText(RVDAChild(thumbnail,2))));result[@"blocker"]=@"ready";return result;
+    NSArray *titlePath=@[@232954548,@18,@1,@21,@8178,@1],*imagePath=@[@232954548,@18,@1,@1];
+    NSData *attributed=RVDACheckedPath(model,titlePath,&failure,&failed);
+    NSString *titleFailure=RVDALiveTitleFailure(attributed),*title=RVDAText(RVDAChild(attributed,1));
+    NSString *tapTitle=RVDAText(RVDAPath(model,@[@232954548,@18,@4,@169495254,@462702848,@4]));
+    if (!titleFailure && tapTitle && ![tapTitle isEqual:title]) titleFailure=@"title_identity_conflict";
+    NSArray *entityPath=@[@232954548,@18,@1,@21,@8178,@50001];NSData *config=RVDAPath(model,entityPath);
+    NSArray *lockupFields=RVVoteFields(RVDAPath(model,@[@232954548,@18,@1,@21,@8178]));
+    if (!RVVoteSingularFields(lockupFields,@[@50001])) titleFailure=@"title_entity_ambiguous";
+    for (RVVoteField *field in lockupFields) if (field.number==50001 && field.wire!=2) titleFailure=@"title_entity_invalid";
+    if (config && !RVVoteSingularFields(RVVoteFields(config),@[@7])) titleFailure=@"title_entity_ambiguous";
+    if (config && !titleFailure) result[@"title_entity_path"]=entityPath;
+    NSData *thumbnail=RVDACheckedPath(model,imagePath,&failure,&failed),*image=RVDAChild(thumbnail,1);
+    NSArray *thumbnailFields=RVVoteFields(thumbnail),*urls=RVDALiveCardImageURLs(image,video);
+    BOOL composite=NO;for (RVVoteField *field in thumbnailFields) composite|=field.number==60;
+    BOOL imageRole=thumbnailFields && RVVoteSingularFields(thumbnailFields,@[@1,@2,@14,@60]) && !composite && urls.count;
+    result[@"title_role"]=@(!titleFailure);result[@"image_role"]=@(imageRole);
+    result[@"title_blocker"]=titleFailure ?: @"ready";result[@"image_blocker"]=imageRole ? @"ready" : @"thumbnail_identity_unverified";
+    result[@"title_path"]=titlePath;result[@"image_path"]=imagePath;
+    if (!titleFailure) result[@"title"]=title;
+    if (imageRole) { result[@"image_url"]=RVDAImageURL(image,video);result[@"image_urls"]=urls; }
+    result[@"duration"]=@(RVDADurationText(RVDAText(RVDAChild(thumbnail,2))));
+    result[@"blocker"]=!titleFailure || imageRole ? @"ready" : @"live_card_no_verified_input_role";return result;
 }
 static NSString *RVDALiveCardFailure(NSData *model) { return RVDALiveCardContract(model)[@"blocker"] ?: @"live_card_input_unresolved"; }
-static RVDAProjection *RVDALiveCardProfile(NSData *model) {
+static RVDAProjection *RVDALiveCardProfile(NSData *model,NSString *key) {
     NSDictionary *contract=RVDALiveCardContract(model);if (![contract[@"blocker"] isEqual:@"ready"]) return nil;
-    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=RVDALiveCardKey();
+    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=key;profile.adapterID=@"live_video_lockup_v1";
     profile.video=contract[@"video"];profile.identityPath=RVDALiveCardIdentityPath();profile.videoDataPath=@[@232954548,@18,@1];
-    profile.originalTitle=contract[@"title"];profile.originalImageURL=contract[@"image_url"];profile.duration=[contract[@"duration"] doubleValue];
-    profile.titleRole=YES;profile.imageRole=YES;return profile;
+    profile.titlePath=contract[@"title_path"];profile.imagePath=contract[@"image_path"];profile.titleEntityPath=contract[@"title_entity_path"];
+    profile.titleRole=[contract[@"title_role"] boolValue];profile.imageRole=[contract[@"image_role"] boolValue];
+    profile.titleRoleBlocker=contract[@"title_blocker"];profile.imageRoleBlocker=contract[@"image_blocker"];
+    profile.originalTitle=contract[@"title"];profile.originalImageURL=contract[@"image_url"];profile.imageURLs=contract[@"image_urls"];
+    profile.duration=[contract[@"duration"] doubleValue];profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);return profile;
+}
+static NSString *RVDALiveWatchFailure(NSData *model) {
+    NSString *failure=nil;NSUInteger step=0;NSData *title=RVDACheckedPath(model,RVDALiveWatchTitlePath(),&failure,&step);
+    NSString *role=title ? RVDALiveTitleFailure(title) : failure;
+    return role ? [@"watch_role_" stringByAppendingString:role] : @"explicit_watch_owner_required";
+}
+static RVDAProjection *RVDALiveWatchProfile(NSData *model,NSString *key,NSString *watchVideo) {
+    if (!RVVideoIDValid(watchVideo)) return nil;
+    NSData *attributed=RVDACheckedPath(model,RVDALiveWatchTitlePath(),NULL,NULL);
+    if (RVDALiveTitleFailure(attributed)) return nil;
+    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.watchTitle=YES;profile.titleRole=YES;
+    profile.route=key;profile.adapterID=@"watch_metadata_v1";profile.video=watchVideo;profile.titlePath=RVDALiveWatchTitlePath();
+    profile.originalTitle=RVDAText(RVDAChild(attributed,1));profile.titleRoleBlocker=@"ready";profile.imageRoleBlocker=@"watch_image_not_requested";
+    profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,YES,NO);return profile;
 }
