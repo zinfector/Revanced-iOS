@@ -71,7 +71,7 @@ static void RVDAUIFallbackWake(RVDAUIBinding *state) {
         return;
     }
     if (RVDANow()<state.fallbackNextAttempt) return;
-    RVDADiagRecord(@"D08_fallback_resumed",state,nil,@{@"prior_cycle":@(state.fallbackCycles),@"row_visible":@YES});
+    RVDADiagRecord(@"D08_fallback_resumed",state,nil,@{@"prior_cycle":@(state.fallbackCycles),@"row_visible":@(RVDAUIFallbackVisible(state)),@"visibility_grace":@(!RVDAUIFallbackVisible(state))});
     RVDAUIResolveFallback(state,state.generation);
 }
 static void RVDAUIFallbackFailure(RVDAUIBinding *state,NSString *blocker,BOOL retryable,uint64_t generation,void (^retry)(RVDAUIBinding *)) {
