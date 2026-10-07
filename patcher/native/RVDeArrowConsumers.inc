@@ -164,9 +164,6 @@ static id RVDAUIResolveConsumerRoot(id object,RVDAUIBinding *binding,NSDictionar
     }return result;
 }
 static id RVDAUIConsumerRoot(id object,RVDAUIBinding *binding) { return RVDAUIResolveConsumerRoot(object,binding,NULL); }
-static BOOL RVDAUIConsumerOwned(id object,RVDAUIBinding *binding) {
-    return binding.nativeRootComponent && RVDAUIConsumerRoot(object,binding)==binding.nativeRootComponent;
-}
 static NSString *RVDAUIConsumerURL(id node) {
     id value=RVObject(node,"URL");return [value isKindOfClass:NSURL.class] ? [value absoluteString] : [value isKindOfClass:NSString.class] ? value : nil;
 }
