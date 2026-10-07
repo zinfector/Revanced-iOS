@@ -103,7 +103,7 @@ def quote(value):
     return json.dumps(value.replace('\\', '/'))
 
 
-def launch(status, udid, arguments, private):
+def launch(status, udid, arguments, private, verify_process=None):
     if status.get('get_task_allow') is not True:
         raise ValueError('External attach unavailable: app get-task-allow is missing or unknown. Use agent commands, or sign using a compatible development profile.')
     debugger = arguments.get('lldb') or shutil.which('lldb')
@@ -130,6 +130,13 @@ def launch(status, udid, arguments, private):
     folder = private/'lldb'/str(uuid.uuid4())
     folder.mkdir(parents=True)
     commands = ['platform select remote-ios', 'target create '+quote(target)]
+    library = arguments.get('library')
+    if library:
+        local_library = Path(library).expanduser()
+        library_uuid = macho_uuid(local_library)
+        if not any(image['name'] == 'RVPort.dylib' and image['uuid'].upper() == library_uuid for image in images):
+            raise ValueError('Local RVPort library UUID does not match this installed app.')
+        commands.append('target modules add '+quote(local_library))
     symbols = arguments.get('symbols')
     if symbols:
         source = Path(symbols).expanduser()
@@ -137,9 +144,10 @@ def launch(status, udid, arguments, private):
         symbol_uuid = macho_uuid(dwarf)
         if not any(image['name'] == 'RVPort.dylib' and image['uuid'].upper() == symbol_uuid for image in images):
             raise ValueError('RVPort symbols UUID does not match this installed app. No attach attempted.')
-        commands += ['target modules add '+quote(dwarf), 'target symbols add '+quote(source)]
     # Matches pymobiledevice3's reviewed bundle-id attachment sequence.
     commands += [f'process connect connect://127.0.0.1:{port}', f'process attach --pid {pid}']
+    if symbols:
+        commands.append('target symbols add '+quote(source))
     command_file = folder/'attach.lldb'
     command_file.write_text('\n'.join(commands)+'\n', encoding='utf-8')
     checkpoint_file = folder/'checkpoints.json'
@@ -188,6 +196,10 @@ def launch(status, udid, arguments, private):
         # The ready line precedes the asynchronous listener bind. Do not probe it
         # with a TCP connection: that would consume the debugserver session.
         time.sleep(0.5)
+        if verify_process is not None:
+            fresh = verify_process()
+            if fresh.get('process_nonce') != status['process_nonce'] or fresh.get('pid') != pid:
+                raise ValueError('App restarted during debugger setup. Attachment cancelled; run lldb again with fresh identity.')
         checkpoints['debugserver_connection'] = 'relay_started_attach_pending'
         checkpoint_file.write_text(json.dumps(checkpoints, indent=2), encoding='utf-8')
         print('LLDB opens interactively. After attach, use thread backtrace all, register read, breakpoint set, memory read/write, and expression. Detach before quitting to resume YouTube.')

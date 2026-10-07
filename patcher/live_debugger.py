@@ -344,7 +344,7 @@ def dispatch(connection, name, arguments):
         if not images['result'].get('ok'):
             raise DebugError('Cannot identify loaded images for attachment.')
         status['images'] = images['result']['images']
-        external.launch(status, connection.udid, arguments, PRIVATE)
+        external.launch(status, connection.udid, arguments, PRIVATE, verify_process=connection.status)
     else:
         output(connection.command(name, arguments))
 
