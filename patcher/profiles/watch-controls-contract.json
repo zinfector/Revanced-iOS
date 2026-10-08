@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "release": "0.3.55",
+  "native_version": "21.39.4",
+  "tests_run": false,
+  "device_verified": false,
+  "isolation": {
+    "old_policy": "watch-vote-scope-1",
+    "setting": "Use compatible dislike layout",
+    "enabled": "Comments/chapter controls visible but taps do nothing; native gestures accepted.",
+    "disabled": "User confirmed both controls work after restart; wired process report confirmed policy disabled.",
+    "dearrow_title_and_thumbnail_options_remained_enabled": true
+  },
+  "root_cause": "Default cold configuration covered native watch construction and response loading while the rest of the command runtime used account configuration. Policy isolation proves causation; the specific cached experiment or missing registration remains unobserved.",
+  "policy": "watch-vote-scope-2",
+  "default_scopes": [
+    "YTInnerTubeContextFactory watch service context construction",
+    "YTAccountScopedInnerTubeContextFactory watch service context construction"
+  ],
+  "native_configuration_boundaries": [
+    "YTWatchNextServiceImpl request/cache/callback work",
+    "YTWatchViewController init/update",
+    "YTWatchNextResultsViewController init/load",
+    "YTBAWatchPageFillerBlock vote element producers"
+  ],
+  "native_preferences_preserved": true,
+  "native_commands_reconstructed": false,
+  "opaque_payloads_inspected": false,
+  "checkpoints": {
+    "W06": "Native chapter command setter, button tap and delegate tap",
+    "W07": "Native panel manager admission result",
+    "W08": "Native panel model lookup result",
+    "W09": "Native embedded panel handler entered/returned with acceptance"
+  },
+  "limits": [
+    "W04 does not cover fusion/account command resolution.",
+    "W05 modal presentation does not cover embedded engagement panels.",
+    "Chapter setter observation records last native assignment, not a live ivar read.",
+    "Handler acceptance does not prove visual success.",
+    "Confirm comments, chapters and paired dislike counts together on-device with the switch enabled after restart."
+  ],
+  "metadata": {
+    "YTPlayerBarController.setTimeTitleTapCommand:withButtonType:": "0x10171e638 v28@0:8@16i24",
+    "YTPlayerBarController.didTapCurrentTimeTitle": "0x10171f2cc v16@0:8",
+    "YTInlinePlayerBarContainerView.onCurrentChapterTitleTapped:": "0x1035faf08 v24@0:8@16",
+    "YTEngagementPanelViewControllerManager.canProvideNavigationControllerForShowCommand:": "0x103c4ead4 B24@0:8@16",
+    "YTEngagementPanelViewControllerManager.modelForShowCommand:": "0x103c4f35c @24@0:8@16",
+    "YTEngagementPanelContainerViewController.handleShowEngagementPanelCommand:exitFullscreen:engagementPanelObserver:": "0x103c2626c B36@0:8@16B24@28"
+  }
+}

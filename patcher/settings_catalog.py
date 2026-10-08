@@ -85,7 +85,7 @@ DESCRIPTIONS = {
     'hide_shorts_navigation':'Hides the bottom Shorts tab and redistributes the remaining native tabs. Separate from feed filtering.',
     'hide_navigation_labels':'Keeps the tab icons and their accessible names.',
     'hide_library_navigation':'Hides the You tab, also called Library in some layouts.',
-    'first_launch_ui':'Uses the compatible watch layout for dislike counts. Account and feed pages keep their usual layout. Restart after changing this switch.',
+    'first_launch_ui':'Requests the compatible watch layout for dislike counts. Native controls keep their normal configuration. Restart after changing this switch.',
     'paired_vote_buttons':'Use native paired like/dislike controls when their model is supported. Reopen the video after changing this setting.',
     'sideload_auth_identity':'Uses the original YouTube identity only in the verified native sign-in flow.',
     'sideload_auth_keychain':'Uses native private-keychain storage for the installed signing identity.',

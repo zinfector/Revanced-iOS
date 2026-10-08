@@ -3,6 +3,9 @@
 // values are never changed; no opaque C++ command or live content is exported.
 static NSMutableArray *RVDAWatchHistory,*RVDAWatchHooks;
 static NSMutableDictionary *RVDAWatchCounts;
+// Weak controller keys; record only whether its native setter supplied a command.
+// Never retain commands, inspect opaque payloads, or read native ivar offsets.
+static NSMapTable *RVDAWatchChapterCommands;
 static __weak id RVDAWatchOwner,RVDAWatchPlayback;
 static NSString *RVDAWatchVideoHash;
 static uint64_t RVDAWatchGeneration;
@@ -18,7 +21,7 @@ static void RVDAWatchRecord(NSString *checkpoint,NSDictionary *details) {
     if (!RVDAWatchCounts) RVDAWatchCounts=[NSMutableDictionary dictionary];
     if (RVDAWatchOwner!=RVCurrentWatch || RVDAWatchPlayback!=RVCurrentPlayback || ![hash isEqual:RVDAWatchVideoHash]) {
         RVDAWatchOwner=RVCurrentWatch;RVDAWatchPlayback=RVCurrentPlayback;RVDAWatchVideoHash=hash;RVDAWatchGeneration++;
-        if (RVDAWatchHistory.count>=64) [RVDAWatchHistory removeObjectAtIndex:0];
+        if (RVDAWatchHistory.count>=128) [RVDAWatchHistory removeObjectAtIndex:0];
         [RVDAWatchHistory addObject:@{@"checkpoint":@"W00_watch_bound",@"generation":@(RVDAWatchGeneration),@"video_hash":hash,
             @"watch_class":RVCurrentWatch ? NSStringFromClass([RVCurrentWatch class]) : @"absent",@"elapsed_ms":@(MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-RVDAUIStarted)))}];
     }
@@ -26,7 +29,7 @@ static void RVDAWatchRecord(NSString *checkpoint,NSDictionary *details) {
     NSMutableDictionary *event=[@{@"checkpoint":checkpoint,@"generation":@(RVDAWatchGeneration),@"video_hash":hash,
         @"elapsed_ms":@(MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-RVDAUIStarted)))} mutableCopy];
     if (details) [event addEntriesFromDictionary:details];
-    if (RVDAWatchHistory.count>=64) [RVDAWatchHistory removeObjectAtIndex:0];
+    if (RVDAWatchHistory.count>=128) [RVDAWatchHistory removeObjectAtIndex:0];
     [RVDAWatchHistory addObject:event.copy];
 }
 static NSArray *RVDAWatchAncestors(UIView *view) {
@@ -45,21 +48,22 @@ static void RVDAWatchReset(void) {
 static NSDictionary *RVDAWatchReport(void) {
     if (!NSThread.isMainThread) return @{@"blocker":@"watch_snapshot_off_main"};
     NSMutableDictionary *settings=[NSMutableDictionary dictionary];
-    for (NSString *key in @[@"return_dislikes",@"feed_ads",@"video_ads",@"sponsorblock",@"disable_chapter_skip",@"disable_double_tap",@"hide_comments",@"hide_layout_components",@"dearrow_titles",@"dearrow_thumbnails"])
+    for (NSString *key in @[@"return_dislikes",@"paired_vote_buttons",@"first_launch_ui",@"feed_ads",@"video_ads",@"sponsorblock",@"disable_popup_panels",@"disable_chapter_skip",@"disable_double_tap",@"hide_comments",@"hide_layout_components",@"dearrow_titles",@"dearrow_thumbnails"])
         settings[key]=@(RVEnabled(key));
     RVSponsorPromptState *prompt=RVSession(RVCurrentPlayback).promptState;UIView *host=(id)prompt.host;
     NSMutableDictionary *last=[NSMutableDictionary dictionary];
     for (NSDictionary *event in RVDAWatchHistory) last[event[@"checkpoint"]]=event;
     NSDictionary *display=RVDisplayReport();
     NSDictionary *vote=RVVoteModelReport();
-    return @{@"schema":@1,@"armed":@(RVDAUIDiagnosticsArmed),@"active_watch":@(RVDAWatchActive()),
+    return @{@"schema":@2,@"armed":@(RVDAUIDiagnosticsArmed),@"active_watch":@(RVDAWatchActive()),
         @"generation":@(RVDAWatchGeneration),@"counts":RVDAWatchCounts.copy ?: @{},@"history":RVDAWatchHistory.copy ?: @[],@"last_stages":last,
         @"hooks":RVDAWatchHooks.copy ?: @[],@"settings":settings,@"watch_config_policy":RVVoteFirstLaunchReport(),
         @"vote_model":vote[@"state"] ?: @{},@"vote_counts":vote[@"counts"] ?: @{},
         @"display_ad_counts":display[@"session_events"] ?: @{},@"last_ad_mutation":display[@"structural_element_history"] ?: @[],
         @"sponsor_host":@{@"attached":@(host.superview!=nil),@"hidden":@(!host || host.hidden),@"frame":host ? NSStringFromCGRect(host.frame) : @"absent",@"gate":prompt.gate ?: @"absent",@"hit_forwarded":prompt.values[@"owned_hit_test_forwarded"] ?: @NO},
         @"observer_strategy":@"owned_keyed_native_lifecycle",@"opaque_command_payloads_exported":@NO,
-        @"interpretation":@"W01 touch, W02 gesture decision, W03 native tap, W04 command bridge, W05 presentation or seek observed. Text links can intentionally bypass ordinary gestures. Timing is correlation; void returns do not establish success."};
+        @"fusion_command_resolution_observed":@NO,
+        @"interpretation":@"W01 touch, W02 gesture decision, W03 native tap, W04 ObjC bridge, W05 modal presentation/seek, W06 chapter command/tap, W07 panel admission, W08 native panel model, W09 panel handler. Fusion/account command paths can bypass W04; embedded panels bypass W05. Native handler acceptance is not visual confirmation; timing is correlation."};
 }
 static void RVDAWatchHook(NSString *cls,NSString *selector,NSString *abi,RVReplacementFactory factory) {
     BOOL installed=RVDAUIHook(cls,selector,abi,NO,factory);
@@ -67,6 +71,50 @@ static void RVDAWatchHook(NSString *cls,NSString *selector,NSString *abi,RVRepla
     [RVDAWatchHooks addObject:@{@"class":cls,@"selector":selector,@"installed":@(installed),@"abi":abi}];
 }
 static void RVDAWatchInstall(void) {
+    RVDAWatchHook(@"YTPlayerBarController",@"setTimeTitleTapCommand:withButtonType:",@"v@:@i",^id(IMP original,SEL sel) {
+        return ^(id controller,id command,int type) {
+            ((void(*)(id,SEL,id,int))original)(controller,sel,command,type);
+            if (RVEnabled(@"diagnostics") && NSThread.isMainThread) {
+                if (!RVDAWatchChapterCommands) RVDAWatchChapterCommands=[NSMapTable weakToStrongObjectsMapTable];
+                [RVDAWatchChapterCommands setObject:@(command!=nil) forKey:controller];
+                if (RVDAWatchActive()) RVDAWatchRecord(@"W06_chapter_command",@{@"kind":@"native_setter",@"command_present":@(command!=nil),@"button_type":@(type)});
+            }
+        };
+    });
+    RVDAWatchHook(@"YTInlinePlayerBarContainerView",@"onCurrentChapterTitleTapped:",@"v@:@",^id(IMP original,SEL sel) {
+        return ^(id view,id sender) {
+            BOOL capture=RVDAWatchActive();if (capture) RVDAWatchRecord(@"W06_chapter_command",@{@"kind":@"chapter_button_tap",@"phase":@"entered"});
+            ((void(*)(id,SEL,id))original)(view,sel,sender);
+            if (capture) RVDAWatchRecord(@"W06_chapter_command",@{@"kind":@"chapter_button_tap",@"phase":@"returned"});
+        };
+    });
+    RVDAWatchHook(@"YTPlayerBarController",@"didTapCurrentTimeTitle",@"v@:",^id(IMP original,SEL sel) {
+        return ^(id controller) {
+            BOOL capture=RVDAWatchActive();NSNumber *present=capture ? [RVDAWatchChapterCommands objectForKey:controller] : nil;
+            if (capture) RVDAWatchRecord(@"W06_chapter_command",@{@"kind":@"chapter_delegate_tap",@"command_setter_observed":@(present!=nil),@"command_present":present ?: @"unknown",@"phase":@"entered"});
+            ((void(*)(id,SEL))original)(controller,sel);
+            if (capture) RVDAWatchRecord(@"W06_chapter_command",@{@"kind":@"chapter_delegate_tap",@"phase":@"returned"});
+        };
+    });
+    RVDAWatchHook(@"YTEngagementPanelViewControllerManager",@"canProvideNavigationControllerForShowCommand:",@"B@:@",^id(IMP original,SEL sel) {
+        return ^BOOL(id manager,id command) {
+            BOOL capture=RVDAWatchActive(),accepted=((BOOL(*)(id,SEL,id))original)(manager,sel,command);
+            if (capture) RVDAWatchRecord(@"W07_panel_admission",@{@"command_present":@(command!=nil),@"accepted":@(accepted)});return accepted;
+        };
+    });
+    RVDAWatchHook(@"YTEngagementPanelViewControllerManager",@"modelForShowCommand:",@"@@:@",^id(IMP original,SEL sel) {
+        return ^id(id manager,id command) {
+            BOOL capture=RVDAWatchActive();id model=((id(*)(id,SEL,id))original)(manager,sel,command);
+            if (capture) RVDAWatchRecord(@"W08_panel_model",@{@"model_present":@(model!=nil),@"model_class":model ? NSStringFromClass([model class]) : @"absent"});return model;
+        };
+    });
+    RVDAWatchHook(@"YTEngagementPanelContainerViewController",@"handleShowEngagementPanelCommand:exitFullscreen:engagementPanelObserver:",@"B@:@B@",^id(IMP original,SEL sel) {
+        return ^BOOL(id controller,id command,BOOL exitFullscreen,id observer) {
+            BOOL capture=RVDAWatchActive();if (capture) RVDAWatchRecord(@"W09_panel_dispatch",@{@"phase":@"entered",@"command_present":@(command!=nil)});
+            BOOL accepted=((BOOL(*)(id,SEL,id,BOOL,id))original)(controller,sel,command,exitFullscreen,observer);
+            if (capture) RVDAWatchRecord(@"W09_panel_dispatch",@{@"phase":@"returned",@"accepted":@(accepted),@"visible_success_inferred":@NO});return accepted;
+        };
+    });
     RVDAWatchHook(@"UIWindow",@"sendEvent:",@"v@:@",^id(IMP original,SEL sel) {
         return ^(id window,UIEvent *event) {
             BOOL capture=RVDAWatchActive();

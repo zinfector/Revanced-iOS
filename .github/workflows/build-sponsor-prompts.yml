@@ -1,8 +1,8 @@
-name: Build Shorts feed and navigation payload with Xcode
+name: Build watch controls payload with Xcode
 
 on:
   push:
-    branches: [fix/shorts-feed-navigation-0.3.54]
+    branches: [fix/watch-controls-0.3.55]
 
 permissions:
   contents: read

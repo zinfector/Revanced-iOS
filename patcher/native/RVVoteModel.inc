@@ -321,7 +321,7 @@ static void RVInstallVoteModel(void) {
     for (NSString *selector in @[@"getVideoActionBarElement:error:",@"getCompactifyVideoActionBarElement:error:"]) {
         BOOL installed=RVHook(@"YTBAWatchPageFillerBlock",selector,@"@@:@^@",NO,^id(IMP original,SEL sel) {
             return ^id(id object,id request,NSError **error) {
-                NSUInteger previous=RVVoteFirstLaunchEnter(@"vote_element_producer",YES);
+                NSUInteger previous=RVVoteFirstLaunchEnter(@"vote_element_producer_native",NO);
                 @try {
                     id native=((id(*)(id,SEL,id,NSError **))original)(object,sel,request,error);
                     return RVVoteNormalizeNativeElement(native,selector);

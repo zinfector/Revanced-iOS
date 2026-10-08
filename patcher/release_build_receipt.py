@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.54'
+VERSION = '0.3.55'
 
 
 def digest(path):
@@ -31,7 +31,7 @@ def main():
              'usb_diagnostics.py', 'profiles/usb-diagnostics-contract.json', 'coverage.json', 'features.py',
              'settings_catalog.py', 'configs/adblock-native.json',
              'profiles/dearrow-adaptive-contract.json', 'profiles/dearrow-live-card-contract.json',
-             'profiles/dearrow-live-capture-contract.json', 'profiles/dearrow-thumbnail-recovery-contract.json', 'profiles/dearrow-feed-prefetch-contract.json', 'profiles/dearrow-frame-recovery-contract.json', 'profiles/dearrow-cache-resume-contract.json', 'profiles/dearrow-card-diagnostics-contract.json', 'profiles/shorts-feed-navigation-contract.json']
+             'profiles/dearrow-live-capture-contract.json', 'profiles/dearrow-thumbnail-recovery-contract.json', 'profiles/dearrow-feed-prefetch-contract.json', 'profiles/dearrow-frame-recovery-contract.json', 'profiles/dearrow-cache-resume-contract.json', 'profiles/dearrow-card-diagnostics-contract.json', 'profiles/shorts-feed-navigation-contract.json', 'profiles/watch-controls-contract.json']
     names += ['native/'+name for name in native['source_files']]
     names += ['output/'+item['filename'] for item in package['packages']]
     artifacts = {}
@@ -56,7 +56,7 @@ def main():
                                    for step in job.get('steps', [])]}
                         for job in jobs['jobs']]},
         'packages': package['packages'], 'artifacts': artifacts,
-        'interaction_issue': 'User reports watch-page controls work. Latest 0.3.44 report contains a proven loaded watch title and native touch/tap forwarding events; no interaction-hook changes in this release.'}
+        'interaction_issue': 'User confirmed comments and chapter controls recover after disabling Use compatible dislike layout on 0.3.54. Wired capture showed accepted native taps with hiding/blocking options off; disabling policy was confirmed in the next process. Request-only policy correction and additional passive panel/chapter checkpoints await device confirmation.'}
     encoded = json.dumps(receipt, indent=2)+'\n'
     for name in ('build/release-manifest.json', f'build/release-manifest-{VERSION}.json',
                  f'profiles/release-{VERSION}.json'):

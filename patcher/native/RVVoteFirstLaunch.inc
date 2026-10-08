@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-// Reproduce the no-blob vote path only within verified watch boundaries.
-// Native storage and all browse/account consumers retain their configuration.
+// Reproduce the no-blob vote path only during watch request-context construction.
+// Native storage, controller construction and command/panel consumers stay native.
 static id RVVoteFirstLaunchGroup;
 static BOOL RVVoteFirstLaunchReady;
 static _Thread_local NSUInteger RVVoteFirstLaunchScope;
@@ -28,10 +28,11 @@ static NSDictionary *RVVoteFirstLaunchReport(void) {
         else if ([RVVoteFirstLaunchCounts[@"request_cold_present"] unsignedIntegerValue] || ![RVVoteFirstLaunchState[@"request_cold_defaults"] boolValue]) blocked=@"request_cold_configuration_present";
         else if (![RVVoteFirstLaunchCounts[@"serving_context_read"] unsignedIntegerValue]) blocked=@"template_context_not_observed";
         else if (![RVVoteModelCounts[@"paired_template_materialized"] unsignedIntegerValue]) blocked=@"paired_template_not_observed";
-        return @{@"schema":@2,@"revision":@"watch-vote-scope-1",@"strategy":@"scoped_watch_defaults_and_template_context",
+        return @{@"schema":@3,@"revision":@"watch-vote-scope-2",@"strategy":@"watch_request_context_defaults_only",
             @"requested_at_start":@(RVVoteFirstLaunchRequested),@"default_group_ready":@(RVVoteFirstLaunchReady),
             @"restart_required":@YES,@"saved_configuration_deleted":@NO,@"account_storage_changed":@NO,
-            @"scope":@"player_and_watch_next_requests_and_watch_vote_construction",@"native_startup_configuration_preserved":@YES,@"paired_row_device_verified":@NO,
+            @"scope":@"player_and_watch_next_context_serialization",@"native_startup_configuration_preserved":@YES,
+            @"native_watch_consumer_configuration_preserved":@YES,@"paired_row_device_verified":@NO,
             @"paired_template_seen_this_process":@([RVVoteModelCounts[@"paired_template_materialized"] unsignedIntegerValue]>0),
             @"first_blocked_checkpoint":blocked,@"counts":RVVoteFirstLaunchCounts.copy ?: @{},@"state":RVVoteFirstLaunchState.copy ?: @{}};
     }

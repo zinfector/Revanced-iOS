@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.54**, `YouTube-21.39.4-RVPort-0.3.54-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.55**, `YouTube-21.39.4-RVPort-0.3.55-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -14,6 +14,8 @@ DeArrow prefetches metadata and thumbnails from feed pages and continuations, wi
 
 
 Shorts filtering recognizes individual modern video cards by their primary Shorts playback command, in addition to shelves and typed reel cards. Feed hiding and bottom-tab hiding remain separate options. ReVanced owns the native switch save callback and verifies its saved value; navigation reports include saved/default preference provenance, displayed switch state, observed tab identifiers and compacted native layout. These 0.3.54 changes await device confirmation.
+
+Version 0.3.55 confines the compatible dislike layout policy to player/watch request contexts. Native watch controllers, response consumers and vote producers keep their account configuration so command and panel setup can remain consistent. The user confirmed that disabling the previous policy restores comments and chapters; this narrower policy awaits device confirmation. Capture-only watch diagnostics now report chapter command assignment/taps and native panel admission, model lookup and dispatch. No tests were run.
 
 ## USB diagnostics
 
@@ -66,7 +68,7 @@ UI/native jobs run on the app's main queue. The USB worker returns a job ticket 
 
 ## Porting progress
 
-Status reflects the merged 0.3.54 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.55 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.

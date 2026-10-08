@@ -12,7 +12,7 @@ static void RVInstallVoteIdentity(void) {
     [defaults setInteger:(NSInteger)RVVoteLayoutLaunch forKey:@"RVPort.VoteLayoutLaunchNumber"];
 }
 static NSDictionary *RVVoteLayoutReport(void) {
-    return @{@"schema":@3,@"strategy":@"watch_scoped_defaults_with_native_pair_normalization",@"session_id":RVVoteLayoutSession ?: @"unavailable",
+    return @{@"schema":@4,@"strategy":@"watch_request_context_defaults_with_native_pair_normalization",@"session_id":RVVoteLayoutSession ?: @"unavailable",
         @"launch_number":@(RVVoteLayoutLaunch),@"native_experiment_overrides_retired":@YES,
         @"first_launch_ui_requested_at_start":@(RVVoteFirstLaunchRequested),@"restart_required_for_policy_changes":@YES,
         @"native_likes_replaced":@NO,@"persistent_experiment_cache_changed":@NO,@"device_layout_verified":@NO};
