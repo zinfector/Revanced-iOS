@@ -260,13 +260,13 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     if (!RVDAUIDiagnosticsArmed || !NSThread.isMainThread || ![data isKindOfClass:NSData.class] || data.length>RVDALiveModelLimit) return;
     NSData *component=RVDAPath(data,@[@1,@168777401]);NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
     NSString *key=RVDALiveKey(raw);if (!key) return;
-    BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key);
+    BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key),shelf=RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe");
     if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"] && ![controller isEqual:@"YTElementsCellController"]) return;
     NSData *model=RVDAChild(component,5);NSDictionary *semantic=card ? RVDALiveCardContract(model) : nil;
     NSDictionary *watchContract=watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : nil;
     BOOL accepted=(card && [semantic[@"blocker"] isEqual:@"ready"]) || (watch && [watchContract[@"title_input_valid"] boolValue] && RVVideoIDValid(watchVideo));
     BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo) || accepted;
-    NSString *category=accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
+    NSString *category=shelf ? @"topic_shelf" : accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
     NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" :
         [@[@"home",@"library",@"search",@"subscriptions",@"related"] containsObject:surface ?: @""] ? surface : @"unknown";
     NSString *fingerprint=RVDALiveSampleShape(model,key);

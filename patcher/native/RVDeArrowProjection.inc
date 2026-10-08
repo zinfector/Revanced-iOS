@@ -175,7 +175,7 @@ static BOOL RVDALiveWatchFamily(NSString *raw) {
 }
 static NSString *RVDAResourceProfileStatus(NSString *raw) {
     NSDictionary *parts=RVDAResourceParts(raw);if (!parts) return @"template_uri_grammar_rejected";
-    if (RVDALiveCardCandidate(raw) || RVDALiveWatchFamily(raw)) return @"structural_model_validation_required";
+    if (RVDALiveCardCandidate(raw) || RVDALiveWatchFamily(raw) || RVDAResourceFamily(raw,@"horizontal_shelf.eml",@"fe")) return @"structural_model_validation_required";
     NSArray *pinned=@[@"compact_video.eml-js|73af68f5375dcfd2",@"video_card.eml-js|309e33d369a3db21",@"video_card_content.eml-js|1fe054d511a8304d",
         @"video_with_context_slots.eml-js|7f46bdff852ff164"];
     if ([pinned containsObject:parts[@"key"]]) return @"pinned_uri_model_validation_required";
@@ -185,10 +185,12 @@ static NSString *RVDAResourceProfileStatus(NSString *raw) {
 }
 static NSString *RVDALiveCardFailure(NSData *model);
 static NSString *RVDALiveWatchFailure(NSData *model);
+static NSArray<RVDAProjection *> *RVDAShelfProfiles(NSData *model,NSString *key);
 static NSString *RVDAProfileFailure(NSData *data) {
     NSData *component=RVDAPath(data,@[@1,@168777401]);
     if (!component) return @"serialized_component_root_unresolved";
     NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
+    if (RVDAResourceFamily(raw,@"horizontal_shelf.eml",@"fe")) return @"shelf_no_verified_child_card";
     if (RVDALiveCardCandidate(raw)) return RVDALiveCardFailure(RVDAChild(component,5));
     if (RVDALiveWatchFamily(raw)) return RVDALiveWatchFailure(RVDAChild(component,5));
     NSString *status=RVDAResourceProfileStatus(raw);
