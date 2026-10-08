@@ -352,9 +352,9 @@ static void RVSettingsPop(UIViewController *content) {
                 (void)sender;BOOL saved=weakSelf.changed ? weakSelf.changed(row,on) : NO;
                 if (saved) {
                     NSArray *sections=weakSelf.nativeSections;
-                    id section=index.section<sections.count ? sections[index.section] : nil;
+                    id section=index.section>=0 && (NSUInteger)index.section<sections.count ? sections[index.section] : nil;
                     NSArray *items=RVObject(section,"items");
-                    id item=[items isKindOfClass:NSArray.class] && index.item<items.count ? items[index.item] : nil;
+                    id item=[items isKindOfClass:NSArray.class] && index.item>=0 && (NSUInteger)index.item<items.count ? items[index.item] : nil;
                     if (RVCan(item,"setOn:",@"v@:B"))
                         ((void(*)(id,SEL,BOOL))objc_msgSend)(item,sel_registerName("setOn:"),on);
                 }
