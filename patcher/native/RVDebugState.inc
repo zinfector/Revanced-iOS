@@ -10,7 +10,7 @@ static NSString *const RVDBGPreference=@"rvport.usb-live-debug.enabled";
 @interface RVDBGHandle : NSObject
 @property(nonatomic,weak) id object,scope;
 @property(nonatomic,strong) id retained;
-@property(nonatomic) uint64_t generation,epoch;
+@property(nonatomic) uint64_t generation,epoch,lastAccess;
 @property(nonatomic,copy) NSString *identifier;
 @end
 @implementation RVDBGHandle @end
@@ -29,7 +29,7 @@ static NSString *const RVDBGPreference=@"rvport.usb-live-debug.enabled";
 @property(nonatomic,strong) NSMutableDictionary *transactions,*allocations;
 @property(nonatomic,strong) NSMutableSet<NSString *> *mutations;
 @property(nonatomic,strong) NSMutableArray *events;
-@property(nonatomic) uint64_t sequence,dropped;
+@property(nonatomic) uint64_t sequence,dropped,handleSequence;
 + (instancetype)shared;
 @end
 @implementation RVDBGState
@@ -74,12 +74,21 @@ static NSString *RVDBGHandleFor(id object,RVDAUIBinding *scope) {
     if (!object || !NSThread.isMainThread || !RVDBGEnabled()) return nil;
     RVDBGState *state=RVDBGState.shared;@synchronized(state) {
         RVDBGHandle *existing=[state.reverse objectForKey:object];
-        if (existing && existing.scope==scope && existing.generation==(scope ? scope.generation : 0) && existing.epoch==(scope ? scope.consumerEpoch : 0)) return existing.identifier;
+        if (existing && existing.scope==scope && existing.generation==(scope ? scope.generation : 0) && existing.epoch==(scope ? scope.consumerEpoch : 0)) { existing.lastAccess=++state.handleSequence;return existing.identifier; }
         for (NSString *key in state.handles.allKeys) { RVDBGHandle *entry=state.handles[key];RVDAUIBinding *binding=entry.scope;
-            if (!entry.object || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) { if (entry.object) [state.reverse removeObjectForKey:entry.object];[state.handles removeObjectForKey:key]; }
+            if (!entry.object || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) { if (entry.object && [state.reverse objectForKey:entry.object]==entry) [state.reverse removeObjectForKey:entry.object];[state.handles removeObjectForKey:key]; }
         }
-        if (state.handles.count>=1024) return nil;
+        if (state.handles.count>=1024) {
+            // Weak inspection references may expire; explicit retain leases may
+            // not. Never recycle UUIDs or turn raw addresses into object handles.
+            RVDBGHandle *oldest=nil;for (RVDBGHandle *candidate in state.handles.allValues)
+                if (!candidate.retained && (!oldest || candidate.lastAccess<oldest.lastAccess)) oldest=candidate;
+            if (!oldest) return nil;
+            if (oldest.object && [state.reverse objectForKey:oldest.object]==oldest) [state.reverse removeObjectForKey:oldest.object];
+            [state.handles removeObjectForKey:oldest.identifier];
+        }
         RVDBGHandle *entry=[RVDBGHandle new];entry.object=object;entry.scope=scope;entry.generation=scope ? scope.generation : 0;entry.epoch=scope ? scope.consumerEpoch : 0;
+        entry.lastAccess=++state.handleSequence;
         entry.identifier=NSUUID.UUID.UUIDString;state.handles[entry.identifier]=entry;[state.reverse setObject:entry forKey:object];return entry.identifier;
     }
 }
@@ -88,7 +97,7 @@ static id RVDBGResolve(id identifier,RVDAUIBinding **scope) {
     @synchronized(state) {
         RVDBGHandle *entry=state.handles[identifier];RVDAUIBinding *binding=entry.scope;
         if (!entry || !entry.object || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) return nil;
-        if (scope) *scope=binding;return entry.retained ?: entry.object;
+        entry.lastAccess=++state.handleSequence;if (scope) *scope=binding;return entry.retained ?: entry.object;
     }
 }
 static NSDictionary *RVDBGReference(id object,RVDAUIBinding *scope) {

@@ -83,6 +83,8 @@ static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     NSDictionary *contract=RVDALiveCardContract(model);
     NSDictionary *paths=@{@"navigation_video_id":contract[@"identity_path"] ?: RVDALiveCardCommandPath(),
         @"direct_watch_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@48687757,@1]],
+        @"direct_reel_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@139608561,@1]],
+        @"cowatch_reel_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@462702848,@1,@139608561,@1]],
         @"cowatch_video_id":[RVDALiveCardCommandPath() arrayByAddingObjectsFromArray:@[@462702848,@1,@48687757,@1]],@"presentation":@[@232954548,@18,@1],
         @"attributed_title":@[@232954548,@18,@1,@21,@8178,@1],@"title_content":@[@232954548,@18,@1,@21,@8178,@1,@1],
         @"tap_video_title":@[@232954548,@18,@4,@169495254,@462702848,@4],
@@ -110,6 +112,7 @@ static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
         @"identity_path":identityPath,@"failed_step":contract[@"failed_step"] ?: @(-1),
         @"failed_parent_shape":contract[@"failed_step"] ? RVDALiveShape(RVDAPath(model,[identityPath subarrayWithRange:NSMakeRange(0,failedStep)])) : @{},
         @"primary_command_shape":RVDALiveShape(command),@"direct_watch_present":@(RVDAChild(command,48687757)!=nil),
+        @"direct_reel_present":@(RVDAChild(command,139608561)!=nil),
         @"cowatch_present":@(RVDAChild(command,462702848)!=nil),@"browse_present":@(RVDAChild(command,48687626)!=nil),
         @"video_id_valid":@(RVVideoIDValid(contract[@"video"])),@"video_hash":RVDADiagVideo(contract[@"video"]),
         @"title_input_valid":contract[@"title_role"] ?: @NO,@"thumbnail_identity_matches":contract[@"image_role"] ?: @NO,

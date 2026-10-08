@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "version": "0.3.52",
+  "tests_run": false,
+  "feed_preview_identity": {
+    "terminal_extensions": {
+      "48687757": "YTIWatchEndpoint",
+      "139608561": "YTIReelWatchEndpoint"
+    },
+    "video_id_field": 1,
+    "native_descriptor": "ReelWatchEndpoint videoId: singular string, GPB data type 14, field 1",
+    "reviewed_wrappers": [
+      462702848,
+      200453700
+    ],
+    "wrapper_limit": 6,
+    "reel_adapter": "live_primary_reel_preview_v1",
+    "requirements": [
+      "exact primary card tap command",
+      "one length-delimited extension per command",
+      "valid singular video identity",
+      "matching presentation identity when present",
+      "same-video native thumbnail URL",
+      "immutable row/controller/source/generation ownership",
+      "loaded owned native consumer"
+    ],
+    "navigation_executed_or_modified": false,
+    "shorts_player_adapter_added": false
+  },
+  "diagnostics": {
+    "report_limit": 32,
+    "sort_order": [
+      "current visible pending",
+      "current visible ready",
+      "current pending",
+      "current recent ready",
+      "retired recent"
+    ],
+    "omitted_counts_exported": true,
+    "visibility": "already loaded native nodes; not stale census flags",
+    "wired_binding_page_limit": 64,
+    "wired_generation_filter": true,
+    "wired_fallback_fields": [
+      "phase",
+      "reason",
+      "http",
+      "cached_http",
+      "retries",
+      "cycles",
+      "duration_source",
+      "timestamp_requested",
+      "timestamp_returned",
+      "cooldown_seconds"
+    ],
+    "weak_handle_limit": 1024,
+    "weak_handle_recovery": "evict least recently used unretained reference, never reuse UUIDs",
+    "explicit_retain_leases_evicted": false,
+    "stale_generation_epoch_guards_retained": true
+  },
+  "random_frame_policy": {
+    "pending": "retain original thumbnail and continue bounded retries/cache polling",
+    "interim_youtube_generated_still": false
+  },
+  "limitations": [
+    "Upstream worker/cache availability is outside the adapter",
+    "Reel preview still requires the existing presentation/consumer contract",
+    "Device confirmation pending"
+  ]
+}

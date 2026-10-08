@@ -103,10 +103,16 @@ static NSDictionary *RVDBGObjectOperation(NSString *operation,NSDictionary *args
 }
 static NSDictionary *RVDBGDeArrow(NSString *operation,NSDictionary *args) {
     if ([operation isEqual:@"debug.dearrow.bindings"]) {
-        NSMutableArray *bindings=[NSMutableArray array];
-        for (RVDAUIBinding *binding in RVDAUIBindings.allObjects) if (RVDAUICurrent(binding) && bindings.count<64) {
-            [bindings addObject:@{@"binding":RVDBGReference(binding,binding),@"root":RVDBGReference(binding.nativeFactoryRoot,binding),@"controller":RVDBGReference(binding.controller,binding),@"surface":binding.surface ?: @"unknown",@"route":binding.route ?: @"unknown",@"factory_proven":@(binding.factoryProvenanceVerified),@"roles":binding.consumerCheckpoint ?: @{}}];
-        }return @{@"ok":@YES,@"bindings":bindings};
+        NSUInteger cursor=0,generation=0;
+        if (args[@"cursor"] && !RVDBGBound(args[@"cursor"],0,65536,&cursor)) return RVDBGFail(@"binding_cursor_invalid");
+        if (args[@"generation"] && !RVDBGBound(args[@"generation"],1,9007199254740991ULL,&generation)) return RVDBGFail(@"binding_generation_invalid");
+        NSMutableArray *current=[NSMutableArray array],*bindings=[NSMutableArray array];
+        for (RVDAUIBinding *binding in RVDAUIDiagnosticBindings()) if (RVDAUICurrent(binding) && (!generation || binding.generation==generation)) [current addObject:binding];
+        for (NSUInteger index=cursor;index<current.count && bindings.count<64;index++) {
+            RVDAUIBinding *binding=current[index];
+            NSDictionary *fallback=@{@"phase":binding.fallbackPhase ?: @"idle",@"reason":binding.fallbackResponseReason ?: @"none",@"http":@(binding.fallbackHTTPStatus),@"cached_http":@(binding.fallbackCachedHTTPStatus),@"retries":@(binding.fallbackRetries),@"cycles":@(binding.fallbackCycles),@"duration_source":binding.durationSource ?: @"unresolved",@"timestamp_requested":binding.fallbackTimestampRequested ?: NSNull.null,@"timestamp_returned":binding.fallbackTimestampReturned ?: NSNull.null,@"cooldown_seconds":@(MAX(0,binding.fallbackNextAttempt-RVDANow()))};
+            [bindings addObject:@{@"binding":RVDBGReference(binding,binding),@"root":RVDBGReference(binding.nativeFactoryRoot,binding),@"controller":RVDBGReference(binding.controller,binding),@"surface":binding.surface ?: @"unknown",@"route":binding.route ?: @"unknown",@"factory_proven":@(binding.factoryProvenanceVerified),@"roles":binding.consumerCheckpoint ?: @{},@"visible_now":@(RVDAUIFallbackVisible(binding)),@"video_hash":RVDADiagVideo(binding.video),@"image_origin":binding.imageOrigin ?: @"native_original",@"encoded_image_ready":@(binding.imageBytes!=nil),@"image_blocker":binding.imageBlocker ?: @"policy_off",@"fallback":fallback}];
+        }return @{@"ok":@YES,@"bindings":bindings,@"count":@(current.count),@"next_cursor":@(cursor+bindings.count),@"complete":@(cursor+bindings.count>=current.count),@"order":@"current_visible_pending_then_recent"};
     }
     RVDAUIBinding *binding=RVDBGResolve(args[@"handle"],NULL);
     if (![binding isKindOfClass:RVDAUIBinding.class] || !RVDAUICurrent(binding)) return RVDBGFail(@"binding_handle_expired");

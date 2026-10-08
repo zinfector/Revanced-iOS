@@ -40,12 +40,16 @@ static NSDictionary *RVDALiveCardNavigation(NSData *model) {
             result[@"command_type"]=@"browse";result[@"blocker"]=@"live_card_non_video_browse";
             result[@"identity_path"]=path;result[@"failed_step"]=@(path.count);return result;
         }
-        if (extension.number==48687757) {
-            NSArray *identity=[path arrayByAddingObjectsFromArray:@[@48687757,@1]];
+        // YTIWatchEndpoint and YTIReelWatchEndpoint both declare videoId as
+        // singular string field 1. Reel support applies to the feed preview's
+        // identity only; its navigation payload and player are untouched.
+        if (extension.number==48687757 || extension.number==139608561) {
+            NSString *terminal=extension.number==139608561 ? @"reel" : @"watch";
+            NSArray *identity=[path arrayByAddingObjectsFromArray:@[@(extension.number),@1]];
             NSData *value=RVDACheckedPath(model,identity,&failure,&failed);NSString *video=RVDAText(value);
             NSMutableArray *names=[NSMutableArray array];for (NSDictionary *wrapper in chain) [names addObject:wrapper[@"type"]];
-            [names addObject:@"watch"];result[@"command_type"]=depth ? [names componentsJoinedByString:@"_"] : @"direct_watch";
-            result[@"identity_path"]=identity;result[@"terminal_extension"]=@48687757;
+            [names addObject:terminal];result[@"command_type"]=depth ? [names componentsJoinedByString:@"_"] : [@"direct_" stringByAppendingString:terminal];
+            result[@"identity_path"]=identity;result[@"terminal_extension"]=@(extension.number);
             if (!value || !RVVideoIDValid(video)) {
                 result[@"blocker"]=value ? @"live_card_identity_invalid" : [@"live_card_identity_" stringByAppendingString:failure ?: @"unresolved"];
                 result[@"failed_step"]=@(failed);return result;
@@ -139,7 +143,7 @@ static NSDictionary *RVDALiveCardContract(NSData *model) {
 static NSString *RVDALiveCardFailure(NSData *model) { return RVDALiveCardContract(model)[@"blocker"] ?: @"live_card_input_unresolved"; }
 static RVDAProjection *RVDALiveCardProfile(NSData *model,NSString *key) {
     NSDictionary *contract=RVDALiveCardContract(model);if (![contract[@"blocker"] isEqual:@"ready"]) return nil;
-    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=key;profile.adapterID=@"live_primary_watch_v3";
+    RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.route=key;profile.adapterID=[contract[@"terminal_extension"] unsignedIntValue]==139608561 ? @"live_primary_reel_preview_v1" : @"live_primary_watch_v3";
     profile.video=contract[@"video"];profile.identityPath=contract[@"identity_path"];profile.commandType=contract[@"command_type"];profile.videoDataPath=@[@232954548,@18,@1];
     profile.titlePath=contract[@"title_path"];profile.imagePath=contract[@"image_path"];profile.titleEntityPath=contract[@"title_entity_path"];
     profile.titleRole=[contract[@"title_role"] boolValue];profile.imageRole=[contract[@"image_role"] boolValue];

@@ -527,9 +527,26 @@ static void RVDAUIPreferencesChanged(void) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
     }
 }
+// Take a bounded, deterministic diagnostic sample without permitting new writes.
+// Visibility is read from already loaded nodes, rather than stale census flags.
+static NSArray<RVDAUIBinding *> *RVDAUIDiagnosticBindings(void) {
+    NSMutableArray *ranked=[NSMutableArray array];
+    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
+        BOOL current=RVDAUICurrent(state),visible=current && RVDAUIFallbackVisible(state);
+        BOOL pending=(state.parts&RVDeArrowPartsThumbnail) && !RVDAUIOriginal(state) &&
+            state.result.thumbnailDecision!=RVDeArrowDecisionOriginal && !state.imageBytes;
+        NSUInteger rank=(current ? 4 : 0)+(visible ? 8 : 0)+(pending ? 2 : 0);
+        [ranked addObject:@{@"binding":state,@"rank":@(rank),@"generation":@(state.generation)}];
+    }
+    [ranked sortUsingComparator:^NSComparisonResult(NSDictionary *a,NSDictionary *b) {
+        NSComparisonResult rank=[b[@"rank"] compare:a[@"rank"]];return rank==NSOrderedSame ? [b[@"generation"] compare:a[@"generation"]] : rank;
+    }];
+    NSMutableArray *ordered=[NSMutableArray array];for (NSDictionary *entry in ranked) [ordered addObject:entry[@"binding"]];return ordered.copy;
+}
 static NSDictionary *RVDAUIReport(void) {
     NSMutableArray *bindings=[NSMutableArray array];
-    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
+    NSArray *ordered=RVDAUIDiagnosticBindings();
+    for (RVDAUIBinding *state in ordered) {
         if (bindings.count>=32) break;
         RVDeArrowResult *result=state.result;
         [bindings addObject:@{@"surface":state.surface ?: @"unknown",@"route":state.route ?: @"unresolved",
@@ -570,7 +587,7 @@ static NSDictionary *RVDAUIReport(void) {
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
         @"settings_revision":@(RVDAUISettingsRevision),@"cache_invalidation_reason":RVDAUILastInvalidation,@"frame_disk_cache":@{@"compressed_byte_limit":@(32*1024*1024),@"entry_limit":@128,@"ttl_seconds":@1800},@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
-        @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
+        @"bindings":bindings,@"binding_sample_order":@"current_visible_pending_then_recent",@"bindings_total":@(ordered.count),@"bindings_omitted":@(ordered.count-bindings.count),@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"global_setter_observers":@NO,
         @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
