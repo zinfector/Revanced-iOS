@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "version": "0.3.51",
+  "tests_run": false,
+  "random_frame": {
+    "cache_first": true,
+    "cached_request_omits": [
+      "time",
+      "generateNow",
+      "officialTime"
+    ],
+    "validation": [
+      "same endpoint/video URL",
+      "current source/row/controller ownership",
+      "generation and settings revision",
+      "finite X-Timestamp within 0..604800 seconds and metadata duration when known",
+      "allowed MIME and bounded native decoder"
+    ],
+    "origin": "cached_random_time",
+    "exact_timed_tolerance_seconds": 0.001,
+    "duration_order": [
+      "branding metadata",
+      "matching ordinary playback",
+      "approximate native duration badge"
+    ],
+    "official_time_requires": [
+      "official branding endpoint",
+      "metadata randomTime",
+      "authoritative metadata videoDuration"
+    ]
+  },
+  "lifecycle": {
+    "foreground": "resume; ready presentation and auxiliary/prepared caches retained",
+    "unchanged_settings": "immutable relevant-value snapshot; no row generation or cache reset",
+    "diagnostics_toggle": "updates backend logging without configuration revision/invalidation",
+    "show_original": "rebind selected video only",
+    "explicit_clear_cache": "cancels leases, clears backend/memory/disk caches and rebinds rows",
+    "background": "pause image tickets; retain bounded leases and immutable snapshots",
+    "memory_warning": "release decoded auxiliary/prepared caches; retain guarded row presentations and leases"
+  },
+  "prefetch": {
+    "lease_limit": 48,
+    "lease_seconds": 600,
+    "timed_generation_attempt_limit": 4,
+    "timed_attempt_delays_seconds": [
+      4,
+      8,
+      16
+    ],
+    "after_exhaustion": "cached-only polling every 60 seconds while current lease remains valid; no new speculative generation",
+    "worker_failure_delay_seconds": 300,
+    "retry_after_cap_seconds": 300,
+    "foreground_reserved_slots": 2,
+    "total_transfers": 6,
+    "speculative_transfers": 4,
+    "expired_or_evicted_image_lease_readmission": true
+  },
+  "frame_disk_cache": {
+    "request_namespace": "SHA256 of exact endpoint/video/request URL",
+    "data": "validated compressed response bytes, MIME and returned timestamp",
+    "entry_limit": 128,
+    "byte_limit": 33554432,
+    "ttl_seconds": 1800,
+    "queue": "serial utility file I/O; asynchronous shared-pool admission",
+    "read_path": "same timestamp validation, MIME decoder and row-generation guards as HTTP",
+    "clear_epoch": "queued reads cancelled on explicit clear",
+    "expanded_buffers_persisted": false
+  },
+  "diagnostics": [
+    "D08_cached_random_response",
+    "D08_cached_random_timestamp_validated",
+    "D08_duration_resolved",
+    "F04_prefetch_cached_random_response",
+    "frame.disk_hit",
+    "frame.disk_miss",
+    "lifecycle.ready_preserved",
+    "lifecycle.row_resumed",
+    "lifecycle.unchanged_settings_preserved",
+    "lifecycle.video_selection_rebound",
+    "prefetch.exhausted_cache_recovery",
+    "prefetch.evicted_cache_readmitted",
+    "report cached_random_http, next_attempt_seconds, exhausted, cache_only, cache_invalidation_reason"
+  ],
+  "limitations": [
+    "Cached random fallback can use the service latest frame rather than a badge-derived exact frame",
+    "No upstream worker-capacity changes",
+    "Unsupported/unloaded native consumers retain originals",
+    "Device confirmation required"
+  ]
+}

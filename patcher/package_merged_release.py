@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.50'
+VERSION = '0.3.51'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-frame-recovery',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-cache-resume',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Shared mutually exclusive frame-generation failure classification; temporary HTTP 204 timeout and queue recovery without forced worker-failure backoff; bounded foreground cooldowns; content-deduplicated immutable feed snapshots with bounded queued admission, lifecycle invalidation and redacted retry/queue checkpoints. Existing native ownership, timestamp and consumer guards retained. Apple Xcode production compilation and packaging only; no tests or device validation.'}
-    (ROOT/'build/package-manifest-0.3.50.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Cache-first random frame lookup with validated server-selected timestamps and authoritative-only officialTime; preserved ready presentations across foreground and unrelated settings changes; per-video Show Original rebind; bounded speculative generation followed by cache-only recovery; compressed frame disk cache and redacted lifecycle/cache checkpoints. Native ownership, strict explicitly timed requests and watch interaction guards retained. Apple Xcode production compilation and packaging only; no tests or device validation.'}
+    (ROOT/'build/package-manifest-0.3.51.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

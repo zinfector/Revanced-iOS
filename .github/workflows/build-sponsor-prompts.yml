@@ -1,8 +1,8 @@
-name: Build DeArrow frame recovery payload with Xcode
+name: Build DeArrow cache resume payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-frame-recovery-0.3.50]
+    branches: [fix/dearrow-cache-resume-0.3.51]
 
 permissions:
   contents: read

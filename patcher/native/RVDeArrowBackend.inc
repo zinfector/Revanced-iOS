@@ -347,7 +347,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
 - (NSDictionary *)optionIdentity:(RVDeArrowOptions *)options {
     return @{@"branding":options.brandingEndpoint.absoluteString,@"thumbnail":options.thumbnailEndpoint.absoluteString,
         @"metadata_ttl":@(options.metadataTTL),@"negative_ttl":@(options.negativeTTL),@"timeout":@(options.requestTimeout),
-        @"diagnostics":@(options.diagnosticsEnabled),@"persist":@(options.persistMetadata)};
+        @"persist":@(options.persistMetadata)};
 }
 - (void)invalidateRequests {
     self.configurationRevision++;
@@ -365,7 +365,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
         !isfinite(copy.negativeTTL) || copy.negativeTTL<10 || copy.negativeTTL>3600 ||
         !isfinite(copy.requestTimeout) || copy.requestTimeout<3 || copy.requestTimeout>60) return NO;
     [self sync:^{
-        if ([[self optionIdentity:self.options] isEqual:[self optionIdentity:copy]]) return;
+        if ([[self optionIdentity:self.options] isEqual:[self optionIdentity:copy]]) { self.options.diagnosticsEnabled=copy.diagnosticsEnabled;return; }
         [self record:RVDeArrowCheckpointBackendReady blocker:RVDeArrowBlockerConfigurationChanged video:nil details:nil];
         [self invalidateRequests];self.options=copy;self.diskLoaded=NO;
         [self.metadataCache removeAllObjects];[self.imageCache removeAllObjects];self.imageCost=0;[self.cooldowns removeAllObjects];

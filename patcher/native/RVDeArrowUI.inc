@@ -47,7 +47,7 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter,fallbackNextAttempt,fallbackLastVisible;
 @property(nonatomic) uint64_t fallbackEpoch;
 @property(nonatomic) NSUInteger fallbackCycles,fallbackExhaustions;
-@property(nonatomic) NSInteger fallbackHTTPStatus,fallbackNetworkErrorCode;
+@property(nonatomic) NSInteger fallbackHTTPStatus,fallbackNetworkErrorCode,fallbackCachedHTTPStatus;
 @property(nonatomic,strong) NSNumber *fallbackTimestampRequested,*fallbackTimestampReturned;
 @property(nonatomic,copy) NSString *fallbackTimestampSource,*fallbackRequestKey;
 @property(nonatomic,copy) NSString *fallbackResponseReason;
@@ -242,7 +242,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
     binding.fallbackEpoch++;binding.fallbackNextAttempt=0;binding.fallbackCycles=0;binding.fallbackExhaustions=0;binding.fallbackLastVisible=0;
-    binding.fallbackHTTPStatus=0;binding.fallbackNetworkErrorCode=0;binding.fallbackTimestampRequested=nil;binding.fallbackTimestampReturned=nil;
+    binding.fallbackHTTPStatus=0;binding.fallbackCachedHTTPStatus=0;binding.fallbackNetworkErrorCode=0;binding.fallbackTimestampRequested=nil;binding.fallbackTimestampReturned=nil;
     binding.fallbackTimestampSource=nil;binding.fallbackRequestKey=nil;
     binding.fallbackDeadline=0;binding.fallbackRetryAfter=0;binding.fallbackResponseReason=nil;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
     binding.titleConsumerVerified=NO;binding.imageConsumerVerified=NO;
@@ -497,9 +497,32 @@ static void RVDAUILegacyView(id view,id renderer,void (^configure)(id)) {
     }
     if (title || RVDAUIImage(state)) { state.materializations++;RVDAUIEvent(@"D09_legacy_target_configured",state,nil); }
 }
+static NSDictionary *RVDAUISettingsSnapshot;
+static NSString *RVDAUILastInvalidation=@"initial_configuration";
+static NSDictionary *RVDAUIRelevantSettings(void) {
+    NSMutableDictionary *values=[NSMutableDictionary dictionary];
+    // Copy values: settings maps are mutable and must not alias the saved snapshot.
+    for (NSString *key in @[@"dearrow_titles",@"dearrow_thumbnails",@"dearrow_title_modes",@"dearrow_thumbnail_modes",@"dearrow_branding_url",@"dearrow_url",@"dearrow_fallback",@"dearrow_mode",@"dearrow_casual_categories",@"dearrow_use_crowdsourced_titles",@"dearrow_default_original",@"dearrow_title_format",@"dearrow_format_original_titles",@"dearrow_format_custom_titles",@"dearrow_remove_emojis",@"dearrow_capitalize_non_english",@"dearrow_upcoming_avatar",@"dearrow_ignore_ab_thumbnails",@"dearrow_hide_while_fetching",@"dearrow_ignore_translated_titles",@"dearrow_title_max_lines",@"dearrow_thumbnail_saturation",@"thumbnail_frame",@"thumbnail_modes"]) {
+        id value=RVSetting(key);if (value) values[key]=value;
+    }
+    NSData *data=[NSPropertyListSerialization dataWithPropertyList:values format:NSPropertyListBinaryFormat_v1_0 options:0 error:nil];
+    return data ? [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:nil] : values.copy;
+}
+static void RVDAUIResume(void) {
+    RVDAPrefetchResume();
+    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
+        if (!RVDAUICurrent(state)) continue;
+        RVDADiagCount(state.presentationImage ? @"lifecycle.ready_preserved" : @"lifecycle.row_resumed");
+        RVDAUIFallbackWake(state);
+    }
+}
 static void RVDAUIPreferencesChanged(void) {
     if (!NSThread.isMainThread) { dispatch_async(dispatch_get_main_queue(),^{ RVDAUIPreferencesChanged(); });return; }
-    RVDAUISettingsRevision++;RVDAPrefetchReset();RVDAUIConfigureBackend();
+    NSDictionary *snapshot=RVDAUIRelevantSettings();
+    RVDAUIConfigureBackend();
+    if ([snapshot isEqual:RVDAUISettingsSnapshot]) { RVDADiagCount(@"lifecycle.unchanged_settings_preserved");RVDAUIResume();return; }
+    RVDAUISettingsSnapshot=snapshot;RVDAUILastInvalidation=@"relevant_settings_changed";
+    RVDAUISettingsRevision++;RVDAPrefetchReset();
     for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
     }
@@ -522,7 +545,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"fallback_http":@(state.fallbackHTTPStatus),@"fallback_network_error_code":@(state.fallbackNetworkErrorCode),
             @"fallback_cycles":@(state.fallbackCycles),@"fallback_exhaustions":@(state.fallbackExhaustions),
             @"fallback_visibility_grace_seconds":@(state.fallbackLastVisible ? MAX(0,3-(NSProcessInfo.processInfo.systemUptime-state.fallbackLastVisible)) : 0),@"fallback_cooldown_seconds":@(MAX(0,state.fallbackNextAttempt-RVDANow())),
-            @"fallback_timestamp_source":state.fallbackTimestampSource ?: @"not_applicable",
+            @"cached_random_http":@(state.fallbackCachedHTTPStatus),@"fallback_timestamp_source":state.fallbackTimestampSource ?: @"not_applicable",
             @"fallback_timestamp_requested":state.fallbackTimestampRequested ?: NSNull.null,@"fallback_timestamp_returned":state.fallbackTimestampReturned ?: NSNull.null,
             @"fallback_request_key":state.fallbackRequestKey ?: @"none",@"fallback_row_visible":@(RVDAUIFallbackVisible(state)),
             @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
@@ -546,7 +569,7 @@ static NSDictionary *RVDAUIReport(void) {
     }
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
-        @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
+        @"settings_revision":@(RVDAUISettingsRevision),@"cache_invalidation_reason":RVDAUILastInvalidation,@"frame_disk_cache":@{@"compressed_byte_limit":@(32*1024*1024),@"entry_limit":@128,@"ttl_seconds":@1800},@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
         @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"global_setter_observers":@NO,
         @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
@@ -599,7 +622,9 @@ static BOOL RVDAUISetCurrentOriginal(BOOL original) {
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");if (!RVVideoIDValid(video)) return NO;
     if (original) { if (RVDAUIOriginalVideos.count>=128) [RVDAUIOriginalVideos removeAllObjects];[RVDAUIOriginalVideos addObject:video];[RVDAUICustomVideos removeObject:video]; }
     else { [RVDAUIOriginalVideos removeObject:video];if (RVDAUICustomVideos.count>=128) [RVDAUICustomVideos removeAllObjects];[RVDAUICustomVideos addObject:video]; }
-    RVDAUIPreferencesChanged();return YES;
+    RVDAPrefetch *lease=RVDAPrefetchEntries[video];[lease.request cancel];[lease.transfer cancel];[RVDAPrefetchEntries removeObjectForKey:video];
+    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) if ([state.video isEqual:video]) { RVDAUIRequest(state);RVDAUIRefresh(state); }
+    RVDADiagCount(@"lifecycle.video_selection_rebound");return YES;
 }
 static RVDAUIBinding *RVDAUICurrentVideoBinding(void) {
     NSString *video=RVObject(RVCurrentPlayback,"contentVideoID");if (!RVVideoIDValid(video) || !RVOrdinaryContent(RVCurrentPlayback)) return nil;
@@ -621,7 +646,10 @@ static NSDictionary *RVDAUIPreviewSnapshot(void) {
         @"original_image":state.nativeImage ?: NSNull.null,@"custom_image":state.presentationImage ?: state.result.thumbnailImage ?: NSNull.null,
         @"decision":RVDADecisionName(state.result.titleDecision)};
 }
-static void RVDAUIClearCaches(void) { [RVDeArrowBackend.sharedBackend clearCaches];RVDAUIPreferencesChanged(); }
+static void RVDAUIClearCaches(void) {
+    RVDAFrameClearDisk();[RVDeArrowBackend.sharedBackend clearCaches];RVDAUISettingsSnapshot=nil;
+    RVDAUIPreferencesChanged();RVDAUILastInvalidation=@"explicit_clear_cache";
+}
 static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL classMethod,RVReplacementFactory factory) {
     BOOL installed=RVHook(className,selector,abi,classMethod,factory);
     Class cls=NSClassFromString(className);Class target=classMethod ? object_getClass(cls) : cls;
@@ -634,7 +662,7 @@ static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL
 static void RVInstallDeArrowUI(void) {
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;
     RVDAUISalt=NSUUID.UUID.UUIDString;
-    RVDAUIBindings=[NSHashTable weakObjectsHashTable];RVDAUIOriginalVideos=[NSMutableSet set];RVDAUICustomVideos=[NSMutableSet set];RVDAUIHooks=[NSMutableArray array];RVDAUIConfigureBackend();
+    RVDAUIBindings=[NSHashTable weakObjectsHashTable];RVDAUIOriginalVideos=[NSMutableSet set];RVDAUICustomVideos=[NSMutableSet set];RVDAUIHooks=[NSMutableArray array];RVDAUIConfigureBackend();RVDAUISettingsSnapshot=RVDAUIRelevantSettings();
     RVDAPrefetchInstall();
     RVDAUIHook(@"ELMComponent",@"templateURI",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id component) { id uri=((id(*)(id,SEL))original)(component,sel);RVDADiagNativeTemplate(uri);return uri; };
