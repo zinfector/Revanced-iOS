@@ -123,7 +123,7 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @property(nonatomic) double duration;
 @property(nonatomic) BOOL watchTitle,titleRole,imageRole;
 @property(nonatomic) BOOL contextSlots;
-@property(nonatomic) BOOL liveCard;
+@property(nonatomic) BOOL liveCard,livestream,shelfCard;
 @property(nonatomic,copy) NSString *commandType;
 @property(nonatomic,copy) NSString *adapterID,*structuralFingerprint,*titleRoleBlocker,*imageRoleBlocker;
 @property(nonatomic,strong) NSArray<NSNumber *> *titlePath,*imagePath,*titleEntityPath;
@@ -235,11 +235,67 @@ static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
     }return result;
 }
 #include "RVDeArrowLiveCard.inc"
+// Native descriptors: HorizontalShelfModel.shelfData=20,
+// HorizontalShelfData.videoCards=9/cards=17, HorizontalShelfCard.video=1,
+// VideoCardData.videoData=1/onTap=6. Preserve every unselected sibling byte.
+static NSArray<RVDAProjection *> *RVDAShelfProfiles(NSData *model,NSString *key) {
+    if (!RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe")) return @[];
+    NSArray *shelfPath=@[@312131490,@20];NSData *shelf=RVDACheckedPath(model,shelfPath,NULL,NULL);
+    NSArray *fields=RVVoteFields(shelf);if (!fields) return @[];
+    NSMutableArray *found=[NSMutableArray array];NSUInteger direct=0,wrapped=0;
+    for (RVVoteField *field in fields) {
+        if (field.number!=9 && field.number!=17) continue;
+        if (field.wire!=2 || direct+wrapped>=16) return @[];
+        NSUInteger occurrence=field.number==9 ? direct++ : wrapped++;
+        NSArray *cardPath=[shelfPath arrayByAddingObject:@{@"field":@(field.number),@"occurrence":@(occurrence)}];
+        NSData *card=field.value;
+        if (field.number==17) {
+            NSArray *oneof=RVVoteFields(card);
+            if (!RVVoteSingularFields(oneof,@[@1,@2]) || RVDAChild(card,2)) continue;
+            card=RVDAChild(card,1);cardPath=[cardPath arrayByAddingObject:@1];
+        }
+        NSArray *cardFields=RVVoteFields(card);if (!RVVoteSingularFields(cardFields,@[@1,@6])) continue;
+        NSArray *videoPath=[cardPath arrayByAddingObject:@1];NSData *data=RVDACheckedPath(model,videoPath,NULL,NULL);
+        NSString *video=RVDAText(RVDAChild(data,7));
+        NSDictionary *identity=RVDALiveCardNavigationAt(model,[cardPath arrayByAddingObjectsFromArray:@[@6,@169495254]]);
+        if (!RVVideoIDValid(video) || ![identity[@"blocker"] isEqual:@"ready"] || ![identity[@"video"] isEqual:video]) continue;
+        NSData *thumbnail=RVDAChild(data,1);NSArray *tf=RVVoteFields(thumbnail);
+        NSArray *urls=RVDALiveCardImageURLs(RVDAChild(thumbnail,1),video);
+        BOOL image=tf && RVVoteSingularFields(tf,@[@1,@2,@4,@14,@60]) && !RVDAChild(thumbnail,60) && urls.count;
+        NSArray *titlePath=[videoPath arrayByAddingObjectsFromArray:@[@21,@8178,@1]];
+        NSData *attributed=RVDACheckedPath(model,titlePath,NULL,NULL);
+        BOOL title=!RVDALiveTitleFailure(attributed);
+        if (!title && !image) continue;
+        RVDAProjection *profile=[RVDAProjection new];profile.liveCard=YES;profile.shelfCard=YES;
+        profile.route=key;profile.adapterID=@"horizontal_shelf_video_card_v1";profile.video=video;
+        profile.videoDataPath=videoPath;profile.identityPath=identity[@"identity_path"];profile.commandType=identity[@"command_type"];
+        profile.titlePath=titlePath;profile.titleRole=title;profile.imageRole=image;
+        profile.titleRoleBlocker=title ? @"ready" : @"shelf_title_input_unverified";profile.imageRoleBlocker=image ? @"ready" : @"shelf_image_identity_unverified";
+        profile.imagePath=[videoPath arrayByAddingObject:@1];profile.imageURLs=urls;profile.originalImageURL=RVDAImageURL(RVDAChild(thumbnail,1),video);
+        profile.originalTitle=title ? RVDAText(RVDAChild(attributed,1)) : RVDAText(RVDAPath(data,@[@2,@1]));
+        // Entity titles need the same narrow override removal as primary cards.
+        NSArray *entity=[videoPath arrayByAddingObjectsFromArray:@[@21,@8178,@50001]];NSData *config=RVDAPath(model,entity);
+        NSArray *lockup=RVVoteFields(RVDAPath(model,[videoPath arrayByAddingObjectsFromArray:@[@21,@8178]]));
+        if (!RVVoteSingularFields(lockup,@[@50001])) { profile.titleRole=NO;profile.titleRoleBlocker=@"shelf_title_entity_ambiguous"; }
+        if (config) {
+            if (!RVVoteSingularFields(RVVoteFields(config),@[@7])) { profile.titleRole=NO;profile.titleRoleBlocker=@"shelf_title_entity_ambiguous"; }
+            else profile.titleEntityPath=entity;
+        }
+        profile.duration=RVDADurationText(RVDAText(RVDAChild(thumbnail,2)));
+        profile.livestream=RVVoteOne(tf,4,0).scalar==2;
+        profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);[found addObject:profile];
+    }return found.copy;
+}
 static void RVDADiscover(NSData *element,NSArray *path,NSMutableArray<RVDAProjection *> *found,
                        NSUInteger depth,NSUInteger *budget,NSString *watchVideo) {
     if (depth>16 || !*budget || found.count>16) return;(*budget)--;
     NSArray *fields=RVVoteFields(element);if (!fields) return;
     NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *name=RVDATemplate(component);
+    if (RVDAResourceFamily(name,@"horizontal_shelf.eml",@"fe")) {
+        for (RVDAProjection *profile in RVDAShelfProfiles(RVDAChild(component,5),name)) {
+            profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile];
+        }return;
+    }
     if (RVDALiveCardCandidate(name) || RVDALiveWatchFamily(name)) {
         RVDAProjection *profile=RVDALiveCardCandidate(name) ? RVDALiveCardProfile(RVDAChild(component,5),name) : RVDALiveWatchProfile(RVDAChild(component,5),name,watchVideo);
         if (profile) { profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile]; }
@@ -320,7 +376,7 @@ static NSData *RVDAProjectOnSource(RVDAProjection *profile,NSData *source,NSStri
             }
             if (image && profile.imageRole) value=RVDASet(value,1,RVDAStaticImage(RVDAChild(value,1),image)) ?: value;
         } else value=RVDAVideoData(original,profile.video,profile.titleRole ? title : nil,profile.imageRole ? image : nil,profile.imageRole && fallback,profile.titleRole ? lines : 0);
-        next=RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil,profile.liveCard ? profile.originalTitle : nil);
+        next=profile.shelfCard ? model : RVDAHolderAccessibility(model,profile.videoDataPath,profile.titleRole ? title : nil,profile.liveCard ? profile.originalTitle : nil);
         next=RVDASetPath(next,profile.videoDataPath,value) ?: next;
         if (profile.contextSlots) {
             NSArray *path=@[profile.videoDataPath[0],@5];NSData *slots=RVDAPath(next,path);

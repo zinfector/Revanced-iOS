@@ -35,30 +35,34 @@ static BOOL RVDAUINativeModelMatches(RVDAUIBinding *binding,NSData *model) {
     RVDAProjection *profile=binding.profile;
     NSData *original=RVDAPath(profile.source,[profile.componentPath arrayByAddingObject:@5]);
     if (!original || !model) return NO;
-    if (!profile.watchTitle) {
-        NSDictionary *identity=RVDALiveCardNavigation(model);
-        if (![identity[@"blocker"] isEqual:@"ready"] || ![identity[@"video"] isEqual:binding.video] ||
-            ![identity[@"identity_path"] isEqual:profile.identityPath] || ![identity[@"command_type"] isEqual:profile.commandType]) return NO;
-    }
-    // ID equality alone cannot distinguish two occurrences of the same video.
-    // Restore only permitted presentation inputs, then compare the complete model.
-    NSMutableArray *paths=[NSMutableArray array];
-    if (profile.titleRole) { [paths addObject:profile.titlePath];if (profile.titleEntityPath) [paths addObject:profile.titleEntityPath]; }
-    if (profile.imageRole) [paths addObject:[profile.imagePath arrayByAddingObject:@1]];
-    if (!profile.watchTitle && profile.titleRole && RVDAChild(RVDAPath(original,@[@232954548,@18]),2)) [paths addObject:@[@232954548,@18,@2]];
     NSData *restored=model;
-    for (NSArray *path in paths) {
-        NSData *value=RVDAPath(original,path);if (value) restored=RVDASetPath(restored,path,value);
-        if (!restored) return NO;
+    for (RVDAUIBinding *current in RVDAUIRowBindings(binding)) {
+        RVDAProjection *role=current.profile;
+        if (![role.componentPath isEqual:profile.componentPath]) continue;
+        if (!role.watchTitle) {
+            NSArray *commandPath=role.shelfCard ? [role.videoDataPath subarrayWithRange:NSMakeRange(0,role.videoDataPath.count-1)] : nil;
+            NSDictionary *identity=role.shelfCard ? RVDALiveCardNavigationAt(model,[commandPath arrayByAddingObjectsFromArray:@[@6,@169495254]]) : RVDALiveCardNavigation(model);
+            if (![identity[@"blocker"] isEqual:@"ready"] || ![identity[@"video"] isEqual:current.video] ||
+                ![identity[@"identity_path"] isEqual:role.identityPath] || ![identity[@"command_type"] isEqual:role.commandType]) return NO;
+        }
+        NSMutableArray *paths=[NSMutableArray array];
+        if (role.titleRole) { [paths addObject:role.titlePath];if (role.titleEntityPath) [paths addObject:role.titleEntityPath]; }
+        if (role.imageRole) [paths addObject:[role.imagePath arrayByAddingObject:@1]];
+        if (!role.watchTitle && !role.shelfCard && role.titleRole && RVDAChild(RVDAPath(original,@[@232954548,@18]),2)) [paths addObject:@[@232954548,@18,@2]];
+        for (NSArray *path in paths) {
+            NSData *value=RVDAPath(original,path);if (value) restored=RVDASetPath(restored,path,value);
+            if (!restored) return NO;
+        }
     }return [restored isEqual:original];
 }
 
 static BOOL RVDAUIFactoryInputAccepted(NSArray<RVDAUIBinding *> *bindings,NSData *input) {
     if (!NSThread.isMainThread || !input || !bindings.count) return NO;
-    NSData *source=bindings[0].profile.source,*restored=input;
+    NSData *source=bindings[0].profile.source,*restored=input;NSMutableSet *validated=[NSMutableSet set];
     for (RVDAUIBinding *binding in bindings) {
         if (!binding.profile.liveCard || !RVDAUICurrent(binding) || ![binding.profile.source isEqual:source]) return NO;
         NSArray *path=[binding.profile.componentPath arrayByAddingObject:@5];
+        if ([validated containsObject:path]) continue;[validated addObject:path];
         if (!RVDAUINativeModelMatches(binding,RVDAPath(input,path))) return NO;
         NSData *original=RVDAPath(source,path);restored=RVDASetPath(restored,path,original);
         if (!restored) return NO;
@@ -94,7 +98,7 @@ static void RVDAUIGraphAppend(NSMutableArray *queue,NSHashTable *seen,id object)
 static NSArray *RVDAUINativeGraph(RVDAUIBinding *binding,id root) {
     NSMutableArray *queue=[NSMutableArray array];NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     RVDAUIGraphAppend(queue,seen,root);RVDAUIGraphAppend(queue,seen,binding.nativeFactoryController);
-    Class componentClass=NSClassFromString(@"ELMComponent"),controllerClass=NSClassFromString(@"ASNodeController"),nodeClass=NSClassFromString(@"ASDisplayNode");
+    Class componentClass=NSClassFromString(@"ELMComponent"),controllerClass=NSClassFromString(@"ASNodeController"),nodeClass=NSClassFromString(@"ASDisplayNode"),collectionClass=NSClassFromString(@"ASCollectionNode");
     for (NSUInteger index=0;index<queue.count;index++) {
         id object=queue[index];
         if (componentClass && [object isKindOfClass:componentClass]) {
@@ -108,6 +112,12 @@ static NSArray *RVDAUINativeGraph(RVDAUIBinding *binding,id root) {
             if (RVBool(object,"isNodeOnControllerLoaded") || RVBool(object,"isNodeLoaded")) RVDAUIGraphAppend(queue,seen,RVObject(object,"node"));
         }
         if (nodeClass && [object isKindOfClass:nodeClass]) {
+            // Shelf collection cells are not ordinary container subnodes.
+            // visibleNodes is a descriptor-reviewed read of already loaded cells.
+            if (binding.profile.shelfCard && collectionClass && [object isKindOfClass:collectionClass] && RVBool(object,"isNodeLoaded") && RVCan(object,"visibleNodes",@"@@:")) {
+                NSArray *visible=RVObject(object,"visibleNodes");
+                if ([visible isKindOfClass:NSArray.class] && visible.count<=32) for (id child in visible) RVDAUIGraphAppend(queue,seen,child);
+            }
             RVDAUIGraphAppend(queue,seen,RVObject(object,"nodeController"));
             for (NSString *name in @[@"subnodes",@"yogaChildren"]) {
                 NSArray *children=RVObject(object,name.UTF8String);if ([children isKindOfClass:NSArray.class]) for (id child in children) RVDAUIGraphAppend(queue,seen,child);
@@ -349,6 +359,10 @@ static BOOL RVDAUIObserveKnownConsumers(RVDAUIBinding *binding,NSUInteger attemp
     checkpoint[@"attempt"]=@(attempt+1);checkpoint[@"observation_mode"]=@"verified_roles";
     checkpoint[@"title_visible"]=@(titleNeeded && expected && RVDAUIConsumerVisible(titleNode));
     checkpoint[@"image_visible"]=@(imageNeeded && bytes && RVDAUIConsumerVisible(imageNode));
+    checkpoint[@"image_replacement_matches"]=@(imageNeeded && bytes ? 1 : 0);
+    checkpoint[@"image_replacement_consumed"]=@(imageNeeded && bytes!=nil);
+    checkpoint[@"title_replacement_matches"]=@(titleNeeded && expected ? 1 : 0);
+    checkpoint[@"title_replacement_consumed"]=@(titleNeeded && expected!=nil);
     binding.consumerCheckpoint=checkpoint.copy;binding.consumerObservations++;
     RVDADiagCount(@"performance.consumer_verified_roles_reused");
     RVDAUIFallbackWake(binding);

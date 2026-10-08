@@ -78,6 +78,9 @@ typedef NS_ENUM(NSUInteger, RVDeArrowBlocker) {
 @property(nonatomic,readonly) BOOL metadataCacheHit;
 @property(nonatomic,readonly) BOOL imageCacheHit;
 @property(nonatomic,readonly,getter=isFinal) BOOL final;
+// Recoverable metadata failure; the same consumer remains subscribed.
+@property(nonatomic,readonly) BOOL metadataRecoveryPending;
+@property(nonatomic,readonly) NSTimeInterval metadataRetryAfter;
 @end
 
 // Retain in the UI binding; explicitly cancel on reuse/owner teardown.

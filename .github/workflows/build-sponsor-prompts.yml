@@ -1,8 +1,8 @@
-name: Build watch controls payload with Xcode
+name: Build DeArrow recovery payload with Xcode
 
 on:
   push:
-    branches: [fix/watch-controls-0.3.55]
+    branches: [fix/dearrow-recovery-0.3.56]
 
 permissions:
   contents: read

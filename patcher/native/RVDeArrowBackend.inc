@@ -139,7 +139,8 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,readwrite) RVDeArrowBlocker metadataBlocker,imageBlocker;
 @property(nonatomic,readwrite) RVDeArrowBlocker titleBlocker,thumbnailSelectionBlocker;
 @property(nonatomic,readwrite) NSInteger metadataHTTPStatus,imageHTTPStatus;
-@property(nonatomic,readwrite) BOOL metadataCacheHit,imageCacheHit,final;
+@property(nonatomic,readwrite) BOOL metadataCacheHit,imageCacheHit,final,metadataRecoveryPending;
+@property(nonatomic,readwrite) NSTimeInterval metadataRetryAfter;
 @end
 @implementation RVDeArrowResult @end
 
@@ -164,6 +165,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) NSMutableData *body;
 @property(nonatomic) NSUInteger limit;
 @property(nonatomic) BOOL completed,background;
+@property(atomic,copy) NSDictionary *networkDetails;
 @property(nonatomic,copy) void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger);
 @property(nonatomic,copy) void (^onStart)(void);
 - (void)start:(NSURL *)url timeout:(NSTimeInterval)timeout;
@@ -227,6 +229,12 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     completion(nil);[self finish:RVDeArrowBlockerRedirect errorCode:0];
 }
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    if (error) {
+        NSError *underlying=error.userInfo[NSUnderlyingErrorKey];
+        self.networkDetails=@{@"error_domain":[error.domain substringToIndex:MIN(error.domain.length,96u)],
+            @"underlying_error_domain":[underlying isKindOfClass:NSError.class] ? [underlying.domain substringToIndex:MIN(underlying.domain.length,96u)] : @"absent",
+            @"underlying_error_code":@([underlying isKindOfClass:NSError.class] ? underlying.code : 0)};
+    }
     [self finish:error ? RVDeArrowBlockerNetwork : RVDeArrowBlockerNone errorCode:error.code];
 }
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition,NSURLCredential *))completion {
@@ -272,7 +280,9 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) RVDAImage *image;
 @property(nonatomic,strong) RVDAHTTP *transfer;
 @property(nonatomic) BOOL metadataCacheHit,imageCacheHit,imageQueued;
-@property(nonatomic) NSUInteger imageRetries;
+@property(nonatomic) NSUInteger imageRetries,metadataRetries;
+@property(nonatomic) BOOL metadataRecoveryPending;
+@property(nonatomic) NSTimeInterval metadataRetryAt;
 @end
 @implementation RVDAJob @end
 @interface RVDAOperation : NSObject
@@ -550,7 +560,9 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
             result.imageState=job.image ? (job.image.image ? RVDeArrowImageStateReady : RVDeArrowImageStateUnavailable) : RVDeArrowImageStatePending;
             result.thumbnailImage=job.image.image;result.imageBlocker=job.image.blocker;result.imageHTTPStatus=job.image.httpStatus;result.imageCacheHit=job.imageCacheHit;
         } else result.imageState=RVDeArrowImageStateNotRequested;
-        result.final=result.imageState!=RVDeArrowImageStatePending;
+        result.metadataRecoveryPending=job.metadataRecoveryPending;
+        result.metadataRetryAfter=MAX(0,job.metadataRetryAt-RVDANow());
+        result.final=!job.metadataRecoveryPending && result.imageState!=RVDeArrowImageStatePending;
         if (!result.final && request.pendingDelivered) continue;
         if (!result.final) request.pendingDelivered=YES;
         dispatch_async(dispatch_get_main_queue(),^{
@@ -629,7 +641,38 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
         [self.operations removeObjectsAtIndexes:indexes];[self pump];
     });
 }
+// A transient response is not the end of the consumer lease. Retrying the
+// shared job preserves native generations and already decoded fallback images.
+- (BOOL)scheduleMetadataRecovery:(RVDAJob *)job {
+    RVDAMetadata *entry=job.metadata;
+    BOOL recoverable=entry.titleDecision==RVDeArrowDecisionUnavailable &&
+        (entry.blocker==RVDeArrowBlockerNetwork || entry.blocker==RVDeArrowBlockerBackoff ||
+         (entry.blocker==RVDeArrowBlockerMetadataHTTP && (entry.httpStatus==429 || entry.httpStatus>=500)));
+    if (!recoverable) return NO;
+    if (job.metadataRecoveryPending) return YES;
+    if (job.metadataRetries>=4) return NO;
+    NSString *host=job.options.brandingEndpoint.host.lowercaseString;
+    NSTimeInterval now=RVDANow(),delay=MAX(15*pow(2,job.metadataRetries),MAX(entry.expires-now,[self.cooldowns[host] doubleValue]-now))+.1;
+    job.metadataRetries++;job.metadataRecoveryPending=YES;job.metadataRetryAt=now+delay;
+    [self record:RVDeArrowCheckpointMetadataRequested blocker:entry.blocker video:job.videoID
+        details:@{@"recovery_scheduled":@YES,@"retry_attempt":@(job.metadataRetries),@"delay_seconds":@(delay),@"same_consumer_generation":@YES}];
+    __weak RVDAJob *weakJob=job;__weak RVDeArrowBackend *weakSelf=self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(delay*NSEC_PER_SEC)),self.queue,^{
+        RVDeArrowBackend *backend=weakSelf;RVDAJob *current=weakJob;
+        if (!backend || !current || backend.jobs[current.videoID]!=current || current.revision!=backend.configurationRevision) return;
+        current.metadataRecoveryPending=NO;current.metadataRetryAt=0;
+        // Check the host cooldown again at admission; no new transport pool.
+        NSTimeInterval cooldown=[backend.cooldowns[host] doubleValue]-RVDANow();
+        if (cooldown>0) { current.metadata.expires=RVDANow()+cooldown;[backend processMetadata:current];return; }
+        current.metadata=nil;current.metadataCacheHit=NO;
+        for (RVDeArrowRequest *consumer in current.consumers) consumer.pendingDelivered=NO;
+        RVDAOperation *operation=[RVDAOperation new];operation.job=current;
+        operation.URL=RVDAURL(current.options.brandingEndpoint,current.videoID,nil,YES);
+        [backend.operations addObject:operation];[backend pump];
+    });return YES;
+}
 - (void)processMetadata:(RVDAJob *)job {
+    if ([self scheduleMetadataRecovery:job]) { [self deliver:job];[self pump];return; }
     [self record:RVDeArrowCheckpointDecisionSelected blocker:job.metadata.blocker video:job.videoID details:@{
         @"title_decision":RVDADecisionName(job.metadata.titleDecision),@"thumbnail_decision":RVDADecisionName(job.metadata.thumbnailDecision),
         @"title_blocker":RVDABlockerName([self blockerForMetadata:job.metadata decision:job.metadata.titleDecision]),
@@ -827,6 +870,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
                     if (current && backend.auxiliaryFlights[key]==current) [backend.auxiliaryFlights removeObjectForKey:key];
                     NSArray *tickets=current.subscribers.copy;[current.subscribers removeAllObjects];
                     for (RVDAHTTP *ticket in tickets) {
+                        ticket.networkDetails=current.transfer.networkDetails;
                         [ticket finishData:data response:response blocker:blocker errorCode:code];
                     }
                     [backend pump];
@@ -889,15 +933,16 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
         if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) continue;
         if ([self.cooldowns[operation.URL.host.lowercaseString] doubleValue]>RVDANow()) { [self blockedOperation:operation];continue; }
         RVDAHTTP *transfer=[RVDAHTTP new];transfer.limit=operation.image ? RVDAImageLimit : RVDAMetadataLimit;
-        job.transfer=transfer;self.activeTransfers++;if (nativeBackground) self.activePrefetchTransfers++;__weak RVDeArrowBackend *weakSelf=self;
+        __weak RVDAHTTP *weakTransfer=transfer;job.transfer=transfer;self.activeTransfers++;if (nativeBackground) self.activePrefetchTransfers++;__weak RVDeArrowBackend *weakSelf=self;
         transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
             RVDeArrowBackend *backend=weakSelf;if (!backend) return;
+            NSDictionary *network=weakTransfer.networkDetails ?: @{};
             dispatch_async(backend.queue,^{
                 if (backend.activeTransfers) backend.activeTransfers--;
                 if (nativeBackground && backend.activePrefetchTransfers) backend.activePrefetchTransfers--;
                 if (backend.jobs[job.videoID]==job && job.revision==backend.configurationRevision) {
                     job.transfer=nil;[backend cooldown:operation response:response blocker:blocker];
-                    [backend record:operation.image ? RVDeArrowCheckpointImageReceived : RVDeArrowCheckpointMetadataReceived blocker:blocker video:job.videoID details:@{@"network_error_code":@(code),@"transport_finished":@YES}];
+                    [backend record:operation.image ? RVDeArrowCheckpointImageReceived : RVDeArrowCheckpointMetadataReceived blocker:blocker video:job.videoID details:@{@"network_error_code":@(code),@"transport_finished":@YES,@"request_kind":operation.image ? @"community_frame" : @"metadata",@"endpoint_host_hash":[RVDAHash(operation.URL.host) substringToIndex:12],@"network_details":network}];
                     if (operation.image) [backend imageResponse:data response:response blocker:blocker operation:operation];
                     else [backend metadataResponse:data response:response blocker:blocker operation:operation];
                 }

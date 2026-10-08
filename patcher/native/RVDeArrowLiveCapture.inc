@@ -261,7 +261,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     NSData *component=RVDAPath(data,@[@1,@168777401]);NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
     NSString *key=RVDALiveKey(raw);if (!key) return;
     BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key);
-    if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"]) return;
+    if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"] && ![controller isEqual:@"YTElementsCellController"]) return;
     NSData *model=RVDAChild(component,5);NSDictionary *semantic=card ? RVDALiveCardContract(model) : nil;
     NSDictionary *watchContract=watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : nil;
     BOOL accepted=(card && [semantic[@"blocker"] isEqual:@"ready"]) || (watch && [watchContract[@"title_input_valid"] boolValue] && RVVideoIDValid(watchVideo));
@@ -294,6 +294,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
+                @"shelf_contract":RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe") ? @{@"adapter":@"horizontal_shelf_video_card_v1",@"verified_children":@(RVDAShelfProfiles(model,key).count),@"shelf_data_shape":RVDALiveShape(RVDAPath(model,@[@312131490,@20]))} : @{},
                 @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
                 @"sample_policy":@"resource + surface + semantic command/failure + shape; 1 accepted semantic video, 1 rejected ordinary and 1 generic slot per surface"};
             [RVDALiveRootResources addObject:key];

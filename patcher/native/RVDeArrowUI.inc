@@ -42,7 +42,7 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic,strong) RVDAHTTP *fallbackTransfer;
 @property(nonatomic,copy) NSString *originalTitle,*untranslatedTitle,*originalImageURL,*avatarURL,*computedTitle,*imageOrigin;
 @property(nonatomic) double duration;
-@property(nonatomic) BOOL upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
+@property(nonatomic) BOOL livestream,upcoming,titleComputed,fallbackStarted,originalFetchStarted,pendingExpired;
 @property(nonatomic) uint64_t imageRevision;
 @property(nonatomic) NSTimeInterval fallbackDeadline,fallbackRetryAfter,fallbackNextAttempt,fallbackLastVisible;
 @property(nonatomic) uint64_t fallbackEpoch;
@@ -354,12 +354,12 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
         if (blocker) { RVDAUIEvent(@"D08_result_rejected",state,blocker);return; }
         RVDADiagRecord(@"D08_result_accepted",state,nil,@{@"title_decision":RVDADecisionName(result.titleDecision),
             @"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_state":@(result.imageState),@"final":@(result.isFinal),
-            @"metadata_http":@(result.metadataHTTPStatus),@"image_http":@(result.imageHTTPStatus),@"backend_revision":@(result.configurationRevision)});
+            @"metadata_http":@(result.metadataHTTPStatus),@"metadata_recovery_pending":@(result.metadataRecoveryPending),@"metadata_retry_after_seconds":@(result.metadataRetryAfter),@"image_http":@(result.imageHTTPStatus),@"backend_revision":@(result.configurationRevision)});
         state.result=result;state.titleComputed=NO;state.computedTitle=nil;state.titleBlocker=RVDABlockerName(result.titleBlocker);
         state.imageBlocker=RVDABlockerName(result.imageState==RVDeArrowImageStateUnavailable ? result.imageBlocker : result.thumbnailSelectionBlocker);
         RVDAUIRefresh(state); // titles do not wait for image decode/encoding
         if (image && result.imageState==RVDeArrowImageStateReady && result.thumbnailImage) RVDAUIApplyImage(state,result.thumbnailImage,@"community",generation);
-        else if (image && result.isFinal) RVDAUIResolveFallback(state,generation);
+        else if (image && (result.isFinal || result.metadataRecoveryPending)) RVDAUIResolveFallback(state,generation);
     }];
     [binding.request recordCheckpoint:RVDeArrowCheckpointOwnerBound blocker:RVDeArrowBlockerNone];
     [binding.request recordCheckpoint:RVDeArrowCheckpointVideoBound blocker:RVDeArrowBlockerNone];
@@ -438,7 +438,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         }
         state.video=state.profile.video;state.route=state.profile.route;
         state.originalTitle=state.profile.originalTitle;state.untranslatedTitle=state.profile.untranslatedTitle;
-        state.originalImageURL=state.profile.originalImageURL;state.duration=state.profile.duration;
+        state.originalImageURL=state.profile.originalImageURL;state.duration=state.profile.duration;state.livestream=state.profile.livestream;
         state.surface=RVDAUIOwnerSurface(controller,state.profile.watchTitle,&watchVideo);
         state.titleBlocker=state.profile.titleRole ? @"awaiting_metadata" : state.profile.blocker ?: @"title_role_unknown";
         state.imageBlocker=state.profile.imageRole ? @"awaiting_metadata" : state.profile.blocker ?: @"image_role_unknown";
@@ -484,7 +484,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         child.controller=controller;child.section=section;child.index=index;child.originalEntry=entry;
         child.modern=YES;child.profile=profile;child.video=profile.video;child.route=profile.route;child.surface=state.surface;
         child.ownerSummary=state.ownerSummary;child.originalTitle=profile.originalTitle;child.untranslatedTitle=profile.untranslatedTitle;
-        child.originalImageURL=profile.originalImageURL;child.duration=profile.duration;[group addObject:child];
+        child.originalImageURL=profile.originalImageURL;child.duration=profile.duration;child.livestream=profile.livestream;[group addObject:child];
     }
     objc_setAssociatedObject(controller,RVDAUIBindingGroupKey,group.copy,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     for (RVDAUIBinding *current in group) {
@@ -628,7 +628,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"original_selected":@(RVDAUIOriginal(state)),@"title_role":@(!state.modern || state.profile.titleRole),
             @"original_title_bound":@(state.originalTitle.length>0),@"untranslated_title_bound":@(state.untranslatedTitle.length>0),
             @"local_title_changed":@(RVDAUITitle(state)!=nil),@"casual_original_selected":@(RVDAUICasual(state)),
-            @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),
+            @"image_origin":state.imageOrigin ?: @"native_original",@"duration_available":@(state.duration>0 || result.videoDuration.doubleValue>0),@"upcoming_contract":@(state.upcoming),@"livestream_contract":@(state.livestream),
             @"fallback_phase":state.fallbackPhase ?: @"idle",@"fallback_retries":@(state.fallbackRetries),@"duration_source":state.durationSource ?: @"unresolved",@"fallback_retry_scheduled":@(state.fallbackRetryScheduled),@"fallback_response_reason":state.fallbackResponseReason ?: @"none",@"fallback_remaining_seconds":@(state.fallbackDeadline ? MAX(0,state.fallbackDeadline-RVDANow()) : 0),
             @"fallback_http":@(state.fallbackHTTPStatus),@"fallback_network_error_code":@(state.fallbackNetworkErrorCode),
             @"fallback_cycles":@(state.fallbackCycles),@"fallback_exhaustions":@(state.fallbackExhaustions),

@@ -5,9 +5,12 @@ static NSArray *RVDALiveCardCommandPath(void) { return @[@232954548,@18,@4,@1694
 static NSArray *RVDALiveWatchTitlePath(void) { return @[@377581260,@6,@1019,@1]; }
 static NSData *RVDACheckedPath(NSData *data,NSArray *path,NSString **failure,NSUInteger *failedStep) {
     NSUInteger step=0;
-    for (NSNumber *number in path) {
+    for (id number in path) {
+        if ([number isKindOfClass:NSDictionary.class]) {
+            data=RVDAPathChild(data,number);if (!data) { if (failure) *failure=@"occurrence_absent";if (failedStep) *failedStep=step;return nil; }step++;continue;
+        }
         NSArray<RVVoteField *> *fields=RVVoteFields(data);NSUInteger count=0;RVVoteField *match=nil;
-        for (RVVoteField *field in fields) if (field.number==number.unsignedIntValue) { count++;match=field; }
+        for (RVVoteField *field in fields) if (field.number==[number unsignedIntValue]) { count++;match=field; }
         NSString *blocker=!fields ? @"invalid_parent_protobuf" : !count ? @"field_absent" : count!=1 ? @"field_repeated" : match.wire!=2 ? @"wrong_wire_type" : nil;
         if (blocker) { if (failure) *failure=blocker;if (failedStep) *failedStep=step;return nil; }
         data=match.value;step++;
@@ -15,8 +18,8 @@ static NSData *RVDACheckedPath(NSData *data,NSArray *path,NSString **failure,NSU
 }
 // Reviewed YTICommand extensions, not a search for arbitrary 11-byte strings.
 // Only the card's primary tap command is inspected; commands are never executed.
-static NSDictionary *RVDALiveCardNavigation(NSData *model) {
-    NSArray *path=RVDALiveCardCommandPath();NSString *failure=nil;NSUInteger failed=0;
+static NSDictionary *RVDALiveCardNavigationAt(NSData *model,NSArray *path) {
+    NSString *failure=nil;NSUInteger failed=0;
     NSData *command=RVDACheckedPath(model,path,&failure,&failed);
     NSMutableDictionary *result=[@{@"identity_path":path,@"command_type":@"unresolved"} mutableCopy];
     if (!command) {
@@ -74,6 +77,7 @@ static NSDictionary *RVDALiveCardNavigation(NSData *model) {
     }return result;
 }
 
+static NSDictionary *RVDALiveCardNavigation(NSData *model) { return RVDALiveCardNavigationAt(model,RVDALiveCardCommandPath()); }
 static NSArray<NSString *> *RVDALiveCardImageURLs(NSData *image,NSString *video) {
     NSArray<RVVoteField *> *fields=RVVoteFields(image);if (!fields) return nil;
     NSMutableArray *urls=[NSMutableArray array];
@@ -138,6 +142,10 @@ static NSDictionary *RVDALiveCardContract(NSData *model) {
     if (!titleFailure) result[@"title"]=title;
     if (imageRole) { result[@"image_url"]=RVDAImageURL(image,video);result[@"image_urls"]=urls; }
     result[@"duration"]=@(RVDADurationText(RVDAText(RVDAChild(thumbnail,2))));
+    // YTIVideoThumbnailData descriptor: field 4 timestampStyle; its native
+    // enum is Unknown=0, Default=1, Live=2. Never classify by localized text.
+    RVVoteField *style=RVVoteOne(thumbnailFields,4,0);
+    result[@"livestream"]=@(RVVoteSingularFields(thumbnailFields,@[@4]) && style && style.scalar==2);
     result[@"blocker"]=!titleFailure || imageRole ? @"ready" : @"live_card_no_verified_input_role";return result;
 }
 static NSString *RVDALiveCardFailure(NSData *model) { return RVDALiveCardContract(model)[@"blocker"] ?: @"live_card_input_unresolved"; }
@@ -149,7 +157,7 @@ static RVDAProjection *RVDALiveCardProfile(NSData *model,NSString *key) {
     profile.titleRole=[contract[@"title_role"] boolValue];profile.imageRole=[contract[@"image_role"] boolValue];
     profile.titleRoleBlocker=contract[@"title_blocker"];profile.imageRoleBlocker=contract[@"image_blocker"];
     profile.originalTitle=contract[@"title"];profile.originalImageURL=contract[@"image_url"];profile.imageURLs=contract[@"image_urls"];
-    profile.duration=[contract[@"duration"] doubleValue];profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);return profile;
+    profile.livestream=[contract[@"livestream"] boolValue];profile.duration=[contract[@"duration"] doubleValue];profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);return profile;
 }
 static NSString *RVDALiveWatchFailure(NSData *model) {
     NSString *failure=nil;NSUInteger step=0;NSData *title=RVDACheckedPath(model,RVDALiveWatchTitlePath(),&failure,&step);

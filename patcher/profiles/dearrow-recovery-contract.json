@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "release": "0.3.56",
+  "tests_run": false,
+  "device_verified": false,
+  "metadata_recovery": {
+    "consumer_generation_preserved": true,
+    "coalesced_job": true,
+    "retries": 4,
+    "base_delay_seconds": 15,
+    "retry_after_and_host_cooldown_respected": true,
+    "recoverable": [
+      "network",
+      "host_backoff",
+      "HTTP429",
+      "HTTP5xx"
+    ],
+    "invalid_metadata_or_missing_submission_retried": false
+  },
+  "live_contract": {
+    "message": "YTIVideoThumbnailData",
+    "field": 4,
+    "enum": "TimestampStyle",
+    "values": {
+      "Unknown": 0,
+      "Default": 1,
+      "Live": 2
+    },
+    "descriptor_imp": "0x1050c3c90",
+    "enum_imp": "0x1050c3b4c",
+    "enum_names_address": "0x10a9a4be0",
+    "enum_values_address": "0x10a9a4bf8",
+    "request": {
+      "time": 0,
+      "isLivestream": true,
+      "generateNow": true,
+      "officialTime": false
+    },
+    "cache_partitioned": true,
+    "cache_ttl_seconds": 60
+  },
+  "shelf_contract": {
+    "family": "horizontal_shelf.eml-fe",
+    "revision_allowlist": false,
+    "model_extension": 312131490,
+    "shelfData": 20,
+    "videoCards": 9,
+    "cards": 17,
+    "wrappedVideo": 1,
+    "videoData": 1,
+    "onTap": 6,
+    "command_extension": 169495254,
+    "video_id": 7,
+    "max_cards": 16,
+    "admission": "Owned VideoData ID agrees with primary tap command and thumbnail source URLs; native factory and consumer confirmation required",
+    "mutations": "Only individual verified title/image presentation fields in copied input; commands, headers, unknown fields and all other siblings preserved",
+    "collection_read": {
+      "class": "ASCollectionNode",
+      "selector": "visibleNodes",
+      "encoding": "@@:",
+      "imp": "0x1005a6c7c",
+      "requires_loaded_node": true,
+      "max_visible_nodes": 32
+    }
+  },
+  "checkpoints": [
+    "metadata recovery scheduled and accepted",
+    "native live-status source and zero-time request",
+    "generic shelf structure and verified child count",
+    "current replacement pixel consumption",
+    "endpoint host hash and underlying NSError domain/code"
+  ],
+  "remaining_verification": "Confirm the specific Windows laptops shelf and live Mamdani card on-device after installing .56."
+}

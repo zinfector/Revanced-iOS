@@ -8,6 +8,16 @@ static NSURL *RVDAUICachedRandomURL(NSString *video) {
     for (NSURLQueryItem *item in parts.queryItems) if (![@[@"time",@"generateNow",@"officialTime"] containsObject:item.name]) [items addObject:item];
     parts.queryItems=items;return parts.URL;
 }
+static NSURL *RVDAUICachedFrameURL(NSString *video,BOOL livestream) {
+    NSURL *url=RVDAUICachedRandomURL(video);if (!livestream || !url) return url;
+    NSURLComponents *parts=[NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+    parts.queryItems=[parts.queryItems arrayByAddingObject:[NSURLQueryItem queryItemWithName:@"isLivestream" value:@"true"]];return parts.URL;
+}
+static BOOL RVDAFrameIsLive(NSURL *url) {
+    for (NSURLQueryItem *item in [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO].queryItems)
+        if ([item.name isEqual:@"isLivestream"] && [item.value isEqual:@"true"]) return YES;
+    return NO;
+}
 static NSNumber *RVDAFrameTimestamp(NSHTTPURLResponse *response,NSNumber *expected,double duration) {
     NSScanner *scan=[NSScanner scannerWithString:RVDAHeader(response,@"X-Timestamp") ?: @""];
     scan.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];double value=0;
@@ -26,7 +36,8 @@ static BOOL RVDAFrameCachedTimestamp(NSDictionary *entry,NSNumber *expected,doub
 static NSTimeInterval RVDAFrameExpiry(NSHTTPURLResponse *response) {
     NSString *header=RVDAHeader(response,@"X-RVPort-Expires");
     double expiry=header.doubleValue;
-    return [RVDAHeader(response,@"X-RVPort-Cache") isEqual:@"disk"] && isfinite(expiry) && expiry>RVDANow() ? MIN(expiry,RVDANow()+1800) : RVDANow()+1800;
+    NSTimeInterval lifetime=RVDAFrameIsLive(response.URL) ? 60 : 1800;
+    return [RVDAHeader(response,@"X-RVPort-Cache") isEqual:@"disk"] && isfinite(expiry) && expiry>RVDANow() ? MIN(expiry,RVDANow()+lifetime) : RVDANow()+lifetime;
 }
 static dispatch_queue_t RVDAFrameDiskQueue(void) {
     static dispatch_queue_t queue;static dispatch_once_t once;
@@ -50,7 +61,7 @@ static void RVDAFrameStore(NSURL *url,NSData *data,NSHTTPURLResponse *response) 
     if (!url || !data.length || data.length>RVDAImageLimit || !RVDAFrameTimestamp(response,nil,0)) return;
     NSString *mime=response.MIMEType.lowercaseString;
     if (![@[@"image/webp",@"image/jpeg",@"image/png"] containsObject:mime]) return;
-    NSDictionary *entry=@{@"request":url.absoluteString,@"expires":@(RVDANow()+1800),@"data":data,
+    NSDictionary *entry=@{@"request":url.absoluteString,@"expires":@(RVDAFrameExpiry(response)),@"data":data,
         @"mime":mime,@"timestamp":RVDAHeader(response,@"X-Timestamp")};
     dispatch_async(RVDAFrameDiskQueue(),^{
         NSFileManager *manager=NSFileManager.defaultManager;NSURL *root=RVDAFrameDiskRoot();
