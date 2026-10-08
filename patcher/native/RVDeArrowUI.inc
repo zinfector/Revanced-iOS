@@ -355,6 +355,11 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
         RVDADiagRecord(@"D08_result_accepted",state,nil,@{@"title_decision":RVDADecisionName(result.titleDecision),
             @"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_state":@(result.imageState),@"final":@(result.isFinal),
             @"metadata_http":@(result.metadataHTTPStatus),@"metadata_recovery_pending":@(result.metadataRecoveryPending),@"metadata_retry_after_seconds":@(result.metadataRetryAfter),@"image_http":@(result.imageHTTPStatus),@"backend_revision":@(result.configurationRevision)});
+        if (image && (result.thumbnailDecision==RVDeArrowDecisionOriginal || result.thumbnailDecision==RVDeArrowDecisionDisabled)) {
+            state.fallbackEpoch++;[state.fallbackTransfer cancel];state.fallbackTransfer=nil;
+            state.fallbackRetryScheduled=NO;state.fallbackStarted=NO;state.fallbackDeadline=0;state.fallbackNextAttempt=0;
+            state.imageRevision++;state.encodedImage=nil;state.presentationImage=nil;state.imageBytes=nil;state.imageOrigin=nil;
+        }
         state.result=result;state.titleComputed=NO;state.computedTitle=nil;state.titleBlocker=RVDABlockerName(result.titleBlocker);
         state.imageBlocker=RVDABlockerName(result.imageState==RVDeArrowImageStateUnavailable ? result.imageBlocker : result.thumbnailSelectionBlocker);
         RVDAUIRefresh(state); // titles do not wait for image decode/encoding

@@ -167,6 +167,9 @@ static void RVDAPrefetchVideo(NSString *video,double duration,NSString *surface,
         RVDADiagCount(@"prefetch.metadata_received");
         RVDADiagRecord(@"F03_prefetch_metadata_received",nil,nil,@{@"video_hash":RVDADiagVideo(current.video),@"surface":current.surface,@"prefetch_elapsed_ms":@(1000*(NSProcessInfo.processInfo.systemUptime-current.started)),@"metadata_http":@(result.metadataHTTPStatus),@"metadata_cache_hit":@(result.metadataCacheHit),@"title_decision":RVDADecisionName(result.titleDecision),@"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_http":@(result.imageHTTPStatus),@"image_ready":@(result.thumbnailImage!=nil),@"final":@(result.isFinal)});
         if (result.isFinal) current.request=nil;
+        if (result.thumbnailDecision==RVDeArrowDecisionOriginal || result.thumbnailDecision==RVDeArrowDecisionDisabled) {
+            [current.transfer cancel];current.transfer=nil;current.nextAttempt=0;current.communityReady=YES;current.phase=@"original_selected";return;
+        }
         if (result.thumbnailImage && result.imageState==RVDeArrowImageStateReady) {
             current.communityReady=YES;[current.transfer cancel];current.transfer=nil;current.nextAttempt=0;
             RVDAUIPrepareImage(result.thumbnailImage,@"community",^{ if (RVDAPrefetchLeaseValid(weak)) { weak.phase=@"community_ready";RVDADiagCount(@"prefetch.community_ready"); } });return;
