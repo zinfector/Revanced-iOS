@@ -358,7 +358,13 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
         state.result=result;state.titleComputed=NO;state.computedTitle=nil;state.titleBlocker=RVDABlockerName(result.titleBlocker);
         state.imageBlocker=RVDABlockerName(result.imageState==RVDeArrowImageStateUnavailable ? result.imageBlocker : result.thumbnailSelectionBlocker);
         RVDAUIRefresh(state); // titles do not wait for image decode/encoding
-        if (image && result.imageState==RVDeArrowImageStateReady && result.thumbnailImage) RVDAUIApplyImage(state,result.thumbnailImage,@"community",generation);
+        if (image && result.imageState==RVDeArrowImageStateReady && result.thumbnailImage) {
+            // Recovery can race a fallback transport/decode from the same card.
+            // A community image wins without changing native binding identity.
+            state.fallbackEpoch++;[state.fallbackTransfer cancel];state.fallbackTransfer=nil;
+            state.fallbackRetryScheduled=NO;state.fallbackStarted=YES;state.fallbackDeadline=0;state.fallbackNextAttempt=0;
+            RVDAUIApplyImage(state,result.thumbnailImage,@"community",generation);
+        }
         else if (image && (result.isFinal || result.metadataRecoveryPending)) RVDAUIResolveFallback(state,generation);
     }];
     [binding.request recordCheckpoint:RVDeArrowCheckpointOwnerBound blocker:RVDeArrowBlockerNone];

@@ -7,7 +7,7 @@
 @property(nonatomic,strong) NSURL *frameURL,*generationURL;
 @property(nonatomic,copy) NSString *frameOrigin;
 @property(nonatomic,strong) NSNumber *frameTimestamp,*generationTimestamp;
-@property(nonatomic) BOOL exhausted,livestream;
+@property(nonatomic) BOOL exhausted,livestream,communityReady;
 @property(nonatomic) double duration,metadataDuration;
 @property(nonatomic) uint64_t revision;
 @property(nonatomic) NSTimeInterval expires;
@@ -96,7 +96,7 @@ static void RVDAPrefetchFrame(RVDAPrefetch *state,NSURL *url,NSString *origin,NS
                     RVDADiagTiming(@"prefetch_decode",started);
                     if ([origin isEqual:@"youtube_frame"] && (image.size.width<240 || image.size.height<135)) image=nil;
                     dispatch_async(dispatch_get_main_queue(),^{
-                        RVDAPrefetch *latest=weak;if (!RVDAPrefetchLeaseValid(latest)) return;
+                        RVDAPrefetch *latest=weak;if (!RVDAPrefetchLeaseValid(latest) || latest.communityReady) return;
                         if (!image) { latest.phase=@"decode_rejected";RVDADiagCount(@"prefetch.decode_rejected");return; }
                         if (timestamp || cachedRandom) RVDAFrameStore(url,data,response);
                         NSDictionary *entry=@{@"image":image,@"expires":@(RVDAFrameExpiry(response)),@"timestamp":returned ?: NSNull.null};
@@ -168,6 +168,7 @@ static void RVDAPrefetchVideo(NSString *video,double duration,NSString *surface,
         RVDADiagRecord(@"F03_prefetch_metadata_received",nil,nil,@{@"video_hash":RVDADiagVideo(current.video),@"surface":current.surface,@"prefetch_elapsed_ms":@(1000*(NSProcessInfo.processInfo.systemUptime-current.started)),@"metadata_http":@(result.metadataHTTPStatus),@"metadata_cache_hit":@(result.metadataCacheHit),@"title_decision":RVDADecisionName(result.titleDecision),@"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_http":@(result.imageHTTPStatus),@"image_ready":@(result.thumbnailImage!=nil),@"final":@(result.isFinal)});
         if (result.isFinal) current.request=nil;
         if (result.thumbnailImage && result.imageState==RVDeArrowImageStateReady) {
+            current.communityReady=YES;[current.transfer cancel];current.transfer=nil;current.nextAttempt=0;
             RVDAUIPrepareImage(result.thumbnailImage,@"community",^{ if (RVDAPrefetchLeaseValid(weak)) { weak.phase=@"community_ready";RVDADiagCount(@"prefetch.community_ready"); } });return;
         }
         if ((!result.isFinal && !result.metadataRecoveryPending) || !(parts&RVDeArrowPartsThumbnail) || result.thumbnailDecision==RVDeArrowDecisionOriginal || result.thumbnailDecision==RVDeArrowDecisionDisabled) return;

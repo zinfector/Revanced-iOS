@@ -246,7 +246,7 @@ static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uin
 }
 static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NSNumber *timestamp,uint64_t generation) {
     if (!url || RVDAUIOriginal(state) || state.generation!=generation || !RVDAUICurrent(state)) return;
-    BOOL cachedRandom=[origin isEqual:@"cached_random_time"];
+    uint64_t requestEpoch=state.fallbackEpoch;BOOL cachedRandom=[origin isEqual:@"cached_random_time"];
     state.fallbackTimestampRequested=timestamp;state.fallbackTimestampReturned=nil;state.fallbackRequestKey=[RVDAHash([NSString stringWithFormat:@"%@|%@",RVDAUISalt,url.absoluteString]) substringToIndex:12];
     if (state.fallbackDeadline && RVDANow()>=state.fallbackDeadline) { RVDAUIFallbackExhausted(state,@"fallback_burst_deferred");return; }
     RVDAUIInitializeImageCaches();
@@ -292,7 +292,7 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
             RVDADiagTiming(@"fallback_decode",decodeStarted);
             if ([origin isEqual:@"youtube_frame"] && (image.size.width<240 || image.size.height<135)) image=nil;
             dispatch_async(dispatch_get_main_queue(),^{
-                RVDAUIBinding *latest=weak;if (!latest || latest.generation!=generation || !RVDAUICurrent(latest)) return;
+                RVDAUIBinding *latest=weak;if (!latest || latest.generation!=generation || latest.fallbackEpoch!=requestEpoch || !RVDAUICurrent(latest)) return;
                 if (!image) { RVDAUIFallbackFailure(latest,@"fallback_decode_failed",NO,generation,nil);return; }
                 RVDAUIEvent(@"D08_fallback_image_decoded",latest,nil);
                 if (timestamp || cachedRandom) RVDAFrameStore(url,data,response);
