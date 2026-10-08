@@ -1,8 +1,8 @@
-name: Build DeArrow feed prefetch payload with Xcode
+name: Build DeArrow frame recovery payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-feed-prefetch-0.3.49]
+    branches: [fix/dearrow-frame-recovery-0.3.50]
 
 permissions:
   contents: read

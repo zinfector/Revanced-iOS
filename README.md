@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.49**, `YouTube-21.39.4-RVPort-0.3.49-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.50**, `YouTube-21.39.4-RVPort-0.3.50-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -8,9 +8,9 @@ Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTub
 
 Navigation settings now include Home/Subscriptions/You tab hiding, icon-only labels and a Shorts start page, with surviving-tab recovery. The native 3? speed option is converted to a regular speed button, with its upsell action removed and configured range extended to 3?. Working adblocking, SponsorBlock, native vote counts, speed and Shorts changes are retained. [Structured implementation evidence](patcher/profiles/adblock-elements-inline-evidence.json).
 
-On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.49. This confirms the reported device behavior; coverage of every ad format remains unverified.
+On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.50. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
-DeArrow now starts metadata and thumbnail prefetching when YouTube delivers initial feed pages and continuations, before rows become visible. Four speculative transfers can run concurrently within a six-transfer pool, reserving two slots and queue priority for row requests. Community images and random-frame fallbacks share bounded caches and prepare presentation bytes ahead of scrolling. Reports include feed arrival, extracted identities, metadata results, server-generation delays and row cache hits. Server generation can still delay unavailable frames; visible rows retain recoverable retry bursts and cooldowns. Existing title/thumbnail ownership guards and watch-page interaction fixes are retained; unsupported layouts keep originals. The 0.3.49 changes await device confirmation.
+DeArrow starts metadata and thumbnail prefetching when YouTube delivers feed pages and continuations, with four speculative transfers in a six-transfer pool. Version 0.3.50 distinguishes temporary frame-generation timeouts and queue pressure from actual worker failures, preventing temporary HTTP 204 responses from forcing a five-minute retry pause. Overlapping feed snapshots are deduplicated and distinct snapshots enter a bounded queue; reports include response categories, effective retry delays, coalescing and queue eviction counts. Exact random frames still depend on the upstream generation service. Existing presentation ownership, timestamp checks and watch interaction guards are retained. The 0.3.50 changes await device confirmation.
 
 ## USB diagnostics
 
@@ -63,7 +63,7 @@ UI/native jobs run on the app's main queue. The USB worker returns a job ticket 
 
 ## Porting progress
 
-Status reflects the merged 0.3.49 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.50 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.

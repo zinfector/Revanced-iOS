@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "version": "0.3.50",
+  "problem": "Temporary 204 generation timeouts were also classified as worker failure and forced 300-second pauses in visible and speculative schedulers",
+  "failure_classifier": {
+    "shared_between": [
+      "visible rows",
+      "feed prefetch"
+    ],
+    "precedence": [
+      "timeout/timed out",
+      "queue pressure",
+      "not generated",
+      "not cached",
+      "explicit failed to generate",
+      "unknown 204"
+    ],
+    "mutually_exclusive": true,
+    "transient_categories": [
+      "timeout",
+      "queue pressure",
+      "pending",
+      "not cached",
+      "unknown 204"
+    ],
+    "worker_failure_backoff_seconds": 300,
+    "retry_after_formats": [
+      "delta seconds",
+      "IMF-fixdate"
+    ],
+    "retry_after_cap_seconds": 300
+  },
+  "visible_recovery": {
+    "existing_burst_seconds": 150,
+    "existing_attempt_limit": 12,
+    "within_burst_backoff_seconds": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "transient_exhaustion_cooldown_seconds": [
+      30,
+      60
+    ],
+    "actual_retry_after_can_override_transient_cooldown": true,
+    "genuine_worker_failure_uses_existing_long_backoff": true,
+    "visibility_and_generation_guards_retained": true
+  },
+  "prefetch_recovery": {
+    "attempt_limit": 4,
+    "transient_delays_seconds": [
+      4,
+      8,
+      16
+    ],
+    "exact_url_coalescing_retained": true,
+    "total_transfer_limit": 6,
+    "speculative_transfer_limit": 4
+  },
+  "snapshot_admission": {
+    "deduplication": "surface plus SHA256 of immutable element bytes; legacy video ID and duration",
+    "deduplicate_before_queue_admission": true,
+    "utility_parsers": 1,
+    "batch_limit": 32,
+    "batch_byte_limit": 8388608,
+    "queue_snapshot_limit": 128,
+    "queue_byte_limit": 16777216,
+    "recent_content_key_limit": 512,
+    "recent_key_seconds": 60,
+    "overload_policy": "evict oldest pending speculative snapshot, count and report eviction; retain active snapshot witnesses",
+    "native_data_mutation": false,
+    "background_settings_memory_warning_invalidate_queue_epoch": true
+  },
+  "diagnostics": [
+    "D08_fallback_image_response: mutually exclusive category, transient, header delay and effective delay",
+    "F04_prefetch_frame_response: category, retry delay and scheduled flag",
+    "F01_feed_page_received: admitted, duplicates, evictions, queued snapshots and bytes",
+    "prefetch.snapshot_coalesced",
+    "prefetch.snapshot_evicted",
+    "prefetch.frame_response.<category>",
+    "prefetch report: queued bytes and snapshots, category and delay per salted sample"
+  ],
+  "presentation": "Existing source/row ownership, command identity, native consumer, timestamp and pixel-consumption guards unchanged; no forced view loading or intermediate substitution of random-frame choice",
+  "limitations": [
+    "No change to upstream worker capacity or frame availability",
+    "Unsupported native feed structures keep originals",
+    "Device confirmation required"
+  ],
+  "tests_run": false
+}

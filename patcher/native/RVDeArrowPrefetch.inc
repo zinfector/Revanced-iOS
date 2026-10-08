@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Feed-owned cache warming; no native row/view leases and no response mutation.
+#include <float.h>
 @interface RVDAPrefetch : NSObject
-@property(nonatomic,copy) NSString *video,*surface,*phase;
+@property(nonatomic,copy) NSString *video,*surface,*phase,*failureCategory;
+@property(nonatomic) NSTimeInterval retryDelay;
 @property(nonatomic) double duration;
 @property(nonatomic) uint64_t revision;
 @property(nonatomic) NSTimeInterval expires;
@@ -14,11 +16,17 @@
 @implementation RVDAPrefetch @end
 static NSMutableDictionary<NSString *,RVDAPrefetch *> *RVDAPrefetchEntries;
 static NSUInteger RVDAPrefetchPendingPages;
+static NSMutableArray<NSDictionary *> *RVDAPrefetchSnapshots;
+static NSMutableDictionary<NSString *,NSNumber *> *RVDAPrefetchSnapshotKeys;
+static NSUInteger RVDAPrefetchQueuedBytes;
+static uint64_t RVDAPrefetchPageEpoch;
+static void RVDAPrefetchPumpPages(void);
 static BOOL RVDAPrefetchCurrent(RVDAPrefetch *state) {
     return state && RVDAPrefetchEntries[state.video]==state && state.revision==RVDAUISettingsRevision &&
         state.expires>RVDANow() && RVCompatible && UIApplication.sharedApplication.applicationState==UIApplicationStateActive;
 }
 static void RVDAPrefetchCancelLeases(void) {
+    RVDAPrefetchPageEpoch++;[RVDAPrefetchSnapshots removeAllObjects];[RVDAPrefetchSnapshotKeys removeAllObjects];RVDAPrefetchQueuedBytes=0;
     for (RVDAPrefetch *state in RVDAPrefetchEntries.allValues) { [state.request cancel];[state.transfer cancel]; }
     [RVDAPrefetchEntries removeAllObjects];
 }
@@ -35,21 +43,23 @@ static void RVDAPrefetchFrame(RVDAPrefetch *state,NSURL *url,NSString *origin,NS
     ticket.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
         dispatch_async(dispatch_get_main_queue(),^{
             RVDAPrefetch *current=weak;if (!RVDAPrefetchCurrent(current)) return;current.transfer=nil;
-            NSString *failure=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
             if (blocker || response.statusCode!=200) {
-                BOOL pending=timestamp && response.statusCode==204 && ([failure containsString:@"not generated"] || [failure containsString:@"not cached"] || [failure containsString:@"queue"] || [failure containsString:@"timeout"]);
-                current.phase=pending ? @"server_generation_pending" : @"frame_unavailable";
+                RVDAFrameFailure failure=RVDAFrameClassify(response,timestamp);
+                BOOL pending=RVDAFrameTransient(failure),workerFailed=failure==RVDAFrameWorkerFailed;
+                current.failureCategory=RVDAFrameFailureName(failure);
+                current.phase=failure==RVDAFrameTimeout ? @"server_generation_timeout" : failure==RVDAFrameQueueBusy ? @"server_queue_busy" : workerFailed ? @"server_generation_failed" : pending ? @"server_generation_pending" : @"frame_unavailable";
                 RVDADiagCount(pending ? @"prefetch.frame_generation_pending" : @"prefetch.frame_unavailable");
-                RVDADiagRecord(@"F04_prefetch_frame_response",nil,nil,@{@"video_hash":RVDADiagVideo(current.video),@"http_status":@(response.statusCode),@"network_error_code":@(code),@"phase":current.phase,@"attempt":@(current.attempts)});
-                // Short speculative burst; the visible-row recovery scheduler owns
-                // longer server backoff. Never retry a speculative failure forever.
-                if ((pending || RVDAUIRetryableTransfer(blocker,response.statusCode)) && current.attempts<4) {
-                    double retryAfter=RVDAHeader(response,@"Retry-After").doubleValue;
-                    NSTimeInterval delay=MAX(4*pow(2,current.attempts-1),isfinite(retryAfter) ? MIN(300,MAX(0,retryAfter)) : 0);
-                    if ([failure containsString:@"failed to generate"]) delay=300;
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(delay*NSEC_PER_SEC)),dispatch_get_main_queue(),^{ RVDAPrefetchFrame(weak,url,origin,timestamp); });
-                }return;
+                RVDADiagCount([@"prefetch.frame_response." stringByAppendingString:current.failureCategory]);
+                BOOL retry=(pending || workerFailed || RVDAUIRetryableTransfer(blocker,response.statusCode)) && current.attempts<4;
+                NSTimeInterval headerDelay=RVDAFrameRetryAfter(response);
+                current.retryDelay=retry ? MAX(4*pow(2,current.attempts-1),workerFailed ? MAX(300,headerDelay) : headerDelay) : 0;
+                RVDADiagRecord(@"F04_prefetch_frame_response",nil,nil,@{@"video_hash":RVDADiagVideo(current.video),@"http_status":@(response.statusCode),@"network_error_code":@(code),@"phase":current.phase,@"failure_category":current.failureCategory,@"transient":@(pending),@"header_retry_after_seconds":@(headerDelay),@"retry_delay_seconds":@(current.retryDelay),@"retry_scheduled":@(retry),@"attempt":@(current.attempts)});
+                // Bounded speculative burst; the foreground subscriber keeps
+                // its longer recovery schedule and can join this exact URL.
+                if (retry) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(current.retryDelay*NSEC_PER_SEC)),dispatch_get_main_queue(),^{ RVDAPrefetchFrame(weak,url,origin,timestamp); });
+                return;
             }
+            current.failureCategory=nil;current.retryDelay=0;
             NSNumber *returned=nil;
             if (timestamp) {
                 NSScanner *scan=[NSScanner scannerWithString:RVDAHeader(response,@"X-Timestamp") ?: @""];scan.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];double value=0;
@@ -137,42 +147,102 @@ static void RVDAPrefetchCollect(id root,NSUInteger depth,NSUInteger *budget,NSUI
         if (RVAdResolve(root,field.UTF8String,@"@@:")) RVDAPrefetchCollect(RVAdResolvedObject(root,field.UTF8String),depth+1,budget,bytes,snapshots,seen);
     }
 }
-static void RVDAPrefetchIncoming(id owner,id root,NSString *route) {
-    if (!NSThread.isMainThread || !RVCompatible || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
-    NSString *surface=RVDAUIOwnerSurface(owner,NO,NULL);
-    if (!surface || (!RVDAUIPolicy(surface,YES) && !RVDAUIPolicy(surface,NO))) return;
-    RVDADiagCount(@"prefetch.page_received");
-    if (RVDAPrefetchPendingPages>=4) { RVDADiagCount(@"prefetch.page_budget_full");return; }
-    NSMutableArray *snapshots=[NSMutableArray array];NSUInteger budget=256,bytes=0;
-    RVDAPrefetchCollect(root,0,&budget,&bytes,snapshots,[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality]);
-    RVDADiagRecord(@"F01_feed_page_received",nil,nil,@{@"route":route,@"surface":surface,@"snapshots":@(snapshots.count),@"serialized_bytes":@(bytes),@"walk_budget_exhausted":@(!budget)});
-    if (!snapshots.count) { RVDADiagCount(@"prefetch.page_no_candidates");return; }
-    RVDAPrefetchPendingPages++;uint64_t revision=RVDAUISettingsRevision;NSArray *owned=snapshots.copy;
+// Content keys deduplicate overlapping outer/inner/section delivery even
+// when YouTube passes different containers for the same immutable row bytes.
+static NSString *RVDAPrefetchSnapshotKey(NSDictionary *snapshot,NSString *surface) {
+    NSData *data=snapshot[@"data"];
+    if (!data) return [NSString stringWithFormat:@"%@|%@|%@",surface,snapshot[@"video"],snapshot[@"duration"]];
+    unsigned char digest[CC_SHA256_DIGEST_LENGTH];CC_SHA256(data.bytes,(CC_LONG)data.length,digest);
+    NSMutableString *key=[NSMutableString stringWithFormat:@"%@|",surface];
+    for (NSUInteger i=0;i<sizeof(digest);i++) [key appendFormat:@"%02x",digest[i]];return key;
+}
+static void RVDAPrefetchPruneKeys(void) {
+    NSTimeInterval now=RVDANow();
+    for (NSString *key in RVDAPrefetchSnapshotKeys.allKeys) {
+        double expiry=[RVDAPrefetchSnapshotKeys[key] doubleValue];
+        if (expiry>0 && expiry<=now) [RVDAPrefetchSnapshotKeys removeObjectForKey:key];
+    }
+    // Zero denotes queued/active work; never evict that deduplication witness.
+    while (RVDAPrefetchSnapshotKeys.count>512) {
+        NSString *old=nil;double first=DBL_MAX;
+        for (NSString *key in RVDAPrefetchSnapshotKeys) {
+            double expiry=[RVDAPrefetchSnapshotKeys[key] doubleValue];if (expiry>0 && expiry<first) { old=key;first=expiry; }
+        }
+        if (!old) break;[RVDAPrefetchSnapshotKeys removeObjectForKey:old];
+    }
+}
+static void RVDAPrefetchPumpPages(void) {
+    if (RVDAPrefetchPendingPages || !RVDAPrefetchSnapshots.count || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
+    // One utility parser, plus a bounded queue of immutable snapshots. Network
+    // parallelism remains six total/four speculative and is independent of this.
+    NSMutableArray *batch=[NSMutableArray array];NSUInteger bytes=0;
+    while (RVDAPrefetchSnapshots.count && batch.count<32) {
+        NSDictionary *snapshot=RVDAPrefetchSnapshots.firstObject;NSUInteger size=[snapshot[@"data"] length];
+        if (size>8*1024*1024-bytes) break;
+        [batch addObject:snapshot];[RVDAPrefetchSnapshots removeObjectAtIndex:0];bytes+=size;RVDAPrefetchQueuedBytes-=size;
+    }
+    if (!batch.count) return;
+    RVDAPrefetchPendingPages=1;uint64_t epoch=RVDAPrefetchPageEpoch,revision=RVDAUISettingsRevision;NSArray *owned=batch.copy;
     static dispatch_queue_t queue;static dispatch_once_t once;dispatch_once(&once,^{ queue=dispatch_queue_create("RVPort.DeArrow.FeedPrefetch",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,QOS_CLASS_UTILITY,0)); });
     dispatch_async(queue,^{
         @autoreleasepool {
             NSMutableArray *candidates=[NSMutableArray array];
             for (NSDictionary *snapshot in owned) {
-                if (snapshot[@"video"]) { [candidates addObject:@{@"video":snapshot[@"video"],@"duration":snapshot[@"duration"],@"title":@YES,@"image":@YES}];continue; }
-                for (RVDAProjection *profile in RVDAProfiles(snapshot[@"data"],nil)) if (!profile.watchTitle && RVVideoIDValid(profile.video) && candidates.count<48)
-                    [candidates addObject:@{@"video":profile.video,@"duration":@(profile.duration),@"title":@(profile.titleRole),@"image":@(profile.imageRole)}];
+                if (snapshot[@"video"]) { [candidates addObject:@{@"video":snapshot[@"video"],@"duration":snapshot[@"duration"],@"surface":snapshot[@"surface"],@"title":@YES,@"image":@YES}];continue; }
+                // Keep a per-snapshot limit so one large shelf cannot discard
+                // unrelated rows later in the same parsing batch.
+                NSUInteger count=0;
+                for (RVDAProjection *profile in RVDAProfiles(snapshot[@"data"],nil)) if (!profile.watchTitle && RVVideoIDValid(profile.video) && count++<48)
+                    [candidates addObject:@{@"video":profile.video,@"duration":@(profile.duration),@"surface":snapshot[@"surface"],@"title":@(profile.titleRole),@"image":@(profile.imageRole)}];
             }
             dispatch_async(dispatch_get_main_queue(),^{
-                if (RVDAPrefetchPendingPages) RVDAPrefetchPendingPages--;
-                if (revision!=RVDAUISettingsRevision || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
-                RVDADiagRecord(@"F02_feed_identities_resolved",nil,nil,@{@"route":route,@"surface":surface,@"candidates":@(candidates.count)});
-                for (NSDictionary *candidate in candidates) RVDAPrefetchVideo(candidate[@"video"],[candidate[@"duration"] doubleValue],surface,[candidate[@"title"] boolValue],[candidate[@"image"] boolValue]);
+                RVDAPrefetchPendingPages=0;
+                if (epoch==RVDAPrefetchPageEpoch && revision==RVDAUISettingsRevision && UIApplication.sharedApplication.applicationState==UIApplicationStateActive) {
+                    for (NSDictionary *snapshot in owned) RVDAPrefetchSnapshotKeys[snapshot[@"key"]]=@(RVDANow()+60);
+                    RVDADiagRecord(@"F02_feed_identities_resolved",nil,nil,@{@"snapshots":@(owned.count),@"candidates":@(candidates.count),@"queued_snapshots":@(RVDAPrefetchSnapshots.count)});
+                    for (NSDictionary *candidate in candidates) RVDAPrefetchVideo(candidate[@"video"],[candidate[@"duration"] doubleValue],candidate[@"surface"],[candidate[@"title"] boolValue],[candidate[@"image"] boolValue]);
+                    RVDAPrefetchPruneKeys();
+                }
+                RVDAPrefetchPumpPages();
             });
         }
     });
+}
+static void RVDAPrefetchIncoming(id owner,id root,NSString *route) {
+    if (!NSThread.isMainThread || !RVCompatible || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
+    NSString *surface=RVDAUIOwnerSurface(owner,NO,NULL);
+    if (!surface || (!RVDAUIPolicy(surface,YES) && !RVDAUIPolicy(surface,NO))) return;
+    RVDADiagCount(@"prefetch.page_received");
+    NSMutableArray *snapshots=[NSMutableArray array];NSUInteger budget=256,bytes=0;
+    RVDAPrefetchCollect(root,0,&budget,&bytes,snapshots,[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality]);
+    if (!RVDAPrefetchSnapshots) RVDAPrefetchSnapshots=[NSMutableArray array];
+    if (!RVDAPrefetchSnapshotKeys) RVDAPrefetchSnapshotKeys=[NSMutableDictionary dictionary];
+    RVDAPrefetchPruneKeys();NSUInteger admitted=0,duplicates=0,evicted=0;
+    for (NSDictionary *snapshot in snapshots) {
+        NSString *key=RVDAPrefetchSnapshotKey(snapshot,surface);
+        if (RVDAPrefetchSnapshotKeys[key]) { duplicates++;RVDADiagCount(@"prefetch.snapshot_coalesced");continue; }
+        NSUInteger size=[snapshot[@"data"] length];
+        // Prefer recent delivery under overload; native data is untouched.
+        // Every displaced speculative snapshot is counted, never hidden as a
+        // generic page rejection before its identities could be examined.
+        while (RVDAPrefetchSnapshots.count>=128 || RVDAPrefetchQueuedBytes+size>16*1024*1024) {
+            NSDictionary *old=RVDAPrefetchSnapshots.firstObject;if (!old) break;
+            RVDAPrefetchQueuedBytes-=[old[@"data"] length];[RVDAPrefetchSnapshotKeys removeObjectForKey:old[@"key"]];[RVDAPrefetchSnapshots removeObjectAtIndex:0];evicted++;RVDADiagCount(@"prefetch.snapshot_evicted");
+        }
+        NSMutableDictionary *queued=snapshot.mutableCopy;queued[@"key"]=key;queued[@"surface"]=surface;
+        [RVDAPrefetchSnapshots addObject:queued.copy];RVDAPrefetchQueuedBytes+=size;RVDAPrefetchSnapshotKeys[key]=@0;admitted++;
+    }
+    RVDADiagRecord(@"F01_feed_page_received",nil,nil,@{@"route":route,@"surface":surface,@"snapshots":@(snapshots.count),@"serialized_bytes":@(bytes),@"walk_budget_exhausted":@(!budget),@"admitted_snapshots":@(admitted),@"duplicate_snapshots":@(duplicates),@"evicted_snapshots":@(evicted),@"queued_snapshots":@(RVDAPrefetchSnapshots.count),@"queued_bytes":@(RVDAPrefetchQueuedBytes)});
+    if (!snapshots.count) RVDADiagCount(@"prefetch.page_no_candidates");
+    RVDAPrefetchPruneKeys();RVDAPrefetchPumpPages();
 }
 static NSDictionary *RVDAPrefetchReport(void) {
     NSMutableDictionary *phases=[NSMutableDictionary dictionary];NSMutableArray *samples=[NSMutableArray array];
     for (RVDAPrefetch *state in RVDAPrefetchEntries.allValues) {
         phases[state.phase ?: @"unknown"]=@([phases[state.phase ?: @"unknown"] unsignedIntegerValue]+1);
-        if (samples.count<24) [samples addObject:@{@"video_hash":RVDADiagVideo(state.video),@"surface":state.surface,@"phase":state.phase ?: @"unknown",@"parts":@(state.parts),@"frame_attempts":@(state.attempts),@"native_duration_available":@(state.duration>0),@"age_seconds":@(MAX(0,NSProcessInfo.processInfo.systemUptime-state.started)),@"lease_current":@(RVDAPrefetchCurrent(state))}];
+        if (samples.count<24) [samples addObject:@{@"video_hash":RVDADiagVideo(state.video),@"surface":state.surface,@"phase":state.phase ?: @"unknown",@"parts":@(state.parts),@"frame_attempts":@(state.attempts),@"failure_category":state.failureCategory ?: @"none",@"retry_delay_seconds":@(state.retryDelay),@"native_duration_available":@(state.duration>0),@"age_seconds":@(MAX(0,NSProcessInfo.processInfo.systemUptime-state.started)),@"lease_current":@(RVDAPrefetchCurrent(state))}];
     }
-    return @{@"leases":@(RVDAPrefetchEntries.count),@"pending_pages":@(RVDAPrefetchPendingPages),@"phases":phases,@"samples":samples,@"page_snapshot_limit":@32,@"lease_limit":@48,@"started_at_feed_delivery":@YES};
+    return @{@"leases":@(RVDAPrefetchEntries.count),@"pending_pages":@(RVDAPrefetchPendingPages),@"queued_snapshots":@(RVDAPrefetchSnapshots.count),@"queued_bytes":@(RVDAPrefetchQueuedBytes),@"snapshot_queue_limit":@128,@"snapshot_queue_byte_limit":@(16*1024*1024),@"phases":phases,@"samples":samples,@"page_snapshot_limit":@32,@"lease_limit":@48,@"started_at_feed_delivery":@YES};
 }
 static void RVDAPrefetchInstall(void) {
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) { RVDAPrefetchCancelLeases(); }];

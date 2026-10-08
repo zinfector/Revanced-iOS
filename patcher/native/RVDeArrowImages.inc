@@ -1,5 +1,46 @@
 // SPDX-License-Identifier: MIT
 // Decoded fallback/effect requests are per-video, bounded and generation guarded.
+// The service's timeout/queue responses also contain "failed to generate".
+// Classify the specific transient cause first, never both pending and failed.
+typedef NS_ENUM(NSUInteger,RVDAFrameFailure) {
+    RVDAFrameOther, RVDAFramePending, RVDAFrameNotCached, RVDAFrameTimeout,
+    RVDAFrameQueueBusy, RVDAFrameWorkerFailed, RVDAFrameUnavailable
+};
+static RVDAFrameFailure RVDAFrameClassify(NSHTTPURLResponse *response,NSNumber *timestamp) {
+    if (!timestamp || response.statusCode!=204) return RVDAFrameOther;
+    NSString *reason=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
+    if ([reason containsString:@"timeout"] || [reason containsString:@"timed out"]) return RVDAFrameTimeout;
+    if ([reason containsString:@"queue"]) return RVDAFrameQueueBusy;
+    if ([reason containsString:@"not generated"]) return RVDAFramePending;
+    if ([reason containsString:@"not cached"]) return RVDAFrameNotCached;
+    if ([reason containsString:@"failed to generate"]) return RVDAFrameWorkerFailed;
+    return RVDAFrameUnavailable;
+}
+static NSString *RVDAFrameFailureName(RVDAFrameFailure failure) {
+    switch (failure) {
+        case RVDAFramePending:return @"not_generated_yet";
+        case RVDAFrameNotCached:return @"not_cached";
+        case RVDAFrameTimeout:return @"generation_timeout";
+        case RVDAFrameQueueBusy:return @"queue_busy";
+        case RVDAFrameWorkerFailed:return @"generation_failed";
+        case RVDAFrameUnavailable:return @"generation_unavailable";
+        default:return @"other";
+    }
+}
+static BOOL RVDAFrameTransient(RVDAFrameFailure failure) {
+    return failure!=RVDAFrameOther && failure!=RVDAFrameWorkerFailed;
+}
+static NSTimeInterval RVDAFrameRetryAfter(NSHTTPURLResponse *response) {
+    NSString *header=RVDAHeader(response,@"Retry-After");
+    NSScanner *scan=[NSScanner scannerWithString:header ?: @""];scan.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];double value=0;
+    if ([scan scanDouble:&value] && scan.isAtEnd && isfinite(value) && value>0) return MIN(300,value);
+    // Retry-After may be an HTTP date rather than delta seconds.
+    static NSDateFormatter *formatter;static dispatch_once_t once;dispatch_once(&once,^{
+        formatter=[NSDateFormatter new];formatter.locale=[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        formatter.timeZone=[NSTimeZone timeZoneForSecondsFromGMT:0];formatter.dateFormat=@"EEE, dd MMM yyyy HH:mm:ss zzz";
+    });
+    NSDate *date=[formatter dateFromString:header ?: @""];return date ? MIN(300,MAX(0,date.timeIntervalSinceNow)) : 0;
+}
 static NSCache *RVDAUIAuxiliaryCache;
 static NSCache *RVDAUIPresentationCache;
 static void RVDAUIInitializeImageCaches(void) {
@@ -86,7 +127,10 @@ static void RVDAUIFallbackDefer(RVDAUIBinding *state,NSString *reason,NSTimeInte
     if (restorePending) RVDAUIRefresh(state);
 }
 static NSTimeInterval RVDAUIFallbackCooldown(RVDAUIBinding *state) {
-    return MAX(state.fallbackRetryAfter,MIN(300,30*pow(2,MIN(state.fallbackExhaustions ? state.fallbackExhaustions-1 : 0,4u))));
+    BOOL transient=[@[@"not_generated_yet",@"not_cached",@"generation_timeout",@"queue_busy",@"generation_unavailable"] containsObject:state.fallbackResponseReason];
+    // A finite burst still yields to the shared service; temporary generation
+    // delays never accumulate the five-minute worker-failure penalty.
+    return MAX(state.fallbackRetryAfter,MIN(transient ? 60 : 300,30*pow(2,MIN(state.fallbackExhaustions ? state.fallbackExhaustions-1 : 0,4u))));
 }
 static void RVDAUIFallbackExhausted(RVDAUIBinding *state,NSString *reason) {
     state.fallbackExhaustions++;
@@ -214,18 +258,14 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
         RVDAUIBinding *current=weak;if (!current) return;
         current.fallbackHTTPStatus=response.statusCode;
         if (blocker!=RVDeArrowBlockerNone || response.statusCode!=200) {
-            NSString *failure=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
-            BOOL generationFailed=timestamp && response.statusCode==204 && [failure containsString:@"failed to generate"];
-            BOOL pending=timestamp && response.statusCode==204 && ([failure containsString:@"not generated"] || [failure containsString:@"not cached"] || [failure containsString:@"timeout"] || [failure containsString:@"queue"]);
-            NSString *reason=[failure containsString:@"not generated"] ? @"not_generated_yet" : [failure containsString:@"not cached"] ? @"not_cached" :
-                [failure containsString:@"queue"] ? @"queue_busy" : [failure containsString:@"timeout"] ? @"generation_timeout" :
-                [failure containsString:@"fail"] ? @"generation_failed" : response.statusCode==204 ? @"generation_unavailable" : @"other";
-            NSString *retryHeader=RVDAHeader(response,@"Retry-After");NSScanner *retryScan=[NSScanner scannerWithString:retryHeader ?: @""];double retryAfter=0;
-            current.fallbackRetryAfter=[retryScan scanDouble:&retryAfter] && retryScan.isAtEnd && isfinite(retryAfter) && retryAfter>0 ? MIN(300,retryAfter) : 0;
-            if (generationFailed) current.fallbackRetryAfter=MAX(300,current.fallbackRetryAfter);
+            RVDAFrameFailure failure=RVDAFrameClassify(response,timestamp);
+            BOOL pending=RVDAFrameTransient(failure),generationFailed=failure==RVDAFrameWorkerFailed;
+            NSString *reason=RVDAFrameFailureName(failure);
+            NSTimeInterval headerDelay=RVDAFrameRetryAfter(response);
+            current.fallbackRetryAfter=generationFailed ? MAX(300,headerDelay) : headerDelay;
             current.fallbackResponseReason=reason;
             RVDADiagRecord(@"D08_fallback_image_response",current,nil,@{@"http_status":@(response.statusCode),@"generation_reason":pending ? @"generation_pending" : generationFailed ? @"generation_failed" : @"unavailable",
-                @"failure_category":reason,@"retry_after_seconds":@(current.fallbackRetryAfter),@"remaining_seconds":@(MAX(0,current.fallbackDeadline-RVDANow())),@"timestamp_requested":@(timestamp!=nil)});
+                @"failure_category":reason,@"transient":@(pending),@"header_retry_after_seconds":@(headerDelay),@"retry_after_seconds":@(current.fallbackRetryAfter),@"remaining_seconds":@(MAX(0,current.fallbackDeadline-RVDANow())),@"timestamp_requested":@(timestamp!=nil)});
             RVDAUIFallbackFailure(current,pending ? @"fallback_generation_pending" : generationFailed ? @"fallback_generation_backoff" : RVDABlockerName(blocker==RVDeArrowBlockerNone ? RVDeArrowBlockerImageHTTP : blocker),pending || generationFailed || RVDAUIRetryableTransfer(blocker,response.statusCode),generation,^(RVDAUIBinding *next) { RVDAUIFetchImage(next,url,origin,timestamp,generation); });return;
         }
         current.fallbackResponseReason=@"image_received";current.fallbackRetryAfter=0;current.fallbackPhase=@"encoding";
