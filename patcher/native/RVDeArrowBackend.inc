@@ -10,6 +10,13 @@ static const NSUInteger RVDAMetadataLimit=1024*1024, RVDAImageLimit=8*1024*1024;
 static const NSUInteger RVDAMaxEntries=256, RVDAMaxJobs=128, RVDAMaxTransfers=6, RVDAMaxPrefetchTransfers=4;
 static const NSUInteger RVDAMaxImageCost=24*1024*1024;
 static const void *RVDAQueueKey=&RVDAQueueKey;
+// Network admission stays parallel. CPU work uses two utility workers so a
+// burst of arriving images cannot spawn unlimited concurrent decode/encode jobs.
+static NSOperationQueue *RVDAImageWorkQueue(void) {
+    static NSOperationQueue *queue;static dispatch_once_t once;dispatch_once(&once,^{
+        queue=[NSOperationQueue new];queue.name=@"RVPort.DeArrow.ImageWork";queue.maxConcurrentOperationCount=2;queue.qualityOfService=NSQualityOfServiceUtility;
+    });return queue;
+}
 static NSTimeInterval RVDANow(void) { return NSDate.date.timeIntervalSince1970; }
 static BOOL RVDAVideoID(id value) {
     if (![value isKindOfClass:NSString.class] || [value length]!=11) return NO;
@@ -293,6 +300,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
 @property(nonatomic,strong) NSMutableDictionary<NSString *,NSNumber *> *cooldowns;
 @property(nonatomic) NSUInteger activeTransfers,activePrefetchTransfers,imageCost;
 @property(nonatomic) BOOL diskLoaded,flushScheduled,pumping;
+@property(nonatomic,strong) dispatch_queue_t persistenceQueue;
 @property(nonatomic,copy) NSString *salt;
 @property(nonatomic,strong) NSMutableDictionary *counts,*state;
 @property(nonatomic,strong) NSMutableArray *events;
@@ -306,6 +314,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
 - (void)processMetadata:(RVDAJob *)job;
 - (void)deliver:(RVDAJob *)job;
 - (void)scheduleFlush;
+- (void)finishImageResponse:(RVDAImage *)entry response:(NSHTTPURLResponse *)response blocker:(RVDeArrowBlocker)blocker operation:(RVDAOperation *)operation timestampMatches:(BOOL)timestampMatches decodeMS:(double)decodeMS;
 @end
 
 @implementation RVDeArrowRequest
@@ -326,6 +335,7 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
     if ((self=[super init])) {
         _configurationRevision=1;_options=RVDeArrowOptions.defaultOptions;
         _queue=dispatch_queue_create("RVPort.DeArrow.Backend",DISPATCH_QUEUE_SERIAL);
+        _persistenceQueue=dispatch_queue_create("RVPort.DeArrow.Persistence",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,QOS_CLASS_UTILITY,0));
         dispatch_queue_set_specific(_queue,RVDAQueueKey,(__bridge void *)self,NULL);
         _jobs=[NSMutableDictionary dictionary];_operations=[NSMutableArray array];_auxiliaryOperations=[NSMutableArray array];_auxiliaryFlights=[NSMutableDictionary dictionary];
         _metadataCache=[NSMutableDictionary dictionary];_imageCache=[NSMutableDictionary dictionary];_cooldowns=[NSMutableDictionary dictionary];
@@ -428,17 +438,20 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
             [records addObject:record];if (records.count>=RVDAMaxEntries) break;
         }
         NSDictionary *root=@{@"schema":@1,@"namespace":RVDAHash(self.options.brandingEndpoint.absoluteString),@"records":records};
-        NSData *data=[NSJSONSerialization dataWithJSONObject:root options:0 error:nil];if (!data || data.length>RVDAMetadataLimit) return;
-        NSURL *url=[self diskURL];if (!url) return;
-        [NSFileManager.defaultManager createDirectoryAtURL:url.URLByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
-        [data writeToURL:url options:NSDataWritingAtomic error:nil];
+        NSURL *url=[self diskURL];if (!url) return;uint64_t revision=self.configurationRevision;
+        dispatch_async(self.persistenceQueue,^{
+            if (revision!=self.configurationRevision) return;
+            NSData *data=[NSJSONSerialization dataWithJSONObject:root options:0 error:nil];if (!data || data.length>RVDAMetadataLimit || revision!=self.configurationRevision) return;
+            [NSFileManager.defaultManager createDirectoryAtURL:url.URLByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
+            [data writeToURL:url options:NSDataWritingAtomic error:nil];
+        });
     });
 }
 - (void)clearCaches {
     [self sync:^{
         [self invalidateRequests];[self.metadataCache removeAllObjects];[self.imageCache removeAllObjects];self.imageCost=0;
         [self.cooldowns removeAllObjects];self.diskLoaded=YES;NSURL *url=[self diskURL];
-        if (url) [NSFileManager.defaultManager removeItemAtURL:url error:nil];
+        if (url) dispatch_async(self.persistenceQueue,^{ [NSFileManager.defaultManager removeItemAtURL:url error:nil]; });
         [self record:RVDeArrowCheckpointBackendReady blocker:RVDeArrowBlockerConfigurationChanged video:nil details:@{@"cache_cleared":@YES}];
     }];
 }
@@ -568,7 +581,9 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
     request.background=background;
     request.videoID=[videoID isKindOfClass:NSString.class] && videoID.length<=128 ? [videoID copy] : @"";
     request.clientGeneration=generation;request.parts=parts&RVDeArrowPartsAll;request.completion=completion;
-    [self sync:^{ request.configurationRevision=self.configurationRevision; }];
+    // Atomic snapshot; queued admission below rejects a concurrent reconfigure.
+    // A main-thread caller must never wait for backend decoding or persistence.
+    request.configurationRevision=self.configurationRevision;
     dispatch_async(self.queue,^{
         if (request.cancelled || request.configurationRevision!=self.configurationRevision) { [request cancel];return; }
         RVDAJob *job;
@@ -725,15 +740,32 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
         timestampMatches=[scan scanDouble:&timestamp] && scan.isAtEnd && isfinite(timestamp) && timestamp>=0 && timestamp<=604800 &&
             [[NSString stringWithFormat:@"%.3f",timestamp] isEqual:[NSString stringWithFormat:@"%.3f",job.metadata.timestamp.doubleValue]];
         if (!timestampMatches) blocker=RVDeArrowBlockerImageTimestamp;
-        else { NSUInteger cost=0;entry.image=[self decodeImage:data response:response cost:&cost];entry.cost=cost;if (!entry.image) blocker=RVDeArrowBlockerImageDecode; }
+        else {
+            [RVDAImageWorkQueue() addOperationWithBlock:^{
+                @autoreleasepool {
+                    NSUInteger cost=0;NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
+                    UIImage *image=[self decodeImage:data response:response cost:&cost];double ms=1000*(NSProcessInfo.processInfo.systemUptime-started);
+                    dispatch_async(self.queue,^{
+                        if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) return;
+                        entry.image=image;entry.cost=cost;
+                        [self finishImageResponse:entry response:response blocker:image ? RVDeArrowBlockerNone : RVDeArrowBlockerImageDecode operation:operation timestampMatches:YES decodeMS:ms];
+                    });
+                }
+            }];return;
+        }
     } else if (blocker==RVDeArrowBlockerNone) blocker=entry.httpStatus==204 ? RVDeArrowBlockerImageNoContent : RVDeArrowBlockerImageHTTP;
+    [self finishImageResponse:entry response:response blocker:blocker operation:operation timestampMatches:timestampMatches decodeMS:0];
+}
+- (void)finishImageResponse:(RVDAImage *)entry response:(NSHTTPURLResponse *)response blocker:(RVDeArrowBlocker)blocker operation:(RVDAOperation *)operation timestampMatches:(BOOL)timestampMatches decodeMS:(double)decodeMS {
+    RVDAJob *job=operation.job;
+    if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) return;
     entry.blocker=blocker;entry.lastUsed=RVDANow();entry.expires=entry.lastUsed+(entry.image ? job.options.metadataTTL : entry.httpStatus==204 ? MIN(60,job.options.negativeTTL) : 15);
     [self storeImage:entry job:job];job.image=entry;
     NSString *reason=RVDAHeader(response,@"X-Failure-Reason").lowercaseString;
     NSString *reasonClass=[reason containsString:@"queue"] ? @"queue" : [reason containsString:@"not cached"] ? @"not_cached" :
         [reason containsString:@"not generated"] ? @"not_generated" : [reason containsString:@"timeout"] ? @"timeout" : reason.length ? @"other" : @"absent";
     [self record:RVDeArrowCheckpointImageReceived blocker:blocker video:job.videoID details:@{@"http_status":@(entry.httpStatus),
-        @"timestamp_matches":@(timestampMatches),@"decoded":@(entry.image!=nil),@"decoded_bytes":@(entry.cost),@"failure_reason_class":reasonClass}];
+        @"timestamp_matches":@(timestampMatches),@"decoded":@(entry.image!=nil),@"decoded_bytes":@(entry.cost),@"decode_ms":@(decodeMS),@"failure_reason_class":reasonClass}];
     [self deliver:job];
 }
 - (void)blockedOperation:(RVDAOperation *)operation {

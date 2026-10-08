@@ -5,6 +5,21 @@ static NSMutableDictionary *RVDAUICounts,*RVDAUILastStages,*RVDAUISamples;
 static NSMutableDictionary *RVDAUITemplateSamples;
 static NSString *RVDAUISalt;
 static BOOL RVDADiagEnabled(void) { return RVEnabled(@"diagnostics") || RVDAUIDiagnosticsArmed || atomic_load(&RVDBGActive); }
+// Live debug keeps checkpoints and timings, not a detailed census on every layout.
+static BOOL RVDADiagDetailed(void) { return RVDAUIDiagnosticsArmed; }
+static void RVDADiagTiming(NSString *name,NSTimeInterval started) {
+    if (!RVDADiagEnabled()) return;
+    double ms=MAX(0,1000*(NSProcessInfo.processInfo.systemUptime-started));
+    @synchronized(RVDAUIBinding.class) {
+        if (!RVDAUICounts) RVDAUICounts=[NSMutableDictionary dictionary];
+        NSString *prefix=[@"performance." stringByAppendingString:name];
+        NSString *count=[prefix stringByAppendingString:@".count"],*total=[prefix stringByAppendingString:@".total_ms"],*maximum=[prefix stringByAppendingString:@".max_ms"],*slow=[prefix stringByAppendingString:@".over_16_ms"];
+        RVDAUICounts[count]=@([RVDAUICounts[count] unsignedLongLongValue]+1);
+        RVDAUICounts[total]=@([RVDAUICounts[total] doubleValue]+ms);
+        RVDAUICounts[maximum]=@(MAX([RVDAUICounts[maximum] doubleValue],ms));
+        if (ms>16) RVDAUICounts[slow]=@([RVDAUICounts[slow] unsignedLongLongValue]+1);
+    }
+}
 static NSString *RVDADiagHash(NSData *data) {
     if (!data) return @"absent";
     NSMutableData *salted=[[RVDAUISalt dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
@@ -128,12 +143,24 @@ static NSString *RVDADiagTemplateName(NSString *uri) {
 }
 static void RVDADiagNativeTemplate(NSString *raw) {
     if (!RVDADiagEnabled() || ![raw isKindOfClass:NSString.class] || raw.length>2048) return;
+    RVDADiagCount(@"native.template_uri_entered");
+    if (!RVDADiagDetailed()) return;
     RVDALiveNativeURI(raw);
-    RVDADiagCount(@"native.template_uri_entered");NSString *name=RVDAResourceName(raw),*hash=RVDADiagHash([raw dataUsingEncoding:NSUTF8StringEncoding]);
+    // Repeated template getters only bump a counter. Parse/hash each distinct
+    // immutable URI once per bounded capture cache, never once per observation.
     @synchronized(RVDAUIBinding.class) {
+        static NSCache *keys;static dispatch_once_t once;dispatch_once(&once,^{ keys=[NSCache new];keys.countLimit=128; });
+        NSString *hash=[keys objectForKey:raw];
+        if (!hash) { hash=RVDADiagHash([raw dataUsingEncoding:NSUTF8StringEncoding]);[keys setObject:hash forKey:raw.copy]; }
         if (!RVDAUITemplateSamples) RVDAUITemplateSamples=[NSMutableDictionary dictionary];
-        NSDictionary *prior=RVDAUITemplateSamples[hash];if (!prior && RVDAUITemplateSamples.count>=64) return;
-        RVDAUITemplateSamples[hash]=@{@"template":RVDADiagTemplateName(name),@"raw_uri_hash":hash,@"raw_uri_length":@(raw.length),@"normalized":@(name!=nil),@"uri_structure":prior[@"uri_structure"] ?: RVDADiagURI(raw),@"occurrences":@([prior[@"occurrences"] unsignedLongLongValue]+1)};
+        NSMutableDictionary *sample=RVDAUITemplateSamples[hash];
+        if (!sample) {
+            if (RVDAUITemplateSamples.count>=64) return;
+            NSString *name=RVDAResourceName(raw);
+            sample=[@{@"template":RVDADiagTemplateName(name),@"raw_uri_hash":hash,@"raw_uri_length":@(raw.length),@"normalized":@(name!=nil),@"uri_structure":RVDADiagURI(raw)} mutableCopy];
+            RVDAUITemplateSamples[hash]=sample;
+        }
+        sample[@"occurrences"]=@([sample[@"occurrences"] unsignedLongLongValue]+1);
     }
 }
 static void RVDADiagWalk(NSData *data,NSUInteger depth,NSUInteger *budget,NSMutableArray *components) {

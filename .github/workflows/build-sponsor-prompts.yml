@@ -1,8 +1,8 @@
-name: Build DeArrow card diagnostics payload with Xcode
+name: Build DeArrow smooth loading payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-card-diagnostics-0.3.52]
+    branches: [fix/dearrow-smooth-loading-0.3.53]
 
 permissions:
   contents: read

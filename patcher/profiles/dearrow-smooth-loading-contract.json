@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "version": "0.3.53",
+  "tests_run": false,
+  "scope": "DeArrow smooth loading: immutable projection cache and byte-equality reload suppression; offscreen refresh deferral; one native reload and one ownership scan per display turn; verified native role observation reuse; 120ms per-row scan coalescing; explicitly armed detailed capture; cached immutable template parsing; shared image preparation, bounded two-worker decode/encode/pixel verification; atomic request admission and asynchronous metadata persistence. Original thumbnails and native ownership/generation/consumer guards retained. Apple Xcode production build and packaging only; no tests.",
+  "scheme": {
+    "main_thread": [
+      "memoize only immutable projected bytes, never mutable native entries",
+      "recheck exact row/controller/source/generation ownership before every cached use and reload",
+      "suppress byte-identical native reloads",
+      "defer known offscreen live row refresh until native visibility/factory callback",
+      "budget one reload and one consumer observation per display turn",
+      "coalesce per-row scans for 120ms",
+      "reuse already uniquely proven loaded native roles only with same current factory input, current ancestry and image pixel witness; no new permission from fast path"
+    ],
+    "diagnostics": [
+      "keep compact timing/count checkpoints with live debugging",
+      "detailed primitive census and template structure only when explicitly armed",
+      "cache bounded immutable resource parsing and template hashing",
+      "copy mutable occurrence counters before report serialization"
+    ],
+    "workers": [
+      "share preparation between speculative prefetch and visible row application",
+      "two utility image workers for decode, effect, JPEG encode and pixel witnesses",
+      "retain exact generation/settings/consumer epoch guards on worker results",
+      "atomic revision snapshot followed by queued admission revision validation",
+      "serialize metadata snapshots then persist asynchronously on serial utility IO queue"
+    ]
+  },
+  "checkpoints": {
+    "counts": [
+      "performance.reload_unchanged_suppressed",
+      "performance.reload_offscreen_deferred",
+      "performance.projection_cache_hit",
+      "performance.consumer_callback_coalesced",
+      "performance.consumer_verified_roles_reused",
+      "performance.image_preparation_coalesced",
+      "performance.image_already_prepared"
+    ],
+    "timings": [
+      "projection",
+      "native_reload",
+      "consumer_scan",
+      "consumer_fast_observation",
+      "image_preparation",
+      "fallback_decode"
+    ],
+    "timing_fields": [
+      "count",
+      "total_ms",
+      "max_ms",
+      "over_16_ms"
+    ],
+    "backend_image_timing": "decode_ms"
+  },
+  "preserved": {
+    "network_transfers": 6,
+    "speculative_transfer_limit": 4,
+    "originals_until_random_frame_ready": true,
+    "no_interim_youtube_still": true,
+    "native_controls_or_navigation_modified": false,
+    "unique_original_role_proof_required": true,
+    "strict_image_pixel_witness_retained": true
+  },
+  "device_validation_pending": true
+}

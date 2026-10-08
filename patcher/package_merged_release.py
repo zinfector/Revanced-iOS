@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.52'
+VERSION = '0.3.53'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-card-diagnostics',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-smooth-loading',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Descriptor-proven ReelWatchEndpoint identity support for existing feed card previews; unchanged native title/thumbnail ownership and consumer guards. Visible/pending/current diagnostic sampling, paged and generation-filtered wired bindings with fallback state, and bounded weak-handle LRU recovery preserving explicit retain leases. Original thumbnails remain while upstream random frames are unavailable. Apple Xcode production compilation and packaging only; no tests.'}
-    (ROOT/'build/package-manifest-0.3.52.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'DeArrow smooth loading: immutable projection cache and byte-equality reload suppression; offscreen refresh deferral; one native reload and one ownership scan per display turn; verified native role observation reuse; 120ms per-row scan coalescing; explicitly armed detailed capture; cached immutable template parsing; shared image preparation, bounded two-worker decode/encode/pixel verification; atomic request admission and asynchronous metadata persistence. Original thumbnails and native ownership/generation/consumer guards retained. Apple Xcode production build and packaging only; no tests.'}
+    (ROOT/'build/package-manifest-0.3.53.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

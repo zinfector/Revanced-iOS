@@ -25,7 +25,7 @@ static void RVDAUIRetireConsumers(RVDAUIBinding *binding) {
     RVDBGRecord(@"native_consumers_retired",binding.generation,binding.surface,nil);
     for (RVDAUIConsumerLease *lease in binding.consumerLeases) [lease retire];
     [binding.consumerLeases removeAllObjects];binding.consumerEpoch++;
-    binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;binding.nativeThumbnailNode=nil;
+    binding.consumerQueued=NO;binding.consumerPasses=0;binding.nativeRootComponent=nil;binding.nativeThumbnailNode=nil;binding.nativeTitleNode=nil;
     binding.nativeOwnerCheckpoint=nil;binding.consumerCheckpoint=nil;binding.nativeFactoryElement=nil;binding.nativeExpectedElement=nil;
     binding.nativeFactoryController=nil;binding.nativeFactoryInput=nil;binding.factoryProvenanceVerified=NO;
     binding.imageWitnesses=nil;binding.imageWitnessSource=nil;binding.nativeTitleProjected=NO;binding.nativeImageProjected=NO;
@@ -190,16 +190,39 @@ static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
     if (matches.count>1) RVDAUIEvent(@"D04_native_component_rejected",binding,@"live_native_component_ambiguous");
 }
 static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t generation,NSUInteger attempt);
+static NSHashTable *RVDAUIConsumerPending;
+static BOOL RVDAUIConsumerPumpScheduled;
+static void RVDAUIDrainConsumers(void);
+static void RVDAUIQueueConsumerPump(void) {
+    if (RVDAUIConsumerPumpScheduled || !RVDAUIConsumerPending.count) return;
+    RVDAUIConsumerPumpScheduled=YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/60),dispatch_get_main_queue(),^{ RVDAUIConsumerPumpScheduled=NO;RVDAUIDrainConsumers(); });
+}
 static void RVDAUIScheduleConsumers(RVDAUIBinding *binding,NSTimeInterval delay) {
-    if (!NSThread.isMainThread || !binding.profile.liveCard || !binding.parts || RVDAUIOriginal(binding) || binding.consumerQueued || !binding.nativeFactoryRoot || !RVDAUICurrent(binding)) return;
-    binding.consumerQueued=YES;uint64_t generation=binding.generation,epoch=binding.consumerEpoch;__weak RVDAUIBinding *weak=binding;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(delay*NSEC_PER_SEC)),dispatch_get_main_queue(),^{
-        RVDAUIBinding *current=weak;if (!current || current.generation!=generation || current.consumerEpoch!=epoch) return;
-        current.consumerQueued=NO;
-        if (!current.parts || RVDAUIOriginal(current) || !RVDAUICurrent(current)) { RVDAUIRetireConsumers(current);return; }
-        id node=current.nativeFactoryRoot;if (!node) { RVDAUIRetireConsumers(current);return; }
-        current.consumerPasses++;RVDAUIObserveConsumers(current,node,generation,current.consumerPasses-1);
-    });
+    if (!NSThread.isMainThread || !binding.profile.liveCard || !binding.parts || RVDAUIOriginal(binding) || !binding.nativeFactoryRoot || !RVDAUICurrent(binding)) return;
+    if (binding.consumerQueued) { RVDADiagCount(@"performance.consumer_callback_coalesced");return; }
+    binding.consumerQueued=YES;binding.consumerQueuedGeneration=binding.generation;binding.consumerQueuedEpoch=binding.consumerEpoch;
+    binding.consumerDue=MAX(NSProcessInfo.processInfo.systemUptime+delay,binding.consumerLastScan+.12);
+    if (!RVDAUIConsumerPending) RVDAUIConsumerPending=[NSHashTable weakObjectsHashTable];
+    [RVDAUIConsumerPending addObject:binding];RVDAUIQueueConsumerPump();
+}
+static void RVDAUIDrainConsumers(void) {
+    NSTimeInterval now=NSProcessInfo.processInfo.systemUptime;RVDAUIBinding *selected=nil;
+    for (RVDAUIBinding *current in RVDAUIConsumerPending.allObjects) {
+        if (!current.consumerQueued || current.generation!=current.consumerQueuedGeneration || current.consumerEpoch!=current.consumerQueuedEpoch) { [RVDAUIConsumerPending removeObject:current];continue; }
+        if (current.consumerDue>now) continue;
+        if (!selected || RVDAUIFallbackVisible(current)) selected=current;
+        if (selected && RVDAUIFallbackVisible(selected)) break;
+    }
+    if (selected) {
+        [RVDAUIConsumerPending removeObject:selected];selected.consumerQueued=NO;
+        if (!selected.parts || RVDAUIOriginal(selected) || !RVDAUICurrent(selected) || !selected.nativeFactoryRoot) RVDAUIRetireConsumers(selected);
+        else {
+            selected.consumerLastScan=now;selected.consumerPasses++;
+            RVDAUIObserveConsumers(selected,selected.nativeFactoryRoot,selected.generation,selected.consumerPasses-1);
+        }
+    }
+    RVDAUIQueueConsumerPump();
 }
 static void RVDAUIRegisterController(RVDAUIBinding *binding,id controller) {
     if (!controller || !binding.factoryProvenanceVerified) return;
@@ -286,9 +309,12 @@ static void RVDAUIImageWitnesses(RVDAUIBinding *binding,NSArray<UIImage *> *imag
     }
     if (!pending.count) return;
     __weak RVDAUIBinding *weak=binding;uint64_t generation=binding.generation,epoch=binding.consumerEpoch;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
+    [RVDAImageWorkQueue() addOperationWithBlock:^{
         @autoreleasepool {
-            NSData *expected=RVDAUIPixelDigest([UIImage imageWithData:bytes]);NSMutableArray *matches=[NSMutableArray array];
+            static NSCache *digests;static dispatch_once_t once;dispatch_once(&once,^{ digests=[NSCache new];digests.countLimit=64;digests.totalCostLimit=8*1024*1024; });
+            NSData *expected=[digests objectForKey:bytes];
+            if (!expected) { expected=RVDAUIPixelDigest([UIImage imageWithData:bytes]);if (expected) [digests setObject:expected forKey:bytes cost:bytes.length]; }
+            NSMutableArray *matches=[NSMutableArray array];
             for (UIImage *image in pending) { NSData *actual=RVDAUIPixelDigest(image);[matches addObject:@(actual && expected && [actual isEqual:expected])]; }
             dispatch_async(dispatch_get_main_queue(),^{
                 RVDAUIBinding *current=weak;if (!current || current.generation!=generation || current.consumerEpoch!=epoch || ![current.imageWitnessSource isEqual:bytes] || !RVDAUICurrent(current)) return;
@@ -296,15 +322,49 @@ static void RVDAUIImageWitnesses(RVDAUIBinding *binding,NSArray<UIImage *> *imag
                 RVDAUIScheduleConsumers(current,0);
             });
         }
-    });
+    }];
+}
+
+// A fast path only observes roles already proven by a full unique-role scan.
+// It never grants permission, changes a native node, or loads a lazy view.
+static BOOL RVDAUIObserveKnownConsumers(RVDAUIBinding *binding,NSUInteger attempt) {
+    if (RVDADiagDetailed() || !binding.factoryProvenanceVerified || !binding.nativeRootComponent || ![binding.consumerCheckpoint[@"blocker"] isEqual:@"ready"]) return NO;
+    if (![binding.nativeFactoryInput isEqual:RVDAUIProjectedData(binding)]) return NO;
+    BOOL titleNeeded=(binding.parts&RVDeArrowPartsTitle)!=0,imageNeeded=(binding.parts&RVDeArrowPartsThumbnail)!=0;
+    NSString *expected=RVDAUITitle(binding);NSData *bytes=RVDAUIImage(binding) ? binding.imageBytes : nil;
+    id titleNode=binding.nativeTitleNode,imageNode=binding.nativeThumbnailNode;
+    if (titleNeeded) {
+        if (!binding.titleConsumerVerified || !RVBool(titleNode,"isNodeLoaded") || RVDAUIResolveConsumerRoot(titleNode,binding,NULL)!=binding.nativeRootComponent) return NO;
+        id text=RVObject(titleNode,"attributedText");
+        if (![text isKindOfClass:NSAttributedString.class] || ![[text string] isEqual:expected ?: binding.originalTitle]) return NO;
+    }
+    if (imageNeeded) {
+        if (!binding.imageConsumerVerified || !RVBool(imageNode,"isNodeLoaded") || RVDAUIResolveConsumerRoot(imageNode,binding,NULL)!=binding.nativeRootComponent) return NO;
+        if (bytes) {
+            id witness=[binding.imageWitnesses objectForKey:RVObject(imageNode,"image")];
+            if (![binding.imageWitnessSource isEqual:bytes] || ![witness isKindOfClass:NSNumber.class] || ![witness boolValue]) return NO;
+        } else if (![binding.profile.imageURLs containsObject:RVDAUIConsumerURL(imageNode) ?: @""]) return NO;
+    }
+    NSMutableDictionary *checkpoint=[binding.consumerCheckpoint mutableCopy];
+    checkpoint[@"attempt"]=@(attempt+1);checkpoint[@"observation_mode"]=@"verified_roles";
+    checkpoint[@"title_visible"]=@(titleNeeded && expected && RVDAUIConsumerVisible(titleNode));
+    checkpoint[@"image_visible"]=@(imageNeeded && bytes && RVDAUIConsumerVisible(imageNode));
+    binding.consumerCheckpoint=checkpoint.copy;binding.consumerObservations++;
+    RVDADiagCount(@"performance.consumer_verified_roles_reused");
+    RVDAUIFallbackWake(binding);
+    if (binding.refreshDeferred && RVDAUIFallbackVisible(binding)) RVDAUIRefresh(binding);
+    return YES;
 }
 static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t generation,NSUInteger attempt) {
     if (!NSThread.isMainThread || !binding.profile.liveCard || !binding.parts || RVDAUIOriginal(binding) || binding.generation!=generation || !RVDAUICurrent(binding)) return;
     RVDAUIRegisterController(binding,binding.nativeFactoryController);
+    NSTimeInterval scanStarted=NSProcessInfo.processInfo.systemUptime;
+    if (RVDAUIObserveKnownConsumers(binding,attempt)) { RVDADiagTiming(@"consumer_fast_observation",scanStarted);return; }
     if (!binding.nativeRootComponent) RVDAUIBindConsumerRoot(binding,root);
     Class textClass=NSClassFromString(@"ELMTextNode"),imageClass=NSClassFromString(@"ELMImageNode"),allTextClass=NSClassFromString(@"ASTextNode");NSArray *urls=binding.profile.imageURLs;
     Class expandableClass=NSClassFromString(@"ELMExpandableTextNode"),canaryClass=NSClassFromString(@"ELMExpandableTextNodeCanary");
     NSArray *graph=RVDAUINativeGraph(binding,root);NSUInteger owned=0,texts=0,images=0,titleMatches=0,imageMatches=0,titleApplied=0,imageApplied=0;
+    id matchedTitleNode=nil;
     BOOL titleVisible=NO,imageVisible=NO;NSString *expected=RVDAUITitle(binding);
     NSData *model=RVDAPath(binding.nativeFactoryInput,[binding.profile.componentPath arrayByAddingObject:@5]);
     NSData *expectedBytes=RVDAUIImage(binding) ? binding.imageBytes : nil;
@@ -312,7 +372,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
     if (![expectedBytes isEqual:projectedBytes]) expectedBytes=nil;
     NSMutableArray *decodedImages=[NSMutableArray array],*candidateSamples=[NSMutableArray array];
     NSMutableDictionary *classCounts=[NSMutableDictionary dictionary],*rejections=[NSMutableDictionary dictionary];
-    NSMutableSet *sampleReasons=[NSMutableSet set];BOOL diagnostic=RVDADiagEnabled();
+    NSMutableSet *sampleReasons=[NSMutableSet set];BOOL diagnostic=RVDADiagDetailed();
     NSUInteger allTexts=0,allImages=0,allExpandable=0,allTitleMatches=0,allImageMatches=0,sampleOmitted=0;
     for (id node in graph) {
         BOOL text=textClass && [node isKindOfClass:textClass],image=imageClass && [node isKindOfClass:imageClass];
@@ -347,6 +407,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         if (textClass && [node isKindOfClass:textClass] && binding.profile.titleRole) {
             texts++;id attributed=RVObject(node,"attributedText");NSString *value=[attributed isKindOfClass:NSAttributedString.class] ? [attributed string] : nil;
             titleMatches+=[value isEqual:binding.originalTitle];
+            if ([value isEqual:binding.originalTitle] || (expected && [value isEqual:expected])) matchedTitleNode=node;
             if (expected && [value isEqual:expected]) { titleApplied++;titleVisible|=RVDAUIConsumerVisible(node); }
         }
         if (imageClass && [node isKindOfClass:imageClass] && binding.profile.imageRole) {
@@ -361,6 +422,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         }
     }
     RVDAUIImageWitnesses(binding,decodedImages,expectedBytes);
+    if (titleMatches==1 || titleApplied==1) binding.nativeTitleNode=matchedTitleNode;
     BOOL titleFound=titleMatches==1,imageFound=imageMatches==1;
     BOOL changed=(!binding.titleConsumerVerified && titleFound) || (!binding.imageConsumerVerified && imageFound);
     binding.titleConsumerVerified|=titleFound;binding.imageConsumerVerified|=imageFound;binding.consumerObservations++;
@@ -390,7 +452,8 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
         [binding.request recordCheckpoint:RVDeArrowCheckpointReplacementApplied blocker:RVDeArrowBlockerNone];
     }
     RVDAUIFallbackWake(binding);
-    if (changed) RVDAUIRefresh(binding);
+    if (changed || (binding.refreshDeferred && RVDAUIFallbackVisible(binding))) RVDAUIRefresh(binding);
+    RVDADiagTiming(@"consumer_scan",scanStarted);
     // Only bootstrap uses finite polling. Native load/layout events remain live.
     if (attempt<3 && (blocker || (expected && titleApplied!=1) || (expectedBytes && imageApplied!=1))) RVDAUIScheduleConsumers(binding,.15);
 }

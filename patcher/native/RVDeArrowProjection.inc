@@ -131,7 +131,7 @@ static NSData *RVDAHolderAccessibility(NSData *model,NSArray<NSNumber *> *videoP
 @end
 @implementation RVDAProjection @end
 
-static NSDictionary *RVDAResourceParts(NSString *uri) {
+static NSDictionary *RVDAParseResourceParts(NSString *uri) {
     if (!uri.length || uri.length>2048) return nil;
     // The service can supply a resource path, while bundled filenames use an
     // underscore revision separator. Keep the revision for diagnostics and native
@@ -147,6 +147,13 @@ static NSDictionary *RVDAResourceParts(NSString *uri) {
     // key does not authorize projecting the old .eml/-js field contracts.
     return @{@"basename":name,@"variant":fe ? @"fe" : @"bundled",
         @"revision":revision,@"key":[NSString stringWithFormat:@"%@%@|%@",name,fe ? @"-fe" : @"",revision]};
+}
+static NSDictionary *RVDAResourceParts(NSString *uri) {
+    if (![uri isKindOfClass:NSString.class] || !uri.length || uri.length>2048) return nil;
+    static NSCache *cache;static dispatch_once_t once;dispatch_once(&once,^{ cache=[NSCache new];cache.countLimit=128; });
+    id result=[cache objectForKey:uri];
+    if (!result) { result=RVDAParseResourceParts(uri) ?: NSNull.null;[cache setObject:result forKey:uri.copy]; }
+    return result==NSNull.null ? nil : result;
 }
 static NSString *RVDAResourceName(NSString *uri) {
     return RVDAResourceParts(uri)[@"key"];

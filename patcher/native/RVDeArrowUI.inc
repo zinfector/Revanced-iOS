@@ -30,7 +30,7 @@ static _Thread_local __unsafe_unretained id RVDAUIConfiguring;
 static void RVDAWatchReset(void);
 static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
-@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode;
+@property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode,nativeTitleNode;
 @property(nonatomic,strong) id originalEntry;
 @property(nonatomic,strong) RVDAProjection *profile;
 @property(nonatomic,strong) RVDeArrowRequest *request;
@@ -59,7 +59,11 @@ static NSDictionary *RVDAWatchReport(void);
 @property(nonatomic) uint64_t generation,settingsRevision;
 @property(nonatomic) RVDeArrowParts parts;
 @property(nonatomic) RVDeArrowParts serviceParts;
-@property(nonatomic) BOOL refreshQueued,modern;
+@property(nonatomic) BOOL refreshQueued,refreshDeferred,modern;
+@property(nonatomic,strong) NSArray *projectionInputs;
+@property(nonatomic,strong) NSData *projectedData,*submittedData;
+@property(nonatomic) NSTimeInterval consumerLastScan,consumerDue;
+@property(nonatomic) uint64_t consumerQueuedGeneration,consumerQueuedEpoch;
 @property(nonatomic,copy) NSString *lastCheckpoint,*lastBlocker;
 @property(nonatomic) NSUInteger refreshRequests,materializations;
 @property(nonatomic) BOOL titleConsumerVerified,imageConsumerVerified;
@@ -203,26 +207,78 @@ static BOOL RVDAUIFrameFallback(RVDAUIBinding *binding) {
     // lease as community thumbnails; a cached URL prefix is not image readiness.
     return NO;
 }
+// Only immutable bytes are memoized. Native entries remain fresh copies, and
+// every use rechecks all owners, generations and their exact serialized source.
+static NSData *RVDAUIProjectedData(RVDAUIBinding *state) {
+    if (!state.modern) return nil;
+    NSMutableArray *inputs=[NSMutableArray arrayWithObjects:state.profile.source ?: NSData.data,@(RVDAUISettingsRevision),nil];
+    NSArray *rows=RVDAUIRowBindings(state);
+    for (RVDAUIBinding *current in rows) {
+        if (!RVDAUICurrent(current)) return nil;
+        BOOL original=RVDAUIOriginal(current);
+        NSString *headline=original ? nil : RVDAUITitle(current);
+        NSData *bytes=!original && RVDAUIImage(current) ? current.imageBytes : nil;
+        NSInteger lines=!original && (current.parts&RVDeArrowPartsTitle) && !current.profile.watchTitle && !current.profile.liveCard ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
+        [inputs addObject:@[@(current.generation),current.profile.source ?: NSData.data,headline ?: NSNull.null,bytes ?: NSNull.null,@(lines),@(RVDAUIFrameFallback(current) && !original)]];
+    }
+    if ([state.projectionInputs isEqual:inputs] && state.projectedData) { RVDADiagCount(@"performance.projection_cache_hit");return state.projectedData; }
+    NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
+    NSData *next=state.profile.source;
+    for (NSUInteger i=0;i<rows.count;i++) {
+        NSArray *input=inputs[i+2];NSString *headline=input[2]==NSNull.null ? nil : input[2];NSData *bytes=input[3]==NSNull.null ? nil : input[3];
+        next=RVDAProjectOnSource(rows[i].profile,next,headline,bytes,[input[5] boolValue],[input[4] integerValue]) ?: next;
+    }
+    state.projectionInputs=inputs.copy;state.projectedData=next;
+    RVDADiagTiming(@"projection",started);return next;
+}
+static BOOL RVDAUIFallbackVisible(RVDAUIBinding *state);
+static NSHashTable *RVDAUIRefreshPending;
+static BOOL RVDAUIRefreshPumpScheduled;
+static void RVDAUIDrainRefresh(void);
+static void RVDAUIQueueRefreshPump(void) {
+    if (RVDAUIRefreshPumpScheduled || !RVDAUIRefreshPending.count) return;
+    RVDAUIRefreshPumpScheduled=YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/60),dispatch_get_main_queue(),^{ RVDAUIRefreshPumpScheduled=NO;RVDAUIDrainRefresh(); });
+}
 static void RVDAUIRefresh(RVDAUIBinding *binding) {
     RVDAUIBinding *row=objc_getAssociatedObject(binding.controller,RVDAUIBindingKey);
     if (row && row!=binding && [RVDAUIRowBindings(row) containsObject:binding]) { RVDAUIRefresh(row);return; }
-    if (!NSThread.isMainThread || binding.refreshQueued) return;binding.refreshQueued=YES;
-    __weak RVDAUIBinding *weak=binding;uint64_t generation=binding.generation;
-    dispatch_async(dispatch_get_main_queue(),^{
-        RVDAUIBinding *state=weak;if (!state) return;state.refreshQueued=NO;
+    if (!NSThread.isMainThread || !binding || binding.refreshQueued) return;
+    binding.refreshQueued=YES;
+    if (!RVDAUIRefreshPending) RVDAUIRefreshPending=[NSHashTable weakObjectsHashTable];
+    [RVDAUIRefreshPending addObject:binding];RVDAUIQueueRefreshPump();
+}
+static void RVDAUIDrainRefresh(void) {
+    NSArray *pending=RVDAUIRefreshPending.allObjects;RVDAUIBinding *state=pending.firstObject;
+    for (RVDAUIBinding *candidate in pending) if (RVDAUIFallbackVisible(candidate)) { state=candidate;break; }
+    if (!state) return;
+    [RVDAUIRefreshPending removeObject:state];state.refreshQueued=NO;
+    @try {
         NSString *blocker=RVDAUICurrentBlocker(state);
-        if (state.generation!=generation || blocker) { RVDAUIEvent(@"D11_lifecycle_rebound",state,blocker ?: @"client_generation_changed");return; }
+        if (blocker) { RVDAUIEvent(@"D11_lifecycle_rebound",state,blocker);return; }
+        NSData *desired=state.modern ? RVDAUIProjectedData(state) : nil;
+        if (state.modern && !desired) return;
+        if (desired && [desired isEqual:state.submittedData ?: state.nativeFactoryInput]) {
+            state.refreshDeferred=NO;RVDADiagCount(@"performance.reload_unchanged_suppressed");return;
+        }
+        // A known offscreen live row will receive the newest projection on its
+        // next native factory/load callback. Never rebuild it solely for prefetch.
+        if (state.profile.liveCard && state.nativeFactoryRoot && !RVDAUIFallbackVisible(state)) {
+            state.refreshDeferred=YES;RVDADiagCount(@"performance.reload_offscreen_deferred");return;
+        }
         id section=state.section,delegate=RVObject(section,"sectionControllerDelegate");
         if (!RVCan(delegate,"indexPathForIndex:inSection:",@"@@:Q@") || !RVCan(delegate,"isValidIndexPath:",@"B@:@") || !RVCan(section,"reloadCellAtIndex:",@"v@:q")) {
             RVDAUIEvent(@"D10_native_layout",state,@"native_refresh_contract_missing");return;
         }
         id path=((id(*)(id,SEL,NSUInteger,id))objc_msgSend)(delegate,sel_registerName("indexPathForIndex:inSection:"),state.index,section);
         if (!path || !((BOOL(*)(id,SEL,id))objc_msgSend)(delegate,sel_registerName("isValidIndexPath:"),path)) { RVDAUIEvent(@"D10_native_layout",state,@"stale_index");return; }
+        NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
+        state.submittedData=desired;state.refreshDeferred=NO;
         ((void(*)(id,SEL,NSInteger))objc_msgSend)(section,sel_registerName("reloadCellAtIndex:"),state.index);
-        state.refreshRequests++;
+        RVDADiagTiming(@"native_reload",started);state.refreshRequests++;
         RVDAUIEvent(@"D10_native_layout_requested",state,nil);
         [state.request recordCheckpoint:RVDeArrowCheckpointNativeLayout blocker:RVDeArrowBlockerNone];
-    });
+    } @finally { RVDAUIQueueRefreshPump(); }
 }
 static void RVDAUIFallbackWake(RVDAUIBinding *binding);
 #include "RVDeArrowConsumers.inc"
@@ -246,6 +302,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     binding.fallbackTimestampSource=nil;binding.fallbackRequestKey=nil;
     binding.fallbackDeadline=0;binding.fallbackRetryAfter=0;binding.fallbackResponseReason=nil;binding.fallbackRetries=0;binding.fallbackRetryScheduled=NO;binding.fallbackPhase=@"idle";
     binding.titleConsumerVerified=NO;binding.imageConsumerVerified=NO;
+    binding.projectionInputs=nil;binding.projectedData=nil;
     binding.generation=++RVDAUIGeneration;binding.settingsRevision=RVDAUISettingsRevision;
     BOOL title=(!binding.modern || binding.profile.titleRole) && RVDAUIPolicy(binding.surface,YES);
     BOOL image=(!binding.modern || binding.profile.imageRole) && RVDAUIPolicy(binding.surface,NO) && ![binding.surface isEqual:@"player"];
@@ -423,13 +480,7 @@ static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
     if (!state || state.settingsRevision!=RVDAUISettingsRevision) return state.originalEntry;
     NSString *title=RVDAUITitle(state);NSData *image=RVDAUIImage(state) ? state.imageBytes : nil;
     if (state.modern) {
-        NSData *next=state.profile.source;
-        for (RVDAUIBinding *current in RVDAUIRowBindings(state)) {
-            if (!RVDAUICurrent(current) || RVDAUIOriginal(current)) continue;
-            NSString *headline=RVDAUITitle(current);NSData *bytes=RVDAUIImage(current) ? current.imageBytes : nil;
-            NSInteger lines=(current.parts&RVDeArrowPartsTitle) && !current.profile.watchTitle && !current.profile.liveCard ? [RVSetting(@"dearrow_title_max_lines") integerValue] : 0;
-            next=RVDAProjectOnSource(current.profile,next,headline,bytes,RVDAUIFrameFallback(current),lines) ?: next;
-        }
+        NSData *next=RVDAUIProjectedData(state);
         if (!next || [next isEqual:state.profile.source]) {
             if (title || image || RVDAUIFrameFallback(state)) RVDAUIEvent(@"D09_projection_blocked",state,@"projection_made_no_change");
             else RVDADiagCount(@"presentation_waiting_for_replacement");return state.originalEntry;
@@ -582,13 +633,13 @@ static NSDictionary *RVDAUIReport(void) {
     }
     NSArray *history,*attempts,*templates;NSDictionary *counts,*stages;
     @synchronized(RVDAUIBinding.class) {
-        history=RVDAUIHistory.copy ?: @[];counts=RVDAUICounts.copy ?: @{};stages=RVDAUILastStages.copy ?: @{};attempts=RVDAUISamples.allValues.copy ?: @[];templates=RVDAUITemplateSamples.allValues.copy ?: @[];
+        history=RVDAUIHistory.copy ?: @[];counts=RVDAUICounts.copy ?: @{};stages=RVDAUILastStages.copy ?: @{};attempts=RVDAUISamples.allValues.copy ?: @[];NSMutableArray *snapshots=[NSMutableArray array];for (NSDictionary *sample in RVDAUITemplateSamples.allValues) [snapshots addObject:sample.copy];templates=snapshots.copy;
     }
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
         @"settings_revision":@(RVDAUISettingsRevision),@"cache_invalidation_reason":RVDAUILastInvalidation,@"frame_disk_cache":@{@"compressed_byte_limit":@(32*1024*1024),@"entry_limit":@128,@"ttl_seconds":@1800},@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
         @"bindings":bindings,@"binding_sample_order":@"current_visible_pending_then_recent",@"bindings_total":@(ordered.count),@"bindings_omitted":@(ordered.count-bindings.count),@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
-        @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"global_setter_observers":@NO,
+        @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"performance_schema":@1,@"performance_policy":@{@"scan_spacing_ms":@120,@"scan_budget_per_turn":@1,@"reload_budget_per_turn":@1,@"image_workers":@2,@"detailed_capture_only_when_armed":@YES},@"global_setter_observers":@NO,
         @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
 }
@@ -730,6 +781,7 @@ static void RVInstallDeArrowUI(void) {
             // Validate the exact immutable argument handed to the native factory
             // while row ownership is on main; retain only an immutable snapshot.
             NSData *factoryInput=[RVObject(RVAdRootElement(next),"elementData") copy];
+            if (NSThread.isMainThread && state.modern) { state.submittedData=factoryInput;state.refreshDeferred=NO; }
             BOOL inputVerified=state.profile.liveCard && RVDAUIFactoryInputAccepted(RVDAUIRowBindings(state),factoryInput);
             uint64_t factorySerial=++RVDAUIFactorySerial;for (RVDAUIBinding *current in RVDAUIRowBindings(state)) current.factorySerial=factorySerial;
             // Native block descriptor: @8@?0. Capture construction provenance on

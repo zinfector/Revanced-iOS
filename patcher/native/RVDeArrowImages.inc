@@ -55,24 +55,34 @@ static NSDictionary *RVDAUIPreparedImage(UIImage *image,NSString *origin) {
     NSDictionary *cached=[RVDAUIPresentationCache objectForKey:RVDAUIPresentationKey(image,origin,saturation)];
     return cached[@"source"]==image ? cached : nil;
 }
+static NSMutableDictionary *RVDAUIPreparingImages;
 static void RVDAUIPrepareImage(UIImage *image,NSString *origin,void (^completion)(void)) {
-    if (!image) return;
+    if (!image || !NSThread.isMainThread) return;
     if (RVDAUIPreparedImage(image,origin)) { if (completion) completion();return; }
     NSInteger saturation=[origin isEqual:@"pending"] ? 100 : [RVSetting(@"dearrow_thumbnail_saturation") integerValue];uint64_t settingsRevision=RVDAUISettingsRevision;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
+    NSString *key=[NSString stringWithFormat:@"%llu|%@",(unsigned long long)settingsRevision,RVDAUIPresentationKey(image,origin,saturation)];
+    if (!RVDAUIPreparingImages) RVDAUIPreparingImages=[NSMutableDictionary dictionary];
+    NSMutableArray *callbacks=RVDAUIPreparingImages[key];
+    if (callbacks) { if (completion) [callbacks addObject:[completion copy]];RVDADiagCount(@"performance.image_preparation_coalesced");return; }
+    callbacks=[NSMutableArray array];if (completion) [callbacks addObject:[completion copy]];RVDAUIPreparingImages[key]=callbacks;
+    [RVDAImageWorkQueue() addOperationWithBlock:^{
         @autoreleasepool {
+            NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
             UIImage *source=[origin isEqual:@"upcoming_avatar"] ? RVDACoverImage(image) : image;
             UIImage *colored=RVDAColorImage(source,saturation);NSData *bytes=UIImageJPEGRepresentation(colored,.9);
+            RVDADiagTiming(@"image_preparation",started);
             dispatch_async(dispatch_get_main_queue(),^{
+                if (RVDAUIPreparingImages[key]!=callbacks) return;
+                [RVDAUIPreparingImages removeObjectForKey:key];
                 if (settingsRevision!=RVDAUISettingsRevision) return;
                 if (bytes.length && bytes.length<=1024*1024) {
                     NSUInteger cost=bytes.length+CGImageGetBytesPerRow(image.CGImage)*CGImageGetHeight(image.CGImage)+CGImageGetBytesPerRow(colored.CGImage)*CGImageGetHeight(colored.CGImage);
                     [RVDAUIPresentationCache setObject:@{@"source":image,@"image":colored,@"bytes":bytes} forKey:RVDAUIPresentationKey(image,origin,saturation) cost:cost];
                 }
-                if (completion) completion();
+                for (void (^callback)(void) in callbacks.copy) callback();
             });
         }
-    });
+    }];
 }
 #include "RVDeArrowFrameCache.inc"
 static void RVDAUIRandomImage(RVDAUIBinding *state,uint64_t generation);
@@ -197,32 +207,20 @@ static double RVDAUIOwnedDuration(RVDAUIBinding *state) {
     return duration;
 }
 static void RVDAUIApplyImage(RVDAUIBinding *state,UIImage *image,NSString *origin,uint64_t generation) {
-    if (!image || RVDAUIOriginal(state)) return;
-    NSDictionary *prepared=RVDAUIPreparedImage(image,origin);
-    if (prepared && state.generation==generation && RVDAUICurrent(state)) {
-        state.imageRevision++;state.encodedImage=image;state.presentationImage=prepared[@"image"];state.imageBytes=prepared[@"bytes"];state.imageOrigin=origin;
-        if (![origin isEqual:@"pending"]) state.fallbackPhase=@"ready";
-        RVDADiagRecord(@"D08_prepared_image_cache_hit",state,nil,@{@"byte_length":@([state.imageBytes length]),@"image_origin":origin});RVDAUIRefresh(state);return;
-    }
-    uint64_t revision=++state.imageRevision;NSInteger saturation=[RVSetting(@"dearrow_thumbnail_saturation") integerValue];
-    state.encodedImage=image;if (![origin isEqual:@"pending"]) state.fallbackPhase=@"encoding";__weak RVDAUIBinding *weak=state;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
-        @autoreleasepool {
-            UIImage *source=[origin isEqual:@"upcoming_avatar"] ? RVDACoverImage(image) : image;
-            UIImage *colored=[origin isEqual:@"pending"] ? source : RVDAColorImage(source,saturation);
-            NSData *bytes=UIImageJPEGRepresentation(colored,.9);
-            dispatch_async(dispatch_get_main_queue(),^{
-                RVDAUIBinding *current=weak;NSString *blocker=RVDAUICurrentBlocker(current);
-                if (!blocker && (current.generation!=generation || current.imageRevision!=revision || RVDAUIOriginal(current))) blocker=@"image_effect_generation_changed";
-                if (blocker) { RVDAUIEvent(@"D08_image_encoding_rejected",current,blocker);return; }
-                if (!bytes.length || bytes.length>1024*1024) { current.fallbackPhase=@"failed";current.imageBlocker=@"presentation_image_byte_limit";RVDAUIEvent(@"D08_image_received",current,current.imageBlocker);return; }
-                current.presentationImage=colored;current.imageBytes=bytes;current.imageOrigin=origin;
-                NSUInteger cost=bytes.length+CGImageGetBytesPerRow(image.CGImage)*CGImageGetHeight(image.CGImage)+CGImageGetBytesPerRow(colored.CGImage)*CGImageGetHeight(colored.CGImage);
-                [RVDAUIPresentationCache setObject:@{@"source":image,@"image":colored,@"bytes":bytes} forKey:RVDAUIPresentationKey(image,origin,[origin isEqual:@"pending"] ? 100 : saturation) cost:cost];
-                if (![origin isEqual:@"pending"]) current.fallbackPhase=@"ready";
-                RVDADiagRecord(@"D08_image_encoded",current,nil,@{@"byte_length":@(bytes.length),@"image_origin":origin,@"saturation":@(saturation)});RVDAUIRefresh(current);
-            });
-        }
+    if (!image || RVDAUIOriginal(state) || state.generation!=generation || !RVDAUICurrent(state)) return;
+    if (state.encodedImage==image && [state.imageOrigin isEqual:origin] && state.imageBytes) { RVDADiagCount(@"performance.image_already_prepared");return; }
+    uint64_t revision=++state.imageRevision;state.encodedImage=image;
+    if (![origin isEqual:@"pending"]) state.fallbackPhase=@"encoding";
+    __weak RVDAUIBinding *weak=state;
+    RVDAUIPrepareImage(image,origin,^{
+        RVDAUIBinding *current=weak;NSString *blocker=RVDAUICurrentBlocker(current);
+        if (!blocker && (current.generation!=generation || current.imageRevision!=revision || RVDAUIOriginal(current))) blocker=@"image_effect_generation_changed";
+        if (blocker) { RVDAUIEvent(@"D08_image_encoding_rejected",current,blocker);return; }
+        NSDictionary *prepared=RVDAUIPreparedImage(image,origin);
+        if (!prepared) { current.fallbackPhase=@"failed";current.imageBlocker=@"presentation_image_byte_limit";RVDAUIEvent(@"D08_image_received",current,current.imageBlocker);return; }
+        current.presentationImage=prepared[@"image"];current.imageBytes=prepared[@"bytes"];current.imageOrigin=origin;
+        if (![origin isEqual:@"pending"]) current.fallbackPhase=@"ready";
+        RVDADiagRecord(@"D08_image_encoded",current,nil,@{@"byte_length":@(current.imageBytes.length),@"image_origin":origin,@"preparation_shared":@YES});RVDAUIRefresh(current);
     });
 }
 static void RVDAUIAuxiliary(RVDAUIBinding *state,NSURL *url,NSUInteger limit,uint64_t generation,void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker)) {
@@ -287,8 +285,10 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
             if (!returned) { RVDAUIFallbackFailure(current,@"fallback_timestamp_mismatch",NO,generation,nil);return; }
             RVDAUIEvent(cachedRandom ? @"D08_cached_random_timestamp_validated" : @"D08_fallback_timestamp_matched",current,nil);
         }
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
+        [RVDAImageWorkQueue() addOperationWithBlock:^{
+            NSTimeInterval decodeStarted=NSProcessInfo.processInfo.systemUptime;
             NSUInteger cost=0;UIImage *image=[RVDeArrowBackend.sharedBackend decodeImage:data response:response cost:&cost];
+            RVDADiagTiming(@"fallback_decode",decodeStarted);
             if ([origin isEqual:@"youtube_frame"] && (image.size.width<240 || image.size.height<135)) image=nil;
             dispatch_async(dispatch_get_main_queue(),^{
                 RVDAUIBinding *latest=weak;if (!latest || latest.generation!=generation || !RVDAUICurrent(latest)) return;
@@ -303,7 +303,7 @@ static void RVDAUIFetchImage(RVDAUIBinding *state,NSURL *url,NSString *origin,NS
                 }
                 latest.imageBlocker=@"ready";RVDAUIApplyImage(latest,image,origin,generation);
             });
-        });
+        }];
     });
 }
 /* Alea/Mash attribution: Copyright (C) 2010 Johannes Baagoe.
