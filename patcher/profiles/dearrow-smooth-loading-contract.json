@@ -25,7 +25,8 @@
       "two utility image workers for decode, effect, JPEG encode and pixel witnesses",
       "retain exact generation/settings/consumer epoch guards on worker results",
       "atomic revision snapshot followed by queued admission revision validation",
-      "serialize metadata snapshots then persist asynchronously on serial utility IO queue"
+      "serialize metadata snapshots then persist asynchronously on serial utility IO queue",
+      "bounded immutable encoded-content decode cache canonicalizes UIImage identity across coalesced prefetch/visible consumers; response and timestamp decisions remain per request"
     ]
   },
   "checkpoints": {
@@ -44,7 +45,8 @@
       "consumer_scan",
       "consumer_fast_observation",
       "image_preparation",
-      "fallback_decode"
+      "fallback_decode",
+      "prefetch_decode"
     ],
     "timing_fields": [
       "count",

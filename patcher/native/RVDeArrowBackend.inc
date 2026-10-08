@@ -708,6 +708,13 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
 - (UIImage *)decodeImage:(NSData *)data response:(NSHTTPURLResponse *)response cost:(NSUInteger *)cost {
     NSString *mime=response.MIMEType.lowercaseString;
     if (![@[@"image/webp",@"image/jpeg",@"image/png"] containsObject:mime] || !data.length || data.length>RVDAImageLimit) return nil;
+    // Immutable content cache gives coalesced HTTP consumers the same decoded
+    // UIImage, allowing visible-row and speculative preparation to share work.
+    // HTTP status/timestamp checks remain at each caller; MIME/byte checks above
+    // still run for every request. This caches pixels, never a service decision.
+    static NSCache *decodedCache;static dispatch_once_t once;dispatch_once(&once,^{ decodedCache=[NSCache new];decodedCache.countLimit=64;decodedCache.totalCostLimit=24*1024*1024; });
+    NSDictionary *cached=[decodedCache objectForKey:data];
+    if (cached) { if (cost) *cost=[cached[@"cost"] unsignedIntegerValue];return cached[@"image"]; }
     CGImageSourceRef source=CGImageSourceCreateWithData((__bridge CFDataRef)data,(__bridge CFDictionaryRef)@{(id)kCGImageSourceShouldCache:@NO});
     if (!source) return nil;
     NSDictionary *properties=CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(source,0,NULL));
@@ -719,7 +726,16 @@ static BOOL RVDAJobBackground(RVDAJob *job) {
     CFRelease(source);if (!decoded) return nil;
     NSUInteger bytes=CGImageGetBytesPerRow(decoded)*CGImageGetHeight(decoded);
     UIImage *image=bytes<=RVDAMaxImageCost ? [UIImage imageWithCGImage:decoded] : nil;
-    if (image && cost) *cost=bytes;CGImageRelease(decoded);return image;
+    CGImageRelease(decoded);
+    if (image) {
+        @synchronized(decodedCache) {
+            cached=[decodedCache objectForKey:data];
+            if (cached) { image=cached[@"image"];bytes=[cached[@"cost"] unsignedIntegerValue]; }
+            else [decodedCache setObject:@{@"image":image,@"cost":@(bytes)} forKey:data.copy cost:bytes+data.length];
+        }
+        if (cost) *cost=bytes;
+    }
+    return image;
 }
 - (void)imageResponse:(NSData *)data response:(NSHTTPURLResponse *)response blocker:(RVDeArrowBlocker)blocker operation:(RVDAOperation *)operation {
     RVDAJob *job=operation.job;RVDAImage *entry=[RVDAImage new];entry.httpStatus=response.statusCode;

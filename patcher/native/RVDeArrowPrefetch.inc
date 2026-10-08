@@ -89,9 +89,11 @@ static void RVDAPrefetchFrame(RVDAPrefetch *state,NSURL *url,NSString *origin,NS
                 if (!returned) { current.phase=@"timestamp_rejected";RVDADiagCount(@"prefetch.timestamp_rejected");return; }
             }
             current.phase=@"decoding";
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
+            [RVDAImageWorkQueue() addOperationWithBlock:^{
                 @autoreleasepool {
+                    NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
                     NSUInteger cost=0;UIImage *image=[RVDeArrowBackend.sharedBackend decodeImage:data response:response cost:&cost];
+                    RVDADiagTiming(@"prefetch_decode",started);
                     if ([origin isEqual:@"youtube_frame"] && (image.size.width<240 || image.size.height<135)) image=nil;
                     dispatch_async(dispatch_get_main_queue(),^{
                         RVDAPrefetch *latest=weak;if (!RVDAPrefetchLeaseValid(latest)) return;
@@ -106,7 +108,7 @@ static void RVDAPrefetchFrame(RVDAPrefetch *state,NSURL *url,NSString *origin,NS
                         RVDAUIPrepareImage(image,origin,^{ if (RVDAPrefetchLeaseValid(weak)) { weak.phase=@"frame_ready";RVDADiagCount(@"prefetch.frame_ready"); } });
                     });
                 }
-            });
+            }];
         });
     };
     RVDAFrameEnqueue(ticket,url,45);
