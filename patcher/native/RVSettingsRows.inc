@@ -53,6 +53,8 @@ static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *list
         if (hint.length && !mapKey && !listKey) row[@"hint"]=hint;
         if (listKey || (!mapKey && [rule[@"kind"] isEqual:@"bool"])) {
             row[@"toggle"]=@YES;row[@"on"]=listKey ? @([RVSettingsEffectiveValue(listKey) containsObject:key]) : RVSettingsEffectiveValue(key);
+            if (!listKey && [key isEqual:@"hide_shorts_navigation"])
+                RVShortsValue(@"navigation_switch_presented",@{@"displayed":row[@"on"],@"runtime":@(RVEnabled(key))});
         } else {
             id value=mapKey ? RVSettingsEffectiveValue(mapKey)[key] : RVSettingsEffectiveValue(key);
             row[@"detail"]=mapKey && !value ? @"Default" : RVPreferenceValueTitle(value,rule);

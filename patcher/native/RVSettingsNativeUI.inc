@@ -38,6 +38,7 @@ static BOOL RVSettingsNativeRowsAvailable(void) {
         available &= RVUIRequire(@"YTCardCollectionViewUIFormatter",@"referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:",@"{CGSize=dd}@:{CGSize=dd}Q@Q",NO);
         available &= RVUIRequire(@"YTSettingsCell",@"pageStyleDidChange:",@"v@:q",NO);
         available &= RVUIRequire(@"YTSettingsCell",@"setParentResponder:",@"v@:@",NO);
+        available &= RVUIRequire(@"YTSettingsCell",@"setSwitchBlock:",@"v@:@?",NO);
         available &= [NSClassFromString(@"YTSettingsCell") isSubclassOfClass:UICollectionViewCell.class];
         available &= [NSClassFromString(@"YTFeedHeaderView") isSubclassOfClass:UICollectionReusableView.class];
         available &= RVUIRequire(@"YTFeedHeaderView",@"setCustomEdgePadding:",@"v@:d",NO);
@@ -343,6 +344,24 @@ static void RVSettingsPop(UIViewController *content) {
         RVSetObject(cell,"setParentResponder:",RVSettingsOwner(self.parentViewController ?: self));
         ((void(*)(id,SEL,NSInteger))objc_msgSend)(cell,sel_registerName("pageStyleDidChange:"),self.pageStyle);
         ((void(*)(id,SEL,id,id,id,NSUInteger))objc_msgSend)(self.formatter,sel_registerName("updateCell:atIndexPath:sectionController:numberofSections:"),cell,index,self.nativeSections[index.section],self.sections.count);
+        if ([row[@"toggle"] boolValue]) {
+            // These rows belong to RVPort, not YouTube's preference coordinator.
+            // Route their native control directly to our durable save callback.
+            __weak typeof(self) weakSelf=self;
+            BOOL (^toggle)(id,BOOL)=^BOOL(id sender,BOOL on) {
+                (void)sender;BOOL saved=weakSelf.changed ? weakSelf.changed(row,on) : NO;
+                if (saved) {
+                    NSArray *sections=weakSelf.nativeSections;
+                    id section=index.section<sections.count ? sections[index.section] : nil;
+                    NSArray *items=RVObject(section,"items");
+                    id item=[items isKindOfClass:NSArray.class] && index.item<items.count ? items[index.item] : nil;
+                    if (RVCan(item,"setOn:",@"v@:B"))
+                        ((void(*)(id,SEL,BOOL))objc_msgSend)(item,sel_registerName("setOn:"),on);
+                }
+                RVShortsEvent(saved ? @"owned_switch_saved" : @"owned_switch_rejected");return saved;
+            };
+            ((void(*)(id,SEL,id))objc_msgSend)(cell,sel_registerName("setSwitchBlock:"),toggle);
+        } else ((void(*)(id,SEL,id))objc_msgSend)(cell,sel_registerName("setSwitchBlock:"),nil);
     } else {
         RVSettingsFallbackCell *fallback=(id)cell;fallback.titleLabel.text=row[@"title"];fallback.hintLabel.text=row[@"hint"];fallback.hintLabel.hidden=![row[@"hint"] length];
         fallback.valueLabel.text=row[@"detail"];fallback.valueLabel.hidden=![row[@"detail"] length];fallback.toggle.hidden=![row[@"toggle"] boolValue];

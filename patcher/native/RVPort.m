@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.53"
+#define RV_PORT_VERSION @"0.3.54"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
@@ -281,6 +281,7 @@ static BOOL RVDataMatches(NSData *data,NSArray<NSString *> *patterns) {
     }
     return NO;
 }
+#include "RVWireFields.inc"
 #include "RVAdFeed.inc"
 
 static id RVLimitFormats(id formats) {

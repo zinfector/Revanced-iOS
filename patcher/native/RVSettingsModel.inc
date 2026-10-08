@@ -89,7 +89,14 @@ static NSString *RVValidatePreferenceImport(id values) {
 }
 static BOOL RVSavePreference(NSString *key,id value) {
     if (!RVCompatible || !RVPreferenceValid(value,RVPreferenceDescriptor(key))) return NO;
-    [NSUserDefaults.standardUserDefaults setObject:RVPreferenceStoredValue(value,RVPreferenceDescriptor(key)) forKey:[RVPreferencePrefix stringByAppendingString:key]];return YES;
+    NSString *storedKey=[RVPreferencePrefix stringByAppendingString:key];
+    id canonical=RVPreferenceStoredValue(value,RVPreferenceDescriptor(key));
+    [NSUserDefaults.standardUserDefaults setObject:canonical forKey:storedKey];
+    BOOL saved=[[NSUserDefaults.standardUserDefaults objectForKey:storedKey] isEqual:canonical];
+    if ([key isEqual:@"hide_shorts"] || [key isEqual:@"hide_shorts_navigation"]) {
+        RVShortsValue(@"last_shorts_setting_write",@{@"key":key,@"requested":value,@"saved":@(saved),@"runtime":@(RVEnabled(key))});
+        RVShortsEvent(saved ? @"shorts_preference_saved" : @"shorts_preference_save_failed");
+    }return saved;
 }
 static NSString *RVApplyPreferenceImport(id values) {
     NSString *error=RVValidatePreferenceImport(values);if (error) return error;

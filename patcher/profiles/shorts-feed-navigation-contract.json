@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "0.3.54",
+  "classification": "card-primary-command-only",
+  "command_path": [
+    232954548,
+    18,
+    4,
+    169495254
+  ],
+  "reel_endpoint": 139608561,
+  "transparent_wrappers": [
+    462702848,
+    200453700
+  ],
+  "mixed_parents": "preserved unless every child is classified Shorts",
+  "navigation": "independent saved preference; native renderer compaction and deferred stale-layout repair",
+  "settings": "owned native cell callback, verified defaults readback, native item state update",
+  "checkpoints": [
+    "last_shorts_setting_write",
+    "navigation_switch_presented",
+    "observed_pivots",
+    "pivot_checkpoint",
+    "visible_native_tabs"
+  ],
+  "tests_run": false,
+  "device_validated": false
+}

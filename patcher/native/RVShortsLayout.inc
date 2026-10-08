@@ -49,8 +49,57 @@ static BOOL RVShortsIdentityText(const uint8_t *bytes,NSUInteger length,NSUInteg
         }
     }return NO;
 }
+// Descriptor-proven primary command only. Descendant menus are never searched.
+static NSData *RVShortsWirePath(NSData *data,NSArray<NSNumber *> *path) {
+    for (NSNumber *number in path) {
+        RVVoteField *field=RVVoteOne(RVVoteFields(data),number.unsignedIntValue,2);
+        if (!field) return nil;data=field.value;
+    }return data;
+}
+static NSString *RVShortsWireText(NSData *data) {
+    return data.length && data.length<=512 ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
+}
+static BOOL RVShortsReelCommand(NSData *command,NSString *expectedVideo) {
+    for (NSUInteger depth=0;depth<=6;depth++) {
+        NSArray *fields=RVVoteFields(command);RVVoteField *extension=nil;
+        if (!fields) return NO;
+        for (RVVoteField *field in fields) if (field.number>=1000000) {
+            if (extension || field.wire!=2) return NO;extension=field;
+        }
+        if (!extension) return NO;
+        if (extension.number==139608561) {
+            NSString *video=RVShortsWireText(RVShortsWirePath(extension.value,@[@1]));
+            return RVVideoIDValid(video) && (!expectedVideo || [expectedVideo isEqual:video]);
+        }
+        if (depth==6 || (extension.number!=462702848 && extension.number!=200453700)) return NO;
+        command=RVShortsWirePath(extension.value,@[@1]);if (!command) return NO;
+    }return NO;
+}
+static BOOL RVShortsPrimaryReelCard(NSData *data) {
+    static NSCache *cache;static dispatch_once_t once;dispatch_once(&once,^{
+        cache=[NSCache new];cache.countLimit=128;cache.totalCostLimit=4*1024*1024;
+    });
+    NSNumber *cached=[cache objectForKey:data];if (cached) return cached.boolValue;
+    NSData *component=RVShortsWirePath(data,@[@1,@168777401]);
+    NSString *uri=RVShortsWireText(RVShortsWirePath(component,@[@3,@172035250,@1]));
+    // Exact resource basename, independent of path and revision separator.
+    static NSRegularExpression *regex;static dispatch_once_t patternOnce;
+    dispatch_once(&patternOnce,^{regex=[NSRegularExpression regularExpressionWithPattern:@"^(video_lockup_with_attachment|video_card|video_card_content)\\.eml-fe[_|][0-9a-fA-F]{1,16}$" options:0 error:nil];});
+    NSString *leaf=[uri.lastPathComponent stringByRemovingPercentEncoding];
+    BOOL family=leaf && [regex firstMatchInString:leaf options:0 range:NSMakeRange(0,leaf.length)]!=nil;
+    NSData *model=family ? RVShortsWirePath(component,@[@5]) : nil;
+    NSData *command=RVShortsWirePath(model,@[@232954548,@18,@4,@169495254]);
+    NSArray *presentation=RVVoteFields(RVShortsWirePath(model,@[@232954548,@18,@1]));
+    RVVoteField *identity=RVVoteOne(presentation,7,2);
+    BOOL identityValid=RVVoteSingularFields(presentation,@[@7]);
+    for (RVVoteField *field in presentation) if (field.number==7 && field.wire!=2) identityValid=NO;
+    NSString *video=RVShortsWireText(identity.value);
+    BOOL reel=command && identityValid && (!identity || RVVideoIDValid(video)) && RVShortsReelCommand(command,video);
+    [cache setObject:@(reel) forKey:data.copy cost:data.length];return reel;
+}
 static NSString *RVShortsDataKind(NSData *data) {
     if (!RVEnabled(@"hide_shorts") || ![data isKindOfClass:NSData.class] || !data.length || data.length>2*1024*1024) return nil;
+    if (RVShortsPrimaryReelCard(data)) return @"shorts_primary_reel_card";
     // Never drop a mixed parent because one descendant happens to be Shorts.
     if (RVDataMatches(data,@[@"home_video_with_context",@"related_video_with_context",@"comment_thread",@"|comment.",@"library_recent_shelf"])) {
         RVShortsEvent(@"protected_parent_preserved");return nil;
@@ -76,9 +125,16 @@ static NSString *RVShortsRowKindAt(id row,NSUInteger depth,NSUInteger *budget) {
             ((id(*)(id,SEL))RVShortsElementDataOriginal)(row,sel_registerName("elementData")) : nil;
         return RVShortsDataKind(data);
     }
+    if ([name isEqual:@"YTIReelItemRenderer"]) return @"shorts_reel_item";
+    if ([@[@"YTIVideoRenderer",@"YTICompactVideoRenderer"] containsObject:name]) {
+        id command=RVShortsChild(row,@"navigationEndpoint");
+        NSString *video=RVAdResolvedObject(row,"videoId");
+        NSData *data=RVAdResolvedObject(command,"data");
+        return RVVideoIDValid(video) && RVShortsReelCommand(data,video) ? @"shorts_typed_video" : nil;
+    }
     if ([@[@"YTISectionListSupportedRenderers",@"YTIItemSectionSupportedRenderers",@"YTIHorizontalListSupportedRenderers",
         @"YTIGridSupportedRenderers",@"YTIVerticalListSupportedRenderers",@"YTIExpandedShelfContentsSupportedRenderers",@"YTIRenderer"] containsObject:name]) {
-        for (NSString *field in @[@"elementRenderer",@"shelfRenderer",@"itemSectionRenderer"] ) {
+        for (NSString *field in @[@"elementRenderer",@"reelItemRenderer",@"reelGridRenderer",@"videoRenderer",@"compactVideoRenderer",@"shelfRenderer",@"itemSectionRenderer"] ) {
             id child=RVShortsChild(row,field);if (!child) continue;
             return RVShortsRowKindAt(child,depth+1,budget);
         }return nil;
@@ -93,7 +149,7 @@ static NSString *RVShortsRowKindAt(id row,NSUInteger depth,NSUInteger *budget) {
         }return nil;
     }
     BOOL section=[@[@"YTIItemSectionRenderer",@"YTISectionListRenderer"] containsObject:name];
-    BOOL list=[@[@"YTIHorizontalListRenderer",@"YTIGridRenderer",@"YTIVerticalListRenderer",@"YTIExpandedShelfContentsRenderer"] containsObject:name];
+    BOOL list=[@[@"YTIHorizontalListRenderer",@"YTIGridRenderer",@"YTIVerticalListRenderer",@"YTIExpandedShelfContentsRenderer",@"YTIReelGridRenderer"] containsObject:name];
     if (!section && !list) return nil;
     NSArray *entries=RVAdResolvedObject(row,section ? "contentsArray" : "itemsArray");
     if (![entries isKindOfClass:NSArray.class] || !entries.count || entries.count>256) return nil;
@@ -131,8 +187,10 @@ static BOOL RVShortsPreparePivot(id renderer) {
         objc_setAssociatedObject(renderer,RVShortsPivotLeaseKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         lease=nil;RVShortsEvent(@"pivot_lease_conflict");
     }
+    RVShortsValue(@"observed_pivots",RVNavigationIdentifiers(current));
+    RVShortsValue(@"navigation_filter_enabled",@(RVNavigationFilteringEnabled()));
     if (!RVNavigationFilteringEnabled()) {
-        if (!lease) return NO;
+        if (!lease) { RVShortsValue(@"pivot_checkpoint",@"navigation_filter_disabled");return NO; }
         RVSetObject(renderer,"setItemsArray:",[lease.original mutableCopy]);
         objc_setAssociatedObject(renderer,RVShortsPivotLeaseKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         RVShortsEvent(@"pivot_restored");RVShortsValue(@"pivot_checkpoint",@"restored");return YES;
@@ -196,6 +254,37 @@ static void RVShortsRefreshNavigation(void) {
     }
     RVNavigationRefreshLabels();
 }
+static const void *RVShortsPivotRepairKey=&RVShortsPivotRepairKey;
+static void RVShortsObservePivotLayout(UIView *view) {
+    if (!NSThread.isMainThread) return;
+    [RVShortsPivotViews addObject:view];
+    if (!RVNavigationFilteringEnabled() || objc_getAssociatedObject(view,RVShortsPivotRepairKey)) return;
+    NSArray *items=RVAdResolvedObject(RVObject(view,"renderer"),"itemsArray");
+    NSArray *views=RVObject(view,"itemViews");BOOL stale=NO;
+    if ([items isKindOfClass:NSArray.class] && items.count<=32)
+        for (id item in items) stale|=RVNavigationIdentifierHidden(RVShortsPivotID(item));
+    if ([views isKindOfClass:NSArray.class] && views.count<=6)
+        for (UIView *item in views) if ([item isKindOfClass:UIView.class] && !item.hidden)
+            stale|=RVNavigationIdentifierHidden(RVObject(item,"pivotIdentifier"));
+    if (!stale) return;
+    objc_setAssociatedObject(view,RVShortsPivotRepairKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    __weak UIView *weakView=view;
+    dispatch_async(dispatch_get_main_queue(),^{
+        UIView *current=weakView;if (!current) return;
+        objc_setAssociatedObject(current,RVShortsPivotRepairKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        if (!RVNavigationFilteringEnabled()) return;
+        id renderer=RVObject(current,"renderer");
+        BOOL changed=RVShortsPreparePivot(renderer);
+        // Native setRenderer hides unused views and redistributes their widths.
+        // Unknown/unfilterable models must not cause an endless layout loop.
+        NSArray *entries=RVAdResolvedObject(renderer,"itemsArray");BOOL hiddenRemains=NO;
+        if (![entries isKindOfClass:NSArray.class] || entries.count>32) return;
+        for (id item in entries) hiddenRemains|=RVNavigationIdentifierHidden(RVShortsPivotID(item));
+        if (renderer && (changed || !hiddenRemains)) {
+            RVSetObject(current,"setRenderer:",renderer);RVShortsEvent(@"pivot_layout_repaired");
+        }
+    });
+}
 static void RVShortsInstall(void) {
     RVShortsHooks=[NSMutableDictionary dictionary];RVShortsPivotViews=[NSHashTable weakObjectsHashTable];
     RVNavigationInstallLabels();
@@ -220,7 +309,8 @@ static void RVShortsInstall(void) {
     RVShortsHooks[@"pivot_layout_observation"]=@(RVHook(@"YTPivotBarView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id object) {
             ((void(*)(id,SEL))original)(object,sel);
-            if (!NSThread.isMainThread || !RVEnabled(@"diagnostics") || (!RVNavigationFilteringEnabled() && !RVEnabled(@"hide_navigation_labels"))) return;
+            RVShortsObservePivotLayout(object);
+            if (!NSThread.isMainThread || !RVEnabled(@"diagnostics")) return;
             NSArray *views=RVObject(object,"itemViews");if (![views isKindOfClass:NSArray.class] || views.count>6) return;
             NSMutableArray *visible=[NSMutableArray array];
             for (UIView *view in views) if ([view isKindOfClass:UIView.class] && !view.hidden) {
@@ -234,7 +324,11 @@ static void RVShortsInstall(void) {
 }
 static NSDictionary *RVShortsReport(void) {
     @synchronized(NSClassFromString(@"YTIPivotBarRenderer")) {
-        return @{@"schema":@2,@"diagnostics_revision":@"navigation-options-2",@"hide_feed_shorts":@(RVEnabled(@"hide_shorts")),
+        return @{@"schema":@3,@"diagnostics_revision":@"shorts-primary-command-3",@"hide_feed_shorts":@(RVEnabled(@"hide_shorts")),
+            @"bundle_identifier":NSBundle.mainBundle.bundleIdentifier ?: @"",
+            @"shorts_preference_source":[NSUserDefaults.standardUserDefaults objectForKey:@"RVPort.hide_shorts_navigation"] ? @"saved_override" : @"packaged_default",
+            @"shorts_saved_value":[NSUserDefaults.standardUserDefaults objectForKey:@"RVPort.hide_shorts_navigation"] ?: NSNull.null,
+            @"shorts_packaged_value":RVConfig[@"hide_shorts_navigation"] ?: NSNull.null,
             @"hide_navigation_home":@(RVEnabled(@"hide_home_navigation")),@"hide_navigation_subscriptions":@(RVEnabled(@"hide_subscriptions_navigation")),
             @"hide_navigation_library":@(RVEnabled(@"hide_library_navigation")),@"hide_navigation_labels":@(RVEnabled(@"hide_navigation_labels")),
             @"configured_start_page":RVSetting(@"start_page") ?: @"",

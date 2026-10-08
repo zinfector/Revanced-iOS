@@ -18,8 +18,11 @@ static NSDictionary *RVAdFeedChildren(void) {
     static NSDictionary *fields;static dispatch_once_t once;
     dispatch_once(&once,^{ fields=@{
         @"YTISectionListSupportedRenderers":@[@"itemSectionRenderer",@"horizontalListRenderer",@"gridRenderer",@"shelfRenderer"],
-        @"YTIItemSectionSupportedRenderers":@[@"horizontalListRenderer",@"gridRenderer",@"shelfRenderer"],
-        @"YTIShelfSupportedRenderers":@[@"horizontalListRenderer",@"gridRenderer"],
+        @"YTIItemSectionSupportedRenderers":@[@"horizontalListRenderer",@"gridRenderer",@"reelGridRenderer",@"shelfRenderer"],
+        @"YTIShelfSupportedRenderers":@[@"horizontalListRenderer",@"gridRenderer",@"expandedShelfContentsRenderer",@"verticalListRenderer"],
+        @"YTIReelGridRenderer":@[@"itemsArray"],
+        @"YTIExpandedShelfContentsRenderer":@[@"itemsArray"],
+        @"YTIVerticalListRenderer":@[@"itemsArray"],
         @"YTISectionListRenderer":@[@"contentsArray"],
         @"YTIItemSectionRenderer":@[@"contentsArray"],
         @"YTIGridRenderer":@[@"itemsArray"],

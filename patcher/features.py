@@ -4,7 +4,7 @@ CATALOG = {
     'sideload_auth_keychain': 'Sideload credential storage (experimental)',
     'video_ads': 'Hide video ads', 'background_playback': 'Background playback',
     'sponsorblock': 'SponsorBlock autoskip', 'feed_ads': 'Hide feed ads and below-video banners',
-    'hide_shorts': 'Hide Shorts shelves', 'shorts_ads': 'Hide Shorts ads',
+    'hide_shorts': 'Hide Shorts in feeds', 'shorts_ads': 'Hide Shorts ads',
     'remember_speed': 'Remember playback speed',
     'picture_in_picture': 'Picture in Picture', 'return_dislikes': 'Return YouTube Dislike counts', 'paired_vote_buttons': 'Use paired vote buttons', 'first_launch_ui': 'Use compatible dislike layout',
     'copy_video_url': 'Copy URL and timestamp tools', 'external_downloads': 'External downloader share handoff',

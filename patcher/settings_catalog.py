@@ -81,6 +81,8 @@ for key,title,group in [('feed_patterns','Feed ad filters','ads'),('shorts_patte
     PARAMETERS[key]=(group,title,'string_list',dict(list_min=0,list_max=64,max_length=128,hint='One positive component pattern per line. Empty lists match nothing.'))
 
 DESCRIPTIONS = {
+    'hide_shorts':'Hides Shorts shelves and individual cards that open the Shorts player. Refresh the feed after changing it.',
+    'hide_shorts_navigation':'Hides the bottom Shorts tab and redistributes the remaining native tabs. Separate from feed filtering.',
     'hide_navigation_labels':'Keeps the tab icons and their accessible names.',
     'hide_library_navigation':'Hides the You tab, also called Library in some layouts.',
     'first_launch_ui':'Uses the compatible watch layout for dislike counts. Account and feed pages keep their usual layout. Restart after changing this switch.',
