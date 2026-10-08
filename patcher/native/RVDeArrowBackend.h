@@ -107,6 +107,11 @@ typedef NS_ENUM(NSUInteger, RVDeArrowBlocker) {
                               parts:(RVDeArrowParts)parts
                    clientGeneration:(uint64_t)generation
                          completion:(void (^)(RVDeArrowResult *result))completion;
+// Same cache/coalescing protocol, lower scheduler priority. Feed lease owns token.
+- (RVDeArrowRequest *)prefetchVideoID:(NSString *)videoID
+                               parts:(RVDeArrowParts)parts
+                    clientGeneration:(uint64_t)generation
+                          completion:(void (^)(RVDeArrowResult *result))completion;
 // Invalidate requests and clear memory/disk caches; UI must rebind afterwards.
 - (void)clearCaches;
 - (NSDictionary *)diagnostics; // bounded hashes/enums/counters; no titles/URLs/IDs

@@ -1,8 +1,8 @@
-name: Build DeArrow visibility recovery payload with Xcode
+name: Build DeArrow feed prefetch payload with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-visibility-recovery-0.3.48]
+    branches: [fix/dearrow-feed-prefetch-0.3.49]
 
 permissions:
   contents: read

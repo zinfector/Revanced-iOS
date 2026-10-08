@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.48'
+VERSION = '0.3.49'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-visibility-recovery',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-feed-prefetch',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Fix the live-observed DeArrow visibility pause/reload feedback loop: scheduler deferrals reload only to restore an actual pending placeholder, same-binding native reload visibility grace, minimum resume delay, server backoff based on exhausted bursts rather than scrolling, and valid salted URL request-key diagnostics. Canonical timestamps, recoverable server requests and independent shared-download cancellation retained. Existing native ownership, settings and row-generation guards, watch interaction fixes, USB diagnostics and live debugging retained. Production compilation and packaging only; no tests or device validation.'}
-    (ROOT/'build/package-manifest-0.3.48.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Feed-delivery DeArrow metadata and thumbnail prefetch; initial and continuation page adapters, immutable typed snapshots, shared canonical random-frame URLs, offscreen cache consumption, ahead-of-scroll image encoding, foreground-prioritized six-transfer pool with four speculative slots, independent cancellation, bounded leases and caches, and redacted prefetch checkpoints. Apple Xcode production compilation and packaging only; no tests or device validation.'}
+    (ROOT/'build/package-manifest-0.3.49.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

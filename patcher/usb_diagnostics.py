@@ -429,6 +429,11 @@ def summarize(response):
             'build_source_sha256': root.get('build_source_sha256'), 'bridge': response.get('bridge', {}),
             'dearrow': {'capture_armed': dearrow.get('capture_armed'), 'counts': dearrow.get('counts', {}),
                        'backend_counts': dearrow.get('backend', {}).get('counts', {}),
+                       'prefetch': dearrow.get('prefetch', {}),
+                       'transfer_pool': {key: dearrow.get('backend', {}).get(key) for key in
+                                         ('active_transfers', 'active_prefetch_transfers', 'queued_transfers',
+                                          'queued_auxiliary_transfers', 'parallel_transfer_limit',
+                                          'prefetch_transfer_limit', 'foreground_reserved_slots')},
                        'attempt_blockers': dict(failures), 'bindings': bindings, 'directed_contracts': directed,
                        'service_probe': dearrow.get('service_probe', {})},
             'watch': {'counts': watch.get('counts', {}), 'last_stages': watch.get('last_stages', {}),

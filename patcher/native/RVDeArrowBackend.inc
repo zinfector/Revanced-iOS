@@ -7,7 +7,7 @@
 #include <math.h>
 
 static const NSUInteger RVDAMetadataLimit=1024*1024, RVDAImageLimit=8*1024*1024;
-static const NSUInteger RVDAMaxEntries=256, RVDAMaxJobs=128, RVDAMaxTransfers=4;
+static const NSUInteger RVDAMaxEntries=256, RVDAMaxJobs=128, RVDAMaxTransfers=6, RVDAMaxPrefetchTransfers=4;
 static const NSUInteger RVDAMaxImageCost=24*1024*1024;
 static const void *RVDAQueueKey=&RVDAQueueKey;
 static NSTimeInterval RVDANow(void) { return NSDate.date.timeIntervalSince1970; }
@@ -144,7 +144,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic) RVDeArrowParts parts;
 @property(nonatomic,copy) void (^completion)(RVDeArrowResult *);
 @property(atomic,readwrite,getter=isCancelled) BOOL cancelled;
-@property(nonatomic) BOOL finished,pendingDelivered;
+@property(nonatomic) BOOL finished,pendingDelivered,background;
 @property(atomic,readwrite) uint64_t configurationRevision,clientGeneration;
 @end
 
@@ -156,7 +156,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) NSHTTPURLResponse *response;
 @property(nonatomic,strong) NSMutableData *body;
 @property(nonatomic) NSUInteger limit;
-@property(nonatomic) BOOL completed;
+@property(nonatomic) BOOL completed,background;
 @property(nonatomic,copy) void (^completion)(NSData *,NSHTTPURLResponse *,RVDeArrowBlocker,NSInteger);
 @property(nonatomic,copy) void (^onStart)(void);
 - (void)start:(NSURL *)url timeout:(NSTimeInterval)timeout;
@@ -274,6 +274,10 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic) BOOL image;
 @end
 @implementation RVDAOperation @end
+static BOOL RVDAJobBackground(RVDAJob *job) {
+    for (RVDeArrowRequest *consumer in job.consumers) if (!consumer.cancelled && !consumer.background) return NO;
+    return YES;
+}
 
 @interface RVDeArrowBackend ()
 @property(atomic,readwrite) uint64_t configurationRevision;
@@ -287,13 +291,14 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAMetadata *> *metadataCache;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,RVDAImage *> *imageCache;
 @property(nonatomic,strong) NSMutableDictionary<NSString *,NSNumber *> *cooldowns;
-@property(nonatomic) NSUInteger activeTransfers,imageCost;
+@property(nonatomic) NSUInteger activeTransfers,activePrefetchTransfers,imageCost;
 @property(nonatomic) BOOL diskLoaded,flushScheduled,pumping;
 @property(nonatomic,copy) NSString *salt;
 @property(nonatomic,strong) NSMutableDictionary *counts,*state;
 @property(nonatomic,strong) NSMutableArray *events;
 @property(nonatomic) NSTimeInterval started;
 - (void)cancelRequest:(RVDeArrowRequest *)request;
+- (RVDeArrowRequest *)requestVideoID:(NSString *)videoID parts:(RVDeArrowParts)parts clientGeneration:(uint64_t)generation background:(BOOL)background completion:(void (^)(RVDeArrowResult *))completion;
 - (void)record:(RVDeArrowCheckpoint)checkpoint blocker:(RVDeArrowBlocker)blocker video:(NSString *)video details:(NSDictionary *)details;
 - (void)recordRequest:(RVDeArrowRequest *)request checkpoint:(RVDeArrowCheckpoint)checkpoint blocker:(RVDeArrowBlocker)blocker;
 - (void)pump;
@@ -462,6 +467,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
             @"presentation_observed_meaning":@"adapter_checkpoint_only_not_visible_replacement",@"diagnostics_enabled":@(self.options.diagnosticsEnabled),@"configuration_revision":@(self.configurationRevision),
             @"in_flight_videos":@(self.jobs.count),@"active_transfers":@(self.activeTransfers),@"queued_transfers":@(self.operations.count),@"queued_auxiliary_transfers":@(self.auxiliaryOperations.count),@"auxiliary_shared_flights":@(self.auxiliaryFlights.count),
             @"metadata_cache_entries":@(self.metadataCache.count),@"image_cache_entries":@(self.imageCache.count),@"decoded_image_bytes":@(self.imageCost),
+            @"active_prefetch_transfers":@(self.activePrefetchTransfers),@"parallel_transfer_limit":@(RVDAMaxTransfers),@"prefetch_transfer_limit":@(RVDAMaxPrefetchTransfers),@"foreground_reserved_slots":@(RVDAMaxTransfers-RVDAMaxPrefetchTransfers),
             @"counts":self.counts.copy,@"state":self.state.copy,@"recent_events":self.events.copy};
     }];return report;
 }
@@ -552,7 +558,14 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
     }
 }
 - (RVDeArrowRequest *)requestVideoID:(NSString *)videoID parts:(RVDeArrowParts)parts clientGeneration:(uint64_t)generation completion:(void (^)(RVDeArrowResult *))completion {
+    return [self requestVideoID:videoID parts:parts clientGeneration:generation background:NO completion:completion];
+}
+- (RVDeArrowRequest *)prefetchVideoID:(NSString *)videoID parts:(RVDeArrowParts)parts clientGeneration:(uint64_t)generation completion:(void (^)(RVDeArrowResult *))completion {
+    return [self requestVideoID:videoID parts:parts clientGeneration:generation background:YES completion:completion];
+}
+- (RVDeArrowRequest *)requestVideoID:(NSString *)videoID parts:(RVDeArrowParts)parts clientGeneration:(uint64_t)generation background:(BOOL)background completion:(void (^)(RVDeArrowResult *))completion {
     RVDeArrowRequest *request=[RVDeArrowRequest new];request.backend=self;request.identifier=NSUUID.UUID.UUIDString;
+    request.background=background;
     request.videoID=[videoID isKindOfClass:NSString.class] && videoID.length<=128 ? [videoID copy] : @"";
     request.clientGeneration=generation;request.parts=parts&RVDeArrowPartsAll;request.completion=completion;
     [self sync:^{ request.configurationRevision=self.configurationRevision; }];
@@ -567,7 +580,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
         if (job) {
             [job.consumers addObject:request];
             [self record:RVDeArrowCheckpointMetadataRequested blocker:RVDeArrowBlockerNone video:job.videoID details:@{@"request_coalesced":@YES}];
-            if (job.metadata) [self processMetadata:job];return;
+            if (job.metadata) [self processMetadata:job];else [self pump];return;
         }
         job=[RVDAJob new];job.videoID=request.videoID;job.revision=request.configurationRevision;job.options=self.options;
         job.consumers=[NSMutableArray arrayWithObject:request];
@@ -749,7 +762,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
             [self.auxiliaryOperations removeObjectsAtIndexes:cancelled];
             if (self.auxiliaryFlights.count>=64) { [subscriber finish:RVDeArrowBlockerQueueFull errorCode:0];return; }
             flight=[RVDAAuxiliaryFlight new];flight.subscribers=[NSMutableArray array];flight.transfer=[RVDAHTTP new];flight.transfer.limit=subscriber.limit;
-            self.auxiliaryFlights[key]=flight;__weak RVDAAuxiliaryFlight *weakFlight=flight;__weak RVDeArrowBackend *weakSelf=self;__block BOOL admitted=NO;
+            self.auxiliaryFlights[key]=flight;__weak RVDAAuxiliaryFlight *weakFlight=flight;__weak RVDeArrowBackend *weakSelf=self;__block BOOL admitted=NO,backgroundAdmission=NO;
             flight.transfer.onStart=^{
                 RVDAAuxiliaryFlight *current=weakFlight;if (!current) return;current.started=YES;
                 for (RVDAHTTP *ticket in current.subscribers.copy) {
@@ -762,6 +775,7 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
                 dispatch_async(backend.queue,^{
                     RVDAAuxiliaryFlight *current=ownedFlight;
                     if (admitted && backend.activeTransfers) backend.activeTransfers--;
+                    if (admitted && backgroundAdmission && backend.activePrefetchTransfers) backend.activePrefetchTransfers--;
                     if (current && backend.auxiliaryFlights[key]==current) [backend.auxiliaryFlights removeObjectForKey:key];
                     NSArray *tickets=current.subscribers.copy;[current.subscribers removeAllObjects];
                     for (RVDAHTTP *ticket in tickets) {
@@ -770,7 +784,11 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
                     [backend pump];
                 });
             };
-            [self.auxiliaryOperations addObject:@{@"transfer":flight.transfer,@"url":url,@"timeout":@(timeout),@"queued_at":@(RVDANow()),@"admit":[^{ admitted=YES; } copy]}];
+            BOOL (^background)(void)=^{
+                for (RVDAHTTP *ticket in weakFlight.subscribers) if (!ticket.background && !ticket.completed) return NO;
+                return YES;
+            };
+            [self.auxiliaryOperations addObject:@{@"transfer":flight.transfer,@"url":url,@"timeout":@(timeout),@"queued_at":@(RVDANow()),@"background":[background copy],@"admit":[^(BOOL speculative) { admitted=YES;backgroundAdmission=speculative; } copy]}];
         }
         __weak RVDAHTTP *weakSubscriber=subscriber;__weak RVDAAuxiliaryFlight *weakFlight=flight;__weak RVDeArrowBackend *weakSelf=self;
         @synchronized(subscriber) {
@@ -794,24 +812,41 @@ static NSString *RVDAHeader(NSHTTPURLResponse *response,NSString *name) {
 - (void)pump {
     if (self.pumping) return;self.pumping=YES;
     while (self.activeTransfers<RVDAMaxTransfers && (self.operations.count || self.auxiliaryOperations.count)) {
-        if (self.auxiliaryOperations.count && (self.auxiliaryTurn || !self.operations.count)) {
-            NSDictionary *operation=self.auxiliaryOperations.firstObject;[self.auxiliaryOperations removeObjectAtIndex:0];
+        NSIndexSet *dead=[self.operations indexesOfObjectsPassingTest:^BOOL(RVDAOperation *op,NSUInteger index,BOOL *stop) { return self.jobs[op.job.videoID]!=op.job || op.job.revision!=self.configurationRevision || !op.job.consumers.count; }];[self.operations removeObjectsAtIndexes:dead];
+        dead=[self.auxiliaryOperations indexesOfObjectsPassingTest:^BOOL(NSDictionary *op,NSUInteger index,BOOL *stop) { RVDAHTTP *ticket=op[@"transfer"];@synchronized(ticket) { return ticket.completed; } }];[self.auxiliaryOperations removeObjectsAtIndexes:dead];
+        NSUInteger nativeIndex=NSNotFound,auxiliaryIndex=NSNotFound;BOOL nativeBackground=YES,auxiliaryBackground=YES;
+        for (NSUInteger index=0;index<self.operations.count;index++) {
+            BOOL background=RVDAJobBackground(self.operations[index].job);
+            if (background && self.activePrefetchTransfers>=RVDAMaxPrefetchTransfers) continue;
+            if (nativeIndex==NSNotFound || !background || (nativeBackground && self.operations[index].image && !self.operations[nativeIndex].image)) { nativeIndex=index;nativeBackground=background;if (!background) break; }
+        }
+        for (NSUInteger index=0;index<self.auxiliaryOperations.count;index++) {
+            BOOL (^query)(void)=self.auxiliaryOperations[index][@"background"];BOOL background=query();
+            if (background && self.activePrefetchTransfers>=RVDAMaxPrefetchTransfers) continue;
+            if (auxiliaryIndex==NSNotFound || !background) { auxiliaryIndex=index;auxiliaryBackground=background;if (!background) break; }
+        }
+        if (nativeIndex==NSNotFound && auxiliaryIndex==NSNotFound) break;
+        BOOL useAuxiliary=auxiliaryIndex!=NSNotFound && (nativeIndex==NSNotFound || (nativeBackground && !auxiliaryBackground) || (nativeBackground==auxiliaryBackground && self.auxiliaryTurn));
+        if (useAuxiliary) {
+            NSDictionary *operation=self.auxiliaryOperations[auxiliaryIndex];[self.auxiliaryOperations removeObjectAtIndex:auxiliaryIndex];
             RVDAHTTP *transfer=operation[@"transfer"];BOOL completed;@synchronized(transfer) { completed=transfer.completed; }
             if (completed) continue;
             if (RVDANow()-[operation[@"queued_at"] doubleValue]>60) { [transfer finish:RVDeArrowBlockerBackoff errorCode:NSURLErrorTimedOut];continue; }
-            self.auxiliaryTurn=NO;self.activeTransfers++;void (^admit)(void)=operation[@"admit"];admit();
+            self.auxiliaryTurn=NO;self.activeTransfers++;if (auxiliaryBackground) self.activePrefetchTransfers++;
+            void (^admit)(BOOL)=operation[@"admit"];admit(auxiliaryBackground);
             [transfer start:operation[@"url"] timeout:[operation[@"timeout"] doubleValue]];continue;
         }
         self.auxiliaryTurn=YES;
-        RVDAOperation *operation=self.operations.firstObject;[self.operations removeObjectAtIndex:0];RVDAJob *job=operation.job;
+        RVDAOperation *operation=self.operations[nativeIndex];[self.operations removeObjectAtIndex:nativeIndex];RVDAJob *job=operation.job;
         if (self.jobs[job.videoID]!=job || job.revision!=self.configurationRevision || !job.consumers.count) continue;
         if ([self.cooldowns[operation.URL.host.lowercaseString] doubleValue]>RVDANow()) { [self blockedOperation:operation];continue; }
         RVDAHTTP *transfer=[RVDAHTTP new];transfer.limit=operation.image ? RVDAImageLimit : RVDAMetadataLimit;
-        job.transfer=transfer;self.activeTransfers++;__weak RVDeArrowBackend *weakSelf=self;
+        job.transfer=transfer;self.activeTransfers++;if (nativeBackground) self.activePrefetchTransfers++;__weak RVDeArrowBackend *weakSelf=self;
         transfer.completion=^(NSData *data,NSHTTPURLResponse *response,RVDeArrowBlocker blocker,NSInteger code) {
             RVDeArrowBackend *backend=weakSelf;if (!backend) return;
             dispatch_async(backend.queue,^{
                 if (backend.activeTransfers) backend.activeTransfers--;
+                if (nativeBackground && backend.activePrefetchTransfers) backend.activePrefetchTransfers--;
                 if (backend.jobs[job.videoID]==job && job.revision==backend.configurationRevision) {
                     job.transfer=nil;[backend cooldown:operation response:response blocker:blocker];
                     [backend record:operation.image ? RVDeArrowCheckpointImageReceived : RVDeArrowCheckpointMetadataReceived blocker:blocker video:job.videoID details:@{@"network_error_code":@(code),@"transport_finished":@YES}];

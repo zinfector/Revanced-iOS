@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "version": "0.3.49",
+  "purpose": "Start DeArrow work at feed page handoff before native row visibility",
+  "native_hooks": [
+    {
+      "classes": [
+        "YTSectionListViewController",
+        "YTInnerTubeCollectionViewController",
+        "YTSectionController"
+      ],
+      "selector": "loadWithModel:",
+      "abi": "v@:@"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "selector": "addSectionsFromArray:",
+      "abi": "v@:@"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "selector": "insertSections:byPosition:error:",
+      "abi": "B@:@i^@"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "selector": "insertContents:byPosition:inSection:error:",
+      "abi": "@@:@i@^@"
+    }
+  ],
+  "provenance": "21.39.4 objc_classes.json; same ABI contracts already used by RVAdFeed.inc; runtime ABI guards reject missing/changed selectors",
+  "extraction": {
+    "typed_container_allowlist": "RVAdFeedChildren plus YTArrayViewModel.entries",
+    "immutable_snapshot": true,
+    "decode_queue": "serial utility queue",
+    "known_surface_required": true,
+    "native_ad_presence_required": true,
+    "structurally_verified_video_profiles_required": true,
+    "root_mutation": false,
+    "page_snapshot_limit": 32,
+    "snapshot_bytes_limit": 8388608,
+    "depth_limit": 8,
+    "object_budget": 256,
+    "pending_page_limit": 4,
+    "lease_limit": 48,
+    "lease_ttl_seconds": 600
+  },
+  "transport": {
+    "total_parallel_limit": 6,
+    "prefetch_parallel_limit": 4,
+    "foreground_reserved_slots": 2,
+    "foreground_queue_priority": true,
+    "same_video_metadata_and_community_coalescing": true,
+    "same_url_fallback_coalescing": true,
+    "independent_subscriber_cancellation": true,
+    "speculative_image_before_speculative_metadata": true,
+    "short_fallback_attempt_limit": 4,
+    "visible_rows_keep_existing_long_recovery": true
+  },
+  "cache": {
+    "backend_metadata_ttl_seconds": 1800,
+    "backend_decoded_image_budget_bytes": 25165824,
+    "auxiliary_decoded_image_budget_bytes": 25165824,
+    "prepared_presentation_budget_bytes": 25165824,
+    "offscreen_cache_consumption": true,
+    "canonical_random_url_shared_with_visible_rows": true,
+    "timestamp_validation_tolerance_seconds": 0.001,
+    "settings_revision_invalidation": true,
+    "background_cancels_speculative_leases": true,
+    "memory_warning_purges_warming_caches": true
+  },
+  "checkpoints": [
+    "F01_feed_page_received",
+    "F02_feed_identities_resolved",
+    "F03_prefetch_metadata_received",
+    "F04_prefetch_frame_response",
+    "D08_fallback_cache_hit",
+    "D08_prepared_image_cache_hit"
+  ],
+  "diagnostics": [
+    "prefetch phase counts and bounded salted-video samples",
+    "prefetch.page_no_candidates",
+    "prefetch.frame_generation_pending",
+    "prefetch.duration_missing",
+    "prefetch.row_cache_hit",
+    "active_prefetch_transfers",
+    "parallel_transfer_limit",
+    "prefetch_transfer_limit",
+    "foreground_reserved_slots"
+  ],
+  "presentation_guards": "Unchanged UI ownership, source identity, row generation, factory provenance and independently verified native title/image consumer contracts",
+  "limitations": [
+    "Not a request for complete video streams",
+    "Unsupported feed structures retain originals",
+    "Exact frames may remain unavailable or delayed at the upstream generation service",
+    "No device behavior claimed before user confirmation"
+  ],
+  "tests_run": false
+}

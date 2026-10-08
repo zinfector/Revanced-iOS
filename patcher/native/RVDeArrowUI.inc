@@ -234,6 +234,8 @@ static void RVDAUIConfigureBackend(void) {
     if (![RVDeArrowBackend.sharedBackend configure:options]) RVDAUIEvent(@"D01_adapter_ready",nil,@"invalid_options");
 }
 #include "RVDeArrowImages.inc"
+static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL classMethod,RVReplacementFactory factory);
+#include "RVDeArrowPrefetch.inc"
 static void RVDAUIRequest(RVDAUIBinding *binding) {
     RVDAUIRetireConsumers(binding);
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
@@ -497,7 +499,7 @@ static void RVDAUILegacyView(id view,id renderer,void (^configure)(id)) {
 }
 static void RVDAUIPreferencesChanged(void) {
     if (!NSThread.isMainThread) { dispatch_async(dispatch_get_main_queue(),^{ RVDAUIPreferencesChanged(); });return; }
-    RVDAUISettingsRevision++;RVDAUIConfigureBackend();
+    RVDAUISettingsRevision++;RVDAPrefetchReset();RVDAUIConfigureBackend();
     for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
     }
@@ -544,7 +546,7 @@ static NSDictionary *RVDAUIReport(void) {
     }
     return @{@"schema":@2,@"patcher_version":RV_PORT_VERSION,@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"capture_enabled":@(RVDADiagEnabled()),@"capture_armed":@(RVDAUIDiagnosticsArmed),@"settings":RVDADiagSettings(),@"uri_structure_schema":@2,
-        @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,
+        @"settings_revision":@(RVDAUISettingsRevision),@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
         @"bindings":bindings,@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"global_setter_observers":@NO,
         @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
@@ -633,6 +635,7 @@ static void RVInstallDeArrowUI(void) {
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;
     RVDAUISalt=NSUUID.UUID.UUIDString;
     RVDAUIBindings=[NSHashTable weakObjectsHashTable];RVDAUIOriginalVideos=[NSMutableSet set];RVDAUICustomVideos=[NSMutableSet set];RVDAUIHooks=[NSMutableArray array];RVDAUIConfigureBackend();
+    RVDAPrefetchInstall();
     RVDAUIHook(@"ELMComponent",@"templateURI",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id component) { id uri=((id(*)(id,SEL))original)(component,sel);RVDADiagNativeTemplate(uri);return uri; };
     });
