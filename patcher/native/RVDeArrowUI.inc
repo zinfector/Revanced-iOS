@@ -212,7 +212,7 @@ static BOOL RVDAUIFrameFallback(RVDAUIBinding *binding) {
 static NSData *RVDAUIProjectedData(RVDAUIBinding *state) {
     if (!state.modern) return nil;
     NSMutableArray *inputs=[NSMutableArray arrayWithObjects:state.profile.source ?: NSData.data,@(RVDAUISettingsRevision),nil];
-    NSArray *rows=RVDAUIRowBindings(state);
+    NSArray<RVDAUIBinding *> *rows=RVDAUIRowBindings(state);
     for (RVDAUIBinding *current in rows) {
         if (!RVDAUICurrent(current)) return nil;
         BOOL original=RVDAUIOriginal(current);
@@ -232,6 +232,26 @@ static NSData *RVDAUIProjectedData(RVDAUIBinding *state) {
     RVDADiagTiming(@"projection",started);return next;
 }
 static BOOL RVDAUIFallbackVisible(RVDAUIBinding *state);
+// Native load/layout callbacks are primary. A temporary visibility-only wake
+// also covers a loaded offscreen node scrolling back without another layout.
+static NSHashTable *RVDAUIDeferredRefreshes;
+static NSTimer *RVDAUIDeferredRefreshTimer;
+static void RVDAUIRefresh(RVDAUIBinding *binding);
+static void RVDAUIDeferRefresh(RVDAUIBinding *state) {
+    state.refreshDeferred=YES;
+    if (!RVDAUIDeferredRefreshes) RVDAUIDeferredRefreshes=[NSHashTable weakObjectsHashTable];
+    [RVDAUIDeferredRefreshes addObject:state];
+    if (RVDAUIDeferredRefreshTimer) return;
+    RVDAUIDeferredRefreshTimer=[NSTimer timerWithTimeInterval:.25 repeats:YES block:^(NSTimer *timer) {
+        if (UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) return;
+        for (RVDAUIBinding *row in RVDAUIDeferredRefreshes.allObjects) {
+            if (!row.refreshDeferred || !RVDAUICurrent(row)) { [RVDAUIDeferredRefreshes removeObject:row];continue; }
+            if (RVDAUIFallbackVisible(row)) { [RVDAUIDeferredRefreshes removeObject:row];RVDAUIRefresh(row); }
+        }
+        if (!RVDAUIDeferredRefreshes.count) { [timer invalidate];RVDAUIDeferredRefreshTimer=nil; }
+    }];
+    [NSRunLoop.mainRunLoop addTimer:RVDAUIDeferredRefreshTimer forMode:NSRunLoopCommonModes];
+}
 static NSHashTable *RVDAUIRefreshPending;
 static BOOL RVDAUIRefreshPumpScheduled;
 static void RVDAUIDrainRefresh(void);
@@ -264,7 +284,7 @@ static void RVDAUIDrainRefresh(void) {
         // A known offscreen live row will receive the newest projection on its
         // next native factory/load callback. Never rebuild it solely for prefetch.
         if (state.profile.liveCard && state.nativeFactoryRoot && !RVDAUIFallbackVisible(state)) {
-            state.refreshDeferred=YES;RVDADiagCount(@"performance.reload_offscreen_deferred");return;
+            RVDAUIDeferRefresh(state);RVDADiagCount(@"performance.reload_offscreen_deferred");return;
         }
         id section=state.section,delegate=RVObject(section,"sectionControllerDelegate");
         if (!RVCan(delegate,"indexPathForIndex:inSection:",@"@@:Q@") || !RVCan(delegate,"isValidIndexPath:",@"B@:@") || !RVCan(section,"reloadCellAtIndex:",@"v@:q")) {

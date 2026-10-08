@@ -11,7 +11,8 @@
       "defer known offscreen live row refresh until native visibility/factory callback",
       "budget one reload and one consumer observation per display turn",
       "coalesce per-row scans for 120ms",
-      "reuse already uniquely proven loaded native roles only with same current factory input, current ancestry and image pixel witness; no new permission from fast path"
+      "reuse already uniquely proven loaded native roles only with same current factory input, current ancestry and image pixel witness; no new permission from fast path",
+      "temporary 250ms visibility-only wake for deferred loaded rows that scroll back without layout; stops when pending set empties"
     ],
     "diagnostics": [
       "keep compact timing/count checkpoints with live debugging",
