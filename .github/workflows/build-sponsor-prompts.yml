@@ -1,8 +1,8 @@
-name: Build DeArrow recovery payload with Xcode
+name: Build DeArrow freeze correction with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-recovery-0.3.56]
+    branches: [fix/dearrow-freeze-0.3.57]
 
 permissions:
   contents: read

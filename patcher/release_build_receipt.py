@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.56'
+VERSION = '0.3.57'
 
 
 def digest(path):

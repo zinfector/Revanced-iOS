@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "0.3.56",
+  "release": "0.3.57",
   "tests_run": false,
   "device_verified": false,
   "metadata_recovery": {
@@ -55,12 +55,15 @@
     "admission": "Owned VideoData ID agrees with primary tap command and thumbnail source URLs; native factory and consumer confirmation required",
     "mutations": "Only individual verified title/image presentation fields in copied input; commands, headers, unknown fields and all other siblings preserved",
     "collection_read": {
-      "class": "ASCollectionNode",
-      "selector": "visibleNodes",
-      "encoding": "@@:",
-      "imp": "0x1005a6c7c",
-      "requires_loaded_node": true,
-      "max_visible_nodes": 32
+      "enabled": false,
+      "reason": "visibleNodes calls ASCollectionElement.node, which may run its lazy factory under a native mutex",
+      "evidence_imps": [
+        "0x1005a6c7c",
+        "0x1005a6ce8",
+        "0x100476f20",
+        "0x1004641cc"
+      ],
+      "replacement": "Existing controller, subnodes and yogaChildren edges only"
     }
   },
   "checkpoints": [
@@ -68,7 +71,9 @@
     "native live-status source and zero-time request",
     "generic shelf structure and verified child count",
     "current replacement pixel consumption",
-    "endpoint host hash and underlying NSError domain/code"
+    "endpoint host hash and underlying NSError domain/code",
+    "consumer graph begin/end exported by debug.status without main queue",
+    "shelf child identity, navigation rejection and thumbnail match"
   ],
-  "remaining_verification": "Confirm the specific Windows laptops shelf and live Mamdani card on-device after installing .56."
+  "remaining_verification": "Confirm launch freeze correction and inspect the exact Explore more topics card after installing .57; the banner card mapping remains unproven."
 }

@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.56'
+VERSION = '0.3.57'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-recovery',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-freeze',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Recover transient DeArrow metadata through the same bounded coalesced consumer job; descriptor-backed live frame requests and horizontal shelf child-card projection; current pixel witnesses and redacted underlying transport diagnostics. Native command graphs, sibling models and loaded replacement images preserved. Apple production build and packaging only; no tests.'}
-    (ROOT/'build/package-manifest-0.3.56.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+               'scope': 'Remove collection visibleNodes lookup that can lazily construct nodes under native locks. Use existing controller/subnode traversal, bounded off-main-readable recent debug stages and per-child read-only topic-shelf admission diagnostics. Device freeze cause requires confirmation after install. Apple production build and packaging only; no tests'}
+    (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
 

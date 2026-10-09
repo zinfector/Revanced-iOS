@@ -78,6 +78,30 @@ static NSDictionary *RVDALivePathProbe(NSData *model,NSArray<NSNumber *> *path) 
         @"thumbnail_present":@(thumbnail!=nil),@"image_video_identity_matches":@(RVDAImageURL(RVDAChild(thumbnail,1),video)!=nil),
         @"presentation_authorized":@NO};
 }
+// Shelf admission evidence is read-only and never invokes a native node.
+static NSDictionary *RVDALiveShelfProbes(NSData *model,NSString *key) {
+    NSData *shelf=RVDACheckedPath(model,@[@312131490,@20],NULL,NULL);
+    NSMutableArray *cards=[NSMutableArray array];NSUInteger direct=0,wrapped=0;
+    for (RVVoteField *field in RVVoteFields(shelf)) {
+        if (field.number!=9 && field.number!=17) continue;
+        if (cards.count>=16) break;
+        NSUInteger occurrence=field.number==9 ? direct++ : wrapped++;
+        NSArray *path=@[@312131490,@20,@{@"field":@(field.number),@"occurrence":@(occurrence)}];
+        NSData *card=field.value;
+        if (field.number==17) { card=RVDAChild(card,1);path=[path arrayByAddingObject:@1]; }
+        NSArray *videoPath=[path arrayByAddingObject:@1];NSData *data=RVDAPath(model,videoPath);
+        NSString *video=RVDAText(RVDAChild(data,7));
+        NSDictionary *navigation=RVDALiveCardNavigationAt(model,[path arrayByAddingObjectsFromArray:@[@6,@169495254]]);
+        [cards addObject:@{@"card_path":path,@"card_shape":RVDALiveShape(card),
+            @"video_data_shape":RVDALiveShape(data),@"video_id_valid":@(RVVideoIDValid(video)),@"video_hash":RVDADiagVideo(video),
+            @"navigation_blocker":navigation[@"blocker"] ?: @"unresolved",@"navigation_identity_path":navigation[@"identity_path"] ?: @[],
+            @"navigation_video_matches":@(video && [navigation[@"video"] isEqual:video]),
+            @"thumbnail_identity_matches":@(RVDALiveCardImageURLs(RVDAPath(data,@[@1,@1]),video).count>0),
+            @"presentation_authorized":@NO}];
+    }
+    return @{@"adapter":@"horizontal_shelf_video_card_v1",@"verified_children":@(RVDAShelfProfiles(model,key).count),
+        @"shelf_data_shape":RVDALiveShape(shelf),@"child_probes":cards,@"lazy_collection_lookup_enabled":@NO};
+}
 static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     // These semantic paths bypass both the 96-node queue and depth-6 limit.
     NSDictionary *contract=RVDALiveCardContract(model);
@@ -294,7 +318,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
                 @"path_probes":probes,@"model_nodes":nodes,@"node_budget_remaining":@(budget),@"byte_budget_remaining":@(bytes),
                 @"native_uri_observed":@([RVDALiveObservedKeys containsObject:key]),@"presentation_authorized":@NO,
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
-                @"shelf_contract":RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe") ? @{@"adapter":@"horizontal_shelf_video_card_v1",@"verified_children":@(RVDAShelfProfiles(model,key).count),@"shelf_data_shape":RVDALiveShape(RVDAPath(model,@[@312131490,@20]))} : @{},
+                @"shelf_contract":RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe") ? RVDALiveShelfProbes(model,key) : @{},
                 @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
                 @"sample_policy":@"resource + surface + semantic command/failure + shape; 1 accepted semantic video, 1 rejected ordinary and 1 generic slot per surface"};
             [RVDALiveRootResources addObject:key];

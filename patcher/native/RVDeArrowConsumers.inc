@@ -96,9 +96,10 @@ static void RVDAUIGraphAppend(NSMutableArray *queue,NSHashTable *seen,id object)
     [seen addObject:object];[queue addObject:object];
 }
 static NSArray *RVDAUINativeGraph(RVDAUIBinding *binding,id root) {
+    RVDBGRecord(@"consumer_graph_begin",binding.generation,binding.surface,nil);
     NSMutableArray *queue=[NSMutableArray array];NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     RVDAUIGraphAppend(queue,seen,root);RVDAUIGraphAppend(queue,seen,binding.nativeFactoryController);
-    Class componentClass=NSClassFromString(@"ELMComponent"),controllerClass=NSClassFromString(@"ASNodeController"),nodeClass=NSClassFromString(@"ASDisplayNode"),collectionClass=NSClassFromString(@"ASCollectionNode");
+    Class componentClass=NSClassFromString(@"ELMComponent"),controllerClass=NSClassFromString(@"ASNodeController"),nodeClass=NSClassFromString(@"ASDisplayNode");
     for (NSUInteger index=0;index<queue.count;index++) {
         id object=queue[index];
         if (componentClass && [object isKindOfClass:componentClass]) {
@@ -112,18 +113,18 @@ static NSArray *RVDAUINativeGraph(RVDAUIBinding *binding,id root) {
             if (RVBool(object,"isNodeOnControllerLoaded") || RVBool(object,"isNodeLoaded")) RVDAUIGraphAppend(queue,seen,RVObject(object,"node"));
         }
         if (nodeClass && [object isKindOfClass:nodeClass]) {
-            // Shelf collection cells are not ordinary container subnodes.
-            // visibleNodes is a descriptor-reviewed read of already loaded cells.
-            if (binding.profile.shelfCard && collectionClass && [object isKindOfClass:collectionClass] && RVBool(object,"isNodeLoaded") && RVCan(object,"visibleNodes",@"@@:")) {
-                NSArray *visible=RVObject(object,"visibleNodes");
-                if ([visible isKindOfClass:NSArray.class] && visible.count<=32) for (id child in visible) RVDAUIGraphAppend(queue,seen,child);
-            }
+            // ASCollectionNode.visibleNodes calls ASCollectionElement.node,
+            // which may run a lazy cell factory under a native mutex. A loaded
+            // collection does not prove that every child node is materialized.
+            // Traverse only existing native controller/subnode edges here.
             RVDAUIGraphAppend(queue,seen,RVObject(object,"nodeController"));
             for (NSString *name in @[@"subnodes",@"yogaChildren"]) {
                 NSArray *children=RVObject(object,name.UTF8String);if ([children isKindOfClass:NSArray.class]) for (id child in children) RVDAUIGraphAppend(queue,seen,child);
             }
         }
-    }return queue;
+    }
+    RVDBGRecord(@"consumer_graph_end",binding.generation,binding.surface,@{@"nodes":@(queue.count)});
+    return queue;
 }
 static BOOL RVDAUIComponentMatches(RVDAUIBinding *binding,id component) {
     const void *expected=RVDAUIElementIdentity(binding.nativeExpectedElement);
