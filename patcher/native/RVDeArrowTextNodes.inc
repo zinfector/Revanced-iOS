@@ -230,7 +230,9 @@ static void RVDAUITextQueue(id node) {
             state.textNodeOriginal=lease.nativeText;state.textNodeApplied=text.copy;
         } else if (!held) lease.nativeText=[text isKindOfClass:NSAttributedString.class] ? text.copy : nil;
         id owner=RVDAImageNodeOwner(context);NSString *surface=RVDAUIOwnerSurface(owner,NO,NULL);
-        if (!owner || !surface) { RVDAUITextRestore(state);return; }
+        if (!owner || !surface || !RVDAUIPolicy(surface,YES)) { RVDAUITextRestore(state);return; }
+        BOOL hasImageScope=NO;for (id scope in scopes) if (((NSHashTable *)[RVDAUITextImages objectForKey:scope]).count) { hasImageScope=YES;break; }
+        if (!hasImageScope) return; // Image admission will wake this text node later.
         if (!RVDAUITextSafeAttributes(lease.nativeText)) {
             if (!lease.attributesReported && lease.nativeText.length) {
                 lease.attributesReported=YES;RVDADiagRecord(@"T00_text_attributes_rejected",nil,@"interactive_or_unreviewed_attributes",
