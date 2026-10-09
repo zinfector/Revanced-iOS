@@ -177,7 +177,6 @@ static id RVDAUIResolveConsumerRoot(id object,RVDAUIBinding *binding,NSDictionar
             @"competing_occurrence":@(foreign),@"truncated":@(truncated),@"resolved_path":resolvedPath ?: @[]};
     }return result;
 }
-static id RVDAUIConsumerRoot(id object,RVDAUIBinding *binding) { return RVDAUIResolveConsumerRoot(object,binding,NULL); }
 static NSString *RVDAUIConsumerURL(id node) {
     id value=RVObject(node,"URL");return [value isKindOfClass:NSURL.class] ? [value absoluteString] : [value isKindOfClass:NSString.class] ? value : nil;
 }
