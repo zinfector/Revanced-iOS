@@ -313,6 +313,8 @@ static void RVDAUIQueueRefreshPump(void) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/60),dispatch_get_main_queue(),^{ RVDAUIRefreshPumpScheduled=NO;RVDAUIDrainRefresh(); });
 }
 static void RVDAUIRefresh(RVDAUIBinding *binding) {
+    // Primitive image updates need no serialized cell-reload pump.
+    if (binding.imageOnly && NSThread.isMainThread) { RVDAImageNodePresent(binding);return; }
     RVDAUIBinding *row=objc_getAssociatedObject(binding.controller,RVDAUIBindingKey);
     if (row && row!=binding && [RVDAUIRowBindings(row) containsObject:binding]) { RVDAUIRefresh(row);return; }
     if (!NSThread.isMainThread || !binding || binding.refreshQueued) return;
