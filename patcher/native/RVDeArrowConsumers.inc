@@ -153,8 +153,10 @@ static id RVDAUIResolveConsumerRoot(id object,RVDAUIBinding *binding,NSDictionar
             continue;
         }
         BOOL other=NO;
+        // Competing factory identities reject ownership conservatively; no
+        // repeated native row lookup or serialization is needed per ancestor.
         if (component) for (RVDAUIBinding *sibling in siblings) {
-            if (sibling!=binding && RVDAUICurrent(sibling) && sibling.factoryProvenanceVerified && RVDAUIComponentMatches(sibling,current)) { other=YES;break; }
+            if (sibling!=binding && sibling.factoryProvenanceVerified && RVDAUIComponentMatches(sibling,current)) { other=YES;break; }
         }
         if (other) { foreign=YES;continue; }
         for (NSString *edge in @[@"parent",@"owningComponent"]) {
@@ -181,11 +183,16 @@ static NSString *RVDAUIConsumerURL(id node) {
 }
 static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
     if (!root || !RVDAUICurrent(binding)) return;
+    NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
     NSArray *graph=RVDAUINativeGraph(binding,root);NSHashTable *matches=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     NSHashTable *inspected=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];NSMutableArray *samples=[NSMutableArray array];
-    Class cls=NSClassFromString(@"ELMComponent");
+    Class cls=NSClassFromString(@"ELMComponent");BOOL truncated=NO;
     for (id object in graph) {
-        id component=cls && [object isKindOfClass:cls] ? object : RVDAUIConsumerRoot(object,binding);
+        // Graph traversal already collects existing owningComponent edges.
+        // Resolve the row from those components once, not by performing a
+        // complete ancestor walk for every primitive in the graph.
+        if (NSProcessInfo.processInfo.systemUptime-started>.004) { truncated=YES;break; }
+        id component=cls && [object isKindOfClass:cls] ? object : nil;
         if (!component || [inspected containsObject:component]) continue;[inspected addObject:component];
         BOOL accepted=RVDAUIComponentMatches(binding,component);if (accepted) [matches addObject:component];
         if (RVDADiagEnabled() && samples.count<4) {
@@ -195,9 +202,11 @@ static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
                 @"factory_input_verified":@(binding.factoryProvenanceVerified),@"resource_matches":@([RVDAResourceName(RVObject(component,"templateURI")) isEqual:binding.profile.route]),@"component_accepted":@(accepted)}];
         }
     }
-    binding.nativeRootComponent=matches.count==1 ? matches.anyObject : nil;
+    binding.nativeRootComponent=!truncated && matches.count==1 ? matches.anyObject : nil;
     binding.nativeOwnerCheckpoint=@{@"inspected_components":@(inspected.count),@"matching_components":@(matches.count),@"graph_objects":@(graph.count),@"candidates":samples,
-        @"factory_callback_count":@(binding.factoryCallbackCount),@"factory_provenance_verified":@(binding.factoryProvenanceVerified),@"expected_element_present":@(binding.nativeExpectedElement!=nil)};
+        @"owner_probe_budget_exceeded":@(truncated),@"factory_callback_count":@(binding.factoryCallbackCount),@"factory_provenance_verified":@(binding.factoryProvenanceVerified),@"expected_element_present":@(binding.nativeExpectedElement!=nil)};
+    RVDBGRecord(@"consumer_root_bound",binding.generation,binding.surface,@{@"nodes":@(graph.count),@"owned_nodes":@(matches.count),@"blocker":truncated ? @"owner_probe_budget_exceeded" : binding.nativeRootComponent ? @"ready" : @"native_root_unconfirmed"});
+    RVDADiagTiming(@"consumer_root_probe",started);
     if (matches.count>1) RVDAUIEvent(@"D04_native_component_rejected",binding,@"live_native_component_ambiguous");
 }
 static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t generation,NSUInteger attempt);
@@ -281,7 +290,7 @@ static void RVDAUIAcceptFactory(RVDAUIBinding *binding,id node,RVDAUIFactoryCapt
     // Bootstrap does not wait for title/image confirmation. It only observes
     // the native controller captured within this validated row factory.
     RVDAUIRegisterController(binding,binding.nativeFactoryController);
-    RVDAUIBindConsumerRoot(binding,node);RVDAUIScheduleConsumers(binding,0);
+    RVDAUIScheduleConsumers(binding,0);
 }
 static BOOL RVDAUIConsumerVisible(id node) {
     if (!RVBool(node,"isNodeLoaded")) return NO;
@@ -376,6 +385,16 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
     NSTimeInterval scanStarted=NSProcessInfo.processInfo.systemUptime;
     if (RVDAUIObserveKnownConsumers(binding,attempt)) { RVDADiagTiming(@"consumer_fast_observation",scanStarted);return; }
     if (!binding.nativeRootComponent) RVDAUIBindConsumerRoot(binding,root);
+    if (!binding.nativeRootComponent) {
+        // An unproven container cannot authorize any primitive. Do not walk
+        // all of its descendants' ancestry just to reject the same root again.
+        binding.consumerCheckpoint=@{@"attempt":@(attempt+1),@"factory_root_bound":@NO,
+            @"native_owner":binding.nativeOwnerCheckpoint ?: @{},@"blocker":@"live_native_component_unconfirmed"};
+        RVDADiagRecord(@"D04_live_native_consumers",binding,@"live_native_component_unconfirmed",binding.consumerCheckpoint);
+        RVDADiagTiming(@"consumer_scan",scanStarted);
+        if (attempt<3) RVDAUIScheduleConsumers(binding,.15);
+        return;
+    }
     Class textClass=NSClassFromString(@"ELMTextNode"),imageClass=NSClassFromString(@"ELMImageNode"),allTextClass=NSClassFromString(@"ASTextNode");NSArray *urls=binding.profile.imageURLs;
     Class expandableClass=NSClassFromString(@"ELMExpandableTextNode"),canaryClass=NSClassFromString(@"ELMExpandableTextNodeCanary");
     NSArray *graph=RVDAUINativeGraph(binding,root);NSUInteger owned=0,texts=0,images=0,titleMatches=0,imageMatches=0,titleApplied=0,imageApplied=0;

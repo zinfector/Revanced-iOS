@@ -1,6 +1,6 @@
 # ReVanced iOS
 
-Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.57**, `YouTube-21.39.4-RVPort-0.3.57-unsigned.ipa`.
+Native iOS port of the local ReVanced YouTube patches for the decrypted **YouTube 21.39.4** IPA, ARM64 and iOS 17 or later. The merged source contains 87 feature switches. Current packaged candidate: **0.3.58**, `YouTube-21.39.4-RVPort-0.3.58-unsigned.ipa`.
 
 [Patcher CLI](patcher/patcher.py) - [Coverage data](patcher/coverage.json) - [Signing](SIGNING.md) - [License](LICENSE)
 
@@ -10,17 +10,17 @@ Navigation settings now include Home/Subscriptions/You tab hiding, icon-only lab
 
 On October 5, 2026, the user reported that the adblocker is now working with the 0.3.31 delivery; that implementation is retained in 0.3.54. This confirms the reported device behavior; coverage of every ad format remains unverified.
 
-DeArrow prefetches metadata and thumbnails from feed pages and continuations. Recoverable metadata failures retry through the shared queue without resetting card ownership or loaded images. Live thumbnails use the native live-status enum and a separate short-lived frame cache. Horizontal topic shelves require per-video command, image and native pixel checks. Collection cells are observed through existing controller/subnode edges; the adapter never requests visibleNodes, which can lazily create native cells. Read-only per-child shelf checkpoints and recent debug stages identify unresolved cards and UI stalls. Original thumbnails remain until a replacement is ready. These changes await device confirmation; no tests were run.
+DeArrow prefetches metadata and thumbnails from feed pages and continuations. Recoverable metadata failures retry through the shared queue without resetting card ownership or loaded images. Live thumbnails use the native live-status enum and a separate short-lived frame cache. Topic-shelf presentation is temporarily suspended until independent native child ownership is established; read-only shelf probes remain available. Ownership observation is queued separately from native construction and root probes inspect existing components within a time budget. Original thumbnails remain until a replacement is ready. Device confirmation remains required; no tests were run.
 
 
 Shorts filtering recognizes individual modern video cards by their primary Shorts playback command, in addition to shelves and typed reel cards. Feed hiding and bottom-tab hiding remain separate options. ReVanced owns the native switch save callback and verifies its saved value; navigation reports include saved/default preference provenance, displayed switch state, observed tab identifiers and compacted native layout. These 0.3.54 changes await device confirmation.
 
-Version 0.3.57 confines the compatible dislike layout policy to player/watch request contexts. Native watch controllers, response consumers and vote producers keep their account configuration so command and panel setup can remain consistent. The user confirmed that disabling the previous policy restores comments and chapters; this narrower policy awaits device confirmation. Capture-only watch diagnostics now report chapter command assignment/taps and native panel admission, model lookup and dispatch. No tests were run.
+Version 0.3.58 confines the compatible dislike layout policy to player/watch request contexts. Native watch controllers, response consumers and vote producers keep their account configuration so command and panel setup can remain consistent. The user confirmed that disabling the previous policy restores comments and chapters; this narrower policy awaits device confirmation. Capture-only watch diagnostics now report chapter command assignment/taps and native panel admission, model lookup and dispatch. No tests were run.
 
 ## USB diagnostics
 
 1. Install the current IPA and connect your iPhone to Windows by USB. Unlock it and trust the PC if prompted.
-2. Open **Settings Ã¢â€ â€™ ReVanced Ã¢â€ â€™ USB diagnostics Ã¢â€ â€™ Enable diagnostics** in YouTube. Note the eight-character pairing code for the first connection on a new PC.
+2. Open **Settings ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ ReVanced ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ USB diagnostics ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Enable diagnostics** in YouTube. Note the eight-character pairing code for the first connection on a new PC.
 3. Run `patcher/dist/YouTube-USB-Diagnostics.exe` on the PC and enter that code once. Saved pairings survive cable reconnects, foreground transitions and app relaunches. Close the settings alert and reproduce the issue while keeping YouTube foreground.
 4. Use the collector to start DeArrow capture, fetch reports, inspect watch checkpoints, or probe the current video's branding service. Full reports are saved as compressed JSON with small checkpoint summaries in `ReVanced/Reports`.
 
@@ -68,7 +68,7 @@ UI/native jobs run on the app's main queue. The USB worker returns a job ticket 
 
 ## Porting progress
 
-Status reflects the merged 0.3.57 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
+Status reflects the merged 0.3.58 source. This report covers every declaration in the local YouTube patch inventory: **51 named patches and 62 dependencies/resource wrappers**, plus one iOS-specific feature. Dependencies are listed separately and are not independent user features.
 
 - <img src="assets/progress/green-circle.svg" width="16" height="16" alt="done"> **done**: the selected iOS behavior is implemented. This does not imply complete Android parity or device validation.
 - <img src="assets/progress/yellow-circle.svg" width="16" height="16" alt="in-progress"> **in-progress**: a partial implementation exists, a reported defect remains under confirmation, or supporting infrastructure has incomplete scope.

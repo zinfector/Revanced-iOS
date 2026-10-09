@@ -100,7 +100,7 @@ static NSDictionary *RVDALiveShelfProbes(NSData *model,NSString *key) {
             @"presentation_authorized":@NO}];
     }
     return @{@"adapter":@"horizontal_shelf_video_card_v1",@"verified_children":@(RVDAShelfProfiles(model,key).count),
-        @"shelf_data_shape":RVDALiveShape(shelf),@"child_probes":cards,@"lazy_collection_lookup_enabled":@NO};
+        @"shelf_data_shape":RVDALiveShape(shelf),@"child_probes":cards,@"lazy_collection_lookup_enabled":@NO,@"presentation_adapter_enabled":@NO};
 }
 static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {
     // These semantic paths bypass both the 96-node queue and depth-6 limit.

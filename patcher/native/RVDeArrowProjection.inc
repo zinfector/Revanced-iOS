@@ -190,7 +190,7 @@ static NSString *RVDAProfileFailure(NSData *data) {
     NSData *component=RVDAPath(data,@[@1,@168777401]);
     if (!component) return @"serialized_component_root_unresolved";
     NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
-    if (RVDAResourceFamily(raw,@"horizontal_shelf.eml",@"fe")) return @"shelf_no_verified_child_card";
+    if (RVDAResourceFamily(raw,@"horizontal_shelf.eml",@"fe")) return @"shelf_presentation_suspended_pending_child_ownership";
     if (RVDALiveCardCandidate(raw)) return RVDALiveCardFailure(RVDAChild(component,5));
     if (RVDALiveWatchFamily(raw)) return RVDALiveWatchFailure(RVDAChild(component,5));
     NSString *status=RVDAResourceProfileStatus(raw);
@@ -294,9 +294,11 @@ static void RVDADiscover(NSData *element,NSArray *path,NSMutableArray<RVDAProjec
     NSArray *fields=RVVoteFields(element);if (!fields) return;
     NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *name=RVDATemplate(component);
     if (RVDAResourceFamily(name,@"horizontal_shelf.eml",@"fe")) {
-        for (RVDAProjection *profile in RVDAShelfProfiles(RVDAChild(component,5),name)) {
-            profile.componentPath=[path arrayByAddingObjectsFromArray:@[@1,@168777401]];[found addObject:profile];
-        }return;
+        // The shelf model describes multiple videos, but its factory proves
+        // only the container occurrence, not independent materialized cells.
+        // Do not create per-child UI leases or speculative projections from
+        // that shared factory. Read-only child probes remain available.
+        return;
     }
     if (RVDALiveCardCandidate(name) || RVDALiveWatchFamily(name)) {
         RVDAProjection *profile=RVDALiveCardCandidate(name) ? RVDALiveCardProfile(RVDAChild(component,5),name) : RVDALiveWatchProfile(RVDAChild(component,5),name,watchVideo);

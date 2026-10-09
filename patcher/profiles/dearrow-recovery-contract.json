@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "0.3.57",
+  "release": "0.3.58",
   "tests_run": false,
   "device_verified": false,
   "metadata_recovery": {
@@ -64,7 +64,9 @@
         "0x1004641cc"
       ],
       "replacement": "Existing controller, subnodes and yogaChildren edges only"
-    }
+    },
+    "presentation_enabled": false,
+    "reason": "Shared container factory does not prove independent child cell ownership. New shelf leases are suspended after prolonged main-thread ancestry inspection was observed."
   },
   "checkpoints": [
     "metadata recovery scheduled and accepted",
@@ -75,5 +77,13 @@
     "consumer graph begin/end exported by debug.status without main queue",
     "shelf child identity, navigation rejection and thumbnail match"
   ],
-  "remaining_verification": "Confirm launch freeze correction and inspect the exact Explore more topics card after installing .57; the banner card mapping remains unproven."
+  "remaining_verification": "Confirm launch responsiveness on-device; topic-shelf images remain native pending an independently proven child factory contract.",
+  "root_observation": {
+    "inside_factory_completion": false,
+    "per_primitive_root_ancestry_search": false,
+    "component_probe_budget_ms": 4,
+    "budget_exhaustion": "Reject ownership; no replacement authorization",
+    "full_row_guard": "Before scan, refresh and native application",
+    "stale_competitors": "Conservatively reject ownership"
+  }
 }
