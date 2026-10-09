@@ -150,6 +150,14 @@ static NSString *RVDAUITextImageVideo(id scope,id owner,NSString *video) {
     }
     return ids.count==1 && [ids containsObject:video] ? video : nil;
 }
+static BOOL RVDAUITextExistingRole(id owner,NSString *video) {
+    RVDAUIBinding *binding=objc_getAssociatedObject(owner,RVDAUIBindingKey);
+    for (RVDAUIBinding *row in RVDAUIRowBindings(binding)) {
+        if (row.imageOnly || row.textOnly || row.settingsRevision!=RVDAUISettingsRevision ||
+            row.originalEntry!=RVObject(owner,"entry") || ![row.video isEqual:video]) continue;
+        if ((row.parts&RVDeArrowPartsTitle) && (row.profile.titleRole || (!row.modern && row.originalTitle.length))) return YES;
+    }return NO;
+}
 static NSString *RVDAUITextBlocker(RVDAUIBinding *state) {
     RVDAUITextLease *lease=state.textNodeLease;id node=state.controller;
     if (objc_getAssociatedObject(node,RVDAUITextLeaseKey)!=lease || RVObject(node,"element")!=lease.element) return @"text_element_generation_changed";
@@ -157,6 +165,7 @@ static NSString *RVDAUITextBlocker(RVDAUIBinding *state) {
     if (![RVDAUIOwnerSurface(state.textOwner,NO,NULL) isEqual:state.surface]) return @"text_surface_changed";
     if (RVObject(state.textOwner,"entry")!=state.originalEntry || ![RVObject(RVAdRootElement(state.originalEntry),"elementData") isEqual:state.textNodeSource]) return @"text_model_source_changed";
     if (![lease.nativeText.string isEqual:state.originalTitle]) return @"native_title_changed";
+    if (RVDAUITextExistingRole(state.textOwner,state.video)) return @"existing_title_adapter_owns_video";
     if (![RVDAUITextScopes(node,state.textContext) containsObject:state.textScope]) return @"text_component_scope_changed";
     if (!RVDAUITextImageVideo(state.textScope,state.textOwner,state.video)) return @"matching_image_identity_missing";
     if (!RVDAUITextUnique(node,state.textScope,state.originalTitle)) return @"title_role_ambiguous";
@@ -171,7 +180,7 @@ static void RVDAUITextWrite(id node,NSAttributedString *text) {
 static void RVDAUITextRestore(RVDAUIBinding *state) {
     if (!state.textOnly || !state.textNodeApplied) return;
     NSString *blocker=RVDAUICurrentBlocker(state);
-    if (blocker && ![blocker isEqual:@"title_role_ambiguous"]) return;
+    if (blocker && ![@[@"title_role_ambiguous",@"existing_title_adapter_owns_video"] containsObject:blocker]) return;
     NSAttributedString *current=RVObject(state.controller,"attributedText");
     if ([current isKindOfClass:NSAttributedString.class] && [current isEqualToAttributedString:state.textNodeApplied]) RVDAUITextWrite(state.controller,state.textNodeOriginal);
     state.textNodeApplied=nil;RVDADiagCount(@"text_node.original_restored");
@@ -243,6 +252,9 @@ static void RVDAUITextQueue(id node) {
         RVDAUITextIndex *index=RVDAUITextIndexForOwner(owner);
         if (!index || index.pending) { if (RVDAUITextWaiting.count<512) [RVDAUITextWaiting addObject:target];return; }
         NSArray *ids=index.titles[lease.nativeText.string];NSString *video=ids.count==1 ? ids.firstObject : nil;
+        if (video && RVDAUITextExistingRole(owner,video)) {
+            RVDAUITextRestore(state);RVDADiagCount(@"text_node.existing_title_adapter_preserved");return;
+        }
         id joinedScope=nil;for (id scope in scopes) if (video && RVDAUITextImageVideo(scope,owner,video)) { joinedScope=scope;break; }
         NSString *blocker=!index.complete ? @"title_parse_budget_exceeded" : !video ? @"semantic_title_unmatched_or_ambiguous" : !joinedScope ? @"matching_image_identity_missing" : !RVDAUITextUnique(target,joinedScope,lease.nativeText.string) ? @"title_role_ambiguous" : nil;
         if (blocker) {

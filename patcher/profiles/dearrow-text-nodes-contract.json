@@ -28,5 +28,6 @@
     "T03_title_node_rejected"
   ],
   "tests_run": false,
-  "device_verified": false
+  "device_verified": false,
+  "existing_adapters": "Existing verified row title roles retain ownership; generic adapter fills unresolved layouts and never mistakes a channel label for an original title already replaced upstream."
 }
