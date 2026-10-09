@@ -400,8 +400,8 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     if (binding.imageOnly) { binding.nativeThumbnailNode=binding.controller;binding.imageConsumerVerified=YES; }
     if (binding.textOnly) { binding.nativeTitleNode=binding.controller;binding.titleConsumerVerified=YES; }
     if (!RVEnabled(@"dearrow_use_crowdsourced_titles") && ![RVSetting(@"dearrow_mode") isEqual:@"casual"]) binding.serviceParts&=~RVDeArrowPartsTitle;
-    binding.titleBlocker=title ? @"awaiting_metadata" : (binding.modern && !binding.profile.titleRole ? binding.profile.titleRoleBlocker ?: binding.profile.blocker ?: @"title_role_unknown" : @"policy_off");
-    binding.imageBlocker=image ? @"awaiting_metadata" : (binding.modern && !binding.profile.imageRole ? binding.profile.imageRoleBlocker ?: binding.profile.blocker ?: @"image_role_unknown" : @"policy_off");
+    binding.titleBlocker=title ? @"awaiting_metadata" : (binding.modern && !binding.textOnly && !binding.profile.titleRole ? binding.profile.titleRoleBlocker ?: binding.profile.blocker ?: @"title_role_unknown" : @"policy_off");
+    binding.imageBlocker=image ? @"awaiting_metadata" : (binding.modern && !binding.imageOnly && !binding.profile.imageRole ? binding.profile.imageRoleBlocker ?: binding.profile.blocker ?: @"image_role_unknown" : @"policy_off");
     if (binding.profile.liveCard && binding.parts && !RVDAUIOriginal(binding) && binding.nativeFactoryRoot) RVDAUIScheduleConsumers(binding,0);
     if (RVDAUIOriginal(binding)) { binding.titleBlocker=@"original_selected";binding.imageBlocker=@"original_selected"; }
     RVDADiagRecord(@"D05_policy_evaluated",binding,!binding.parts ? @"policy_or_role_off" : RVDAUIOriginal(binding) ? @"original_selected" : nil,
@@ -725,7 +725,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"cached_random_http":@(state.fallbackCachedHTTPStatus),@"fallback_timestamp_source":state.fallbackTimestampSource ?: @"not_applicable",
             @"fallback_timestamp_requested":state.fallbackTimestampRequested ?: NSNull.null,@"fallback_timestamp_returned":state.fallbackTimestampReturned ?: NSNull.null,
             @"fallback_request_key":state.fallbackRequestKey ?: @"none",@"fallback_row_visible":@(RVDAUIFallbackVisible(state)),
-            @"image_role":@(state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"]),@"encoded_image_ready":@(state.imageBytes!=nil),
+            @"image_role":@(state.imageOnly || (state.modern ? state.profile.imageRole : ![state.surface isEqual:@"player"])),@"encoded_image_ready":@(state.imageBytes!=nil),
             @"refresh_requests":@(state.refreshRequests),@"native_materializations":@(state.materializations),
             @"live_card_contract":@(state.profile.liveCard),@"identity_path":state.profile.identityPath ?: @[],@"command_type":state.profile.commandType ?: @"explicit_or_legacy",@"component_path":state.profile.componentPath ?: @[],@"row_bindings":@(RVDAUIRowBindings(state).count),
             @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
@@ -733,7 +733,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"native_owner_checkpoint":state.nativeOwnerCheckpoint ?: @{},@"factory_provenance_verified":@(state.factoryProvenanceVerified),@"factory_callback_count":@(state.factoryCallbackCount),@"factory_serial":@(state.factorySerial),@"native_title_projected":@(state.nativeTitleProjected),@"native_thumbnail_projected":@(state.nativeImageProjected),
             @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"text_node_adapter":@(state.textOnly),@"image_node_adapter":@(state.imageOnly),@"adapter":state.textOnly ? @"model_title_text_node" : state.imageOnly ? @"video_url_image_node" : state.profile.adapterID ?: @"legacy_pinned",
             @"structural_fingerprint":state.profile.structuralFingerprint ?: @"not_applicable",@"watch_title_contract":@(state.profile.watchTitle),
-            @"title_input_blocker":state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.profile.imageRoleBlocker ?: @"not_applicable",
+            @"title_input_blocker":state.textOnly ? @"ready" : state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.imageOnly ? @"ready" : state.profile.imageRoleBlocker ?: @"not_applicable",
             @"last_checkpoint":state.lastCheckpoint ?: @"none",@"last_blocker":state.lastBlocker ?: @"ready",@"owners":state.ownerSummary ?: @{},
             @"result_present":@(result!=nil),@"title_decision":RVDADecisionName(result.titleDecision),
             @"image_decision":RVDADecisionName(result.thumbnailDecision),@"image_state":@(result.imageState),
