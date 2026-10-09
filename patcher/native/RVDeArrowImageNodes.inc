@@ -63,6 +63,9 @@ static void RVDAImageNodeWrite(id node,UIImage *image) {
 }
 static void RVDAImageNodeRestore(RVDAUIBinding *state) {
     if (!state.imageOnly || !state.imageNodeApplied || RVDAUICurrentBlocker(state)) return;
+    // A native cache/download delivery may already have replaced our image.
+    // Preserve it even when its coalesced notification has not drained yet.
+    if (RVObject(state.controller,"image")!=state.imageNodeApplied) { state.imageNodeApplied=nil;return; }
     // Do not restore onto a new URL or ownership generation.
     RVDAImageNodeWrite(state.controller,state.imageNodeOriginal);state.imageNodeApplied=nil;
     RVDADiagCount(@"image_node.original_restored");
