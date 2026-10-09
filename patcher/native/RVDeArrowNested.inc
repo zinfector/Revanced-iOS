@@ -82,11 +82,15 @@ static void RVDANestedAccept(id node,id element,RVDANestedInput *input,RVDAUIFac
     }
     NSString *surface=RVDAUIOwnerSurface(input.owner,NO,NULL);
     if (RVDAUIDiagnosticsArmed) RVDALiveCaptureRoot(input.source,@"RVDANestedCollectionItem",surface,nil);
-    if (!input.dataSource || !input.item || !surface || RVObject(input.item,"entry")!=input.entry ||
-        ![RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.source] || RVObject(node,"element")!=element) {
+    BOOL ownerValid=input.nativeCollection ? input.collection && input.owner && RVObject(input.owner,"entry")==input.entry &&
+        RVObject(input.collection,"element")==input.collectionElement &&
+        [RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.parentSource] :
+        input.dataSource && input.item && RVObject(input.item,"entry")==input.entry &&
+        [RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.source];
+    if (!ownerValid || !surface || RVObject(node,"element")!=element) {
         RVDADiagCount(@"nested.rejected_owner_or_source");return;
     }
-    NSArray<RVDAProjection *> *profiles=RVDAProfiles(input.source,nil);
+    NSArray<RVDAProjection *> *profiles=input.verifiedProfile ? @[input.verifiedProfile] : RVDAProfiles(input.source,nil);
     // Never interpret a shelf container as one video, or give multiple children
     // a shared native root. Only reviewed single-card semantics are admitted.
     RVDAProjection *profile=profiles.count==1 ? profiles.firstObject : nil;
@@ -101,7 +105,7 @@ static void RVDANestedAccept(id node,id element,RVDANestedInput *input,RVDAUIFac
     state.index=-1;state.profile=profile;state.modern=YES;state.video=profile.video;state.surface=surface;state.route=profile.route;
     state.originalTitle=profile.originalTitle;state.untranslatedTitle=profile.untranslatedTitle;
     state.originalImageURL=profile.originalImageURL;state.duration=profile.duration;state.livestream=profile.livestream;
-    state.ownerSummary=@{@"strategy":@"independent_nested_child",@"data_source":NSStringFromClass([input.dataSource class]),
+    state.ownerSummary=@{@"strategy":@"independent_nested_child",@"data_source":input.nativeCollection ? @"ELMCollectionNode" : NSStringFromClass([input.dataSource class]),
         @"factory_node":NSStringFromClass([node class]),@"owner":NSStringFromClass([input.owner class])};
     objc_setAssociatedObject(node,RVDAUIBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [RVDAUIBindings addObject:state];RVDAUIRequest(state);
@@ -109,7 +113,8 @@ static void RVDANestedAccept(id node,id element,RVDANestedInput *input,RVDAUIFac
     state.factorySerial=++RVDAUIFactorySerial;state.submittedData=input.source;
     RVDAUIAcceptFactory(state,node,capture);
     RVDADiagRecord(@"N04_nested_child_bound",state,nil,@{@"single_video":@YES,@"entry_identity_checked":@YES,
-        @"native_element_identity_checked":@YES,@"serialized_source_checked":@YES});
+        @"native_element_identity_checked":@YES,@"serialized_source_checked":@YES,
+        @"source_join":input.nativeCollection ? @"unique_video_and_template_in_owned_viewmodel" : @"item_entry_identity"});
 }
 static RVDANestedInput *RVDANestedRecordItem(id dataSource,id item) {
     id entry=RVObject(item,"entry"),renderer=RVAdRootElement(entry);
@@ -128,7 +133,162 @@ static RVDANestedInput *RVDANestedRecordItem(id dataSource,id item) {
     });
     RVDADiagCount(@"nested.serialized_child_provenance_recorded");return input;
 }
+// The native static collection route has no YT/ELMN data-source callback.
+// Observe the native no-argument child factory, then join one independently
+// serialized viewModel to that child. Context -> parentResponder proves the
+// shelf's YT owner; native video identity + template proves the child join.
+@interface RVDANativeChildObservation : NSObject
+@property(nonatomic,weak) id collection,node;
+@property(nonatomic,weak) id nativeController;
+@property(nonatomic,strong) id element;
+@property(nonatomic) NSUInteger callbacks;
+@property(nonatomic) NSUInteger attempts;
+@property(nonatomic) BOOL pending;
+@end
+@implementation RVDANativeChildObservation @end
+static const void *RVDANativeChildKey=&RVDANativeChildKey;
+static NSUInteger RVDANativeChildPending;
+static id RVDANativeShelfOwner(id context,NSData **source) {
+    // The native cell context may be a forwarding proxy. Unwrap only that
+    // reviewed class through its fixed Objective-C forwarding method.
+    Class proxy=NSClassFromString(@"ELMCollectionCellContextProxy");
+    for (NSUInteger depth=0;proxy && [context isKindOfClass:proxy] && depth<2;depth++) {
+        if (!RVCan(context,"forwardingTargetForSelector:",@"@@::")) return nil;
+        context=((id(*)(id,SEL,SEL))objc_msgSend)(context,sel_registerName("forwardingTargetForSelector:"),sel_registerName("parentResponder"));
+    }
+    id owner=RVAdResolvedObject(context,"parentResponder");
+    for (NSUInteger depth=0;owner && depth<12;depth++,owner=RVObject(owner,"parentResponder")) {
+        id entry=RVObject(owner,"entry"),renderer=RVAdRootElement(entry);
+        NSData *data=RVObject(renderer,"elementData");
+        if (![data isKindOfClass:NSData.class] || !data.length || data.length>2*1024*1024) continue;
+        NSString *key=RVDATemplate(RVDAPath(data,@[@1,@168777401]));
+        if (!RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe")) continue;
+        id options=RVAdResolvedObject(renderer,"compatibilityOptions");
+        if (!RVAdResolve(options,"hasAdLoggingData",@"B@:") || RVBool(options,"hasAdLoggingData")) return nil;
+        if (source) *source=[data copy];return owner;
+    }return nil;
+}
+static NSString *RVDANativeChildVideo(id element,NSUInteger *length,NSString **blocker) {
+    // Reviewed Objective-C bridge reads the immutable Element arena. It never
+    // materializes controllers. Run off-main and never export its model text.
+    NSString *text=RVObject(element,"protoText");
+    if (length) *length=[text isKindOfClass:NSString.class] ? text.length : 0;
+    if (![text isKindOfClass:NSString.class] || text.length>128*1024) { if (blocker) *blocker=@"native_child_text_unavailable_or_large";return nil; }
+    static NSRegularExpression *ids;static dispatch_once_t once;
+    dispatch_once(&once,^{ ids=[NSRegularExpression regularExpressionWithPattern:@"(?:video_id|videoId|videoID)\\s*:\\s*\"([A-Za-z0-9_-]{11})\"" options:0 error:nil]; });
+    NSArray *matches=[ids matchesInString:text options:0 range:NSMakeRange(0,text.length)];
+    if (!matches.count || matches.count>32) { if (blocker) *blocker=@"native_child_video_identity_missing";return nil; }
+    NSString *video=[text substringWithRange:[matches[0] rangeAtIndex:1]];
+    for (NSTextCheckingResult *match in matches) if (![[text substringWithRange:[match rangeAtIndex:1]] isEqual:video]) {
+        if (blocker) *blocker=@"native_child_video_identity_ambiguous";return nil;
+    }return video;
+}
+static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
+    if (!NSThread.isMainThread || observation.pending || observation.attempts>=2 || !observation.element || !observation.nativeController || !observation.node || !observation.collection) return;
+    if (objc_getAssociatedObject(observation.node,RVDAUIBindingKey)) return;
+    if (RVDANativeChildPending>=8 || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) {
+        RVDADiagCount(@"nested.native_child_queue_deferred");return;
+    }
+    observation.attempts++;id node=observation.node,collection=observation.collection;
+    RVDAUIFactoryCapture *capture=[RVDAUIFactoryCapture new];capture.controller=observation.nativeController;
+    capture.element=observation.element;capture.callbacks=observation.callbacks;
+    if (capture.callbacks!=1 || !capture.controller || !capture.element || RVObject(node,"element")!=capture.element ||
+        RVDAUIElementIdentity(RVObject(capture.controller,"element"))!=RVDAUIElementIdentity(capture.element) || !RVDAUIElementIdentity(capture.element)) {
+        RVDADiagCount(@"nested.native_child_factory_contract_missing");return;
+    }
+    NSData *parentSource=nil;id owner=RVDANativeShelfOwner(RVObject(capture.controller,"context"),&parentSource);
+    NSString *surface=RVDAUIOwnerSurface(owner,NO,NULL),*route=RVDAResourceName(RVObject(capture.controller,"templateURI"));
+    id collectionElement=RVObject(collection,"element");
+    if (!owner || !surface || !collectionElement || !route) {
+        RVDADiagRecord(@"N10_native_collection_owner",nil,@"owned_shelf_context_unresolved",
+            @{@"context_class":RVObject(capture.controller,"context") ? NSStringFromClass([RVObject(capture.controller,"context") class]) : @"absent",
+              @"parent_owner":@(owner!=nil),@"surface":surface ?: @"unknown",@"route":route ?: @"unknown"});
+        if (observation.attempts<2) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/5),dispatch_get_main_queue(),^{ RVDANativeChildPrepare(observation); });
+        else observation.element=nil;return;
+    }
+    id entry=RVObject(owner,"entry");uint64_t revision=RVDAUISettingsRevision;
+    __weak id weakOwner=owner,weakCollection=collection,weakNode=node;
+    observation.pending=YES;RVDANativeChildPending++;
+    static dispatch_queue_t queue;static dispatch_once_t once;
+    dispatch_once(&once,^{ queue=dispatch_queue_create("RVPort.DeArrow.NativeShelfChild",dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,QOS_CLASS_UTILITY,0)); });
+    dispatch_async(queue,^{ @autoreleasepool {
+        NSString *blocker=nil;NSUInteger textLength=0;NSString *video=RVDANativeChildVideo(capture.element,&textLength,&blocker);
+        NSData *component=RVDAPath(parentSource,@[@1,@168777401]);NSString *key=RVDATemplate(component);
+        static NSMutableArray *parsedShelves;if (!parsedShelves) parsedShelves=[NSMutableArray array];
+        NSArray *children=nil;for (NSDictionary *cached in parsedShelves) if ([cached[@"source"] isEqual:parentSource]) { children=cached[@"children"];break; }
+        if (!children) {
+            NSMutableArray *parsed=[NSMutableArray array];
+            for (NSDictionary *child in RVDAShelfViewModels(RVDAChild(component,5),key)) {
+                NSArray *profiles=RVDAProfiles(child[@"element"],nil);RVDAProjection *profile=profiles.count==1 ? profiles.firstObject : nil;
+                NSMutableDictionary *item=[child mutableCopy];if (profile) item[@"profile"]=profile;
+                item[@"blocker"]=profile ? @"ready" : RVDAProfileFailure(child[@"element"]) ?: @"unreviewed";[parsed addObject:item.copy];
+            }
+            children=parsed.copy;[parsedShelves addObject:@{@"source":parentSource,@"children":children}];
+            while (parsedShelves.count>2) [parsedShelves removeObjectAtIndex:0];
+        }
+        RVDAProjection *chosen=nil;NSUInteger matches=0,verified=0;NSMutableArray *samples=[NSMutableArray array];
+        for (NSDictionary *child in children) {
+            RVDAProjection *profile=child[@"profile"];
+            BOOL accepted=profile.liveCard && !profile.watchTitle && !profile.shelfCard;
+            if (accepted) verified++;
+            if (accepted && [profile.video isEqual:video] && [profile.route isEqual:route]) { matches++;chosen=profile; }
+            if (samples.count<4) [samples addObject:@{@"occurrence":child[@"occurrence"],@"video_hash":RVDADiagVideo(profile.video),
+                @"route":profile.route ?: RVDATemplate(RVDAPath(child[@"element"],@[@1,@168777401])) ?: @"unknown",
+                @"blocker":accepted ? @"ready" : child[@"blocker"],@"child_bytes":@([child[@"element"] length])}];
+        }
+        if (!blocker && matches!=1) blocker=matches ? @"shelf_child_join_ambiguous" : @"shelf_child_join_missing";
+        dispatch_async(dispatch_get_main_queue(),^{
+            RVDANativeChildPending--;observation.pending=NO;
+            if (!blocker || observation.attempts>=2) observation.element=nil;
+            id currentNode=weakNode,currentOwner=weakOwner,currentCollection=weakCollection;
+            RVDADiagRecord(@"N11_viewmodel_child_join",nil,blocker,
+                @{@"video_hash":RVDADiagVideo(video),@"surface":surface,@"route":route,@"children":@(children.count),
+                  @"verified_children":@(verified),@"matching_children":@(matches),@"native_text_length":@(textLength),@"samples":samples});
+            if (RVDAUIDiagnosticsArmed) {
+                RVDALiveCaptureRoot(parentSource,@"RVDANativeShelfOwner",surface,nil);
+                if (chosen) RVDALiveCaptureRoot(chosen.source,@"RVDANestedNativeViewModelChild",surface,nil);
+            }
+            if (blocker || revision!=RVDAUISettingsRevision || !currentNode || !currentOwner || !currentCollection ||
+                RVObject(currentOwner,"entry")!=entry || RVObject(currentCollection,"element")!=collectionElement ||
+                ![RVObject(RVAdRootElement(entry),"elementData") isEqual:parentSource] || RVObject(currentNode,"element")!=capture.element) return;
+            RVDANestedInput *input=[RVDANestedInput new];input.nativeCollection=YES;input.owner=currentOwner;input.collection=currentCollection;
+            input.collectionElement=collectionElement;input.entry=entry;input.parentSource=parentSource;input.source=chosen.source;input.verifiedProfile=chosen;
+            capture.input=chosen.source;RVDANestedAccept(currentNode,capture.element,input,capture);
+        });
+    }});
+}
 static void RVDANestedInstall(void) {
+    RVDAUIHook(@"ELMCollectionNode",@"collectionNode:nodeBlockForItemAtIndexPath:",@"@?@:@@",NO,^id(IMP original,SEL sel) {
+        return ^id(id collection,id nativeCollection,id indexPath) {
+            id (^native)(void)=((id(*)(id,SEL,id,id))original)(collection,sel,nativeCollection,indexPath);
+            RVDADiagCount(@"nested.native_collection_factory_observed");if (!native) return native;
+            __weak id weakCollection=collection;
+            // Native block descriptor is @"ELMCellNode"8@?0. Never inspect its
+            // opaque C++ captures or change the native arguments/result.
+            return [^id(void) {
+                if (RVDAUIFactoryScope) return native();
+                RVDAUIFactoryCapture *capture=[RVDAUIFactoryCapture new];id node=nil;
+                RVDAUIFactoryScope=capture;
+                @try { node=native(); } @finally { RVDAUIFactoryScope=nil; }
+                if (node && capture.callbacks==1 && capture.element && capture.controller) {
+                    RVDANativeChildObservation *observation=[RVDANativeChildObservation new];
+                    observation.collection=weakCollection;observation.node=node;observation.nativeController=capture.controller;
+                    observation.element=capture.element;observation.callbacks=capture.callbacks;
+                    objc_setAssociatedObject(node,RVDANativeChildKey,observation,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                    dispatch_async(dispatch_get_main_queue(),^{ RVDANativeChildPrepare(observation); });
+                } else RVDADiagCount(@"nested.native_collection_callback_missing");
+                return node;
+            } copy];
+        };
+    });
+    RVDAUIHook(@"ELMCollectionNode",@"collectionNode:willDisplayItemWithNode:",@"v@:@@",NO,^id(IMP original,SEL sel) {
+        return ^(id collection,id nativeCollection,id node) {
+            ((void(*)(id,SEL,id,id))original)(collection,sel,nativeCollection,node);
+            RVDANativeChildObservation *observation=objc_getAssociatedObject(node,RVDANativeChildKey);
+            if (observation && observation.collection==collection) dispatch_async(dispatch_get_main_queue(),^{ RVDANativeChildPrepare(observation); });
+        };
+    });
+
     RVDAUIHook(@"YTInnerTubeCollectionNodeSectionDataSource",@"initWithSection:controller:service:context:",@"@@:@@@@",NO,^id(IMP original,SEL sel) {
         return ^id(id object,id section,id controller,id service,id context) {
             id result=((id(*)(id,SEL,id,id,id,id))original)(object,sel,section,controller,service,context);

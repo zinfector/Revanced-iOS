@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.59'
+VERSION = '0.3.60'
 
 
 def digest(path):
@@ -48,13 +48,13 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-nested-cards',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-viewmodel-cards',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Bind independently serialized nested ELM cards to their exact native factory and update uniquely owned title/image primitives without shared shelf rewrites or reloads. Separate bounded shelf-family and nested-child capture slots; observe modern diffable serialized children read-only. Preserve freeze safeguards, ordinary cards and original thumbnails until replacement ready. Apple production build and packaging only; no tests'}
+               'scope': 'Extract viewModel shelf child Elements for feed prefetch and bind the independent native ELMCollectionNode child factory through its shelf owner, unique video/template join and exact native element identity. Apply ready pixels only to uniquely owned loaded child primitives. Add owner/join checkpoints and directed viewModel probes. Preserve originals, native interactions and freeze budgets. Apple production build and packaging only; no tests'}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 

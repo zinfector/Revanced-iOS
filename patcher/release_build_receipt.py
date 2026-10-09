@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-VERSION = '0.3.59'
+VERSION = '0.3.60'
 
 
 def digest(path):
@@ -31,7 +31,7 @@ def main():
              'usb_diagnostics.py', 'profiles/usb-diagnostics-contract.json', 'coverage.json', 'features.py',
              'settings_catalog.py', 'configs/adblock-native.json',
              'profiles/dearrow-adaptive-contract.json', 'profiles/dearrow-live-card-contract.json',
-             'profiles/dearrow-live-capture-contract.json', 'profiles/dearrow-thumbnail-recovery-contract.json', 'profiles/dearrow-feed-prefetch-contract.json', 'profiles/dearrow-frame-recovery-contract.json', 'profiles/dearrow-cache-resume-contract.json', 'profiles/dearrow-card-diagnostics-contract.json', 'profiles/shorts-feed-navigation-contract.json', 'profiles/watch-controls-contract.json', 'profiles/dearrow-recovery-contract.json', 'profiles/dearrow-nested-cards-contract.json']
+             'profiles/dearrow-live-capture-contract.json', 'profiles/dearrow-thumbnail-recovery-contract.json', 'profiles/dearrow-feed-prefetch-contract.json', 'profiles/dearrow-frame-recovery-contract.json', 'profiles/dearrow-cache-resume-contract.json', 'profiles/dearrow-card-diagnostics-contract.json', 'profiles/shorts-feed-navigation-contract.json', 'profiles/watch-controls-contract.json', 'profiles/dearrow-recovery-contract.json', 'profiles/dearrow-viewmodel-cards-contract.json']
     names += ['native/'+name for name in native['source_files']]
     names += ['output/'+item['filename'] for item in package['packages']]
     artifacts = {}

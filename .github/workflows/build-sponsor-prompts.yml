@@ -1,8 +1,8 @@
-name: Build DeArrow nested cards with Xcode
+name: Build DeArrow viewModel cards with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-nested-cards-0.3.59]
+    branches: [fix/dearrow-viewmodel-cards-0.3.60]
 
 permissions:
   contents: read

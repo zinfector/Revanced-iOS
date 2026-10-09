@@ -12,7 +12,11 @@ static const void *RVDANestedOwnerKey=&RVDANestedOwnerKey,*RVDANestedInputKey=&R
 @interface RVDANestedInput : NSObject
 @property(nonatomic,weak) id dataSource,item,owner;
 @property(nonatomic,strong) id entry;
-@property(nonatomic,copy) NSData *source;
+@property(nonatomic,copy) NSData *source,*parentSource;
+@property(nonatomic,weak) id collection;
+@property(nonatomic,strong) id collectionElement;
+@property(nonatomic,strong) RVDAProjection *verifiedProfile;
+@property(nonatomic) BOOL nativeCollection;
 @end
 @implementation RVDANestedInput @end
 static const void *RVDAUIModelKey=&RVDAUIModelKey,*RVDAUIImageKey=&RVDAUIImageKey;
@@ -164,6 +168,15 @@ static NSString *RVDAUIOwnerSurface(id owner,BOOL watchTitle,NSString **watchVid
 static id RVDAUILegacyRenderer(id entry,NSString **unionSelector);
 static NSString *RVDANestedCurrentBlocker(RVDAUIBinding *binding) {
     RVDANestedInput *input=binding.nestedInput;
+    if (input.nativeCollection) {
+        if (!input.collection || !input.owner) return @"shelf_owner_released";
+        if (RVObject(input.owner,"entry")!=input.entry) return @"shelf_entry_changed";
+        if (RVObject(input.collection,"element")!=input.collectionElement) return @"shelf_collection_element_changed";
+        if (![RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.parentSource]) return @"shelf_source_changed";
+        if (RVObject(binding.controller,"element")!=binding.nestedElement) return @"nested_cell_element_changed";
+        if (![RVDAUIOwnerSurface(input.owner,NO,NULL) isEqual:binding.surface]) return @"nested_surface_changed";
+        return nil;
+    }
     if (!input.dataSource || !input.item || !input.owner) return @"nested_owner_released";
     if (RVObject(input.item,"entry")!=input.entry) return @"nested_item_entry_changed";
     if (![RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.source]) return @"nested_source_changed";
@@ -709,7 +722,7 @@ static NSDictionary *RVDAUIReport(void) {
         @"settings_revision":@(RVDAUISettingsRevision),@"cache_invalidation_reason":RVDAUILastInvalidation,@"frame_disk_cache":@{@"compressed_byte_limit":@(32*1024*1024),@"entry_limit":@128,@"ttl_seconds":@1800},@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
         @"bindings":bindings,@"binding_sample_order":@"current_visible_pending_then_recent",@"bindings_total":@(ordered.count),@"bindings_omitted":@(ordered.count-bindings.count),@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"performance_schema":@1,@"performance_policy":@{@"scan_spacing_ms":@120,@"scan_budget_per_turn":@1,@"reload_budget_per_turn":@1,@"image_workers":@2,@"detailed_capture_only_when_armed":@YES},@"global_setter_observers":@NO,
-        @"nested_collection_strategy":@"independent_serialized_child_factory_with_owned_primitive_updates",@"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
+        @"nested_collection_strategy":@"viewmodel_child_input_and_native_collection_factory_with_owned_primitive_updates",@"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
 }
 static void RVDAUIStartCapture(void) {

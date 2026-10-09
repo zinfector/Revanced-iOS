@@ -88,6 +88,15 @@ static NSDictionary *RVDALiveShelfProbes(NSData *model,NSString *key) {
         NSUInteger occurrence=field.number==9 ? direct++ : wrapped++;
         NSArray *path=@[@312131490,@20,@{@"field":@(field.number),@"occurrence":@(occurrence)}];
         NSData *card=field.value;
+        if (field.number==17 && RVDAChild(card,2)) {
+            NSData *element=RVDAPath(card,@[@2,@36905,@1]);
+            NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *resource=RVDATemplate(component);
+            NSArray *profiles=RVDAProfiles(element,nil);RVDAProjection *profile=profiles.count==1 ? profiles.firstObject : nil;
+            [cards addObject:@{@"card_path":path,@"variant":@"viewModel",@"element_path":[path arrayByAddingObjectsFromArray:@[@2,@36905,@1]],
+                @"card_shape":RVDALiveShape(card),@"element_shape":RVDALiveShape(element),@"model_shape":RVDALiveShape(RVDAChild(component,5)),
+                @"resource_key":resource ?: @"unresolved",@"profiles":@(profiles.count),@"video_hash":RVDADiagVideo(profile.video),
+                @"semantic_blocker":profile ? @"ready" : RVDAProfileFailure(element),@"presentation_authorized":@NO}];continue;
+        }
         if (field.number==17) { card=RVDAChild(card,1);path=[path arrayByAddingObject:@1]; }
         NSArray *videoPath=[path arrayByAddingObject:@1];NSData *data=RVDAPath(model,videoPath);
         NSString *video=RVDAText(RVDAChild(data,7));
@@ -99,7 +108,7 @@ static NSDictionary *RVDALiveShelfProbes(NSData *model,NSString *key) {
             @"thumbnail_identity_matches":@(RVDALiveCardImageURLs(RVDAPath(data,@[@1,@1]),video).count>0),
             @"presentation_authorized":@NO}];
     }
-    return @{@"adapter":@"horizontal_shelf_video_card_v1",@"verified_children":@(RVDAShelfProfiles(model,key).count),
+    return @{@"adapter":@"horizontal_shelf_child_variants_v2",@"viewmodel_children":@(RVDAShelfViewModels(model,key).count),@"verified_children":@(RVDAShelfProfiles(model,key).count),
         @"shelf_data_shape":RVDALiveShape(shelf),@"child_probes":cards,@"lazy_collection_lookup_enabled":@NO,@"presentation_adapter_enabled":@NO};
 }
 static NSDictionary *RVDALiveDirectedCardProbes(NSData *model) {

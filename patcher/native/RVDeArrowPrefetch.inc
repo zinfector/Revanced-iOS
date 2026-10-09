@@ -255,7 +255,7 @@ static void RVDAPrefetchPumpPages(void) {
                 // Keep a per-snapshot limit so one large shelf cannot discard
                 // unrelated rows later in the same parsing batch.
                 NSUInteger count=0;
-                for (RVDAProjection *profile in RVDAProfiles(snapshot[@"data"],nil)) if (!profile.watchTitle && RVVideoIDValid(profile.video) && count++<48)
+                for (RVDAProjection *profile in RVDAFeedProfiles(snapshot[@"data"])) if (!profile.watchTitle && RVVideoIDValid(profile.video) && count++<48)
                     [candidates addObject:@{@"video":profile.video,@"duration":@(profile.duration),@"surface":snapshot[@"surface"],@"title":@(profile.titleRole),@"image":@(profile.imageRole),@"livestream":@(profile.livestream)}];
             }
             dispatch_async(dispatch_get_main_queue(),^{

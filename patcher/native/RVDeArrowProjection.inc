@@ -288,6 +288,30 @@ static NSArray<RVDAProjection *> *RVDAShelfProfiles(NSData *model,NSString *key)
         profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);[found addObject:profile];
     }return found.copy;
 }
+// Descriptor-proven alternative: ShelfCard.viewModel (YTIRenderer) ->
+// YTIElementViewModel extension 36905 -> ELMPBElement field 1. These bytes
+// describe one child, never authorize a write to the shared shelf container.
+static NSArray<NSDictionary *> *RVDAShelfViewModels(NSData *model,NSString *key) {
+    if (!RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe") || model.length>2*1024*1024) return @[];
+    NSData *shelf=RVDACheckedPath(model,@[@312131490,@20],NULL,NULL);
+    NSArray *fields=RVVoteFields(shelf);if (!fields) return @[];
+    NSMutableArray *children=[NSMutableArray array];NSUInteger occurrence=0,total=0;
+    for (RVVoteField *field in fields) if (field.number==17) {
+        NSUInteger index=occurrence++;if (field.wire!=2 || occurrence>64) return @[];
+        NSArray *oneof=RVVoteFields(field.value);
+        if (!RVVoteSingularFields(oneof,@[@1,@2]) || RVDAChild(field.value,1)) continue;
+        NSData *renderer=RVDAChild(field.value,2);
+        NSArray *rendererFields=RVVoteFields(renderer);
+        if (!RVVoteSingularFields(rendererFields,@[@36905])) continue;
+        NSData *viewModel=RVDAChild(renderer,36905);
+        if (!RVVoteSingularFields(RVVoteFields(viewModel),@[@1,@997])) continue;
+        NSData *element=RVDAChild(viewModel,1);
+        if (!element.length || element.length>128*1024 || !RVVoteFields(element)) continue;
+        total+=element.length;if (total>2*1024*1024) return @[];
+        [children addObject:@{@"element":element,@"occurrence":@(index),
+            @"path":@[@312131490,@20,@{@"field":@17,@"occurrence":@(index)},@2,@36905,@1]}];
+    }return children.copy;
+}
 static void RVDADiscover(NSData *element,NSArray *path,NSMutableArray<RVDAProjection *> *found,
                        NSUInteger depth,NSUInteger *budget,NSString *watchVideo) {
     if (depth>16 || !*budget || found.count>16) return;(*budget)--;
@@ -356,6 +380,24 @@ static NSArray<RVDAProjection *> *RVDAProfiles(NSData *data,NSString *watchVideo
     if (found.count>1) for (RVDAProjection *profile in found) if (!profile.liveCard || profile.watchTitle) return @[];
     for (RVDAProjection *profile in found) profile.source=data;return found.copy;
 }
+static void RVDAFeedCollect(NSData *element,NSMutableArray *profiles,NSUInteger depth,NSUInteger *budget) {
+    if (depth>12 || !*budget || profiles.count>=48 || element.length>2*1024*1024) return;(*budget)--;
+    NSData *component=RVDAPath(element,@[@1,@168777401]);NSString *key=RVDATemplate(component);
+    if (RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe")) {
+        for (NSDictionary *child in RVDAShelfViewModels(RVDAChild(component,5),key)) {
+            for (RVDAProjection *profile in RVDAProfiles(child[@"element"],nil)) {
+                if (profile.liveCard && !profile.watchTitle && !profile.shelfCard && profiles.count<48) [profiles addObject:profile];
+            }
+        }return;
+    }
+    for (RVVoteField *field in RVVoteFields(element)) if (field.number==3 && field.wire==2)
+        RVDAFeedCollect(field.value,profiles,depth+1,budget);
+}
+static NSArray<RVDAProjection *> *RVDAFeedProfiles(NSData *element) {
+    NSMutableArray *profiles=[RVDAProfiles(element,nil) mutableCopy];NSUInteger budget=96;
+    RVDAFeedCollect(element,profiles,0,&budget);return profiles.copy;
+}
+
 static RVDAProjection *RVDAProfile(NSData *data,NSString *watchVideo) {
     NSArray *found=RVDAProfiles(data,watchVideo);return found.count==1 ? found[0] : nil;
 }

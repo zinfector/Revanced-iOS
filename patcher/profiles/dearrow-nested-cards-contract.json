@@ -1,9 +1,11 @@
 {
-  "version": "0.3.59",
-  "strategy": "independent_serialized_child_factory",
+  "version": "0.3.60",
+  "strategy": "viewmodel_child_and_native_static_collection_factory",
   "input_boundaries": [
     "YTInnerTubeCollectionNodeSectionDataSource.itemAtIndex:",
-    "YTInnerTubeCollectionNodeSectionDataSource.elementForItem:"
+    "YTInnerTubeCollectionNodeSectionDataSource.elementForItem:",
+    "HorizontalShelfCard.viewModel -> YTIElementViewModel (36905) -> ELMPBElement (1)",
+    "ELMCollectionNode.collectionNode:nodeBlockForItemAtIndexPath:"
   ],
   "read_only_boundaries": [
     "ELMNCollectionDataSource.diffableItemForSerializedElement:index:"
@@ -16,13 +18,22 @@
     "one native controller callback",
     "unique primitive role within proven child component",
     "loaded native node",
-    "current owner surface and settings generation"
+    "current owner surface and settings generation",
+    "native collection context resolves exact shelf owner entry",
+    "native protoText has one unambiguous video identity; parsed child profile has same tap ID and template",
+    "shelf source, collection element and native child element unchanged"
   ],
   "limits": {
     "child_source_bytes": 131072,
     "root_probe_ms": 4,
     "graph_objects": 256,
-    "capture_roots": 24
+    "capture_roots": 24,
+    "shelf_source_bytes": 2097152,
+    "shelf_cards": 64,
+    "native_child_pending": 8,
+    "child_identity_text_bytes": 131072,
+    "child_attempts": 2,
+    "parsed_shelf_cache": 2
   },
   "checkpoints": [
     "nested.collection_item_observed",
@@ -34,12 +45,18 @@
     "D04_live_native_consumers",
     "D08_result_accepted",
     "N06_nested_owned_pixels_applied",
-    "D10_live_replacement_visible"
+    "D10_live_replacement_visible",
+    "nested.native_collection_factory_observed",
+    "N10_native_collection_owner",
+    "N11_viewmodel_child_join"
   ],
   "fallback": "original thumbnail until replacement ready",
   "shared_shelf_projection": false,
   "collection_reload": false,
   "cxx_aggregate_calls": false,
   "tests_run": false,
-  "device_validated": false
+  "device_validated": false,
+  "prefetch": "extract descriptor-proven viewModel children for cache warming only; shared presentation remains suspended",
+  "native_child_block_abi": "@\"ELMCellNode\"8@?0",
+  "native_child_factory_imp": "0x1046b8e0c"
 }
