@@ -1,6 +1,6 @@
 {
   "version": "0.3.62",
-  "identity": "VideoData field 7 ID and canonical ytimg thumbnail URL identity, joined to an existing native image-node binding in the exact captured context and owner",
+  "identity": "Canonical model video ID and thumbnail URL joined to existing native image node in closest shared component or exact native context, with only one video identity in that scope",
   "role": "exact native attributed text matches a reviewed VideoData metadata/lockup title; exactly one model video and native text role; no typography or template revision inference",
   "lifecycle": "context and owner, exact entry/source, text element lease, original text, image binding identity and settings/backend generations rechecked before writes",
   "presentation": "native ASTextNode setAttributedText fixed v@:@ ABI, main queue, after original returns; styling retained; native gestures, models and loading untouched; original restored only within the same valid lease",
@@ -14,7 +14,8 @@
     "depth": 24,
     "nodes_per_context": 96,
     "waiting_nodes": 512,
-    "queued_parses": 4
+    "queued_parses": 4,
+    "ancestor_objects": 16
   },
   "checkpoints": [
     "T01_semantic_title_index",

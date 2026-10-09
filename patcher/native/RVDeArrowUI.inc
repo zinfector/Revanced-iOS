@@ -47,7 +47,7 @@ static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
 @property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode,nativeTitleNode;
 @property(nonatomic) BOOL imageOnly,textOnly;
-@property(nonatomic,weak) id textContext,textOwner;
+@property(nonatomic,weak) id textContext,textOwner,textScope;
 @property(nonatomic,strong) id textNodeLease;
 @property(nonatomic,strong) NSData *textNodeSource;
 @property(nonatomic,strong) NSAttributedString *textNodeOriginal,*textNodeApplied;
@@ -685,6 +685,7 @@ static void RVDAUIPreferencesChanged(void) {
     for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
     }
+    RVDAUITextResume();
 }
 // Take a bounded, deterministic diagnostic sample without permitting new writes.
 // Visibility is read from already loaded nodes, rather than stale census flags.

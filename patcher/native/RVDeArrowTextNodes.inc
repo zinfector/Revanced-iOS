@@ -3,7 +3,7 @@
 // No template URI/revision, font/position heuristic, descendant walk or reload.
 static const void *RVDAUITextLeaseKey=&RVDAUITextLeaseKey;
 static _Thread_local BOOL RVDAUITextWriting;
-static NSMapTable *RVDAUITextContexts,*RVDAUITextImages,*RVDAUITextIndexes;
+static NSMapTable *RVDAUITextContexts,*RVDAUITextImages,*RVDAUITextIndexes,*RVDAUITextImageGenerations;
 static NSHashTable *RVDAUITextWaiting;
 static NSOperationQueue *RVDAUITextParseQueue;
 static NSUInteger RVDAUITextParses;
@@ -64,14 +64,41 @@ static void RVDAUITextCollect(NSData *data,NSMutableDictionary *titles,NSUIntege
 static void RVDAUITextWake(id context) {
     for (id node in ((NSHashTable *)[RVDAUITextContexts objectForKey:context]).allObjects) RVDAUITextQueue(node);
 }
+static NSArray *RVDAUITextScopes(id node,id context) {
+    NSMutableArray *scopes=[NSMutableArray array],*queue=[NSMutableArray array];
+    id start=RVObject(node,"nodeController");if (start) [queue addObject:start];
+    NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
+    Class component=NSClassFromString(@"ELMComponent"),controller=NSClassFromString(@"ASNodeController");
+    for (NSUInteger index=0;index<queue.count && index<16;index++) {
+        id object=queue[index];if ([seen containsObject:object]) continue;[seen addObject:object];
+        BOOL isComponent=component && [object isKindOfClass:component];
+        if (!(isComponent || (controller && [object isKindOfClass:controller]))) continue;
+        if (isComponent) [scopes addObject:object];
+        for (NSString *edge in @[@"owningComponent",@"parent"]) {
+            id next=RVObject(object,edge.UTF8String);
+            if (next && ![seen containsObject:next] && ![queue containsObject:next]) [queue addObject:next];
+        }
+    }
+    // A truncated ancestry cannot authorize a new component-scope join.
+    if (queue.count>16) [scopes removeAllObjects];
+    if (context) [scopes addObject:context];return scopes.copy;
+}
 static void RVDAUITextObserveImage(RVDAUIBinding *binding) {
     if (!binding.imageOnly || !binding.imageContext || !RVDAUICurrent(binding)) return;
     if (!RVDAUITextImages) RVDAUITextImages=RVDAUITextMap();
-    NSHashTable *nodes=[RVDAUITextImages objectForKey:binding.imageContext];
-    if (!nodes) { nodes=[NSHashTable weakObjectsHashTable];[RVDAUITextImages setObject:nodes forKey:binding.imageContext]; }
-    if (nodes.count>=96 && ![nodes containsObject:binding.controller]) return;
-    BOOL added=![nodes containsObject:binding.controller];[nodes addObject:binding.controller];
-    if (added) RVDAUITextWake(binding.imageContext);
+    NSNumber *prior=[RVDAUITextImageGenerations objectForKey:binding.controller];
+    BOOL changed=prior.unsignedLongLongValue!=binding.generation;
+    [RVDAUITextImageGenerations setObject:@(binding.generation) forKey:binding.controller];
+    for (id scope in RVDAUITextScopes(binding.controller,binding.imageContext)) {
+        NSHashTable *nodes=[RVDAUITextImages objectForKey:scope];
+        if (!nodes) { nodes=[NSHashTable weakObjectsHashTable];[RVDAUITextImages setObject:nodes forKey:scope]; }
+        if (nodes.count>=96 && ![nodes containsObject:binding.controller]) continue;
+        BOOL added=![nodes containsObject:binding.controller];[nodes addObject:binding.controller];
+        if (added || changed) RVDAUITextWake(scope);
+    }
+}
+static void RVDAUITextResume(void) {
+    for (id scope in RVDAUITextContexts) RVDAUITextWake(scope);
 }
 static RVDAUITextIndex *RVDAUITextIndexForOwner(id owner) {
     id entry=RVObject(owner,"entry");NSData *source=RVObject(RVAdRootElement(entry),"elementData");
@@ -107,16 +134,19 @@ static BOOL RVDAUITextUnique(id node,id context,NSString *title) {
     NSUInteger count=0;NSHashTable *nodes=[RVDAUITextContexts objectForKey:context];
     for (id candidate in nodes.allObjects) {
         RVDAUITextLease *lease=objc_getAssociatedObject(candidate,RVDAUITextLeaseKey);
-        if (lease.context==context && RVObject(candidate,"element")==lease.element && [lease.nativeText.string isEqual:title]) {
+        if (RVObject(candidate,"element")==lease.element && [lease.nativeText.string isEqual:title]) {
             if (++count>1) return NO;
         }
     }return count==1 && [nodes containsObject:node];
 }
-static NSString *RVDAUITextImageVideo(id context,id owner,NSString *video) {
-    for (id node in ((NSHashTable *)[RVDAUITextImages objectForKey:context]).allObjects) {
+static NSString *RVDAUITextImageVideo(id scope,id owner,NSString *video) {
+    NSMutableSet *ids=[NSMutableSet set];BOOL foreign=NO;
+    for (id node in ((NSHashTable *)[RVDAUITextImages objectForKey:scope]).allObjects) {
         RVDAUIBinding *image=objc_getAssociatedObject(node,RVDAUIBindingKey);
-        if (image.imageOnly && image.imageOwner==owner && [image.video isEqual:video] && RVDAUICurrent(image)) return video;
-    }return nil;
+        if (!image.imageOnly || !RVDAUICurrent(image) || ![RVDAUITextScopes(node,image.imageContext) containsObject:scope]) continue;
+        if (image.imageOwner!=owner) { foreign=YES;continue; }[ids addObject:image.video];
+    }
+    return !foreign && ids.count==1 && [ids containsObject:video] ? video : nil;
 }
 static NSString *RVDAUITextBlocker(RVDAUIBinding *state) {
     RVDAUITextLease *lease=state.textNodeLease;id node=state.controller;
@@ -125,8 +155,9 @@ static NSString *RVDAUITextBlocker(RVDAUIBinding *state) {
     if (![RVDAUIOwnerSurface(state.textOwner,NO,NULL) isEqual:state.surface]) return @"text_surface_changed";
     if (RVObject(state.textOwner,"entry")!=state.originalEntry || ![RVObject(RVAdRootElement(state.originalEntry),"elementData") isEqual:state.textNodeSource]) return @"text_model_source_changed";
     if (![lease.nativeText.string isEqual:state.originalTitle]) return @"native_title_changed";
-    if (!RVDAUITextImageVideo(state.textContext,state.textOwner,state.video)) return @"matching_image_identity_missing";
-    if (!RVDAUITextUnique(node,state.textContext,state.originalTitle)) return @"title_role_ambiguous";
+    if (![RVDAUITextScopes(node,state.textContext) containsObject:state.textScope]) return @"text_component_scope_changed";
+    if (!RVDAUITextImageVideo(state.textScope,state.textOwner,state.video)) return @"matching_image_identity_missing";
+    if (!RVDAUITextUnique(node,state.textScope,state.originalTitle)) return @"title_role_ambiguous";
     return nil;
 }
 static void RVDAUITextWrite(id node,NSAttributedString *text) {
@@ -178,11 +209,14 @@ static void RVDAUITextQueue(id node) {
         @synchronized(lease) { lease.queued=NO; }
         id target=weak,context=lease.context;
         if (!target || !context || objc_getAssociatedObject(target,RVDAUITextLeaseKey)!=lease || RVObject(target,"element")!=lease.element) return;
-        NSHashTable *nodes=[RVDAUITextContexts objectForKey:context];
-        if (!nodes) { nodes=[NSHashTable weakObjectsHashTable];[RVDAUITextContexts setObject:nodes forKey:context]; }
-        if (nodes.count>=96 && ![nodes containsObject:target]) { RVDADiagCount(@"text_node.context_budget_exceeded");return; }
-        BOOL added=![nodes containsObject:target];[nodes addObject:target];
-        if (added) RVDAUITextWake(context); // New duplicate roles retire an earlier write.
+        NSArray *scopes=RVDAUITextScopes(target,context);
+        for (id scope in scopes) {
+            NSHashTable *nodes=[RVDAUITextContexts objectForKey:scope];
+            if (!nodes) { nodes=[NSHashTable weakObjectsHashTable];[RVDAUITextContexts setObject:nodes forKey:scope]; }
+            if (nodes.count>=96 && ![nodes containsObject:target]) { RVDADiagCount(@"text_node.context_budget_exceeded");continue; }
+            BOOL added=![nodes containsObject:target];[nodes addObject:target];
+            if (added) RVDAUITextWake(scope); // New duplicate roles retire an earlier write.
+        }
         NSAttributedString *text=RVObject(target,"attributedText");
         RVDAUIBinding *state=objc_getAssociatedObject(target,RVDAUIBindingKey);
         if (!state.textOnly || !state.textNodeApplied || ![text isEqualToAttributedString:state.textNodeApplied]) lease.nativeText=[text isKindOfClass:NSAttributedString.class] ? text.copy : nil;
@@ -198,7 +232,8 @@ static void RVDAUITextQueue(id node) {
         RVDAUITextIndex *index=RVDAUITextIndexForOwner(owner);
         if (!index || index.pending) { if (RVDAUITextWaiting.count<512) [RVDAUITextWaiting addObject:target];return; }
         NSArray *ids=index.titles[lease.nativeText.string];NSString *video=ids.count==1 ? ids.firstObject : nil;
-        NSString *blocker=!index.complete ? @"title_parse_budget_exceeded" : !video ? @"semantic_title_unmatched_or_ambiguous" : !RVDAUITextImageVideo(context,owner,video) ? @"matching_image_identity_missing" : !RVDAUITextUnique(target,context,lease.nativeText.string) ? @"title_role_ambiguous" : nil;
+        id joinedScope=nil;for (id scope in scopes) if (video && RVDAUITextImageVideo(scope,owner,video)) { joinedScope=scope;break; }
+        NSString *blocker=!index.complete ? @"title_parse_budget_exceeded" : !video ? @"semantic_title_unmatched_or_ambiguous" : !joinedScope ? @"matching_image_identity_missing" : !RVDAUITextUnique(target,joinedScope,lease.nativeText.string) ? @"title_role_ambiguous" : nil;
         if (blocker) {
             RVDAUITextRestore(state);
             if (![lease.lastRejection isEqual:blocker]) {
@@ -209,21 +244,21 @@ static void RVDAUITextQueue(id node) {
             return;
         }
         lease.lastRejection=nil;
-        if (!state.textOnly || state.textNodeLease!=lease || state.textOwner!=owner || state.originalEntry!=index.entry || ![state.textNodeSource isEqual:index.source] || ![state.originalTitle isEqual:lease.nativeText.string]) {
+        if (!state.textOnly || state.textNodeLease!=lease || state.textOwner!=owner || state.textScope!=joinedScope || state.originalEntry!=index.entry || ![state.textNodeSource isEqual:index.source] || ![state.originalTitle isEqual:lease.nativeText.string]) {
             RVDAUITextRestore(state);[state.request cancel];[state.fallbackTransfer cancel];
             state=[RVDAUIBinding new];state.textOnly=YES;state.modern=YES;state.controller=target;
-            state.textContext=context;state.textOwner=owner;state.textNodeLease=lease;state.originalEntry=index.entry;state.textNodeSource=index.source;
+            state.textScope=joinedScope;state.textContext=context;state.textOwner=owner;state.textNodeLease=lease;state.originalEntry=index.entry;state.textNodeSource=index.source;
             state.originalTitle=lease.nativeText.string;state.textNodeOriginal=lease.nativeText;
             state.video=video;state.surface=surface;state.route=@"semantic_video_model_title";state.index=-1;
             objc_setAssociatedObject(target,RVDAUIBindingKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC);[RVDAUIBindings addObject:state];
-            RVDADiagRecord(@"T02_title_node_bound",state,nil,@{@"exact_original_match":@YES,@"same_context_image_identity":@YES,@"unique_text_role":@YES,@"template_independent":@YES});
+            RVDADiagRecord(@"T02_title_node_bound",state,nil,@{@"exact_original_match":@YES,@"matching_scope_image_identity":@YES,@"scope_class":NSStringFromClass([joinedScope class]),@"unique_text_role":@YES,@"template_independent":@YES});
             RVDAUIRequest(state);
         }
         RVDAUITextPresent(state);
     });
 }
 static void RVDAUITextInstall(void) {
-    RVDAUITextContexts=RVDAUITextMap();RVDAUITextImages=RVDAUITextMap();RVDAUITextIndexes=RVDAUITextMap();RVDAUITextWaiting=[NSHashTable weakObjectsHashTable];
+    RVDAUITextContexts=RVDAUITextMap();RVDAUITextImages=RVDAUITextMap();RVDAUITextIndexes=RVDAUITextMap();RVDAUITextImageGenerations=RVDAUITextMap();RVDAUITextWaiting=[NSHashTable weakObjectsHashTable];
     RVDAUITextParseQueue=[NSOperationQueue new];RVDAUITextParseQueue.maxConcurrentOperationCount=2;RVDAUITextParseQueue.qualityOfService=NSQualityOfServiceUtility;
     RVDAUIHook(@"ELMTextNode",@"initWithElement:context:",@"@@:@@",NO,^id(IMP original,SEL sel) {
         return ^id(id node,id element,id context) {
