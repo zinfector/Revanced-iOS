@@ -294,7 +294,9 @@ static void RVDAUIDrainRefresh(void) {
         if (!path || !((BOOL(*)(id,SEL,id))objc_msgSend)(delegate,sel_registerName("isValidIndexPath:"),path)) { RVDAUIEvent(@"D10_native_layout",state,@"stale_index");return; }
         NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
         state.submittedData=desired;state.refreshDeferred=NO;
+        RVDBGRecord(@"native_reload_begin",state.generation,state.surface,nil);
         ((void(*)(id,SEL,NSInteger))objc_msgSend)(section,sel_registerName("reloadCellAtIndex:"),state.index);
+        RVDBGRecord(@"native_reload_end",state.generation,state.surface,nil);
         RVDADiagTiming(@"native_reload",started);state.refreshRequests++;
         RVDAUIEvent(@"D10_native_layout_requested",state,nil);
         [state.request recordCheckpoint:RVDeArrowCheckpointNativeLayout blocker:RVDeArrowBlockerNone];
@@ -442,7 +444,9 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
             NSString *captureSurface=RVDALiveWatchFamily(resource) ? RVDAUIOwnerSurface(controller,YES,NULL) : state.surface;
             RVDALiveCaptureRoot(data,NSStringFromClass([controller class]),captureSurface,watchVideo);
         }
+        RVDBGRecord(@"binding_profiles_begin",state.generation,state.surface,nil);
         profiles=RVDAProfiles(data,watchVideo);state.profile=profiles.firstObject;state.modern=YES;
+        RVDBGRecord(@"binding_profiles_end",state.generation,state.surface,nil);
         if (!state.profile) {
             BOOL shared=RVDAPath(data,@[@1,@484616221])!=nil;
             return RVDAUIReject(state,@"D04_role_bound",shared ? @"shared_component_input_unavailable" : RVDAProfileFailure(data));
@@ -820,7 +824,9 @@ static void RVInstallDeArrowUI(void) {
             return [^id(void) {
                 RVDAUIFactoryCapture *capture=[RVDAUIFactoryCapture new];capture.input=factoryInput;capture.inputVerified=inputVerified;
                 RVDAUIFactoryCapture *prior=RVDAUIFactoryScope;RVDAUIFactoryScope=inputVerified ? capture : nil;id node=nil;
+                RVDBGRecord(@"native_factory_begin",state.generation,state.surface,nil);
                 @try { node=native(); } @finally { RVDAUIFactoryScope=prior; }
+                RVDBGRecord(@"native_factory_end",state.generation,state.surface,nil);
                 __weak id weakNode=node;
                 dispatch_async(dispatch_get_main_queue(),^{
                     for (RVDAUIBinding *current in weakStates.allObjects) if (weakNode && current.factorySerial==factorySerial && current.generation==[generations[[NSValue valueWithNonretainedObject:current]] unsignedLongLongValue] && RVDAUICurrent(current)) {
