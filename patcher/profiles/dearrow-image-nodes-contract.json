@@ -1,0 +1,19 @@
+{
+  "version": "0.3.61",
+  "identity": "strict ytimg /vi or /vi_webp 11-character video ID and enumerated thumbnail file",
+  "ownership": "captured weak ELMImageNode init context, reviewed proxy forwarding, existing native owner with explicit negative ad logging, recognized feed surface",
+  "write": "ASNetworkImageNode _setImage: v@:@ preserves native URL; main queue only, after native locks return",
+  "observe": "ASNetworkImageNode _locked__setImage: v@:@; async coalesced lease notification, no native getter under lock",
+  "lifecycle": "atomic URL lease identity; owner, surface, URL video, settings and backend generation guards; invalidated bindings cancel; originals restored only within same lease",
+  "native_loading": "unchanged cache, downloader, cancellation, callback queues and return values",
+  "budgets": "coalesced callback per node; at most 16 existing parent responders; no descendants, lazy loads, proto parsing or reload",
+  "checkpoints": [
+    "I00_image_node_rejected",
+    "I01_image_node_bound",
+    "image_node.native_delivery",
+    "I03_image_node_presented",
+    "image_node.original_restored"
+  ],
+  "tests_run": false,
+  "device_verified": false
+}

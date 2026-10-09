@@ -1,8 +1,8 @@
-name: Build DeArrow viewModel cards with Xcode
+name: Build DeArrow image nodes with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-viewmodel-cards-0.3.60]
+    branches: [fix/dearrow-image-nodes-0.3.61]
 
 permissions:
   contents: read
