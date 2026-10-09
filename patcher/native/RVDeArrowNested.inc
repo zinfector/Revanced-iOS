@@ -71,7 +71,15 @@ static void RVDANestedRefresh(RVDAUIBinding *binding) {
 }
 static void RVDANestedAccept(id node,id element,RVDANestedInput *input,RVDAUIFactoryCapture *capture) {
     if (!NSThread.isMainThread || !node || !input) return;
-    if (objc_getAssociatedObject(node,RVDAUIBindingKey)) { RVDADiagCount(@"nested.already_bound");return; }
+    RVDAUIBinding *prior=objc_getAssociatedObject(node,RVDAUIBindingKey);
+    if (prior) {
+        if (!prior.nestedInput || RVDAUICurrent(prior)) { RVDADiagCount(@"nested.already_bound");return; }
+        // A reused native cell must retire the obsolete child's asynchronous
+        // work. Native reconfiguration owns restoring changed-content baselines.
+        [prior.request cancel];[prior.fallbackTransfer cancel];RVDAUIRetireConsumers(prior);
+        objc_setAssociatedObject(node,RVDAUIBindingKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        RVDADiagCount(@"nested.reused_cell_rebound");
+    }
     NSString *surface=RVDAUIOwnerSurface(input.owner,NO,NULL);
     if (RVDAUIDiagnosticsArmed) RVDALiveCaptureRoot(input.source,@"RVDANestedCollectionItem",surface,nil);
     if (!input.dataSource || !input.item || !surface || RVObject(input.item,"entry")!=input.entry ||
@@ -111,6 +119,8 @@ static RVDANestedInput *RVDANestedRecordItem(id dataSource,id item) {
         RVDADiagCount(@"nested.rejected_input_contract");return nil;
     }
     RVDANestedOwner *owner=objc_getAssociatedObject(dataSource,RVDANestedOwnerKey);
+    RVDANestedInput *prior=objc_getAssociatedObject(item,RVDANestedInputKey);
+    if (prior.dataSource==dataSource && prior.entry==entry && prior.owner==owner.controller && [prior.source isEqual:source]) return prior;
     RVDANestedInput *input=[RVDANestedInput new];input.dataSource=dataSource;input.item=item;
     input.owner=owner.controller;input.entry=entry;input.source=[source copy];
     if (RVDAUIDiagnosticsArmed) dispatch_async(dispatch_get_main_queue(),^{

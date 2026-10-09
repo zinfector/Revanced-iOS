@@ -131,5 +131,16 @@
     "exported": "Class/edge names, bounded resolved ancestry, original-role equality booleans, loaded/content presence, counts and truncation. No raw content, IDs, URLs or addresses.",
     "role_adapters": "ELMTextNode and ELMImageNode remain reviewed consumers. ASTextNode and expandable text candidates are observed without authorizing unreviewed title roles."
   },
-  "watch_title_classification": "A supported watch title with validated explicit watch video and title input uses the accepted semantic slot."
+  "watch_title_classification": "A supported watch title with validated explicit watch video and title input uses the accepted semantic slot.",
+  "nested_collection_capture": {
+    "release": "0.3.59",
+    "slots": "One per shelf family and nested child resource per surface, within the unchanged 24-root session cap",
+    "boundaries": "Read-only per-item serialized renderers and diffable serialized child inputs; no collection lazy getters or opaque aggregate getters",
+    "family_slots": [
+      "horizontal_shelf.eml",
+      "chips_shelf.eml",
+      "brand_video_shelf.eml"
+    ],
+    "values_exported": false
+  }
 }
