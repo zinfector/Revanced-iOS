@@ -140,13 +140,15 @@ static BOOL RVDAUITextUnique(id node,id context,NSString *title) {
     }return count==1 && [nodes containsObject:node];
 }
 static NSString *RVDAUITextImageVideo(id scope,id owner,NSString *video) {
-    NSMutableSet *ids=[NSMutableSet set];BOOL foreign=NO;
+    NSMutableSet *ids=[NSMutableSet set];NSUInteger inspected=0;
     for (id node in ((NSHashTable *)[RVDAUITextImages objectForKey:scope]).allObjects) {
+        if (++inspected>16) return nil;
         RVDAUIBinding *image=objc_getAssociatedObject(node,RVDAUIBindingKey);
         if (!image.imageOnly || !RVDAUICurrent(image) || ![RVDAUITextScopes(node,image.imageContext) containsObject:scope]) continue;
-        if (image.imageOwner!=owner) { foreign=YES;continue; }[ids addObject:image.video];
+        if (image.imageOwner!=owner) return nil;[ids addObject:image.video];
+        if (ids.count>1) return nil;
     }
-    return !foreign && ids.count==1 && [ids containsObject:video] ? video : nil;
+    return ids.count==1 && [ids containsObject:video] ? video : nil;
 }
 static NSString *RVDAUITextBlocker(RVDAUIBinding *state) {
     RVDAUITextLease *lease=state.textNodeLease;id node=state.controller;
@@ -219,7 +221,14 @@ static void RVDAUITextQueue(id node) {
         }
         NSAttributedString *text=RVObject(target,"attributedText");
         RVDAUIBinding *state=objc_getAssociatedObject(target,RVDAUIBindingKey);
-        if (!state.textOnly || !state.textNodeApplied || ![text isEqualToAttributedString:state.textNodeApplied]) lease.nativeText=[text isKindOfClass:NSAttributedString.class] ? text.copy : nil;
+        BOOL held=state.textOnly && state.textNodeLease==lease && state.textNodeApplied &&
+            [text isKindOfClass:NSAttributedString.class] && [text.string isEqual:state.textNodeApplied.string];
+        if (held && ![text isEqualToAttributedString:state.textNodeApplied] && RVDAUITextSafeAttributes(text)) {
+            // Native CSS/dynamic-font updates may restyle our displayed string.
+            // Rebase original styling without treating the replacement as native text.
+            lease.nativeText=[[NSAttributedString alloc] initWithString:state.originalTitle attributes:[text attributesAtIndex:0 effectiveRange:NULL]];
+            state.textNodeOriginal=lease.nativeText;state.textNodeApplied=text.copy;
+        } else if (!held) lease.nativeText=[text isKindOfClass:NSAttributedString.class] ? text.copy : nil;
         id owner=RVDAImageNodeOwner(context);NSString *surface=RVDAUIOwnerSurface(owner,NO,NULL);
         if (!owner || !surface) { RVDAUITextRestore(state);return; }
         if (!RVDAUITextSafeAttributes(lease.nativeText)) {

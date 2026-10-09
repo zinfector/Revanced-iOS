@@ -15,7 +15,8 @@
     "nodes_per_context": 96,
     "waiting_nodes": 512,
     "queued_parses": 4,
-    "ancestor_objects": 16
+    "ancestor_objects": 16,
+    "image_scope_candidates": 16
   },
   "checkpoints": [
     "T01_semantic_title_index",

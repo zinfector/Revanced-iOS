@@ -54,7 +54,7 @@ def main():
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Add template-independent ELMTextNode title leases verified by bounded off-main VideoData semantic title parsing, matching native thumbnail video ID in the same captured context, exact native title text and an unambiguous text role. Preserve style, originals, native gestures and loading; reject interactive ranges and stale generations. Reuse title backend and formatting policies without native model mutation or cell reload. Add parse, ownership, ambiguity and title application diagnostics. Apple production build and packaging only; no tests'}
+               'scope': 'Add template-independent ELMTextNode title leases verified by bounded off-main VideoData semantic title parsing, matching native thumbnail video ID in a single-video shared component or exact captured context, exact native title text and an unambiguous text role. Preserve style, originals, native gestures and loading; reject interactive ranges and stale generations. Reuse title backend and formatting policies without native model mutation or cell reload. Add parse, ownership, ambiguity and title application diagnostics. Apple production build and packaging only; no tests'}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 
