@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.58'
+VERSION = '0.3.59'
 
 
 def digest(path):
@@ -48,13 +48,13 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'dearrow-ui-recovery',
+    receipt = {'version': VERSION, 'release_flavor': 'dearrow-nested-cards',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Suspend unproven shelf child presentation leases; defer ownership observation out of factory completion and eliminate per-primitive root ancestor walks. Preserve ordinary card contracts, metadata recovery, live-frame requests and read-only shelf diagnostics. Apple production build and packaging only; no tests'}
+               'scope': 'Bind independently serialized nested ELM cards to their exact native factory and update uniquely owned title/image primitives without shared shelf rewrites or reloads. Separate bounded shelf-family and nested-child capture slots; observe modern diffable serialized children read-only. Preserve freeze safeguards, ordinary cards and original thumbnails until replacement ready. Apple production build and packaging only; no tests'}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
 

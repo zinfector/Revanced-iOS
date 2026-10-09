@@ -4,6 +4,17 @@
 #include "RVDeArrowOptions.inc"
 static const void *RVDAUIBindingKey=&RVDAUIBindingKey,*RVDAUIDataKey=&RVDAUIDataKey;
 static const void *RVDAUIBindingGroupKey=&RVDAUIBindingGroupKey;
+static const void *RVDANestedOwnerKey=&RVDANestedOwnerKey,*RVDANestedInputKey=&RVDANestedInputKey;
+@interface RVDANestedOwner : NSObject
+@property(nonatomic,weak) id controller;
+@end
+@implementation RVDANestedOwner @end
+@interface RVDANestedInput : NSObject
+@property(nonatomic,weak) id dataSource,item,owner;
+@property(nonatomic,strong) id entry;
+@property(nonatomic,copy) NSData *source;
+@end
+@implementation RVDANestedInput @end
 static const void *RVDAUIModelKey=&RVDAUIModelKey,*RVDAUIImageKey=&RVDAUIImageKey;
 static const void *RVDAUIAccessibilityKey=&RVDAUIAccessibilityKey;
 static NSHashTable *RVDAUIBindings;
@@ -32,6 +43,13 @@ static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
 @property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode,nativeTitleNode;
 @property(nonatomic,strong) id originalEntry;
+@property(nonatomic,strong) RVDANestedInput *nestedInput;
+@property(nonatomic,strong) id nestedElement;
+@property(nonatomic,weak) id nestedNativeController;
+@property(nonatomic,strong) NSAttributedString *nestedOriginalText;
+@property(nonatomic,weak) id nestedEditedTitle,nestedEditedImage;
+@property(nonatomic,copy) NSString *nestedAppliedTitle;
+@property(nonatomic,strong) UIImage *nestedAppliedImage;
 @property(nonatomic,strong) RVDAProjection *profile;
 @property(nonatomic,strong) RVDeArrowRequest *request;
 @property(nonatomic,strong) RVDeArrowResult *result;
@@ -144,6 +162,15 @@ static NSString *RVDAUIOwnerSurface(id owner,BOOL watchTitle,NSString **watchVid
     }return nil;
 }
 static id RVDAUILegacyRenderer(id entry,NSString **unionSelector);
+static NSString *RVDANestedCurrentBlocker(RVDAUIBinding *binding) {
+    RVDANestedInput *input=binding.nestedInput;
+    if (!input.dataSource || !input.item || !input.owner) return @"nested_owner_released";
+    if (RVObject(input.item,"entry")!=input.entry) return @"nested_item_entry_changed";
+    if (![RVObject(RVAdRootElement(input.entry),"elementData") isEqual:input.source]) return @"nested_source_changed";
+    if (RVObject(binding.controller,"element")!=binding.nestedElement) return @"nested_cell_element_changed";
+    if (![RVDAUIOwnerSurface(input.owner,NO,NULL) isEqual:binding.surface]) return @"nested_surface_changed";
+    return nil;
+}
 static NSString *RVDAUICurrentBlocker(RVDAUIBinding *binding) {
     if (!binding) return @"binding_released";
     if (!NSThread.isMainThread) return @"ownership_check_off_main";
@@ -151,6 +178,7 @@ static NSString *RVDAUICurrentBlocker(RVDAUIBinding *binding) {
     if (!binding.controller) return @"controller_released";
     if (objc_getAssociatedObject(binding.controller,RVDAUIBindingKey)!=binding &&
         ![objc_getAssociatedObject(binding.controller,RVDAUIBindingGroupKey) containsObject:binding]) return @"binding_replaced";
+    if (binding.nestedInput) return RVDANestedCurrentBlocker(binding);
     id section=binding.section;
     if (!section) return @"section_released";
     if (binding.index<0 || !RVCan(section,"cellControllerAtIndex:",@"@@:q")) return @"controller_lookup_contract_missing";
@@ -237,6 +265,9 @@ static BOOL RVDAUIFallbackVisible(RVDAUIBinding *state);
 static NSHashTable *RVDAUIDeferredRefreshes;
 static NSTimer *RVDAUIDeferredRefreshTimer;
 static void RVDAUIRefresh(RVDAUIBinding *binding);
+static void RVDANestedRefresh(RVDAUIBinding *binding);
+static void RVDANestedRestore(RVDAUIBinding *binding);
+static BOOL RVDANestedPresent(RVDAUIBinding *binding,NSUInteger titleMatches,NSUInteger imageMatches);
 static void RVDAUIDeferRefresh(RVDAUIBinding *state) {
     state.refreshDeferred=YES;
     if (!RVDAUIDeferredRefreshes) RVDAUIDeferredRefreshes=[NSHashTable weakObjectsHashTable];
@@ -276,6 +307,7 @@ static void RVDAUIDrainRefresh(void) {
     @try {
         NSString *blocker=RVDAUICurrentBlocker(state);
         if (blocker) { RVDAUIEvent(@"D11_lifecycle_rebound",state,blocker);return; }
+        if (state.nestedInput) { RVDANestedRefresh(state);return; }
         NSData *desired=state.modern ? RVDAUIProjectedData(state) : nil;
         if (state.modern && !desired) return;
         if (desired && [desired isEqual:state.submittedData ?: state.nativeFactoryInput]) {
@@ -315,7 +347,7 @@ static void RVDAUIConfigureBackend(void) {
 static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL classMethod,RVReplacementFactory factory);
 #include "RVDeArrowPrefetch.inc"
 static void RVDAUIRequest(RVDAUIBinding *binding) {
-    RVDAUIRetireConsumers(binding);
+    RVDANestedRestore(binding);RVDAUIRetireConsumers(binding);
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
@@ -339,7 +371,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
         @{@"title_policy":@(RVDAUIPolicy(binding.surface,YES)),@"image_policy":@(RVDAUIPolicy(binding.surface,NO)),@"parts":@(binding.parts),@"service_parts":@(binding.serviceParts)});
     if (!binding.serviceParts) { binding.pendingExpired=YES;RVDAUIRefresh(binding);return; }
     uint64_t generation=binding.generation;__weak RVDAUIBinding *weak=binding;
-    if (!RVDAUIOriginal(binding) && RVEnabled(@"dearrow_hide_while_fetching")) {
+    if (!binding.nestedInput && !RVDAUIOriginal(binding) && RVEnabled(@"dearrow_hide_while_fetching")) {
         if (image) RVDAUIApplyImage(binding,RVDABlankImage(),@"pending",generation);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW,15*NSEC_PER_SEC),dispatch_get_main_queue(),^{
             RVDAUIBinding *state=weak;if (!state || state.generation!=generation || !RVDAUICurrent(state)) return;
@@ -511,6 +543,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
         RVDAUIEvent(@"D04_role_bound",current,current.profile.blocker);RVDAUIRequest(current);
     }return state;
 }
+#include "RVDeArrowNested.inc"
 static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
     if (!state || state.settingsRevision!=RVDAUISettingsRevision) return state.originalEntry;
     NSString *title=RVDAUITitle(state);NSData *image=RVDAUIImage(state) ? state.imageBytes : nil;
@@ -608,6 +641,7 @@ static void RVDAUIPreferencesChanged(void) {
     RVDAUIConfigureBackend();
     if ([snapshot isEqual:RVDAUISettingsSnapshot]) { RVDADiagCount(@"lifecycle.unchanged_settings_preserved");RVDAUIResume();return; }
     RVDAUISettingsSnapshot=snapshot;RVDAUILastInvalidation=@"relevant_settings_changed";
+    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) RVDANestedRestore(state);
     RVDAUISettingsRevision++;RVDAPrefetchReset();
     for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
@@ -675,7 +709,7 @@ static NSDictionary *RVDAUIReport(void) {
         @"settings_revision":@(RVDAUISettingsRevision),@"cache_invalidation_reason":RVDAUILastInvalidation,@"frame_disk_cache":@{@"compressed_byte_limit":@(32*1024*1024),@"entry_limit":@128,@"ttl_seconds":@1800},@"backend":RVDeArrowBackend.sharedBackend.diagnostics,@"prefetch":RVDAPrefetchReport(),
         @"bindings":bindings,@"binding_sample_order":@"current_visible_pending_then_recent",@"bindings_total":@(ordered.count),@"bindings_omitted":@(ordered.count-bindings.count),@"history":history,@"counts":counts,@"last_stages":stages,@"attempt_samples":attempts,@"native_templates":templates,
         @"watch_interactions":RVDAWatchReport(),@"consumer_strategy":@"owned_keyed_native_lifecycle",@"performance_schema":@1,@"performance_policy":@{@"scan_spacing_ms":@120,@"scan_budget_per_turn":@1,@"reload_budget_per_turn":@1,@"image_workers":@2,@"detailed_capture_only_when_armed":@YES},@"global_setter_observers":@NO,
-        @"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
+        @"nested_collection_strategy":@"independent_serialized_child_factory_with_owned_primitive_updates",@"hooks":RVDAUIHooks.copy ?: @[],@"live_contract_capture":RVDALiveReport(),@"service_probe":RVDAUIProbeResult ?: @{@"state":@"not_requested"},@"device_verified":@NO,
         @"capture_instructions":@"Start diagnostic capture, close settings, scroll Home, open an ordinary video and related rows, then copy checkpoints. Unknown roots retain originals. No submission is an intentional original, not a rendering failure."};
 }
 static void RVDAUIStartCapture(void) {
@@ -779,6 +813,19 @@ static void RVInstallDeArrowUI(void) {
     RVDAUIHook(@"ELMCellNode",@"cellNodeWithElementInternal:context:controllerUpdateBlock:",@"@@:@@@?",YES,^id(IMP original,SEL sel) {
         return ^id(id cls,id element,id context,void (^nativeUpdate)(id)) {
             RVDAUIFactoryCapture *capture=RVDAUIFactoryScope;
+            RVDANestedInput *nested=!capture ? objc_getAssociatedObject(element,RVDANestedInputKey) : nil;
+            if (nested) {
+                capture=[RVDAUIFactoryCapture new];capture.input=nested.source;
+                void (^observe)(id)=^(id controller) {
+                    if (nativeUpdate) nativeUpdate(controller);
+                    capture.callbacks++;capture.controller=controller;
+                };
+                capture.element=element;capture.entered=YES;
+                id node=((id(*)(id,SEL,id,id,id))original)(cls,sel,element,context,observe);
+                __weak id weakNode=node;
+                dispatch_async(dispatch_get_main_queue(),^{ RVDANestedAccept(weakNode,element,nested,capture); });
+                return node;
+            }
             if (!capture || capture.entered) return ((id(*)(id,SEL,id,id,id))original)(cls,sel,element,context,nativeUpdate);
             // The native callback is synchronous and takes one controller. Its
             // original behavior/order is preserved; no UI graph reads run here.
@@ -790,6 +837,7 @@ static void RVInstallDeArrowUI(void) {
             return ((id(*)(id,SEL,id,id,id))original)(cls,sel,element,context,observe);
         };
     });
+    RVDANestedInstall();
     // Consumer observation is registered on accepted factory-owned nodes only.
     RVDAWatchInstall();
     // Only the materialization argument changes; native controller entries and
@@ -809,6 +857,17 @@ static void RVInstallDeArrowUI(void) {
             RVDAUIBinding *state=RVDAUIBind(responder,entry,RVDAUISection,RVDAUIIndex);
             id next=state ? RVDAUIProjectedEntry(state) : entry;
             id (^native)(void)=((id(*)(id,SEL,id,id,id,id,id))original)(cls,sel,next,responder,observable,registry,provider);
+            RVDANestedInput *nested=!state ? objc_getAssociatedObject(responder,RVDANestedInputKey) : nil;
+            if (nested && nested.entry==entry && native) {
+                return [^id(void) {
+                    RVDAUIFactoryCapture *capture=[RVDAUIFactoryCapture new];capture.input=nested.source;
+                    RVDAUIFactoryCapture *prior=RVDAUIFactoryScope;RVDAUIFactoryScope=capture;id node=nil;
+                    @try { node=native(); } @finally { RVDAUIFactoryScope=prior; }
+                    __weak id weakNode=node;
+                    dispatch_async(dispatch_get_main_queue(),^{ RVDANestedAccept(weakNode,capture.element,nested,capture); });
+                    return node;
+                } copy];
+            }
             BOOL observeLive=NO;for (RVDAUIBinding *current in RVDAUIRowBindings(state)) observeLive|=current.profile.liveCard && current.parts && !RVDAUIOriginal(current);
             if (!state || (!observeLive && next==entry) || !native) { if (state && !native) RVDAUIEvent(@"D09_native_factory_failed",state,@"native_factory_returned_nil");return native; }
             NSHashTable *weakStates=[NSHashTable weakObjectsHashTable];NSMutableDictionary *generations=[NSMutableDictionary dictionary];

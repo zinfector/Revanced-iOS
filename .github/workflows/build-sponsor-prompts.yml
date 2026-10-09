@@ -1,8 +1,8 @@
-name: Build DeArrow UI recovery with Xcode
+name: Build DeArrow nested cards with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-ui-budget-0.3.58]
+    branches: [fix/dearrow-nested-cards-0.3.59]
 
 permissions:
   contents: read

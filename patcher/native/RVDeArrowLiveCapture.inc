@@ -285,12 +285,18 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
     NSData *component=RVDAPath(data,@[@1,@168777401]);NSString *raw=RVDAText(RVDAPath(component,@[@3,@172035250,@1]));
     NSString *key=RVDALiveKey(raw);if (!key) return;
     BOOL card=RVDALiveCardCandidate(key),watch=RVDALiveWatchFamily(key),shelf=RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe");
-    if (!card && !watch && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"] && ![controller isEqual:@"YTElementsCellController"]) return;
+    BOOL nested=[controller hasPrefix:@"RVDANested"];
+    if (!card && !watch && !nested && !RVVideoIDValid(watchVideo) && ![controller isEqual:@"YTVideoElementCellController"] && ![controller isEqual:@"YTElementsCellController"]) return;
     NSData *model=RVDAChild(component,5);NSDictionary *semantic=card ? RVDALiveCardContract(model) : nil;
     NSDictionary *watchContract=watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : nil;
     BOOL accepted=(card && [semantic[@"blocker"] isEqual:@"ready"]) || (watch && [watchContract[@"title_input_valid"] boolValue] && RVVideoIDValid(watchVideo));
     BOOL ordinary=[controller isEqual:@"YTVideoElementCellController"] || RVVideoIDValid(watchVideo) || accepted;
-    NSString *category=shelf ? @"topic_shelf" : accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
+    // Separate bounded slots for each shelf family and nested child resource;
+    // decorative dividers cannot consume an enclosing shelf's only sample.
+    NSString *family=RVDAResourceParts(raw)[@"basename"];
+    BOOL shelfFamily=shelf || [family isEqual:@"chips_shelf.eml"] || [family isEqual:@"brand_video_shelf.eml"];
+    NSString *category=nested ? [@"nested_child/" stringByAppendingString:family ?: @"unknown"] :
+        shelfFamily ? [@"shelf/" stringByAppendingString:family] : accepted ? @"accepted_video" : ordinary ? @"ordinary_rejected" : @"generic";
     NSString *bucket=watch ? @"watch_title" : RVVideoIDValid(watchVideo) || [surface isEqual:@"player"] ? @"watch_other" :
         [@[@"home",@"library",@"search",@"subscriptions",@"related"] containsObject:surface ?: @""] ? surface : @"unknown";
     NSString *fingerprint=RVDALiveSampleShape(model,key);
@@ -320,7 +326,7 @@ static void RVDALiveCaptureRoot(NSData *data,NSString *controller,NSString *surf
                 @"directed_card_contract":card ? RVDALiveDirectedCardProbes(model) : @{},
                 @"shelf_contract":RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe") ? RVDALiveShelfProbes(model,key) : @{},
                 @"directed_watch_contract":watch ? RVDALiveDirectedWatchProbes(model,watchVideo) : @{},
-                @"sample_policy":@"resource + surface + semantic command/failure + shape; 1 accepted semantic video, 1 rejected ordinary and 1 generic slot per surface"};
+                @"sample_policy":@"resource + surface + semantic command/failure + shape; 1 accepted, 1 rejected, 1 generic, plus one slot per shelf family/nested resource per surface; 24-root session cap"};
             [RVDALiveRootResources addObject:key];
         }
     }

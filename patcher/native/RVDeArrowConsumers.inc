@@ -348,7 +348,7 @@ static void RVDAUIImageWitnesses(RVDAUIBinding *binding,NSArray<UIImage *> *imag
 // It never grants permission, changes a native node, or loads a lazy view.
 static BOOL RVDAUIObserveKnownConsumers(RVDAUIBinding *binding,NSUInteger attempt) {
     if (RVDADiagDetailed() || !binding.factoryProvenanceVerified || !binding.nativeRootComponent || ![binding.consumerCheckpoint[@"blocker"] isEqual:@"ready"]) return NO;
-    if (![binding.nativeFactoryInput isEqual:RVDAUIProjectedData(binding)]) return NO;
+    if (![binding.nativeFactoryInput isEqual:(binding.nestedInput ? binding.nestedInput.source : RVDAUIProjectedData(binding))]) return NO;
     BOOL titleNeeded=(binding.parts&RVDeArrowPartsTitle)!=0,imageNeeded=(binding.parts&RVDeArrowPartsThumbnail)!=0;
     NSString *expected=RVDAUITitle(binding);NSData *bytes=RVDAUIImage(binding) ? binding.imageBytes : nil;
     id titleNode=binding.nativeTitleNode,imageNode=binding.nativeThumbnailNode;
@@ -360,8 +360,11 @@ static BOOL RVDAUIObserveKnownConsumers(RVDAUIBinding *binding,NSUInteger attemp
     if (imageNeeded) {
         if (!binding.imageConsumerVerified || !RVBool(imageNode,"isNodeLoaded") || RVDAUIResolveConsumerRoot(imageNode,binding,NULL)!=binding.nativeRootComponent) return NO;
         if (bytes) {
-            id witness=[binding.imageWitnesses objectForKey:RVObject(imageNode,"image")];
-            if (![binding.imageWitnessSource isEqual:bytes] || ![witness isKindOfClass:NSNumber.class] || ![witness boolValue]) return NO;
+            if (binding.nestedInput) { if (RVObject(imageNode,"image")!=RVDAUIImage(binding)) return NO; }
+            else {
+                id witness=[binding.imageWitnesses objectForKey:RVObject(imageNode,"image")];
+                if (![binding.imageWitnessSource isEqual:bytes] || ![witness isKindOfClass:NSNumber.class] || ![witness boolValue]) return NO;
+            }
         } else if (![binding.profile.imageURLs containsObject:RVDAUIConsumerURL(imageNode) ?: @""]) return NO;
     }
     NSMutableDictionary *checkpoint=[binding.consumerCheckpoint mutableCopy];
@@ -402,7 +405,7 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
     NSData *model=RVDAPath(binding.nativeFactoryInput,[binding.profile.componentPath arrayByAddingObject:@5]);
     NSData *expectedBytes=RVDAUIImage(binding) ? binding.imageBytes : nil;
     NSData *projectedBytes=binding.profile.imageRole ? RVDACheckedPath(model,[binding.profile.imagePath arrayByAddingObjectsFromArray:@[@1,@1,@2]],NULL,NULL) : nil;
-    if (![expectedBytes isEqual:projectedBytes]) expectedBytes=nil;
+    if (!binding.nestedInput && ![expectedBytes isEqual:projectedBytes]) expectedBytes=nil;
     NSMutableArray *decodedImages=[NSMutableArray array],*candidateSamples=[NSMutableArray array];
     NSMutableDictionary *classCounts=[NSMutableDictionary dictionary],*rejections=[NSMutableDictionary dictionary];
     NSMutableSet *sampleReasons=[NSMutableSet set];BOOL diagnostic=RVDADiagDetailed();
@@ -454,11 +457,20 @@ static void RVDAUIObserveConsumers(RVDAUIBinding *binding,id root,uint64_t gener
             }
         }
     }
-    RVDAUIImageWitnesses(binding,decodedImages,expectedBytes);
+    if (!binding.nestedInput) RVDAUIImageWitnesses(binding,decodedImages,expectedBytes);
     if (titleMatches==1 || titleApplied==1) binding.nativeTitleNode=matchedTitleNode;
     BOOL titleFound=titleMatches==1,imageFound=imageMatches==1;
     BOOL changed=(!binding.titleConsumerVerified && titleFound) || (!binding.imageConsumerVerified && imageFound);
     binding.titleConsumerVerified|=titleFound;binding.imageConsumerVerified|=imageFound;binding.consumerObservations++;
+    if (binding.nestedInput && graph.count<256) {
+        RVDANestedPresent(binding,titleMatches,imageMatches);
+        NSString *readyTitle=RVDAUITitle(binding);id readyText=RVObject(binding.nativeTitleNode,"attributedText");
+        titleApplied=readyTitle && [readyText isKindOfClass:NSAttributedString.class] && [[readyText string] isEqual:readyTitle] ? 1 : 0;
+        UIImage *readyImage=RVDAUIImage(binding);
+        imageApplied=readyImage && RVObject(binding.nativeThumbnailNode,"image")==readyImage ? 1 : 0;
+        titleVisible=titleApplied && RVDAUIConsumerVisible(binding.nativeTitleNode);
+        imageVisible=imageApplied && RVDAUIConsumerVisible(binding.nativeThumbnailNode);
+    }
     NSString *blocker=!binding.factoryProvenanceVerified ? @"native_factory_provenance_missing" : !binding.nativeRootComponent ? @"live_native_component_unconfirmed" : !owned ? @"live_native_owned_descendants_missing" :
         (binding.parts&RVDeArrowPartsTitle) && !binding.titleConsumerVerified ? (titleMatches>1 ? @"live_native_headline_ambiguous" : @"live_native_headline_unconfirmed") :
         (binding.parts&RVDeArrowPartsThumbnail) && !binding.imageConsumerVerified ? (imageMatches>1 ? @"live_native_thumbnail_ambiguous" : @"live_native_thumbnail_unconfirmed") : nil;

@@ -1,0 +1,45 @@
+{
+  "version": "0.3.59",
+  "strategy": "independent_serialized_child_factory",
+  "input_boundaries": [
+    "YTInnerTubeCollectionNodeSectionDataSource.itemAtIndex:",
+    "YTInnerTubeCollectionNodeSectionDataSource.elementForItem:"
+  ],
+  "read_only_boundaries": [
+    "ELMNCollectionDataSource.diffableItemForSerializedElement:index:"
+  ],
+  "requirements": [
+    "single reviewed live-card profile",
+    "ad presence contract and no ad logging",
+    "original item/entry/source identity",
+    "exact native ELMElement identity",
+    "one native controller callback",
+    "unique primitive role within proven child component",
+    "loaded native node",
+    "current owner surface and settings generation"
+  ],
+  "limits": {
+    "child_source_bytes": 131072,
+    "root_probe_ms": 4,
+    "graph_objects": 256,
+    "capture_roots": 24
+  },
+  "checkpoints": [
+    "nested.collection_item_observed",
+    "nested.serialized_child_provenance_recorded",
+    "nested.element_for_item_observed",
+    "nested.diffable_serialized_child_observed",
+    "N04_nested_child_bound",
+    "D03_native_factory_provenance",
+    "D04_live_native_consumers",
+    "D08_result_accepted",
+    "N06_nested_owned_pixels_applied",
+    "D10_live_replacement_visible"
+  ],
+  "fallback": "original thumbnail until replacement ready",
+  "shared_shelf_projection": false,
+  "collection_reload": false,
+  "cxx_aggregate_calls": false,
+  "tests_run": false,
+  "device_validated": false
+}
