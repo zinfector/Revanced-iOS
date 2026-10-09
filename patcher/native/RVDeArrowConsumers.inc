@@ -186,12 +186,12 @@ static void RVDAUIBindConsumerRoot(RVDAUIBinding *binding,id root) {
     NSTimeInterval started=NSProcessInfo.processInfo.systemUptime;
     NSArray *graph=RVDAUINativeGraph(binding,root);NSHashTable *matches=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     NSHashTable *inspected=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];NSMutableArray *samples=[NSMutableArray array];
-    Class cls=NSClassFromString(@"ELMComponent");BOOL truncated=NO;
+    Class cls=NSClassFromString(@"ELMComponent");BOOL truncated=graph.count>=256;
     for (id object in graph) {
         // Graph traversal already collects existing owningComponent edges.
         // Resolve the row from those components once, not by performing a
         // complete ancestor walk for every primitive in the graph.
-        if (NSProcessInfo.processInfo.systemUptime-started>.004) { truncated=YES;break; }
+        if (truncated || NSProcessInfo.processInfo.systemUptime-started>.004) { truncated=YES;break; }
         id component=cls && [object isKindOfClass:cls] ? object : nil;
         if (!component || [inspected containsObject:component]) continue;[inspected addObject:component];
         BOOL accepted=RVDAUIComponentMatches(binding,component);if (accepted) [matches addObject:component];
