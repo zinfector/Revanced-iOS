@@ -148,6 +148,8 @@ static RVDANestedInput *RVDANestedRecordItem(id dataSource,id item) {
 @implementation RVDANativeChildObservation @end
 static const void *RVDANativeChildKey=&RVDANativeChildKey;
 static NSUInteger RVDANativeChildPending;
+static NSHashTable *RVDANativeChildDeferred;
+static const void *RVDANativeShelfCaptureEpochKey=&RVDANativeShelfCaptureEpochKey;
 static id RVDANativeShelfOwner(id context,NSData **source) {
     // The native cell context may be a forwarding proxy. Unwrap only that
     // reviewed class through its fixed Objective-C forwarding method.
@@ -161,8 +163,8 @@ static id RVDANativeShelfOwner(id context,NSData **source) {
         id entry=RVObject(owner,"entry"),renderer=RVAdRootElement(entry);
         NSData *data=RVObject(renderer,"elementData");
         if (![data isKindOfClass:NSData.class] || !data.length || data.length>2*1024*1024) continue;
-        NSString *key=RVDATemplate(RVDAPath(data,@[@1,@168777401]));
-        if (!RVDAResourceFamily(key,@"horizontal_shelf.eml",@"fe")) continue;
+        // Defer template/model parsing to the utility queue. Unsupported
+        // parent resources are captured read-only and cannot authorize a child.
         id options=RVAdResolvedObject(renderer,"compatibilityOptions");
         if (!RVAdResolve(options,"hasAdLoggingData",@"B@:") || RVBool(options,"hasAdLoggingData")) return nil;
         if (source) *source=[data copy];return owner;
@@ -187,6 +189,8 @@ static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
     if (!NSThread.isMainThread || observation.pending || observation.attempts>=2 || !observation.element || !observation.nativeController || !observation.node || !observation.collection) return;
     if (objc_getAssociatedObject(observation.node,RVDAUIBindingKey)) return;
     if (RVDANativeChildPending>=8 || UIApplication.sharedApplication.applicationState!=UIApplicationStateActive) {
+        if (!RVDANativeChildDeferred) RVDANativeChildDeferred=[NSHashTable weakObjectsHashTable];
+        if (RVDANativeChildDeferred.count<64) [RVDANativeChildDeferred addObject:observation];
         RVDADiagCount(@"nested.native_child_queue_deferred");return;
     }
     observation.attempts++;id node=observation.node,collection=observation.collection;
@@ -206,6 +210,8 @@ static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
         if (observation.attempts<2) dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/5),dispatch_get_main_queue(),^{ RVDANativeChildPrepare(observation); });
         else observation.element=nil;return;
     }
+    RVDADiagRecord(@"N10_native_collection_owner",nil,nil,@{@"surface":surface,@"route":route,
+        @"owner_class":NSStringFromClass([owner class]),@"child_element_identity_checked":@YES,@"callbacks":@(capture.callbacks)});
     id entry=RVObject(owner,"entry");uint64_t revision=RVDAUISettingsRevision;
     __weak id weakOwner=owner,weakCollection=collection,weakNode=node;
     observation.pending=YES;RVDANativeChildPending++;
@@ -245,8 +251,15 @@ static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
                 @{@"video_hash":RVDADiagVideo(video),@"surface":surface,@"route":route,@"children":@(children.count),
                   @"verified_children":@(verified),@"matching_children":@(matches),@"native_text_length":@(textLength),@"samples":samples});
             if (RVDAUIDiagnosticsArmed) {
-                RVDALiveCaptureRoot(parentSource,@"RVDANativeShelfOwner",surface,nil);
+                if ([objc_getAssociatedObject(entry,RVDANativeShelfCaptureEpochKey) unsignedLongLongValue]!=RVDALiveEpoch) {
+                    objc_setAssociatedObject(entry,RVDANativeShelfCaptureEpochKey,@(RVDALiveEpoch),OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                    RVDALiveCaptureRoot(parentSource,@"RVDANestedNativeShelfOwner",surface,nil);
+                }
                 if (chosen) RVDALiveCaptureRoot(chosen.source,@"RVDANestedNativeViewModelChild",surface,nil);
+            }
+            while (RVDANativeChildPending<8 && RVDANativeChildDeferred.count && UIApplication.sharedApplication.applicationState==UIApplicationStateActive) {
+                RVDANativeChildObservation *next=RVDANativeChildDeferred.anyObject;[RVDANativeChildDeferred removeObject:next];
+                RVDANativeChildPrepare(next);
             }
             if (blocker || revision!=RVDAUISettingsRevision || !currentNode || !currentOwner || !currentCollection ||
                 RVObject(currentOwner,"entry")!=entry || RVObject(currentCollection,"element")!=collectionElement ||
@@ -258,6 +271,11 @@ static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
     }});
 }
 static void RVDANestedInstall(void) {
+    [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
+        while (RVDANativeChildPending<8 && RVDANativeChildDeferred.count) {
+            RVDANativeChildObservation *next=RVDANativeChildDeferred.anyObject;[RVDANativeChildDeferred removeObject:next];RVDANativeChildPrepare(next);
+        }
+    }];
     RVDAUIHook(@"ELMCollectionNode",@"collectionNode:nodeBlockForItemAtIndexPath:",@"@?@:@@",NO,^id(IMP original,SEL sel) {
         return ^id(id collection,id nativeCollection,id indexPath) {
             id (^native)(void)=((id(*)(id,SEL,id,id))original)(collection,sel,nativeCollection,indexPath);
