@@ -117,7 +117,7 @@ static void RVDAImageNodeQueue(id node,RVDAImageNodeLease *lease) {
             state.imageNodeOriginal=incoming;
             RVDADiagCount(@"image_node.native_delivery");
         }
-        RVDAImageNodePresent(state);RVDAUIFallbackWake(state);
+        RVDAImageNodePresent(state);RVDAUIFallbackWake(state);RVDAUITextObserveImage(state);
     });
 }
 static void RVDAImageNodeAssigned(id node,id url) {

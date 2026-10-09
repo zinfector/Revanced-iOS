@@ -1,8 +1,8 @@
-name: Build DeArrow image nodes with Xcode
+name: Build DeArrow text nodes with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-image-nodes-0.3.61]
+    branches: [fix/dearrow-text-nodes-0.3.62]
 
 permissions:
   contents: read

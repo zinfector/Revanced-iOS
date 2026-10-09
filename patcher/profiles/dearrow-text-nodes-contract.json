@@ -1,0 +1,30 @@
+{
+  "version": "0.3.62",
+  "identity": "VideoData field 7 ID and canonical ytimg thumbnail URL identity, joined to an existing native image-node binding in the exact captured context and owner",
+  "role": "exact native attributed text matches a reviewed VideoData metadata/lockup title; exactly one model video and native text role; no typography or template revision inference",
+  "lifecycle": "context and owner, exact entry/source, text element lease, original text, image binding identity and settings/backend generations rechecked before writes",
+  "presentation": "native ASTextNode setAttributedText fixed v@:@ ABI, main queue, after original returns; styling retained; native gestures, models and loading untouched; original restored only within the same valid lease",
+  "interactive_text": "reject protobuf command ranges and non-style attributed-string keys",
+  "budgets": {
+    "source_bytes": 2097152,
+    "cached_owners": 16,
+    "parse_concurrency": 2,
+    "messages": 1024,
+    "aggregate_bytes": 16777216,
+    "depth": 24,
+    "nodes_per_context": 96,
+    "waiting_nodes": 512,
+    "queued_parses": 4
+  },
+  "checkpoints": [
+    "T01_semantic_title_index",
+    "T02_title_node_bound",
+    "T04_title_node_presented",
+    "text_node.rejected.*",
+    "text_node.original_restored",
+    "T00_text_attributes_rejected",
+    "T03_title_node_rejected"
+  ],
+  "tests_run": false,
+  "device_verified": false
+}

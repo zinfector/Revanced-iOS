@@ -46,7 +46,11 @@ static void RVDAWatchReset(void);
 static NSDictionary *RVDAWatchReport(void);
 @interface RVDAUIBinding : NSObject
 @property(nonatomic,weak) id controller,section,imageView,nativeRootComponent,nativeFactoryRoot,nativeThumbnailNode,nativeTitleNode;
-@property(nonatomic) BOOL imageOnly;
+@property(nonatomic) BOOL imageOnly,textOnly;
+@property(nonatomic,weak) id textContext,textOwner;
+@property(nonatomic,strong) id textNodeLease;
+@property(nonatomic,strong) NSData *textNodeSource;
+@property(nonatomic,strong) NSAttributedString *textNodeOriginal,*textNodeApplied;
 @property(nonatomic,weak) id imageContext,imageOwner;
 @property(nonatomic,strong) id imageNodeLease;
 @property(nonatomic,strong) UIImage *imageNodeOriginal,*imageNodeApplied;
@@ -188,6 +192,10 @@ static NSString *RVDANestedCurrentBlocker(RVDAUIBinding *binding) {
     if (![RVDAUIOwnerSurface(input.owner,NO,NULL) isEqual:binding.surface]) return @"nested_surface_changed";
     return nil;
 }
+static NSString *RVDAUITextBlocker(RVDAUIBinding *binding);
+static void RVDAUITextRestore(RVDAUIBinding *binding);
+static void RVDAUITextPresent(RVDAUIBinding *binding);
+static void RVDAUITextObserveImage(RVDAUIBinding *binding);
 static NSString *RVDAImageNodeBlocker(RVDAUIBinding *binding);
 static void RVDAImageNodeRestore(RVDAUIBinding *binding);
 static void RVDAImageNodePresent(RVDAUIBinding *binding);
@@ -198,6 +206,7 @@ static NSString *RVDAUICurrentBlocker(RVDAUIBinding *binding) {
     if (!binding.controller) return @"controller_released";
     if (objc_getAssociatedObject(binding.controller,RVDAUIBindingKey)!=binding &&
         ![objc_getAssociatedObject(binding.controller,RVDAUIBindingGroupKey) containsObject:binding]) return @"binding_replaced";
+    if (binding.textOnly) return RVDAUITextBlocker(binding);
     if (binding.imageOnly) return RVDAImageNodeBlocker(binding);
     if (binding.nestedInput) return RVDANestedCurrentBlocker(binding);
     id section=binding.section;
@@ -238,7 +247,7 @@ static BOOL RVDAUICasual(RVDAUIBinding *binding) {
 static NSString *RVDAUITitle(RVDAUIBinding *binding) {
     if (binding.profile.liveCard && !binding.titleConsumerVerified) return nil;
     if (RVDAUIOriginal(binding) || !(binding.parts&RVDeArrowPartsTitle)) return nil;
-    if (!binding.result && (binding.serviceParts&RVDeArrowPartsTitle) && RVEnabled(@"dearrow_hide_while_fetching") && !binding.pendingExpired && binding.originalTitle.length) return @"\u200b";
+    if (!binding.textOnly && !binding.result && (binding.serviceParts&RVDeArrowPartsTitle) && RVEnabled(@"dearrow_hide_while_fetching") && !binding.pendingExpired && binding.originalTitle.length) return @"\u200b";
     if (!binding.titleComputed) {
         BOOL custom=RVEnabled(@"dearrow_use_crowdsourced_titles") && binding.result.titleDecision==RVDeArrowDecisionCustom && !RVDAUICasual(binding);
         NSString *source=custom ? binding.result.title : RVEnabled(@"dearrow_ignore_translated_titles") && binding.untranslatedTitle.length ? binding.untranslatedTitle : binding.originalTitle;
@@ -313,6 +322,7 @@ static void RVDAUIQueueRefreshPump(void) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC/60),dispatch_get_main_queue(),^{ RVDAUIRefreshPumpScheduled=NO;RVDAUIDrainRefresh(); });
 }
 static void RVDAUIRefresh(RVDAUIBinding *binding) {
+    if (binding.textOnly && NSThread.isMainThread) { RVDAUITextPresent(binding);return; }
     // Primitive image updates need no serialized cell-reload pump.
     if (binding.imageOnly && NSThread.isMainThread) { RVDAImageNodePresent(binding);return; }
     RVDAUIBinding *row=objc_getAssociatedObject(binding.controller,RVDAUIBindingKey);
@@ -330,6 +340,7 @@ static void RVDAUIDrainRefresh(void) {
     @try {
         NSString *blocker=RVDAUICurrentBlocker(state);
         if (blocker) { RVDAUIEvent(@"D11_lifecycle_rebound",state,blocker);return; }
+        if (state.textOnly) { RVDAUITextPresent(state);return; }
         if (state.imageOnly) { RVDAImageNodePresent(state);return; }
         if (state.nestedInput) { RVDANestedRefresh(state);return; }
         NSData *desired=state.modern ? RVDAUIProjectedData(state) : nil;
@@ -371,7 +382,7 @@ static void RVDAUIConfigureBackend(void) {
 static BOOL RVDAUIHook(NSString *className,NSString *selector,NSString *abi,BOOL classMethod,RVReplacementFactory factory);
 #include "RVDeArrowPrefetch.inc"
 static void RVDAUIRequest(RVDAUIBinding *binding) {
-    RVDAImageNodeRestore(binding);RVDANestedRestore(binding);RVDAUIRetireConsumers(binding);
+    RVDAUITextRestore(binding);RVDAImageNodeRestore(binding);RVDANestedRestore(binding);RVDAUIRetireConsumers(binding);
     [binding.request cancel];binding.request=nil;binding.result=nil;binding.imageBytes=nil;binding.encodedImage=nil;
     [binding.fallbackTransfer cancel];binding.fallbackTransfer=nil;binding.presentationImage=nil;binding.imageRevision++;
     binding.computedTitle=nil;binding.titleComputed=NO;binding.fallbackStarted=NO;binding.originalFetchStarted=NO;binding.pendingExpired=NO;binding.imageOrigin=nil;
@@ -382,11 +393,12 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
     binding.titleConsumerVerified=NO;binding.imageConsumerVerified=NO;
     binding.projectionInputs=nil;binding.projectedData=nil;
     binding.generation=++RVDAUIGeneration;binding.settingsRevision=RVDAUISettingsRevision;
-    BOOL title=!binding.imageOnly && (!binding.modern || binding.profile.titleRole) && RVDAUIPolicy(binding.surface,YES);
-    BOOL image=(binding.imageOnly || !binding.modern || binding.profile.imageRole) && RVDAUIPolicy(binding.surface,NO) && ![binding.surface isEqual:@"player"];
+    BOOL title=!binding.imageOnly && (binding.textOnly || !binding.modern || binding.profile.titleRole) && RVDAUIPolicy(binding.surface,YES);
+    BOOL image=!binding.textOnly && (binding.imageOnly || !binding.modern || binding.profile.imageRole) && RVDAUIPolicy(binding.surface,NO) && ![binding.surface isEqual:@"player"];
     binding.parts=(title ? RVDeArrowPartsTitle : 0)|(image ? RVDeArrowPartsThumbnail : 0);
     binding.serviceParts=binding.parts;
     if (binding.imageOnly) { binding.nativeThumbnailNode=binding.controller;binding.imageConsumerVerified=YES; }
+    if (binding.textOnly) { binding.nativeTitleNode=binding.controller;binding.titleConsumerVerified=YES; }
     if (!RVEnabled(@"dearrow_use_crowdsourced_titles") && ![RVSetting(@"dearrow_mode") isEqual:@"casual"]) binding.serviceParts&=~RVDeArrowPartsTitle;
     binding.titleBlocker=title ? @"awaiting_metadata" : (binding.modern && !binding.profile.titleRole ? binding.profile.titleRoleBlocker ?: binding.profile.blocker ?: @"title_role_unknown" : @"policy_off");
     binding.imageBlocker=image ? @"awaiting_metadata" : (binding.modern && !binding.profile.imageRole ? binding.profile.imageRoleBlocker ?: binding.profile.blocker ?: @"image_role_unknown" : @"policy_off");
@@ -396,7 +408,7 @@ static void RVDAUIRequest(RVDAUIBinding *binding) {
         @{@"title_policy":@(RVDAUIPolicy(binding.surface,YES)),@"image_policy":@(RVDAUIPolicy(binding.surface,NO)),@"parts":@(binding.parts),@"service_parts":@(binding.serviceParts)});
     if (!binding.serviceParts) { binding.pendingExpired=YES;RVDAUIRefresh(binding);return; }
     uint64_t generation=binding.generation;__weak RVDAUIBinding *weak=binding;
-    if (!binding.imageOnly && !binding.nestedInput && !RVDAUIOriginal(binding) && RVEnabled(@"dearrow_hide_while_fetching")) {
+    if (!binding.textOnly && !binding.imageOnly && !binding.nestedInput && !RVDAUIOriginal(binding) && RVEnabled(@"dearrow_hide_while_fetching")) {
         if (image) RVDAUIApplyImage(binding,RVDABlankImage(),@"pending",generation);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW,15*NSEC_PER_SEC),dispatch_get_main_queue(),^{
             RVDAUIBinding *state=weak;if (!state || state.generation!=generation || !RVDAUICurrent(state)) return;
@@ -570,6 +582,7 @@ static RVDAUIBinding *RVDAUIBind(id controller,id entry,id section,NSInteger ind
 }
 #include "RVDeArrowNested.inc"
 #include "RVDeArrowImageNodes.inc"
+#include "RVDeArrowTextNodes.inc"
 static id RVDAUIProjectedEntry(RVDAUIBinding *state) {
     if (!state || state.settingsRevision!=RVDAUISettingsRevision) return state.originalEntry;
     NSString *title=RVDAUITitle(state);NSData *image=RVDAUIImage(state) ? state.imageBytes : nil;
@@ -667,7 +680,7 @@ static void RVDAUIPreferencesChanged(void) {
     RVDAUIConfigureBackend();
     if ([snapshot isEqual:RVDAUISettingsSnapshot]) { RVDADiagCount(@"lifecycle.unchanged_settings_preserved");RVDAUIResume();return; }
     RVDAUISettingsSnapshot=snapshot;RVDAUILastInvalidation=@"relevant_settings_changed";
-    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) { RVDAImageNodeRestore(state);RVDANestedRestore(state); }
+    for (RVDAUIBinding *state in RVDAUIBindings.allObjects) { RVDAUITextRestore(state);RVDAImageNodeRestore(state);RVDANestedRestore(state); }
     RVDAUISettingsRevision++;RVDAPrefetchReset();
     for (RVDAUIBinding *state in RVDAUIBindings.allObjects) {
         RVDAUIRequest(state);RVDAUIEvent(@"D12_original_restore_or_rebind_requested",state,nil);RVDAUIRefresh(state);
@@ -717,7 +730,7 @@ static NSDictionary *RVDAUIReport(void) {
             @"title_consumer_verified":@(state.titleConsumerVerified),@"image_consumer_verified":@(state.imageConsumerVerified),
             @"consumer_observations":@(state.consumerObservations),@"consumer_checkpoint":state.consumerCheckpoint ?: @{},
             @"native_owner_checkpoint":state.nativeOwnerCheckpoint ?: @{},@"factory_provenance_verified":@(state.factoryProvenanceVerified),@"factory_callback_count":@(state.factoryCallbackCount),@"factory_serial":@(state.factorySerial),@"native_title_projected":@(state.nativeTitleProjected),@"native_thumbnail_projected":@(state.nativeImageProjected),
-            @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"image_node_adapter":@(state.imageOnly),@"adapter":state.imageOnly ? @"video_url_image_node" : state.profile.adapterID ?: @"legacy_pinned",
+            @"consumer_leases":@(state.consumerLeases.count),@"consumer_queued":@(state.consumerQueued),@"text_node_adapter":@(state.textOnly),@"image_node_adapter":@(state.imageOnly),@"adapter":state.textOnly ? @"model_title_text_node" : state.imageOnly ? @"video_url_image_node" : state.profile.adapterID ?: @"legacy_pinned",
             @"structural_fingerprint":state.profile.structuralFingerprint ?: @"not_applicable",@"watch_title_contract":@(state.profile.watchTitle),
             @"title_input_blocker":state.profile.titleRoleBlocker ?: @"not_applicable",@"image_input_blocker":state.profile.imageRoleBlocker ?: @"not_applicable",
             @"last_checkpoint":state.lastCheckpoint ?: @"none",@"last_blocker":state.lastBlocker ?: @"ready",@"owners":state.ownerSummary ?: @{},
@@ -826,7 +839,7 @@ static void RVInstallDeArrowUI(void) {
     RVDAUIStarted=NSProcessInfo.processInfo.systemUptime;
     RVDAUISalt=NSUUID.UUID.UUIDString;
     RVDAUIBindings=[NSHashTable weakObjectsHashTable];RVDAUIOriginalVideos=[NSMutableSet set];RVDAUICustomVideos=[NSMutableSet set];RVDAUIHooks=[NSMutableArray array];RVDAUIConfigureBackend();RVDAUISettingsSnapshot=RVDAUIRelevantSettings();
-    RVDAPrefetchInstall();RVDAImageNodesInstall();
+    RVDAPrefetchInstall();RVDAImageNodesInstall();RVDAUITextInstall();
     RVDAUIHook(@"ELMComponent",@"templateURI",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id component) { id uri=((id(*)(id,SEL))original)(component,sel);RVDADiagNativeTemplate(uri);return uri; };
     });
