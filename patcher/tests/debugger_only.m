@@ -25,6 +25,7 @@ int main(int argc,const char **argv) {
         assert(!RVDebugObserverContract(@"UnknownClass",@"unknown",@"v@:",NO));
         for (NSString *key in RVFeatureKeys) {
             BOOL mandatory=[forced containsObject:key],allows=[supported containsObject:key];
+            assert(RVDebugBaselineFeature(key)==allows);
             assert([RVDebugOnlySetting(key,@{key:@YES},RVFeatureKeys,nil) boolValue]==allows);
             assert([RVDebugOnlySetting(key,@{key:@NO},RVFeatureKeys,nil) boolValue]==mandatory);
             assert([RVDebugOnlySetting(key,@{key:@NO},RVFeatureKeys,@YES) boolValue]==allows);

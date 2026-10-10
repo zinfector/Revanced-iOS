@@ -49,7 +49,7 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
         return @{@"ok":@YES,@"layout":metadata,@"value":RVDBGRuntimeReference(object_getIvar(object,field),handle.runtimeRole,handle.runtimeRoot)};
     }
     if ([operation isEqual:@"debug.runtime.setting"]) {
-        NSString *feature=args[@"feature"];if (![feature isKindOfClass:NSString.class] || !RVRuntimePolicyKnown(feature)) return RVDBGFail(@"unbound_policy_feature");
+        NSString *feature=args[@"feature"];if (![feature isKindOfClass:NSString.class] || ![RVFeatureKeys containsObject:feature] || !RVDebugBaselineFeature(feature)) return RVDBGFail(@"unbound_bundle_feature");
         NSString *key=[RVPreferencePrefix stringByAppendingString:feature];NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
         if (RVDebuggerOnly() && !RVBundleSettingAllowed(feature) && (args[@"value"] || args[@"remove"])) return RVDBGFail(@"patch_settings_disabled_in_debugger_only_build");
         if (args[@"value"] || args[@"remove"]) {
@@ -57,10 +57,11 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
             if ([args[@"remove"] isEqual:@YES] && !args[@"value"]) [defaults removeObjectForKey:key];
             else if ([args[@"value"] isKindOfClass:NSNumber.class] && CFGetTypeID((__bridge CFTypeRef)args[@"value"])==CFBooleanGetTypeID()) [defaults setBool:[args[@"value"] boolValue] forKey:key];
             else return RVDBGFail(@"boolean_or_remove_required");
+            RVPreferencesChanged();
         }
         BOOL result=RVRuntimeSourceFeatureEnabled(feature);NSDictionary *policy;@synchronized(RVRuntimeSuite) { policy=RVRuntimePolicyResults[feature] ?: @{}; }
         return @{@"ok":@YES,@"feature":feature,@"override":[defaults objectForKey:key] ?: NSNull.null,
-            @"effective":@(RVEnabled(feature)),@"policy_result":@(result),@"policy":policy};
+            @"effective":@(RVEnabled(feature)),@"policy_result":@(result),@"policy":policy,@"compiled_source_policy":@(RVRuntimePolicyKnown(feature))};
     }
     if ([operation isEqual:@"debug.runtime.visibility"]) {
         id object=RVDBGResolve(args[@"handle"],NULL);RVDBGHandle *handle=RVDBGState.shared.handles[args[@"handle"]];

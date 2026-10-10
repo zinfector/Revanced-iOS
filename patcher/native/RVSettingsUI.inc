@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "RVSettingsRows.inc"
+static void RVPreferencesChanged(void);
 #include "RVUSBDiagnostics.inc"
 #include "RVSettingsNativeUI.inc"
 
