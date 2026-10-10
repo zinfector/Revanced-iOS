@@ -201,6 +201,7 @@ static Class RVSettingsNativeHostClass(void) {
     });return RVSettingsHostClass;
 }
 static UIViewController *RVSettingsWrap(UIViewController *content,UIViewController *source) {
+    if (RVDebuggerOnly()) return content;
     Class cls=RVSettingsNativeHostClass();if (!cls) return content;
     UIViewController *host=[[cls alloc] initWithParentResponder:source];
     if (![host isKindOfClass:cls]) return content;

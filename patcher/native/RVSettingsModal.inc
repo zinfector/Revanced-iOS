@@ -42,13 +42,14 @@ static void RVSettingsRefreshModalAppearance(UIViewController *content) {
 static UINavigationController *RVSettingsModalNavigation(UIViewController *page,UIViewController *source) {
     static BOOL native;static dispatch_once_t once;
     dispatch_once(&once,^{
+        if (RVDebuggerOnly()) return;
         native=[NSClassFromString(@"YTNavigationController") isSubclassOfClass:UINavigationController.class] &&
             [NSClassFromString(@"YTNavigationBar") isSubclassOfClass:UINavigationBar.class];
         native &= RVUIRequire(@"YTNavigationController",@"initWithParentResponder:",@"@@:@",NO);
         native &= RVUIRequire(@"YTNavigationBar",@"setupStyle",@"v@:",NO);
     });
     UINavigationController *navigation=nil;
-    if (native) {
+    if (native && !RVDebuggerOnly()) {
         id candidate=[[NSClassFromString(@"YTNavigationController") alloc] initWithParentResponder:source];
         if ([candidate isKindOfClass:UINavigationController.class] &&
             [((UINavigationController *)candidate).navigationBar isKindOfClass:NSClassFromString(@"YTNavigationBar")]) navigation=candidate;

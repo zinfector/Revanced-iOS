@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: MIT
 #import <Foundation/Foundation.h>
+#define RV_DEBUGGER_ONLY 0
+#include "../native/RVDebugOnly.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 #include <math.h>

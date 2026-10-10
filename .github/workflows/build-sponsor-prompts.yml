@@ -1,8 +1,8 @@
-name: Build runtime integration pilot with Xcode
+name: Build debugger-only baseline with Xcode
 
 on:
   push:
-    branches: [fix/runtime-integration-xcode-0.4.2]
+    branches: [fix/debugger-only-0.4.3]
 
 permissions:
   contents: read
@@ -25,6 +25,10 @@ jobs:
           python-version: '3.14'
       - name: Build ARM64 iOS payload with established Xcode toolchain
         run: python build.py
+      - name: Verify debugger isolation with the actual native guards
+        run: |
+          xcrun clang -fobjc-arc -fblocks -Wall -Wextra -Werror tests/debugger_only.m -framework Foundation -o build/DebuggerOnlyHarness
+          build/DebuggerOnlyHarness recipes.json | tee build/debugger-only-tests.log
       - name: Record compiler and cloud build provenance
         run: |
           python - <<'PY'
@@ -36,7 +40,8 @@ jobs:
               'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
               'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
               'clang': subprocess.check_output(['xcrun', '--sdk', 'iphoneos', 'clang', '--version'], text=True).strip(),
-              'tests_run': False,
+              'tests_run': True,
+              'test_scope': 'Compiled macOS debugger isolation guards; iOS runtime unverified',
           }
           Path('build/cloud-build.json').write_text(json.dumps(provenance, indent=2)+'\n')
           PY
@@ -50,6 +55,7 @@ jobs:
             patcher/build/RVPort.dSYM.zip
             patcher/build/RVPort.dylib
             patcher/build/build-manifest.json
+            patcher/build/debugger-only-tests.log
             patcher/build/build.log
             patcher/build/cloud-build.json
           if-no-files-found: error

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Runs production ABI guards, native-private-keychain hooks, request identity and redaction.
 #import <Foundation/Foundation.h>
+#define RV_DEBUGGER_ONLY 0
+#include "../native/RVDebugOnly.h"
 #import <Security/Security.h>
 #import <objc/runtime.h>
 #import <objc/message.h>

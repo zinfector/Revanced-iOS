@@ -39,10 +39,12 @@
     "RVDeArrowTextNodes.inc": "a3891a9a8d55f06eac0e34a606416942f8acb9bf657e8ac49b3e9a3ae027b7f5",
     "RVDeArrowUI.inc": "5e7ec8d38b331947fd8e21122b13c90c7ecfc876cc1753daa422d86efdff6546",
     "RVDeArrowWatchDiagnostics.inc": "edf62c4ea99b25b5753a127fe8332dbec84dfa356db12cd2d9b5c5025330f027",
-    "RVDebugAgent.inc": "6b549f4930bb097dcdb52eaef0589e50fa592b76cce2cd26fc4999e2d8cb4898",
+    "RVDebugAgent.inc": "38345244366ffaa616314f9dc7abf7ce39dd2ca10c6464c2c4040569651d6c55",
     "RVDebugMemory.inc": "8c7d1812ee11db1bb08e2ca90f12f4870f8e2d410aeed7793f69834e31689e31",
     "RVDebugObjects.inc": "54c9b6981e79aa8b76908995797bf13eb478f089f2ba0a10d275e0bbc72830f4",
-    "RVDebugRuntime.inc": "1ab5f796ae453dab4afb6d9f300300c97f8dbbf1f941ff03f0cd3757e8c0fe41",
+    "RVDebugOnly.h": "23ef46f56b22cb3b834adb2c99c063b16a6ad52c1e679e4844c397d7c75491d6",
+    "RVDebugOnlyObservers.inc": "490e6caabb2a4876a838c4275266980f291cf8792b36f589b0d337c9c57cfffb",
+    "RVDebugRuntime.inc": "d6bb3b61081d58beba15a3af8fb88a337a7b2bc74dcc6bb0befa7d009d2d0b94",
     "RVDebugState.inc": "45fb32e7a127b58fa8b5f1e9a4a4f0a6fe8bf3c6c7a47c70f713ec038e868726",
     "RVDislikesDiagnostics.inc": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
     "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
@@ -58,8 +60,8 @@
     "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
     "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
     "RVNavigation.inc": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
-    "RVPort.m": "a664e92f8ce362da37523d70cff36a99065abfd19725367ef830d62d4b40c32e",
-    "RVRuntime.inc": "fce545b92d64d193372e82356e1828958409682c55825f1ca77b278e276a2983",
+    "RVPort.m": "32dc3b69761fc4b9675a14478ca9cae7cd933c501985ba456ebc8e4215325e64",
+    "RVRuntime.inc": "c21108527a41d788c3603ace5ffe20be915d5a41e927543d10caa92af2aeac4f",
     "RVRuntimeFieldCatalog.inc": "01f733b713c522f2ffaed2cf2a57a3f7fab29079d29d5854a4b70497b351e018",
     "RVRuntimeFields.h": "0649d594d65f2e702545ad7aeb8bc355272ef2ebeefaf66bcebd989131cff097",
     "RVRuntimeFields.inc": "25b0272eb23890f6de2d4039ad4f18a31fe56e14c93da05a53f1826c9d6be09d",
@@ -72,12 +74,12 @@
     "RVSettingsCatalog.h": "818370407611de81327a94ff9a41f83e835beff340b7310ee8153be7a61ac386",
     "RVSettingsIcon.inc": "d506ea29dd44da86ce962bf4d7d2b409d4ee7f8af8b68dae02b1dbf263174111",
     "RVSettingsMenuIcons.inc": "5f305536da598b767f4357c9ed1270efb34af7460e6dc5dff9905f72c7aa0a43",
-    "RVSettingsModal.inc": "28ca75bd2bcb8159225de2e68d5896f6dddfc0dff6903c084d4cabe1d4f51f84",
-    "RVSettingsModel.inc": "767eab29dfdf57dff7fea23e72ad9b40edca0422605e6ef141f213f656b9d57b",
-    "RVSettingsNativeUI.inc": "78851e0551492e4c8205d929f4c1978c22445bbb674d9a1b58be34aa63d804fd",
+    "RVSettingsModal.inc": "058bba59a4facbae97ae7620f181e77fcedca0fe7a3487860296ea17a6ede814",
+    "RVSettingsModel.inc": "564bd4f26b26e2f680c00334ddfb1ea28de33c977abbb03a055dd8f825556873",
+    "RVSettingsNativeUI.inc": "f6fabde7cc38f3d046d696fafe375e4145e90b06e8b784741db2006a957ceb6e",
     "RVSettingsNavigation.inc": "c98e3d57708cfea459b27b52d820e21e0dc20360bd2f0d8ed89fc145ee238b43",
-    "RVSettingsRows.inc": "d68f7c86c9178a55558ccd4af2c461288448758965d474558c77d5f10594b503",
-    "RVSettingsUI.inc": "21b06ac16285a7b20b0b1feba5c856cc8b4dd8a717fa7d4f1e67619cf2259155",
+    "RVSettingsRows.inc": "c4f9aa4c4f5cfe5336e183cb74d306a8b670e490d458e37692b15d3797dfc4a7",
+    "RVSettingsUI.inc": "4f5d089d862a6c9b78b0935e89b31724046708feefd284772dff8d136a00807f",
     "RVShortsLayout.inc": "e25f8c390fefd4246ed4fe98255583fec39cbdc8ac56697fedcd995138f3b421",
     "RVSourceKernels.c": "613b6a8639ac039072115fa58c3f6fe8212019c6d1420e997300a233753a6560",
     "RVSourceKernels.h": "9b0a78ab9ed1b2df027b8d3582f194a302ded9053be09b7c6562f774ba1c8d07",
@@ -156,6 +158,8 @@
     "RVDebugAgent.inc",
     "RVDebugMemory.inc",
     "RVDebugObjects.inc",
+    "RVDebugOnly.h",
+    "RVDebugOnlyObservers.inc",
     "RVDebugRuntime.inc",
     "RVDebugState.inc",
     "RVDislikesDiagnostics.inc",
@@ -209,7 +213,7 @@
     "RVVoteModel.inc",
     "RVWireFields.inc"
   ],
-  "source_call_sites": 285,
+  "source_call_sites": 287,
   "unresolved": [],
   "contracts": [
     {
@@ -918,7 +922,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 346,
+          "line": 348,
           "wrapper": "RVHook"
         }
       ],
@@ -938,7 +942,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 346,
+          "line": 348,
           "wrapper": "RVHook"
         }
       ],
@@ -4131,7 +4135,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 315,
+          "line": 317,
           "wrapper": "RVHook"
         }
       ],
@@ -4637,7 +4641,7 @@
       "sources": [
         {
           "file": "RVSettingsModal.inc",
-          "line": 48,
+          "line": 49,
           "wrapper": "RVUIRequire"
         }
       ],
@@ -4673,7 +4677,7 @@
       "sources": [
         {
           "file": "RVSettingsModal.inc",
-          "line": 47,
+          "line": 48,
           "wrapper": "RVUIRequire"
         }
       ],
@@ -5396,8 +5400,13 @@
       ],
       "sources": [
         {
+          "file": "RVDebugOnlyObservers.inc",
+          "line": 19,
+          "wrapper": "RVHook"
+        },
+        {
           "file": "RVPort.m",
-          "line": 329,
+          "line": 331,
           "wrapper": "RVHook"
         }
       ],
@@ -5415,7 +5424,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 321,
+          "line": 323,
           "wrapper": "RVHook"
         }
       ],
@@ -5433,7 +5442,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 338,
+          "line": 340,
           "wrapper": "RVHook"
         }
       ],
@@ -7124,6 +7133,11 @@
       ],
       "sources": [
         {
+          "file": "RVDebugOnlyObservers.inc",
+          "line": 27,
+          "wrapper": "RVHook"
+        },
+        {
           "file": "RVExtras.inc",
           "line": 181,
           "wrapper": "RVHook"
@@ -7141,6 +7155,11 @@
         "core"
       ],
       "sources": [
+        {
+          "file": "RVDebugOnlyObservers.inc",
+          "line": 27,
+          "wrapper": "RVHook"
+        },
         {
           "file": "RVExtras.inc",
           "line": 181,

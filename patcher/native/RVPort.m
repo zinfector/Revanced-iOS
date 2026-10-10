@@ -15,8 +15,9 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.4.2-runtime-pilot-xcode"
+#define RV_PORT_VERSION @"0.4.3-debugger-only-xcode"
 #include "RVFeatures.h"
+#include "RVDebugOnly.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
 #include "RVImageHeader.h"
@@ -76,11 +77,12 @@ static void RVLog(NSString *message) {
     if ([RVConfig[@"diagnostics"] boolValue]) NSLog(@"[RVPort] %@",message);
 }
 static id RVSetting(NSString *key) {
+    if (RVDebuggerOnly()) return RVDebugOnlySetting(key,RVConfig,RVFeatureKeys);
     id override=[[NSUserDefaults standardUserDefaults] objectForKey:[RVPreferencePrefix stringByAppendingString:key]];
     return override ?: RVConfig[key];
 }
 static BOOL RVAdaptiveFeature(NSString *key);
-static BOOL RVEnabled(NSString *key) { return RVCompatible && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
+static BOOL RVEnabled(NSString *key) { return RVCompatible && (!RVDebuggerOnly() || [key isEqual:@"diagnostics"]) && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
 #include "RVRuntime.inc"
 #include "RVSourceReuse.inc"
 #include "RVRuntimePolicy.inc"
@@ -382,7 +384,7 @@ static NSDictionary *RVSponsorReport(void) {
 @end
 @implementation RVSettingsEntrance
 - (void)attach {
-    if (RVCompatible) RVRefreshShortcuts();
+    if (RVCompatible && !RVDebuggerOnly()) RVRefreshShortcuts();
     for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
         if (![scene isKindOfClass:[UIWindowScene class]]) continue;
         for (UIWindow *window in ((UIWindowScene *)scene).windows) {
@@ -405,6 +407,8 @@ static NSDictionary *RVSponsorReport(void) {
 }
 @end
 
+#include "RVDebugOnlyObservers.inc"
+
 static BOOL RVCheckIdentity(void) {
     return RVAdaptiveIdentity();
 }
@@ -417,7 +421,8 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1 && RVAdaptivePreflight();
         RVLog(RVCompatible ? @"Target-bound adaptive profile accepted" : @"App identity/config/profile mismatch: hooks disabled");
-        if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
+        if (RVCompatible && RVDebuggerOnly()) { RVInstallDebugOnlyObservers();RVLog(@"Debugger-only baseline: patch installers disabled; saved patch preferences ignored"); }
+        if (RVCompatible && !RVDebuggerOnly()) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             RVUSBResumeSavedDiagnostics();

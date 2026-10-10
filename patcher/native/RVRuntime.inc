@@ -29,6 +29,7 @@ static void RVSetObject(id object,const char *name,id value) {
 
 typedef id (^RVReplacementFactory)(IMP,SEL);
 static BOOL RVHook(NSString *className,NSString *selectorName,NSString *signature,BOOL classMethod,RVReplacementFactory factory) {
+    if (RVDebuggerOnly() && !RVDebugObserverContract(className,selectorName,signature,classMethod)) return NO;
     if (!RVAdaptivePermit(className,selectorName,signature,classMethod)) return NO;
     Class cls=NSClassFromString(className);
     if (!cls) { RVLog([@"Missing class: " stringByAppendingString:className]);return NO; }

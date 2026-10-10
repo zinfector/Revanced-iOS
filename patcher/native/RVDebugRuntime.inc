@@ -51,6 +51,7 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
     if ([operation isEqual:@"debug.runtime.setting"]) {
         NSString *feature=args[@"feature"];if (![feature isKindOfClass:NSString.class] || !RVRuntimePolicyKnown(feature)) return RVDBGFail(@"unbound_policy_feature");
         NSString *key=[RVPreferencePrefix stringByAppendingString:feature];NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
+        if (RVDebuggerOnly() && (args[@"value"] || args[@"remove"])) return RVDBGFail(@"patch_settings_disabled_in_debugger_only_build");
         if (args[@"value"] || args[@"remove"]) {
             id expected=args[@"expected"];if (!expected || ![expected isEqual:[defaults objectForKey:key] ?: NSNull.null]) return RVDBGFail(@"setting_compare_failed");
             if ([args[@"remove"] isEqual:@YES] && !args[@"value"]) [defaults removeObjectForKey:key];
@@ -77,6 +78,7 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
         return @{@"ok":@YES,@"schema":@"runtime-integration.v1",@"providers_linked_into":@"RVPort.dylib",@"preferences_count":@(rv_setting_count()),
             @"source_sha256":RV_BUILD_SOURCE_SHA256,@"policies":policies,@"field_contracts":RVRuntimeFieldCatalog(),
             @"rolling_events":[RVRuntimeRollingEvents copy] ?: @[],@"rolling_sequence":@(RVRuntimeRollingSequence),
+            @"debugger_only":@(RVDebuggerOnly()),@"patch_installers_enabled":@(!RVDebuggerOnly()),
             @"visual_animation_verified":@NO,@"runtime_verified":@NO};
     }return RVDBGFail(@"unsupported_runtime_operation");
 }

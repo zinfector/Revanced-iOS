@@ -2,6 +2,8 @@
 // Executes production hooks with UIKit-shaped test objects on macOS.
 // This verifies argument/lifecycle contracts, not the actual YouTube UI.
 #import <Foundation/Foundation.h>
+#define RV_DEBUGGER_ONLY 0
+#include "../native/RVDebugOnly.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
