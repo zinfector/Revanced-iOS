@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.4.3-debugger-only-xcode"
+#define RV_PORT_VERSION @"0.4.4-debugger-login-xcode"
 #include "RVFeatures.h"
 #include "RVDebugOnly.h"
 #include "../build/RVBuildIdentity.h"
@@ -82,7 +82,7 @@ static id RVSetting(NSString *key) {
     return override ?: RVConfig[key];
 }
 static BOOL RVAdaptiveFeature(NSString *key);
-static BOOL RVEnabled(NSString *key) { return RVCompatible && (!RVDebuggerOnly() || [key isEqual:@"diagnostics"]) && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
+static BOOL RVEnabled(NSString *key) { return RVCompatible && (!RVDebuggerOnly() || RVDebugBaselineFeature(key)) && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
 #include "RVRuntime.inc"
 #include "RVSourceReuse.inc"
 #include "RVRuntimePolicy.inc"
@@ -421,7 +421,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1 && RVAdaptivePreflight();
         RVLog(RVCompatible ? @"Target-bound adaptive profile accepted" : @"App identity/config/profile mismatch: hooks disabled");
-        if (RVCompatible && RVDebuggerOnly()) { RVInstallDebugOnlyObservers();RVLog(@"Debugger-only baseline: patch installers disabled; saved patch preferences ignored"); }
+        if (RVCompatible && RVDebuggerOnly()) { RVInstallDebugOnlyObservers();RVInstallAuthentication();RVLog(@"Debugger/login baseline: only five login compatibility hooks and three observers enabled; saved patch preferences ignored"); }
         if (RVCompatible && !RVDebuggerOnly()) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];

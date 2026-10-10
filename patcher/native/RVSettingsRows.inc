@@ -24,7 +24,7 @@ static id RVSettingsEffectiveValue(NSString *key) {
     return RVPreferenceValid(value,rule) ? value : rule[@"default"];
 }
 static NSArray *RVSettingsRows(NSString *groupID,NSString *mapKey,NSString *listKey,NSString *query) {
-    if (RVDebuggerOnly()) return @[@{@"title":@"Debugger only",@"footer":@"All ported patches are disabled. Open this menu with a three-finger hold.",@"rows":@[@{@"title":@"USB diagnostics",@"tool":@6},@{@"title":@"Hook diagnostics",@"tool":@4},@{@"title":@"About",@"tool":@5}]}];
+    if (RVDebuggerOnly()) return @[@{@"title":@"Debugger and login",@"footer":@"Only sideload login compatibility is enabled. All other patches are disabled. Open this menu with a three-finger hold.",@"rows":@[@{@"title":@"USB diagnostics",@"tool":@6},@{@"title":@"Hook diagnostics",@"tool":@4},@{@"title":@"About",@"tool":@5}]}];
     NSDictionary *group=nil;
     for (NSDictionary *candidate in RVPreferencesCatalog()[@"groups"]) if ([candidate[@"id"] isEqual:groupID]) { group=candidate;break; }
     BOOL root=!groupID && !mapKey && !listKey;

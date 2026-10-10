@@ -1,8 +1,8 @@
-name: Build debugger-only baseline with Xcode
+name: Build debugger and login baseline with Xcode
 
 on:
   push:
-    branches: [fix/debugger-only-0.4.3]
+    branches: [fix/debugger-login-0.4.4]
 
 permissions:
   contents: read

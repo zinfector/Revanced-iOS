@@ -78,7 +78,7 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
         return @{@"ok":@YES,@"schema":@"runtime-integration.v1",@"providers_linked_into":@"RVPort.dylib",@"preferences_count":@(rv_setting_count()),
             @"source_sha256":RV_BUILD_SOURCE_SHA256,@"policies":policies,@"field_contracts":RVRuntimeFieldCatalog(),
             @"rolling_events":[RVRuntimeRollingEvents copy] ?: @[],@"rolling_sequence":@(RVRuntimeRollingSequence),
-            @"debugger_only":@(RVDebuggerOnly()),@"patch_installers_enabled":@(!RVDebuggerOnly()),
+            @"debugger_only":@(RVDebuggerOnly()),@"patch_installers_enabled":@((BOOL)!RVDebuggerOnly()),@"login_compatibility_enabled":@(RVDebuggerOnly()),
             @"visual_animation_verified":@NO,@"runtime_verified":@NO};
     }return RVDBGFail(@"unsupported_runtime_operation");
 }
