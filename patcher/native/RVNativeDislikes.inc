@@ -64,7 +64,7 @@ static void RVNativeDislikeApply(id action) {
 }
 static void RVNativeDislikeRefresh(void) {
     if (!NSThread.isMainThread) return;
-    NSString *key=[NSString stringWithFormat:@"%d/%@/%@",RVEnabled(@"return_dislikes"),RVDislikeVideo ?: @"",RVDislikeCount ?: @""];
+    NSString *key=[NSString stringWithFormat:@"%d/%@/%@/%@",RVEnabled(@"return_dislikes"),RVDislikeVideo ?: @"",RVDislikeCount ?: @"",RVLikeCount ?: @""];
     if ([RVNativeDislikeRefreshKey isEqual:key]) return;
     RVNativeDislikeRefreshKey=key;
     RVRefreshDislikeUI();

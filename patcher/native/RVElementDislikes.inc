@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Element-based watch controls use ASDisplayNode/Yoga, not the slim UIKit row.
 // Keep the native icons, commands, hit targets and backgrounds. Add one owned
-// text node only to a video-bound, semantically identified native action pair.
+// text node only to a video-bound, semantically identified native vote control.
 static const void *RVElementDislikeKey=&RVElementDislikeKey;
 static const void *RVElementRootTraceKey=&RVElementRootTraceKey;
 static const void *RVElementTextTraceKey=&RVElementTextTraceKey;
@@ -25,6 +25,9 @@ static NSString *RVElementLastGate=@"not_observed";
 @property(nonatomic) CGFloat fontPointSize;
 @property(nonatomic) NSUInteger compositionRevision;
 @property(nonatomic) BOOL updating;
+@property(nonatomic) NSInteger voteRole;
+@property(nonatomic) CGFloat measuredWidth,measuredHeight;
+@property(nonatomic,copy) NSString *sizeGate;
 @property(nonatomic,weak) id layoutRoot;
 @property(nonatomic,weak) id button;
 @property(nonatomic,strong) UILabel *renderLabel;
@@ -205,6 +208,15 @@ static int RVElementSemanticRole(id node) {
         int role=RVVoteComponentRole(owner);if (role) return role;
     }return 0;
 }
+// Like fallback requires the loaded root of an actual like-button component.
+// Animated icon children and broad action-bar ancestors cannot own count text.
+static id RVElementLikeBinding(id node) {
+    for (id owner in RVElementOwnerChain(RVObject(node,"nodeController"))) {
+        NSString *name=RVVoteComponentTemplate(owner);
+        if (![name hasPrefix:@"like_button"] || !RVBool(owner,"isNodeOnControllerLoaded")) continue;
+        if (RVObject(owner,"node")==node) return owner;
+    }return nil;
+}
 static id RVElementSemanticPairRoot(id node) {
     for (NSUInteger level=0;node && level<12;level++,node=RVElementParent(node)) {
         for (id owner in RVElementOwnerChain(RVObject(node,"nodeController"))) {
@@ -321,7 +333,7 @@ static BOOL RVElementRectInAncestor(id node,id ancestor,CGRect *result) {
     if (parent!=ancestor) return NO;*result=rect;return YES;
 }
 static void RVElementBalanceEdges(id parent,RVElementDislikeState *state) {
-    if (!state.textNode || state.updating || !RVElementOwnedWatch(parent,state)) return;
+    if (!state.textNode || state.updating || !RVElementOwnedWatch(parent,state) || state.voteRole==2) return;
     state.nativePairPresent=NO;state.nativeLikeTextPresent=NO;
     BOOL rtl=RVElementLoadedView(parent).effectiveUserInterfaceLayoutDirection==UIUserInterfaceLayoutDirectionRightToLeft;
     id semantic=RVElementSemanticPairRoot(parent);id pair=semantic ?: RVElementParent(parent);
@@ -408,14 +420,21 @@ static void RVElementMountOwnedText(id parent,RVElementDislikeState *state) {
     if (![display isKindOfClass:NSAttributedString.class]) { state.mountGate=@"text_attributes_unavailable";return; }
     if (!state.renderLabel) {
         state.renderLabel=[UILabel new];state.renderLabel.userInteractionEnabled=NO;
-        state.renderLabel.accessibilityIdentifier=@"rvport.dislike.count.button";
+        state.renderLabel.accessibilityIdentifier=state.voteRole==2 ? @"rvport.like.count.button" : @"rvport.dislike.count.button";
         state.renderLabel.backgroundColor=UIColor.clearColor;state.renderLabel.numberOfLines=1;
     }
     if (![state.renderLabel.attributedText isEqualToAttributedString:display]) state.renderLabel.attributedText=display;
     state.renderLabel.accessibilityLabel=RVObject(state.textNode,"accessibilityLabel");
-    CGSize natural=[state.renderLabel sizeThatFits:CGSizeMake(frame.size.width,CGFLOAT_MAX)];
+    CGSize natural=[state.renderLabel sizeThatFits:CGSizeMake(CGFLOAT_MAX,CGFLOAT_MAX)];
+    // Never show a clipped first digit as if it were the complete service count.
+    if (!RVVoteFullTextFits(frame.size.width,natural.width)) {
+        state.renderLabel.hidden=YES;state.mountGate=@"waiting_for_full_text_width";return;
+    }
     if (isfinite(natural.height) && natural.height>frame.size.height) {
         frame.origin.y-=(natural.height-frame.size.height)/2;frame.size.height=natural.height;
+    }
+    if (!CGRectContainsRect(view.bounds,frame)) {
+        state.renderLabel.hidden=YES;state.mountGate=@"waiting_for_button_bounds";return;
     }
     state.renderLabel.frame=frame;state.renderLabel.hidden=NO;
     if (state.suspended) { state.suspended=NO;state.resumeCount++;RVElementDislikeEvent(@"watch_count_resumed"); }
@@ -431,9 +450,9 @@ static void RVElementDislikeRemove(id parent,RVElementDislikeState *state) {
     RVSetObject(parent,"removeYogaChild:",state.textNode);
     if (RVCan(state.textNode,"removeFromSupernode",@"v@:")) ((void(*)(id,SEL))objc_msgSend)(state.textNode,sel_registerName("removeFromSupernode"));
     [state.renderLabel removeFromSuperview];state.renderLabel=nil;
-    state.textNode=nil;state.text=nil;state.suspended=NO;state.mountMode=@"removed";state.mountGate=@"binding_invalidated";state.updating=NO;
+    state.textNode=nil;state.text=nil;state.measuredWidth=0;state.measuredHeight=0;state.sizeGate=nil;state.suspended=NO;state.mountMode=@"removed";state.mountGate=@"binding_invalidated";state.updating=NO;
 }
-static void RVElementDislikeApply(id parent,id pair) {
+static void RVElementDislikeApply(id parent,id pair,NSInteger role) {
     RVElementDislikeState *state=objc_getAssociatedObject(parent,RVElementDislikeKey);
     if (state.updating) return;
     UIView *view=RVElementLoadedView(parent);
@@ -441,9 +460,19 @@ static void RVElementDislikeApply(id parent,id pair) {
     if ((!RVOrdinaryContent(RVCurrentPlayback) || !RVDislikeWatchAction(view) || !RVDislikeWatchPlayerMatches(RVCurrentWatch)) && !RVElementOwnedWatch(parent,state)) {
         RVElementSuspend(state,@"watch_transition_suspended");return;
     }
-    id bound=RVElementFindBinding(pair,RVDislikeVideo);
+    id bound=role==2 ? RVElementLikeBinding(parent) : RVElementFindBinding(pair,RVDislikeVideo);
     if (!bound) { RVElementLastGate=@"semantic_role_missing";RVElementDislikeEvent(@"semantic_role_missing");RVElementDislikeRemove(parent,state);return; }
     RVElementDislikeEvent(@"semantic_role_matched");
+    if (role==2) {
+        if (!RVLikeCount) { RVElementDislikeRemove(parent,state);return; }
+        for (id child in RVElementSubtree(parent)) {
+            if (child==state.textNode) continue;
+            id native=RVObject(child,"attributedText");
+            if ([native isKindOfClass:NSAttributedString.class] && [native length]) {
+                RVElementDislikeRemove(parent,state);RVElementDislikeEvent(@"native_like_text_preserved");return;
+            }
+        }
+    }
     id element=RVObject(bound,"element");NSString *video=RVDislikeVideo;
     BOOL boundAlready=state && state.component==bound && state.element==element && [state.video isEqual:video];
     RVElementBindingState *binding=RVElementBinding(bound,video);
@@ -458,7 +487,7 @@ static void RVElementDislikeApply(id parent,id pair) {
     }
     if (!state) { state=[RVElementDislikeState new];objc_setAssociatedObject(parent,RVElementDislikeKey,state,OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
     if (![state.video isEqual:video]) { state.rootInvalidations=0;state.rootLayoutPasses=0;state.textLoadCallbacks=0;state.textDisplayCallbacks=0;state.mountAttempts=0; }
-    state.button=parent;if (RVCurrentWatch) state.watch=RVCurrentWatch;state.component=bound;state.element=element;state.video=video;
+    state.voteRole=role;state.button=parent;if (RVCurrentWatch) state.watch=RVCurrentWatch;state.component=bound;state.element=element;state.video=video;
     NSDictionary *attributes=RVElementVoteTypography(parent,state.textNode);
     UIFont *font=[attributes[NSFontAttributeName] isKindOfClass:UIFont.class] ? attributes[NSFontAttributeName] :
         [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
@@ -473,7 +502,8 @@ static void RVElementDislikeApply(id parent,id pair) {
         id native=RVObject(palette,"textPrimary");
         color=[native isKindOfClass:UIColor.class] ? native : (pageStyle==1 ? UIColor.whiteColor : UIColor.blackColor);
     }
-    NSString *text=RVDislikeCompactCount(RVDislikeCount);
+    NSNumber *count=role==2 ? RVLikeCount : RVDislikeCount;
+    NSString *text=RVDislikeCompactCount(count);
     NSAttributedString *display=[[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName:font,NSForegroundColorAttributeName:color}];
     state.updating=YES;
     if (!state.textNode) {
@@ -487,8 +517,8 @@ static void RVElementDislikeApply(id parent,id pair) {
         // Yoga's renderer manages render subnodes itself: do not addSubnode.
         RVVoid(node,"enableViewFlattening");
         RVSetObject(node,"setAttributedText:",display);
-        RVSetObject(node,"setAccessibilityIdentifier:",@"rvport.dislike.count.element");
-        state.spacingPoints=8;
+        RVSetObject(node,"setAccessibilityIdentifier:",role==2 ? @"rvport.like.count.element" : @"rvport.dislike.count.element");
+        state.spacingPoints=8;state.endMargin=8;
         state.spacingGate=RVElementSetTextGap(node,state.spacingPoints,state.endMargin) ? @"logical_start_margin_reserved" : @"margin_contract_unavailable";
         if (RVCan(node,"setUserInteractionEnabled:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(node,sel_registerName("setUserInteractionEnabled:"),NO);
         objc_setAssociatedObject(node,RVElementTextTraceKey,@YES,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -507,7 +537,19 @@ static void RVElementDislikeApply(id parent,id pair) {
             RVElementInvalidateRoot(parent,state);
         }
     }
-    RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike estimate: %@ dislikes",[NSNumberFormatter localizedStringFromNumber:RVDislikeCount numberStyle:NSNumberFormatterDecimalStyle]]);
+    // Reserve the complete single-line text size explicitly. Native Yoga can
+    // constrain an un-sized ASTextNode to a single digit despite a longer value.
+    CGSize measured=display.size;CGFloat width=ceil(measured.width)+1,height=ceil(MAX(measured.height,font.lineHeight));
+    if (fabs(state.measuredWidth-width)>.25 || fabs(state.measuredHeight-height)>.25) {
+        BOOL reserved=RVVoteReserveTextSize(RVObject(state.textNode,"style"),width,height);
+        state.sizeGate=reserved ? @"full_text_size_reserved" : @"text_size_contract_unavailable";
+        if (reserved) {
+            state.measuredWidth=width;state.measuredHeight=height;
+            RVVoid(state.textNode,"invalidateCalculatedLayout");RVVoid(state.textNode,"setNeedsLayout");
+            RVElementInvalidateRoot(parent,state);
+        }
+    }
+    RVSetObject(state.textNode,"setAccessibilityLabel:",[NSString stringWithFormat:@"Return YouTube Dislike service estimate: %@ %@",[NSNumberFormatter localizedStringFromNumber:count numberStyle:NSNumberFormatterDecimalStyle],role==2 ? @"likes" : @"dislikes"]);
     state.text=text;RVElementMountOwnedText(parent,state);state.updating=NO;RVElementBalanceEdges(parent,state);RVElementLastGate=@"owned_count_attached";
 }
 static BOOL RVElementDownOnlyButton(id node) {
@@ -534,6 +576,14 @@ static void RVElementDislikeObserve(id root) {
     UIView *view=RVElementLoadedView(root);
     if (!RVDislikeWatchAction(view)) { RVElementLastGate=@"outside_active_watch";return; }
     RVElementLastGate=@"scanning_watch";RVElementDislikeEvent(@"watch_node_scanned");
+    // Reuse the count adapter for an icon-only, positively owned like button.
+    // Existing native like text remains authoritative and is never replaced.
+    for (id node in RVElementSubtree(root)) {
+        id style=RVObject(node,"style");
+        if (RVLikeCount && RVElementLikeBinding(node) && RVBool(node,"yoga") &&
+            RVCan(style,"flexDirection",@"C@:") && ((unsigned char(*)(id,SEL))objc_msgSend)(style,sel_registerName("flexDirection"))==1)
+            RVElementDislikeApply(node,node,2);
+    }
     for (id image in RVElementSubtree(root)) {
         if ([image isKindOfClass:NSClassFromString(@"ASImageNode")]) RVElementDislikeEvent(@"image_node_scanned");
         if (RVElementImageKind(image)!=1) continue;
@@ -543,7 +593,7 @@ static void RVElementDislikeObserve(id root) {
         // native dislike branch on its own; do not require a second image path.
         for (NSUInteger level=0;branch && level<12;level++,branch=RVElementParent(branch)) {
             if (branch==image || !RVElementDownOnlyButton(branch)) continue;
-            RVElementDislikeEvent(@"dislike_button_candidate");RVElementDislikeApply(branch,branch);
+            RVElementDislikeEvent(@"dislike_button_candidate");RVElementDislikeApply(branch,branch,3);
             RVElementDislikeState *state=objc_getAssociatedObject(branch,RVElementDislikeKey);
             if (state.textNode) { RVElementDislikeEvent(@"independent_button_bound");break; }
         }
@@ -555,7 +605,7 @@ static void RVElementDislikeObserve(id root) {
                 if (branch==image || !RVBool(branch,"yoga")) continue;
                 id style=RVObject(branch,"style");
                 if (!RVCan(style,"flexDirection",@"C@:") || ((unsigned char(*)(id,SEL))objc_msgSend)(style,sel_registerName("flexDirection"))!=1) continue;
-                RVElementDislikeApply(branch,semanticPair);
+                RVElementDislikeApply(branch,semanticPair,3);
                 if (((RVElementDislikeState *)objc_getAssociatedObject(branch,RVElementDislikeKey)).textNode) break;
             }
             continue;
@@ -568,7 +618,7 @@ static void RVElementDislikeObserve(id root) {
             if (!up) continue;
             NSUInteger branchUp=0,branchDown=0;
             for (id child in RVElementSubtree(branch)) { int kind=RVElementImageKind(child);branchUp+=kind==2;branchDown+=kind==1; }
-            if (up==1 && down==1 && branch!=image && !branchUp && branchDown==1) { RVElementDislikeEvent(@"native_pair_seen");RVElementDislikeApply(branch,pair); }
+            if (up==1 && down==1 && branch!=image && !branchUp && branchDown==1) { RVElementDislikeEvent(@"native_pair_seen");RVElementDislikeApply(branch,pair,3); }
             break;
         }
     }
@@ -627,11 +677,11 @@ static void RVElementWatchTransition(id watch,NSString *reason) {
     });
 }
 static NSDictionary *RVElementDislikeReport(void) {
-    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0,contents=0,displayFinished=0,nativePairs=0,nativeLikeTexts=0;
+    NSUInteger attached=0,laidOut=0,mounted=0,loaded=0,inWindow=0,unclipped=0,contents=0,displayFinished=0,nativePairs=0,nativeLikeTexts=0,likeAttached=0,likeVisible=0;
     NSMutableArray *geometry=[NSMutableArray array];
     for (id node in RVElementDislikeParents.allObjects) {
         RVElementDislikeState *state=objc_getAssociatedObject(node,RVElementDislikeKey);id text=state.textNode;
-        if (!text) continue;attached++;
+        if (!text) continue;BOOL isLike=state.voteRole==2;attached+=!isLike;likeAttached+=isLike;
         BOOL current=[state.video isEqual:RVDislikeVideo] && RVElementOwnedWatch(node,state);
         nativePairs+=current && state.nativePairPresent;nativeLikeTexts+=current && state.nativeLikeTextPresent;
         CGRect iconFrame=CGRectZero;BOOL gapMeasured=NO;CGFloat actualGap=0;
@@ -655,8 +705,8 @@ static NSDictionary *RVElementDislikeReport(void) {
         BOOL labelMounted=state.renderLabel.superview!=nil;
         if (labelMounted) frame=state.renderLabel.frame;
         BOOL positive=isfinite(frame.origin.x) && isfinite(frame.origin.y) && isfinite(frame.size.width) && isfinite(frame.size.height) && frame.size.width>0 && frame.size.height>0;
-        laidOut+=positive;id renderParent=RVObject(text,"supernode");mounted+=renderParent!=nil || labelMounted;
-        BOOL nativeLoaded=RVBool(text,"isNodeLoaded");BOOL isLoaded=nativeLoaded || labelMounted;loaded+=isLoaded;
+        laidOut+=!isLike && positive;id renderParent=RVObject(text,"supernode");mounted+=!isLike && (renderParent!=nil || labelMounted);
+        BOOL nativeLoaded=RVBool(text,"isNodeLoaded");BOOL isLoaded=nativeLoaded || labelMounted;loaded+=!isLike && isLoaded;
         UIView *host=labelMounted ? state.renderLabel.superview : renderParent ? RVElementLoadedView(renderParent) : nil;
         CALayer *layer=labelMounted ? state.renderLabel.layer : nativeLoaded ? RVObject(text,"layer") : nil;
         BOOL onWindow=NO;
@@ -665,7 +715,7 @@ static NSDictionary *RVElementDislikeReport(void) {
             for (NSUInteger depth=0;ancestor && depth<64;depth++,ancestor=ancestor.superlayer)
                 if (ancestor==host.window.layer) { onWindow=YES;break; }
         }
-        inWindow+=onWindow;
+        inWindow+=!isLike && onWindow;
         BOOL raster=[layer isKindOfClass:CALayer.class] && layer.contents!=nil;
         if (labelMounted && !raster) {
             NSMutableArray<CALayer *> *layers=[NSMutableArray arrayWithObject:layer];
@@ -674,7 +724,7 @@ static NSDictionary *RVElementDislikeReport(void) {
                 for (CALayer *child in layers[i].sublayers) if (layers.count<16) [layers addObject:child];
             }
         }
-        contents+=raster;displayFinished+=state.textDisplayCallbacks>0;
+        contents+=!isLike && raster;displayFinished+=!isLike && state.textDisplayCallbacks>0;
         BOOL visible=NO;NSUInteger clipping=0;
         if (onWindow && positive) {
             CGRect rect=layer.bounds;CALayer *ancestor=layer;
@@ -693,8 +743,11 @@ static NSDictionary *RVElementDislikeReport(void) {
             CGRect windowRect=[layer convertRect:layer.bounds toLayer:host.window.layer];
             if (!CGRectIntersectsRect(windowRect,host.window.bounds)) visible=NO;
         }
-        unclipped+=visible && clipping==0;
+        unclipped+=!isLike && visible && clipping==0;likeVisible+=isLike && visible && clipping==0;
         if (geometry.count<8) [geometry addObject:@{
+            @"vote_role":isLike ? @"like" : @"dislike",@"display_text":state.renderLabel.attributedText.string ?: state.text ?: @"",
+            @"service_count":(isLike ? RVLikeCount : RVDislikeCount) ?: NSNull.null,@"measured_text_width":@(state.measuredWidth),
+            @"size_gate":state.sizeGate ?: @"not_reserved",@"label_text_fits_frame":@(labelMounted && RVVoteFullTextFits(frame.size.width,[state.renderLabel sizeThatFits:CGSizeMake(CGFLOAT_MAX,CGFLOAT_MAX)].width)),
             @"frame_x":@(positive ? frame.origin.x : 0),@"frame_y":@(positive ? frame.origin.y : 0),
             @"frame_width":@(positive ? frame.size.width : 0),@"frame_height":@(positive ? frame.size.height : 0),
             @"render_parent_present":@(renderParent!=nil || labelMounted),
@@ -732,7 +785,7 @@ static NSDictionary *RVElementDislikeReport(void) {
     @synchronized(UIImage.class) { counts=RVElementDislikeCounts.copy ?: @{};images=RVElementVoteImages.count; }
     UIViewController *watch=RVCurrentWatch;
     BOOL watchLoaded=[watch isKindOfClass:UIViewController.class] && watch.isViewLoaded;
-    return @{@"schema":@10,@"native_pairs_current_watch":@(nativePairs),@"native_like_texts_current_watch":@(nativeLikeTexts),@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
+    return @{@"schema":@11,@"like_fallback_nodes":@(likeAttached),@"unclipped_like_fallback_nodes":@(likeVisible),@"native_pairs_current_watch":@(nativePairs),@"native_like_texts_current_watch":@(nativeLikeTexts),@"counts":counts,@"owned_text_nodes":@(attached),@"laid_out_text_nodes":@(laidOut),@"tagged_images":@(images),
         @"render_mounted_nodes":@(mounted),@"loaded_text_nodes":@(loaded),@"render_layers_in_window":@(inWindow),@"unclipped_text_nodes":@(unclipped),@"render_geometry":geometry,@"raster_content_nodes":@(contents),@"display_finished_nodes":@(displayFinished),
         @"watch_bound":@(watch!=nil),@"watch_loaded":@(watchLoaded),@"count_matches_playback":@(RVDislikeHasCount()),
         @"watch_player_matches":@(RVDislikeWatchPlayerMatches(watch)),@"watch_player_pointer_matches":@(RVObject(watch,"playerViewController")==RVCurrentPlayer && RVCurrentPlayer!=nil),

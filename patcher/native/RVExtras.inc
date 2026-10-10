@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Additional version-specific adapters. Included in RVPort.m so all hooks share ABI guards.
 static NSString *RVDislikeVideo;
-static NSNumber *RVDislikeCount;
+static NSNumber *RVDislikeCount,*RVLikeCount;
+#include "RVVoteCountSupport.inc"
 static NSURLSessionDataTask *RVDislikeTask;
 static NSMutableDictionary *RVDislikeCache;
 static NSTimeInterval RVDislikeAttempt;
@@ -266,7 +267,7 @@ static void RVExtraObserve(id controller) {
     NSString *video=RVObject(controller,"contentVideoID");
     if (!RVVideoIDValid(video)) return;
     if (![RVDislikeVideo isEqual:video]) {
-        [RVDislikeTask cancel];RVDislikeTask=nil;RVDislikeVideo=video;RVDislikeCount=nil;RVDislikeAttempt=0;RVDislikeGeneration++;
+        [RVDislikeTask cancel];RVDislikeTask=nil;RVDislikeVideo=video;RVDislikeCount=nil;RVLikeCount=nil;RVDislikeAttempt=0;RVDislikeGeneration++;
         RVDislikeServiceReset();RVNativeDislikeRefresh();
     }
     RVDislikeCaptureCheckpoint(@"playback_tick");
@@ -277,7 +278,7 @@ static void RVExtraObserve(id controller) {
     NSDictionary *cached=RVDislikeCache[video];
     NSTimeInterval now=[NSDate timeIntervalSinceReferenceDate];
     if (cached && now-[cached[@"time"] doubleValue]<600) {
-        RVDislikeCount=cached[@"count"];RVNativeDislikeRefresh();RVDislikeServiceValue(@"fetch_state",@"cache_hit");
+        RVDislikeCount=cached[@"count"];RVLikeCount=cached[@"likes"];RVNativeDislikeRefresh();RVDislikeServiceValue(@"fetch_state",@"cache_hit");
         RVDislikeServiceValue(@"cache_age_seconds",@(MAX(0,now-[cached[@"time"] doubleValue])));return;
     }
     RVDislikeServiceValue(@"retry_after_seconds",@(RVDislikeTask || RVDislikeCount ? 0 : MAX(0,60-(now-RVDislikeAttempt))));
@@ -288,13 +289,15 @@ static void RVExtraObserve(id controller) {
     NSURLComponents *url=[NSURLComponents componentsWithString:@"https://returnyoutubedislikeapi.com/votes"];
     url.queryItems=@[[NSURLQueryItem queryItemWithName:@"videoId" value:video]];
     NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url.URL];request.timeoutInterval=10;
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];request.cachePolicy=NSURLRequestReloadIgnoringLocalCacheData;
     NSString *requested=[video copy];
     RVDislikeTask=[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data,NSURLResponse *response,NSError *error) {
         id json=nil;NSError *parseError=nil;
         NSInteger status=[response isKindOfClass:NSHTTPURLResponse.class] ? [(NSHTTPURLResponse *)response statusCode] : 0;
         if (!error && status==200 && data.length<65536 && data.length) json=[NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
-        NSNumber *count=[json isKindOfClass:[NSDictionary class]] && [json[@"dislikes"] isKindOfClass:[NSNumber class]] ? json[@"dislikes"] : nil;
-        if (!isfinite(count.doubleValue) || count.doubleValue<0 || count.doubleValue>1e15 || floor(count.doubleValue)!=count.doubleValue) count=nil;
+        NSDictionary *votes=RVVoteCountResponse(json,requested);
+        NSNumber *count=votes[@"dislikes"],*likes=votes[@"likes"];
         dispatch_async(dispatch_get_main_queue(),^{
             if (generation!=RVDislikeGeneration || ![RVDislikeVideo isEqual:requested]) return;
             RVDislikeTask=nil;
@@ -303,7 +306,8 @@ static void RVExtraObserve(id controller) {
             RVDislikeServiceValue(@"fetch_state",count ? @"loaded" : error ? @"network_error" : status!=200 ? @"http_error" : @"invalid_response");
             if (count) {
                 if (RVDislikeCache.count>=100) [RVDislikeCache removeAllObjects];
-                RVDislikeCache[requested]=@{@"count":count,@"time":@([NSDate timeIntervalSinceReferenceDate])};RVDislikeCount=count;
+                NSMutableDictionary *entry=[@{@"count":count,@"time":@([NSDate timeIntervalSinceReferenceDate])} mutableCopy];
+                if (likes) entry[@"likes"]=likes;RVDislikeCache[requested]=entry;RVDislikeCount=count;RVLikeCount=likes;
                 RVNativeDislikeRefresh();
             }
             RVDislikeCaptureCheckpoint(@"service_response");

@@ -65,6 +65,9 @@ static NSDictionary *RVDislikeCheckpointSnapshot(NSString *trigger) {
     return @{@"captured_at":RVDislikeCheckpointDate(),@"trigger":trigger,@"video_generation":@(RVDislikeGeneration),
         @"scope":@"element_count_native_model_and_pair_layout",@"layout_compatibility":RVVoteLayoutReport(),@"vote_model":voteModel,@"vote_lifecycle":voteLifecycle,@"checkpoints":checks,@"first_blocked_checkpoint":block,
         @"service":RVDislikeServiceState.copy ?: @{@"fetch_state":@"not_recorded"},
+        @"service_dislikes":count ? RVDislikeCount : NSNull.null,@"service_likes":count && RVLikeCount ? RVLikeCount : NSNull.null,
+        @"playback_video_sha256":RVVoteDigest(RVObject(RVCurrentPlayback,"contentVideoID")),@"count_video_sha256":RVVoteDigest(RVDislikeVideo),
+        @"like_fallback_nodes":element[@"like_fallback_nodes"],@"unclipped_like_fallback_nodes":element[@"unclipped_like_fallback_nodes"],
         @"current_video_events":events,@"event_counter_scope":@"since_current_video_binding",
         @"watch_player_pointer_matches":element[@"watch_player_pointer_matches"],
         @"geometry":element[@"render_geometry"],@"last_adapter_gate":element[@"last_gate"],
@@ -91,7 +94,7 @@ static void RVDislikeCaptureCheckpoint(NSString *trigger) {
 static NSDictionary *RVDislikeCheckpointReport(void) {
     BOOL enabled=RVEnabled(@"diagnostics");
     BOOL current=RVDislikeLastVisibleCheckpoint && [RVDislikeLastVisibleCheckpoint[@"video_generation"] unsignedIntegerValue]==RVDislikeGeneration;
-    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-9",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
+    return @{@"schema":@1,@"diagnostics_revision":@"ryd-checkpoints-10",@"build_source_sha256":RV_BUILD_SOURCE_SHA256,
         @"report_captured_at":RVDislikeCheckpointDate(),@"diagnostics_enabled":@(enabled),
         @"video_generation":@(RVDislikeGeneration),@"last_visible_watch_matches_current_video":@(current),
         @"last_visible_watch_age_seconds":RVDislikeLastVisibleCheckpoint ? @(MAX(0,NSDate.timeIntervalSinceReferenceDate-RVDislikeLastVisibleTime)) : NSNull.null,
@@ -102,7 +105,7 @@ static NSDictionary *RVDislikeCheckpointReport(void) {
 }
 static NSString *RVDislikeCheckpointSummary(void) {
     NSDictionary *report=RVDislikeCheckpointReport();NSDictionary *service=report[@"last_visible_watch"][@"service"];
-    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-9\n\n",
+    return [NSString stringWithFormat:@"RYD checkpoint: %@\nService: %@ (HTTP %@)\nVisible-player snapshot matches current video: %@\nDiagnostics: ryd-checkpoints-10\n\n",
         report[@"first_blocked_checkpoint"],service[@"fetch_state"] ?: @"not recorded",service[@"http_status"] ?: @0,
         [report[@"last_visible_watch_matches_current_video"] boolValue] ? @"yes" : @"no"];
 }

@@ -111,7 +111,7 @@ static CGFloat RVDislikeAccessoryWidth(RVDislikeInlineState *state) {
 static void RVRefreshDislikeUI(void) {
     if (!NSThread.isMainThread) { dispatch_async(dispatch_get_main_queue(),^{ RVRefreshDislikeUI(); });return; }
     static NSString *previous;static __weak id previousWatch;
-    NSString *revision=[NSString stringWithFormat:@"%@:%@:%d",RVObject(RVCurrentPlayback,"contentVideoID"),RVDislikeHasCount() ? RVDislikeCount : nil,RVEnabled(@"return_dislikes")];
+    NSString *revision=[NSString stringWithFormat:@"%@:%@:%@:%d",RVObject(RVCurrentPlayback,"contentVideoID"),RVDislikeHasCount() ? RVDislikeCount : nil,RVLikeCount,RVEnabled(@"return_dislikes")];
     if ([revision isEqual:previous] && previousWatch==RVCurrentWatch) return;
     previous=revision;previousWatch=RVCurrentWatch;
     RVRefreshElementDislikes();

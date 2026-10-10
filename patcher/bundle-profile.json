@@ -1,9 +1,54 @@
 {
-  "version": "0.4.5-major-tweaks-xcode",
+  "version": "0.4.6-vote-counts-xcode",
   "preference_prefix": "RVPort.Bundle0_4_5.",
-  "forced_features": ["sideload_auth_identity", "sideload_auth_keychain"],
-  "default_enabled": ["sideload_auth_identity", "sideload_auth_keychain", "video_ads", "feed_ads", "shorts_ads", "background_playback", "picture_in_picture", "sponsorblock", "sponsorblock_markers", "return_dislikes", "custom_speed_menu", "remember_speed", "hide_shorts", "hide_shorts_navigation", "disable_shorts_resume", "disable_auto_captions", "hide_end_cards", "hide_info_cards", "hide_autoplay_preview", "disable_popup_panels"],
-  "optional_features": ["hide_seekbar", "hide_timestamp", "disable_haptics", "disable_precise_seeking", "disable_chapter_skip", "hide_cast_button", "hide_autoplay_button", "paired_vote_buttons", "first_launch_ui", "sponsorblock_manual"],
-  "settings": ["ad_strategy", "feed_patterns", "shorts_patterns", "default_speed", "custom_speeds", "sponsor_categories", "sponsor_behaviors", "sponsor_colors", "sponsor_min_duration"],
+  "forced_features": [
+    "sideload_auth_identity",
+    "sideload_auth_keychain"
+  ],
+  "default_enabled": [
+    "sideload_auth_identity",
+    "sideload_auth_keychain",
+    "video_ads",
+    "feed_ads",
+    "shorts_ads",
+    "background_playback",
+    "picture_in_picture",
+    "sponsorblock",
+    "sponsorblock_markers",
+    "return_dislikes",
+    "custom_speed_menu",
+    "remember_speed",
+    "hide_shorts",
+    "hide_shorts_navigation",
+    "disable_shorts_resume",
+    "disable_auto_captions",
+    "hide_end_cards",
+    "hide_info_cards",
+    "hide_autoplay_preview",
+    "disable_popup_panels"
+  ],
+  "optional_features": [
+    "hide_seekbar",
+    "hide_timestamp",
+    "disable_haptics",
+    "disable_precise_seeking",
+    "disable_chapter_skip",
+    "hide_cast_button",
+    "hide_autoplay_button",
+    "paired_vote_buttons",
+    "first_launch_ui",
+    "sponsorblock_manual"
+  ],
+  "settings": [
+    "ad_strategy",
+    "feed_patterns",
+    "shorts_patterns",
+    "default_speed",
+    "custom_speeds",
+    "sponsor_categories",
+    "sponsor_behaviors",
+    "sponsor_colors",
+    "sponsor_min_duration"
+  ],
   "note": "Existing reviewed native implementations are reused. First-launch vote layout and pairing overrides are optional and off by default; changing first-launch policy requires relaunch."
 }

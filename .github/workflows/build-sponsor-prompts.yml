@@ -2,7 +2,7 @@ name: Build major tweak bundle with Xcode
 
 on:
   push:
-    branches: [feat/major-tweaks-0.4.5]
+    branches: [fix/ryd-sizing-0.4.6]
 
 permissions:
   contents: read
@@ -29,6 +29,10 @@ jobs:
         run: |
           xcrun clang -fobjc-arc -fblocks -Wall -Wextra -Werror tests/debugger_only.m -framework Foundation -o build/DebuggerOnlyHarness
           build/DebuggerOnlyHarness recipes.json bundle-profile.json | tee build/debugger-only-tests.log
+      - name: Verify vote response and full-text sizing contracts
+        run: |
+          xcrun clang -fobjc-arc -fblocks -Wall -Wextra -Werror tests/vote_counts.m -framework Foundation -o build/VoteCountsHarness
+          build/VoteCountsHarness | tee build/vote-count-tests.log
       - name: Record compiler and cloud build provenance
         run: |
           python - <<'PY'
@@ -56,6 +60,7 @@ jobs:
             patcher/build/RVPort.dylib
             patcher/build/build-manifest.json
             patcher/build/debugger-only-tests.log
+            patcher/build/vote-count-tests.log
             patcher/build/build.log
             patcher/build/cloud-build.json
           if-no-files-found: error

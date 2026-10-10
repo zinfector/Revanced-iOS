@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.4.5-major-tweaks-xcode"
+#define RV_PORT_VERSION @"0.4.6-vote-counts-xcode"
 #include "RVFeatures.h"
 #include "RVDebugOnly.h"
 #include "../build/RVBuildIdentity.h"

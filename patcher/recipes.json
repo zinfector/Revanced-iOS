@@ -47,10 +47,10 @@
     "RVDebugOnlyObservers.inc": "490e6caabb2a4876a838c4275266980f291cf8792b36f589b0d337c9c57cfffb",
     "RVDebugRuntime.inc": "a0337b48bb2fb835cecba482524fc892920368c60737ab2a21ffdd9e2a6b5868",
     "RVDebugState.inc": "45fb32e7a127b58fa8b5f1e9a4a4f0a6fe8bf3c6c7a47c70f713ec038e868726",
-    "RVDislikesDiagnostics.inc": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
-    "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
-    "RVElementDislikes.inc": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
-    "RVExtras.inc": "62b3133edc3ee550d26c5c6b38203f6e4f0fb1d882aca7d0846e552af7f08f30",
+    "RVDislikesDiagnostics.inc": "4e7d75e9b420e166e87527867e986ecfd10496d4cb9576de26987c7e2c2ffe7b",
+    "RVDislikesUI.inc": "1de943739735cece428aa6fc8f5a488a09f4e01c3a7558db5af6176e4bbc1c45",
+    "RVElementDislikes.inc": "321befa2db8cc21373671ec4a1e4da6c3e5fca6c0d2a37c0cda3bc67ab9eed68",
+    "RVExtras.inc": "ec3f5f1f0ccca84c340f1cb9a953a2f41875d786562726cbaac53cf4d52ff8b4",
     "RVFeatures.h": "3ec2e9acbb1bbfe5cfe4c8c53b385bdbad662672028a1dcb574064b4afb22936",
     "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
     "RVImages.inc": "9ab41d54211d59ee33f1067c770c84f047403750595205e89876973c423c2940",
@@ -59,9 +59,9 @@
     "RVJavaSupport.h": "6fa896406364c08170df64932c8a71055032834924e80f605e5946244653d59d",
     "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
     "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
-    "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+    "RVNativeDislikes.inc": "cf5e6b90b5cc6d69f1c4192893a0e555af030c974b46f1eda8e5b96012bf70ec",
     "RVNavigation.inc": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
-    "RVPort.m": "0a40e18da55d364436980a2c89f3f6f0e2f80fca8bf4da46104658a8338f6031",
+    "RVPort.m": "83c8c1eea47dee382c3a2102c521bfe7c68724217a4199fead34d3ddf6c73df2",
     "RVRuntime.inc": "c21108527a41d788c3603ace5ffe20be915d5a41e927543d10caa92af2aeac4f",
     "RVRuntimeFieldCatalog.inc": "01f733b713c522f2ffaed2cf2a57a3f7fab29079d29d5854a4b70497b351e018",
     "RVRuntimeFields.h": "0649d594d65f2e702545ad7aeb8bc355272ef2ebeefaf66bcebd989131cff097",
@@ -94,6 +94,7 @@
     "RVSponsorPrompt.inc": "a360f36e0639a5dd11d19d52cb7b2026091a19eb6a0d1bb08d7b044953d19837",
     "RVSponsorPromptUI.inc": "f7ca873f5824dd13d5a539a25dfb40270d5089c3de801945b1aa5bcf6414f56e",
     "RVUSBDiagnostics.inc": "742ac31edaa5414e0a7f59c40ee05f94577b08f749575deeac3b28c7da3c0dff",
+    "RVVoteCountSupport.inc": "db959e716073c885935653e6ac0652d7369d0583db0d48a5f9d34fc604e0ec51",
     "RVVoteFirstLaunch.inc": "5ae5a4ca382bc12c4d1cb8e32e56bbcbd971772611c9654abf466500cd8f8544",
     "RVVoteFirstLaunchScopes.inc": "98fb3e13bf72517500ef0c12bd8508b8ab34096989913a6c56520c96ceb41579",
     "RVVoteLayoutCompatibility.inc": "88ae2a37c2ee921cc72756b970936d80045291dbdc2cb64e1b33d36d296bdeec",
@@ -208,6 +209,7 @@
     "RVSponsorPrompt.inc",
     "RVSponsorPromptUI.inc",
     "RVUSBDiagnostics.inc",
+    "RVVoteCountSupport.inc",
     "RVVoteFirstLaunch.inc",
     "RVVoteFirstLaunchScopes.inc",
     "RVVoteLayoutCompatibility.inc",
@@ -233,7 +235,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 785,
+          "line": 838,
           "wrapper": "RVHook"
         }
       ],
@@ -254,7 +256,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 795,
+          "line": 848,
           "wrapper": "RVHook"
         }
       ],
@@ -275,7 +277,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 835,
+          "line": 888,
           "wrapper": "RVHook"
         }
       ],
@@ -372,7 +374,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 795,
+          "line": 848,
           "wrapper": "RVHook"
         }
       ],
@@ -412,7 +414,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 819,
+          "line": 872,
           "wrapper": "RVHook"
         }
       ],
@@ -612,7 +614,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 829,
+          "line": 882,
           "wrapper": "RVHook"
         }
       ],
@@ -652,7 +654,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 835,
+          "line": 888,
           "wrapper": "RVHook"
         }
       ],
@@ -904,7 +906,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 532,
+          "line": 536,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -1546,7 +1548,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 738,
+          "line": 742,
           "wrapper": "RVHook"
         }
       ],
@@ -1582,7 +1584,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 590,
+          "line": 594,
           "wrapper": "RVHook"
         }
       ],
@@ -1793,7 +1795,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 505,
+          "line": 509,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -1958,7 +1960,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 510,
+          "line": 514,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2079,7 +2081,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 507,
+          "line": 511,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2158,7 +2160,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 536,
+          "line": 540,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2176,7 +2178,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 539,
+          "line": 543,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2194,7 +2196,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 509,
+          "line": 513,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2212,7 +2214,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 536,
+          "line": 540,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2230,7 +2232,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 506,
+          "line": 510,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2248,7 +2250,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 508,
+          "line": 512,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2285,7 +2287,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 537,
+          "line": 541,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2303,7 +2305,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 539,
+          "line": 543,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2321,7 +2323,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 539,
+          "line": 543,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -2379,7 +2381,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -2397,7 +2399,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -2415,7 +2417,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -2433,7 +2435,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -2569,7 +2571,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 552,
+          "line": 556,
           "wrapper": "RVHook"
         }
       ],
@@ -2588,7 +2590,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 555,
+          "line": 559,
           "wrapper": "RVHook"
         }
       ],
@@ -2606,7 +2608,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 549,
+          "line": 553,
           "wrapper": "RVHook"
         }
       ],
@@ -2665,7 +2667,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 802,
+          "line": 855,
           "wrapper": "RVHook"
         }
       ],
@@ -2918,7 +2920,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 669,
+          "line": 673,
           "wrapper": "RVHook"
         }
       ],
@@ -2936,7 +2938,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 663,
+          "line": 667,
           "wrapper": "RVHook"
         }
       ],
@@ -2991,7 +2993,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 227,
+          "line": 228,
           "wrapper": "RVHook"
         }
       ],
@@ -3009,7 +3011,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 224,
+          "line": 225,
           "wrapper": "RVHook"
         }
       ],
@@ -3027,7 +3029,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 230,
+          "line": 231,
           "wrapper": "RVHook"
         }
       ],
@@ -3439,7 +3441,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 236,
+          "line": 237,
           "wrapper": "RVHook"
         }
       ],
@@ -3457,7 +3459,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 236,
+          "line": 237,
           "wrapper": "RVHook"
         }
       ],
@@ -3475,7 +3477,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 205,
+          "line": 206,
           "wrapper": "RVHook"
         }
       ],
@@ -3493,7 +3495,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 205,
+          "line": 206,
           "wrapper": "RVHook"
         }
       ],
@@ -3532,7 +3534,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 523,
+          "line": 527,
           "wrapper": "RVHook"
         }
       ],
@@ -3550,7 +3552,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 523,
+          "line": 527,
           "wrapper": "RVHook"
         }
       ],
@@ -3571,7 +3573,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 810,
+          "line": 863,
           "wrapper": "RVHook"
         }
       ],
@@ -3608,7 +3610,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 561,
+          "line": 565,
           "wrapper": "RVHook"
         }
       ],
@@ -3627,7 +3629,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 717,
+          "line": 721,
           "wrapper": "RVHook"
         }
       ],
@@ -3664,7 +3666,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 728,
+          "line": 732,
           "wrapper": "RVHook"
         }
       ],
@@ -3682,7 +3684,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 727,
+          "line": 731,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -3700,7 +3702,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 726,
+          "line": 730,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -3719,7 +3721,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 693,
+          "line": 697,
           "wrapper": "RVHook"
         }
       ],
@@ -3946,7 +3948,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 487,
+          "line": 491,
           "wrapper": "RVHook"
         },
         {
@@ -4051,7 +4053,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 571,
+          "line": 575,
           "wrapper": "RVHook"
         }
       ],
@@ -4195,7 +4197,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 689,
+          "line": 693,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -4213,7 +4215,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 690,
+          "line": 694,
           "wrapper": "RVHook"
         }
       ],
@@ -4231,7 +4233,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 660,
+          "line": 664,
           "wrapper": "RVHook"
         }
       ],
@@ -4249,7 +4251,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 660,
+          "line": 664,
           "wrapper": "RVHook"
         }
       ],
@@ -4362,7 +4364,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 534,
+          "line": 538,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -4380,7 +4382,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 534,
+          "line": 538,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -4398,7 +4400,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 534,
+          "line": 538,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -4416,7 +4418,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 659,
+          "line": 663,
           "wrapper": "RVBoolGate"
         }
       ],
@@ -4467,7 +4469,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 696,
+          "line": 700,
           "wrapper": "RVHook"
         },
         {
@@ -4490,7 +4492,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 714,
+          "line": 718,
           "wrapper": "RVHook"
         }
       ],
@@ -4508,7 +4510,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 660,
+          "line": 664,
           "wrapper": "RVHook"
         }
       ],
@@ -4526,7 +4528,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 660,
+          "line": 664,
           "wrapper": "RVHook"
         }
       ],
@@ -4625,7 +4627,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 641,
+          "line": 645,
           "wrapper": "RVHook"
         }
       ],
@@ -4661,7 +4663,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 212,
+          "line": 213,
           "wrapper": "RVHook"
         }
       ],
@@ -4697,7 +4699,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 540,
+          "line": 544,
           "wrapper": "RVHook"
         }
       ],
@@ -4775,7 +4777,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 676,
+          "line": 680,
           "wrapper": "RVHook"
         }
       ],
@@ -4793,7 +4795,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 683,
+          "line": 687,
           "wrapper": "RVHook"
         }
       ],
@@ -4811,7 +4813,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 683,
+          "line": 687,
           "wrapper": "RVHook"
         }
       ],
@@ -4851,7 +4853,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 197,
+          "line": 198,
           "wrapper": "RVHook"
         }
       ],
@@ -4926,7 +4928,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 475,
+          "line": 479,
           "wrapper": "RVHook"
         }
       ],
@@ -5058,7 +5060,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 693,
+          "line": 697,
           "wrapper": "RVHook"
         }
       ],
@@ -5554,7 +5556,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 511,
+          "line": 515,
           "wrapper": "RVHook"
         }
       ],
@@ -5572,7 +5574,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 743,
+          "line": 747,
           "wrapper": "RVHook"
         }
       ],
@@ -5590,7 +5592,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 756,
+          "line": 760,
           "wrapper": "RVHook"
         }
       ],
@@ -5608,7 +5610,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -5626,7 +5628,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -5644,7 +5646,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -5662,7 +5664,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -5784,7 +5786,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 546,
+          "line": 550,
           "wrapper": "RVHook"
         }
       ],
@@ -5802,7 +5804,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 543,
+          "line": 547,
           "wrapper": "RVHook"
         }
       ],
@@ -6453,7 +6455,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -6471,7 +6473,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -6489,7 +6491,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -6507,7 +6509,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 647,
+          "line": 651,
           "wrapper": "RVHook"
         }
       ],
@@ -6544,7 +6546,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 558,
+          "line": 562,
           "wrapper": "RVHook"
         }
       ],
@@ -6562,7 +6564,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 613,
+          "line": 617,
           "wrapper": "RVHook"
         }
       ],
@@ -6580,7 +6582,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 626,
+          "line": 630,
           "wrapper": "RVHook"
         }
       ],
@@ -6598,7 +6600,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 605,
+          "line": 609,
           "wrapper": "RVHook"
         }
       ],
@@ -7034,7 +7036,7 @@
       "sources": [
         {
           "file": "RVExtras.inc",
-          "line": 564,
+          "line": 568,
           "wrapper": "RVHook"
         }
       ],
@@ -7055,7 +7057,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 750,
+          "line": 803,
           "wrapper": "RVHook"
         }
       ],
@@ -7076,7 +7078,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 750,
+          "line": 803,
           "wrapper": "RVHook"
         }
       ],
@@ -7097,7 +7099,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 757,
+          "line": 810,
           "wrapper": "RVHook"
         }
       ],
@@ -7141,7 +7143,7 @@
         },
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -7164,7 +7166,7 @@
         },
         {
           "file": "RVExtras.inc",
-          "line": 181,
+          "line": 182,
           "wrapper": "RVHook"
         }
       ],
@@ -7185,7 +7187,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 743,
+          "line": 796,
           "wrapper": "RVHook"
         }
       ],
@@ -7206,7 +7208,7 @@
       "sources": [
         {
           "file": "RVElementDislikes.inc",
-          "line": 764,
+          "line": 817,
           "wrapper": "RVHook"
         }
       ],
