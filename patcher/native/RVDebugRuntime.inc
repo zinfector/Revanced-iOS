@@ -51,7 +51,7 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
     if ([operation isEqual:@"debug.runtime.setting"]) {
         NSString *feature=args[@"feature"];if (![feature isKindOfClass:NSString.class] || !RVRuntimePolicyKnown(feature)) return RVDBGFail(@"unbound_policy_feature");
         NSString *key=[RVPreferencePrefix stringByAppendingString:feature];NSUserDefaults *defaults=NSUserDefaults.standardUserDefaults;
-        if (RVDebuggerOnly() && (args[@"value"] || args[@"remove"])) return RVDBGFail(@"patch_settings_disabled_in_debugger_only_build");
+        if (RVDebuggerOnly() && !RVBundleSettingAllowed(feature) && (args[@"value"] || args[@"remove"])) return RVDBGFail(@"patch_settings_disabled_in_debugger_only_build");
         if (args[@"value"] || args[@"remove"]) {
             id expected=args[@"expected"];if (!expected || ![expected isEqual:[defaults objectForKey:key] ?: NSNull.null]) return RVDBGFail(@"setting_compare_failed");
             if ([args[@"remove"] isEqual:@YES] && !args[@"value"]) [defaults removeObjectForKey:key];
@@ -75,10 +75,10 @@ static NSDictionary *RVDBGRuntimeOperation(NSString *operation,NSDictionary *arg
     }
     if ([operation isEqual:@"debug.runtime.report"]) {
         NSDictionary *policies;@synchronized(RVRuntimeSuite) { policies=[RVRuntimePolicyResults copy] ?: @{}; }
-        return @{@"ok":@YES,@"schema":@"runtime-integration.v1",@"providers_linked_into":@"RVPort.dylib",@"preferences_count":@(rv_setting_count()),
+        return @{@"ok":@YES,@"schema":@"runtime-integration.v1",@"providers_linked_into":@"RVPort.dylib",@"feature_states":RVBundleFeatureStates(),@"preferences_count":@(rv_setting_count()),
             @"source_sha256":RV_BUILD_SOURCE_SHA256,@"policies":policies,@"field_contracts":RVRuntimeFieldCatalog(),
             @"rolling_events":[RVRuntimeRollingEvents copy] ?: @[],@"rolling_sequence":@(RVRuntimeRollingSequence),
-            @"debugger_only":@(RVDebuggerOnly()),@"patch_installers_enabled":@((BOOL)!RVDebuggerOnly()),@"login_compatibility_enabled":@(RVDebuggerOnly()),
+            @"debugger_only":@NO,@"constrained_bundle":@YES,@"supported_features":RV_BUNDLE_SUPPORTED,@"patch_installers_enabled":@YES,@"login_compatibility_enabled":@YES,
             @"visual_animation_verified":@NO,@"runtime_verified":@NO};
     }return RVDBGFail(@"unsupported_runtime_operation");
 }

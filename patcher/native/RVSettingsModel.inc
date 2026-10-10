@@ -3,7 +3,15 @@
 #include <CoreFoundation/CoreFoundation.h>
 static NSDictionary *RVPreferencesCatalog(void) {
     static NSDictionary *catalog;static dispatch_once_t once;
-    dispatch_once(&once,^{ catalog=[NSJSONSerialization JSONObjectWithData:[RVSettingsCatalogJSON dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil]; });
+    dispatch_once(&once,^{ catalog=[NSJSONSerialization JSONObjectWithData:[RVSettingsCatalogJSON dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        if (RVDebuggerOnly()) {
+            NSMutableDictionary *filtered=[catalog mutableCopy],*settings=[NSMutableDictionary dictionary];NSMutableArray *groups=[NSMutableArray array];
+            for (NSDictionary *group in catalog[@"groups"]) {
+                NSMutableArray *keys=[NSMutableArray array];for (NSString *key in group[@"keys"]) if (RVBundleSettingAllowed(key)) { [keys addObject:key];settings[key]=catalog[@"settings"][key]; }
+                if (keys.count) { NSMutableDictionary *copy=[group mutableCopy];copy[@"keys"]=keys;[groups addObject:copy]; }
+            }
+            filtered[@"groups"]=groups;filtered[@"settings"]=settings;catalog=filtered;
+        } });
     return catalog;
 }
 static NSDictionary *RVPreferenceDescriptor(NSString *key) { return RVPreferencesCatalog()[@"settings"][key]; }
@@ -88,7 +96,7 @@ static NSString *RVValidatePreferenceImport(id values) {
     return nil;
 }
 static BOOL RVSavePreference(NSString *key,id value) {
-    if (RVDebuggerOnly() || !RVCompatible || !RVPreferenceValid(value,RVPreferenceDescriptor(key))) return NO;
+    if ((RVDebuggerOnly() && !RVBundleSettingAllowed(key)) || !RVCompatible || !RVPreferenceValid(value,RVPreferenceDescriptor(key))) return NO;
     NSString *storedKey=[RVPreferencePrefix stringByAppendingString:key];
     id canonical=RVPreferenceStoredValue(value,RVPreferenceDescriptor(key));
     [NSUserDefaults.standardUserDefaults setObject:canonical forKey:storedKey];
@@ -99,7 +107,6 @@ static BOOL RVSavePreference(NSString *key,id value) {
     }return saved;
 }
 static NSString *RVApplyPreferenceImport(id values) {
-    if (RVDebuggerOnly()) return @"Patch settings are disabled in this debugger-only build.";
     NSString *error=RVValidatePreferenceImport(values);if (error) return error;
     if (!RVCompatible) return @"This app does not match the supported profile.";
     // Validate every field before applying any. Missing values keep their current settings.
@@ -107,7 +114,7 @@ static NSString *RVApplyPreferenceImport(id values) {
     return nil;
 }
 static void RVResetPreferences(void) {
-    if (RVDebuggerOnly() || !RVCompatible) return;
+    if (!RVCompatible) return;
     for (NSString *key in RVPreferencesCatalog()[@"settings"]) [NSUserDefaults.standardUserDefaults removeObjectForKey:[RVPreferencePrefix stringByAppendingString:key]];
 }
 static NSArray *RVSearchPreferences(NSString *query) {

@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.4.4-debugger-login-xcode"
+#define RV_PORT_VERSION @"0.4.5-major-tweaks-xcode"
 #include "RVFeatures.h"
 #include "RVDebugOnly.h"
 #include "../build/RVBuildIdentity.h"
@@ -51,7 +51,7 @@ static void RVSponsorValue(NSString *key,id value) {
 
 static NSDictionary *RVConfig;
 static NSMutableArray<NSString *> *RVStatus;
-static NSString *const RVPreferencePrefix = @"RVPort.";
+static NSString *const RVPreferencePrefix = RV_BUNDLE_PREFERENCE_PREFIX;
 static const void *RVSessionKey = &RVSessionKey;
 static const void *RVGestureKey = &RVGestureKey;
 static BOOL RVCompatible;
@@ -77,12 +77,16 @@ static void RVLog(NSString *message) {
     if ([RVConfig[@"diagnostics"] boolValue]) NSLog(@"[RVPort] %@",message);
 }
 static id RVSetting(NSString *key) {
-    if (RVDebuggerOnly()) return RVDebugOnlySetting(key,RVConfig,RVFeatureKeys);
+    if (RVDebuggerOnly()) return RVDebugOnlySetting(key,RVConfig,RVFeatureKeys,[NSUserDefaults.standardUserDefaults objectForKey:[RVPreferencePrefix stringByAppendingString:key]]);
     id override=[[NSUserDefaults standardUserDefaults] objectForKey:[RVPreferencePrefix stringByAppendingString:key]];
     return override ?: RVConfig[key];
 }
 static BOOL RVAdaptiveFeature(NSString *key);
 static BOOL RVEnabled(NSString *key) { return RVCompatible && (!RVDebuggerOnly() || RVDebugBaselineFeature(key)) && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
+static NSDictionary *RVBundleFeatureStates(void) {
+    NSMutableDictionary *states=[NSMutableDictionary dictionary];
+    for (NSString *key in RVFeatureKeys) states[key]=@(RVEnabled(key));return states;
+}
 #include "RVRuntime.inc"
 #include "RVSourceReuse.inc"
 #include "RVRuntimePolicy.inc"
@@ -408,6 +412,12 @@ static NSDictionary *RVSponsorReport(void) {
 @end
 
 #include "RVDebugOnlyObservers.inc"
+static void RVInstallMajorBundle(void) {
+    RVInstallAuthentication();RVInstallVoteIdentity();RVInstallVoteModel();RVObserveNetwork();
+    RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallSpeedBridge();
+    RVInstallNativeDislikes();RVInstallElementDislikes();RVInstallVoteLifecycle();RVInstallDislikeUI();
+    RVInstallLinks();RVInstallPlayerExtras();RVInstallLayout();RVShortsInstall();RVSPInstall();
+}
 
 static BOOL RVCheckIdentity(void) {
     return RVAdaptiveIdentity();
@@ -421,8 +431,8 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1 && RVAdaptivePreflight();
         RVLog(RVCompatible ? @"Target-bound adaptive profile accepted" : @"App identity/config/profile mismatch: hooks disabled");
-        if (RVCompatible && RVDebuggerOnly()) { RVInstallDebugOnlyObservers();RVInstallAuthentication();RVLog(@"Debugger/login baseline: only five login compatibility hooks and three observers enabled; saved patch preferences ignored"); }
-        if (RVCompatible && !RVDebuggerOnly()) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
+        if (RVCompatible && RVDebuggerOnly()) { RVInstallMajorBundle();RVLog(@"Major tweak bundle installed: feature and hook admission generated from reviewed recipes"); }
+        if (RVCompatible && !RVDebuggerOnly()) { RVInstallDebugOnlyObservers();RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             RVUSBResumeSavedDiagnostics();

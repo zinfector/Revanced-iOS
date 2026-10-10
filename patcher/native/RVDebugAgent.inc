@@ -17,7 +17,7 @@ static NSDictionary *RVDBGStatus(void) {
     RVDBGState *state=RVDBGState.shared;@synchronized(state) {
         return @{@"schema":@2,@"enabled":@(RVDBGEnabled()),@"process_nonce":state.nonce,@"pid":@(getpid()),@"bundle_id":NSBundle.mainBundle.bundleIdentifier ?: @"",
             @"ios_version":UIDevice.currentDevice.systemVersion,@"architecture":@"arm64",@"patcher_version":RV_PORT_VERSION,@"source_sha256":RV_BUILD_SOURCE_SHA256,
-            @"debugger_only":@(RVDebuggerOnly()),@"patch_installers_enabled":@((BOOL)!RVDebuggerOnly()),@"login_compatibility_enabled":@(RVDebuggerOnly()),@"get_task_allow":RVDBGAttachEntitlement(),@"operations":RVDBGOperations(),@"read_limit":@65536,@"write_limit":@1024,@"handles_limit":@1024,@"jobs_limit":@64,
+            @"debugger_only":@NO,@"constrained_bundle":@YES,@"supported_features":RV_BUNDLE_SUPPORTED,@"patch_installers_enabled":@YES,@"login_compatibility_enabled":@YES,@"get_task_allow":RVDBGAttachEntitlement(),@"operations":RVDBGOperations(),@"read_limit":@65536,@"write_limit":@1024,@"handles_limit":@1024,@"jobs_limit":@64,
             @"native_calls":@"compiled_fixed_prototype_adapters",@"thread_control":@"external_lldb_only",@"handles":@(state.handles.count),@"jobs":@(state.jobs.count),@"mutation_budget_remaining":@(2048-state.mutations.count),@"event_sequence":@(state.sequence),
             @"recent_events":RVDBGEnabled() ? [state.events subarrayWithRange:NSMakeRange(state.events.count>24 ? state.events.count-24 : 0,MIN((NSUInteger)24,state.events.count))] : @[],
             @"recent_events_require_main_queue":@NO};

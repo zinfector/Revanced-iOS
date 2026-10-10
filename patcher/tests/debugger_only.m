@@ -5,28 +5,35 @@
 #include "../native/RVFeatures.h"
 int main(int argc,const char **argv) {
     @autoreleasepool {
-        assert(argc==2 && RVDebuggerOnly());
-        NSData *data=[NSData dataWithContentsOfFile:@(argv[1])];
-        NSDictionary *catalog=[NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-        assert(catalog);
-        NSMutableSet *allowed=[NSMutableSet set];
+        assert(argc==3 && RVDebuggerOnly());
+        NSDictionary *catalog=[NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:@(argv[1])] options:0 error:nil];
+        NSDictionary *profile=[NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:@(argv[2])] options:0 error:nil];
+        assert(catalog && profile);
+        NSMutableSet *supported=[NSMutableSet setWithArray:profile[@"default_enabled"]];[supported addObjectsFromArray:profile[@"optional_features"]];
+        NSSet *forced=[NSSet setWithArray:profile[@"forced_features"]];
+        assert([supported isEqual:[NSSet setWithArray:RV_BUNDLE_SUPPORTED]]);
+        assert([forced isEqual:[NSSet setWithArray:RV_BUNDLE_FORCED]]);
+        NSMutableSet *admitted=[NSMutableSet set],*expected=[NSMutableSet set];
         for (NSDictionary *entry in catalog[@"contracts"]) {
-            if (RVDebugObserverContract(entry[@"class_name"],entry[@"selector"],entry[@"abi"],[entry[@"kind"] isEqual:@"+"])) [allowed addObject:entry[@"id"]];
+            BOOL should=[entry[@"features"] containsObject:@"core"];
+            for (NSString *key in entry[@"features"]) should |= [supported containsObject:key];
+            if (should) [expected addObject:entry[@"id"]];
+            BOOL accepts=RVDebugObserverContract(entry[@"class_name"],entry[@"selector"],entry[@"abi"],[entry[@"kind"] isEqual:@"+"]);
+            assert(accepts==should);if (accepts) [admitted addObject:entry[@"id"]];
         }
-        assert(allowed.count==8);
+        assert(admitted.count>8 && [admitted isEqual:expected]);
+        assert(!RVDebugObserverContract(@"UnknownClass",@"unknown",@"v@:",NO));
         for (NSString *key in RVFeatureKeys) {
-            BOOL login=[@[@"sideload_auth_identity",@"sideload_auth_keychain"] containsObject:key];
-            assert([RVDebugOnlySetting(key,@{key:@YES},RVFeatureKeys) boolValue]==login);
-            assert([RVDebugOnlySetting(key,@{key:@NO},RVFeatureKeys) boolValue]==login);
-            assert([RVDebugOnlySetting(key,@{},RVFeatureKeys) boolValue]==login);
+            BOOL mandatory=[forced containsObject:key],allows=[supported containsObject:key];
+            assert([RVDebugOnlySetting(key,@{key:@YES},RVFeatureKeys,nil) boolValue]==allows);
+            assert([RVDebugOnlySetting(key,@{key:@NO},RVFeatureKeys,nil) boolValue]==mandatory);
+            assert([RVDebugOnlySetting(key,@{key:@NO},RVFeatureKeys,@YES) boolValue]==allows);
+            assert([RVDebugOnlySetting(key,@{key:@YES},RVFeatureKeys,@NO) boolValue]==mandatory);
         }
-        assert([RVDebugOnlySetting(@"diagnostics",@{@"diagnostics":@NO},RVFeatureKeys) boolValue]);
-        assert(![RVDebugOnlySetting(@"dearrow_format_custom_titles",@{@"dearrow_format_custom_titles":@YES},RVFeatureKeys) boolValue]);
-        assert([RVDebugOnlySetting(@"default_speed",@{@"default_speed":@1.0},RVFeatureKeys) doubleValue]==1.0);
-        assert(!RVDebugObserverContract(@"YTPlayerViewController",@"playbackController:didLoadContentPlaybackData:",@"v@:@",NO));
-        assert(!RVDebugObserverContract(@"YTWatchViewController",@"viewDidAppear:",@"v@:B",YES));
-        assert(!RVDebugObserverContract(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@B",NO));
-        printf("Debugger/login isolation checks passed: %lu feature keys, %lu admitted observer/login contracts\n",(unsigned long)[RVFeatureKeys count],(unsigned long)allowed.count);
+        assert([RVDebugOnlySetting(@"diagnostics",@{@"diagnostics":@NO},RVFeatureKeys,@NO) boolValue]);
+        assert(![RVDebugOnlySetting(@"dearrow_format_custom_titles",@{@"dearrow_format_custom_titles":@YES},RVFeatureKeys,@YES) boolValue]);
+        assert([RVDebugOnlySetting(@"default_speed",@{@"default_speed":@1.0},RVFeatureKeys,@1.5) doubleValue]==1.5);
+        printf("Major tweak isolation checks passed: %lu supported features, %lu admitted contracts\n",(unsigned long)supported.count,(unsigned long)admitted.count);
     }
     return 0;
 }

@@ -22,6 +22,7 @@
     "RVAdWatchOwnership.inc": "33f72fdf13d1328ad8a905f3a4f728a107d3e36a421d385ecc5a4e0727487051",
     "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
     "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVBundleCatalog.h": "e397eade007ffe90fd65787343e526cb2c2a2bac147056021476e6460e909252",
     "RVDeArrowBackend.h": "538d4733ed076fe6df0748828555f65a368bbdb2fe9f5aa98595733b741c8136",
     "RVDeArrowBackend.inc": "11166f0da83c4956f0923787eae332f1f6603e9e886717c357601717c57b9425",
     "RVDeArrowConsumers.inc": "8916193efa2585fa1af164edd0720eed10757dac55fa5dc3bf8ec2a30855b9d6",
@@ -39,12 +40,12 @@
     "RVDeArrowTextNodes.inc": "a3891a9a8d55f06eac0e34a606416942f8acb9bf657e8ac49b3e9a3ae027b7f5",
     "RVDeArrowUI.inc": "5e7ec8d38b331947fd8e21122b13c90c7ecfc876cc1753daa422d86efdff6546",
     "RVDeArrowWatchDiagnostics.inc": "edf62c4ea99b25b5753a127fe8332dbec84dfa356db12cd2d9b5c5025330f027",
-    "RVDebugAgent.inc": "5e9d99e79e68c63bacb04db4bc9bc04f7dd8a918d91eeeda53a9e0432314552f",
+    "RVDebugAgent.inc": "39426fd4c752f630c595bddec4be831cd3840a13747b6846b9967e05bf3fbbd0",
     "RVDebugMemory.inc": "8c7d1812ee11db1bb08e2ca90f12f4870f8e2d410aeed7793f69834e31689e31",
     "RVDebugObjects.inc": "54c9b6981e79aa8b76908995797bf13eb478f089f2ba0a10d275e0bbc72830f4",
-    "RVDebugOnly.h": "987ab5532fcfab9af2afd9bf53fe774605c6a14209f1c321d5f7fe00e92a6fd8",
+    "RVDebugOnly.h": "c6f65320bf5fe77f3b8f063d51cee615de4ed6d1ed2e68f53637d1499a51acf2",
     "RVDebugOnlyObservers.inc": "490e6caabb2a4876a838c4275266980f291cf8792b36f589b0d337c9c57cfffb",
-    "RVDebugRuntime.inc": "4c2cd84c9bdf842d067c5588e60f9aab5937a930224d3c78afd85378254b3887",
+    "RVDebugRuntime.inc": "8725c86517bc2b68c41aedd9de1e688f815e4c39696129c95b8e3b3f083ad850",
     "RVDebugState.inc": "45fb32e7a127b58fa8b5f1e9a4a4f0a6fe8bf3c6c7a47c70f713ec038e868726",
     "RVDislikesDiagnostics.inc": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
     "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
@@ -60,7 +61,7 @@
     "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
     "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
     "RVNavigation.inc": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
-    "RVPort.m": "ae6fff3bd94e22329a69bf6cdfb7d9bef6ef0c4978fb32698fb1a9287819d3e0",
+    "RVPort.m": "0a40e18da55d364436980a2c89f3f6f0e2f80fca8bf4da46104658a8338f6031",
     "RVRuntime.inc": "c21108527a41d788c3603ace5ffe20be915d5a41e927543d10caa92af2aeac4f",
     "RVRuntimeFieldCatalog.inc": "01f733b713c522f2ffaed2cf2a57a3f7fab29079d29d5854a4b70497b351e018",
     "RVRuntimeFields.h": "0649d594d65f2e702545ad7aeb8bc355272ef2ebeefaf66bcebd989131cff097",
@@ -75,11 +76,11 @@
     "RVSettingsIcon.inc": "d506ea29dd44da86ce962bf4d7d2b409d4ee7f8af8b68dae02b1dbf263174111",
     "RVSettingsMenuIcons.inc": "5f305536da598b767f4357c9ed1270efb34af7460e6dc5dff9905f72c7aa0a43",
     "RVSettingsModal.inc": "058bba59a4facbae97ae7620f181e77fcedca0fe7a3487860296ea17a6ede814",
-    "RVSettingsModel.inc": "564bd4f26b26e2f680c00334ddfb1ea28de33c977abbb03a055dd8f825556873",
+    "RVSettingsModel.inc": "4a626147ff742cdfe16ac105e59a97230766ca7b5ec5576d5d2037f90add56b9",
     "RVSettingsNativeUI.inc": "f6fabde7cc38f3d046d696fafe375e4145e90b06e8b784741db2006a957ceb6e",
     "RVSettingsNavigation.inc": "c98e3d57708cfea459b27b52d820e21e0dc20360bd2f0d8ed89fc145ee238b43",
-    "RVSettingsRows.inc": "5508646e9cd9a131ffe2dea89b5e88e7e176f6e2db17a50cf1a8b5c58f70d3d4",
-    "RVSettingsUI.inc": "4f5d089d862a6c9b78b0935e89b31724046708feefd284772dff8d136a00807f",
+    "RVSettingsRows.inc": "d68f7c86c9178a55558ccd4af2c461288448758965d474558c77d5f10594b503",
+    "RVSettingsUI.inc": "21b06ac16285a7b20b0b1feba5c856cc8b4dd8a717fa7d4f1e67619cf2259155",
     "RVShortsLayout.inc": "e25f8c390fefd4246ed4fe98255583fec39cbdc8ac56697fedcd995138f3b421",
     "RVSourceKernels.c": "613b6a8639ac039072115fa58c3f6fe8212019c6d1420e997300a233753a6560",
     "RVSourceKernels.h": "9b0a78ab9ed1b2df027b8d3582f194a302ded9053be09b7c6562f774ba1c8d07",
@@ -138,6 +139,7 @@
     "RVAdsDiagnostics.inc",
     "RVAuthentication.inc",
     "RVAuthenticationSupport.h",
+    "RVBundleCatalog.h",
     "RVDeArrowBackend.h",
     "RVDeArrowBackend.inc",
     "RVDeArrowConsumers.inc",
@@ -922,7 +924,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 348,
+          "line": 352,
           "wrapper": "RVHook"
         }
       ],
@@ -942,7 +944,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 348,
+          "line": 352,
           "wrapper": "RVHook"
         }
       ],
@@ -4135,7 +4137,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 317,
+          "line": 321,
           "wrapper": "RVHook"
         }
       ],
@@ -5406,7 +5408,7 @@
         },
         {
           "file": "RVPort.m",
-          "line": 331,
+          "line": 335,
           "wrapper": "RVHook"
         }
       ],
@@ -5424,7 +5426,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 323,
+          "line": 327,
           "wrapper": "RVHook"
         }
       ],
@@ -5442,7 +5444,7 @@
       "sources": [
         {
           "file": "RVPort.m",
-          "line": 340,
+          "line": 344,
           "wrapper": "RVHook"
         }
       ],

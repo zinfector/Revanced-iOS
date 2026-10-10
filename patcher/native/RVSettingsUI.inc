@@ -9,7 +9,7 @@ static NSNumber *RVPreferenceParseNumber(NSString *text) {
     double value;
     return [scanner scanDouble:&value] && scanner.isAtEnd && isfinite(value) ? @(value) : nil;
 }
-static void RVPreferencesChanged(void) { if (RVDebuggerOnly()) return;RVSPRefreshUI();RVShortsRefreshNavigation();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged();RVDAUIPreferencesChanged(); }
+static void RVPreferencesChanged(void) { RVSPRefreshUI();RVShortsRefreshNavigation();RVRefreshShortcuts();RVSegmentsChanged();RVNativeDislikeRefresh();RVAdPolicyChanged();RVDAUIPreferencesChanged(); }
 
 @interface RVPreferenceTextController : RVSettingsContentController
 @property(nonatomic,strong) UITextView *editor;
