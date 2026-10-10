@@ -1,8 +1,8 @@
-name: Build DeArrow text nodes with Xcode
+name: Build runtime integration pilot with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-text-nodes-0.3.62]
+    branches: [fix/runtime-integration-xcode-0.4.2]
 
 permissions:
   contents: read
@@ -45,6 +45,8 @@ jobs:
         with:
           name: native-build
           path: |
+            patcher/build/CapabilityRuntime.c.log
+            patcher/build/IOSProviders.m.log
             patcher/build/RVPort.dSYM.zip
             patcher/build/RVPort.dylib
             patcher/build/build-manifest.json

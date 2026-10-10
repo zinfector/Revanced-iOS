@@ -74,7 +74,7 @@ static NSString *RVContentGate(id controller) {
 static BOOL RVOrdinaryContent(id controller) { return RVContentGate(controller)==nil; }
 static void RVBoolGate(NSString *cls,NSString *selector,NSString *feature,BOOL value) {
     RVHook(cls,selector,@"B@:",NO,^id(IMP original,SEL sel) {
-        return ^BOOL(id object) { return RVEnabled(feature) ? value : ((BOOL(*)(id,SEL))original)(object,sel); };
+        return ^BOOL(id object) { return RVSourceFeatureEnabled(feature) ? value : ((BOOL(*)(id,SEL))original)(object,sel); };
     });
 }
 static void RVHideView(id value,BOOL hidden) {
@@ -417,10 +417,10 @@ static void RVLayoutSponsorMarkers(UIView *bar) {
 }
 @implementation RVSeekbarTap
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gesture {
-    return RVEnabled(@"tap_to_seek") && RVOrdinaryContent(RVCurrentPlayback) && !RVEnabled(@"hide_seekbar");
+    return RVSourceFeatureEnabled(@"tap_to_seek") && RVOrdinaryContent(RVCurrentPlayback) && !RVSourceFeatureEnabled(@"hide_seekbar");
 }
 - (void)tap:(UITapGestureRecognizer *)gesture {
-    if (gesture.state!=UIGestureRecognizerStateEnded || !RVEnabled(@"tap_to_seek") || !RVOrdinaryContent(RVCurrentPlayback)) return;
+    if (gesture.state!=UIGestureRecognizerStateEnded || !RVSourceFeatureEnabled(@"tap_to_seek") || !RVOrdinaryContent(RVCurrentPlayback)) return;
     UIView *bar=gesture.view;double width=bar.bounds.size.width,duration=RVDouble(RVCurrentPlayer,"currentVideoTotalMediaTime");
     CGPoint point=[gesture locationInView:bar];
     if (width>0 && isfinite(duration) && duration>0 && point.x>=0 && point.x<=width) RVSeekSeconds(duration*(point.x/width));
@@ -523,7 +523,7 @@ static void RVInstallPlayerExtras(void) {
     for (NSString *selector in @[@"onResponseReceivedEndpointsArray",@"onResponseReceivedActionsArray"]) RVHook(@"YTIWatchNextResponse",selector,@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id object) {
             id actions=((id(*)(id,SEL))original)(object,sel);
-            if (!RVEnabled(@"disable_popup_panels") || ![actions isKindOfClass:[NSArray class]]) return actions;
+            if (!RVSourceFeatureEnabled(@"disable_popup_panels") || ![actions isKindOfClass:[NSArray class]]) return actions;
             NSMutableArray *kept=[NSMutableArray array];
             for (id action in actions) if (!RVBool(action,"hasShowEngagementPanelEndpoint") && !RVBool(action,"hasShowEngagementPanelNavigationEndpoint")) [kept addObject:action];
             return kept;
@@ -541,10 +541,10 @@ static void RVInstallPlayerExtras(void) {
         return ^(id object,float value) { ((void(*)(id,SEL,float))original)(object,sel,RVEnabled(@"disable_ambient") ? 0 : value); };
     });
     RVHook(@"YTSemanticHapticsController",@"playWithSemantic:",@"v@:q",NO,^id(IMP original,SEL sel) {
-        return ^(id object,long long value) { if (!RVEnabled(@"disable_haptics")) ((void(*)(id,SEL,long long))original)(object,sel,value); };
+        return ^(id object,long long value) { if (!RVSourceFeatureEnabled(@"disable_haptics")) ((void(*)(id,SEL,long long))original)(object,sel,value); };
     });
     RVHook(@"YTSemanticHapticsController",@"playWithSemantic:throttleTimeout:",@"v@:qd",NO,^id(IMP original,SEL sel) {
-        return ^(id object,long long value,double timeout) { if (!RVEnabled(@"disable_haptics")) ((void(*)(id,SEL,long long,double))original)(object,sel,value,timeout); };
+        return ^(id object,long long value,double timeout) { if (!RVSourceFeatureEnabled(@"disable_haptics")) ((void(*)(id,SEL,long long,double))original)(object,sel,value,timeout); };
     });
     RVHook(@"YTDoubleTapToSeekController",@"enableDoubleTapToSeek:",@"v@:B",NO,^id(IMP original,SEL sel) {
         return ^(id object,BOOL value) { ((void(*)(id,SEL,BOOL))original)(object,sel,RVEnabled(@"disable_double_tap") ? NO : value); };
@@ -553,13 +553,13 @@ static void RVInstallPlayerExtras(void) {
         return ^(id object,id value) { if (!RVEnabled(@"disable_double_tap")) ((void(*)(id,SEL,id))original)(object,sel,value); };
     });
     RVHook(@"YTDoubleTapToSeekController",@"didTwoFingerDoubleTap:",@"v@:@",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id value) { if (!RVEnabled(@"disable_double_tap") && !RVEnabled(@"disable_chapter_skip")) ((void(*)(id,SEL,id))original)(object,sel,value); };
+        return ^(id object,id value) { if (!RVEnabled(@"disable_double_tap") && !RVSourceFeatureEnabled(@"disable_chapter_skip")) ((void(*)(id,SEL,id))original)(object,sel,value); };
     });
     RVHook(@"YTVideoPlayerOverlayConfigTransformer",@"doubleTapSeekIntervalForVideoPlayerOverlayConfig:",@"d@:@",YES,^id(IMP original,SEL sel) {
         return ^double(id object,id config) { double value=[RVSetting(@"double_tap_seconds") doubleValue];return value>0 ? value : ((double(*)(id,SEL,id))original)(object,sel,config); };
     });
     RVHook(@"YTInlinePlayerBarContainerView",@"didPanFineScrubberEntryPoint:",@"v@:@",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id value) { if (!RVEnabled(@"disable_precise_seeking")) ((void(*)(id,SEL,id))original)(object,sel,value); };
+        return ^(id object,id value) { if (!RVSourceFeatureEnabled(@"disable_precise_seeking")) ((void(*)(id,SEL,id))original)(object,sel,value); };
     });
     RVHook(@"YTWatchViewController",@"playerViewController:didActivateVideo:",@"v@:@@",NO,^id(IMP original,SEL sel) {
         return ^(id watch,id player,id video) {
@@ -633,7 +633,7 @@ static void RVInstallPlayerExtras(void) {
         };
     });
     [[NSNotificationCenter defaultCenter] addObserverForName:AVAudioSessionInterruptionNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
-        if (RVEnabled(@"pause_on_interrupt") && [note.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue]==AVAudioSessionInterruptionTypeBegan) RVVoid(RVCurrentPlayer,"pause");
+        if (RVSourceFeatureEnabled(@"pause_on_interrupt") && [note.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue]==AVAudioSessionInterruptionTypeBegan) RVVoid(RVCurrentPlayer,"pause");
     }];
 }
 
@@ -691,16 +691,16 @@ static void RVInstallLayout(void) {
         return ^(id object,BOOL value) { ((void(*)(id,SEL,BOOL))original)(object,sel,value || RVEnabled(@"hide_autoplay_button")); };
     });
     for (NSString *cls in @[@"YTPlayerBarSegmentedProgressView",@"YTInlinePlayerBarView"]) RVHook(cls,@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
-        return ^(id object) { ((void(*)(id,SEL))original)(object,sel);RVHideView(object,RVEnabled(@"hide_seekbar"));if ([cls isEqual:@"YTInlinePlayerBarView"]) { if (RVEnabled(@"tap_to_seek")) RVAttachBarTap(object);RVLayoutSponsorMarkers(object); } };
+        return ^(id object) { ((void(*)(id,SEL))original)(object,sel);RVHideView(object,RVSourceFeatureEnabled(@"hide_seekbar"));if ([cls isEqual:@"YTInlinePlayerBarView"]) { if (RVSourceFeatureEnabled(@"tap_to_seek")) RVAttachBarTap(object);RVLayoutSponsorMarkers(object); } };
     });
     RVHook(@"YTMainAppVideoPlayerOverlayView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id object) {
             ((void(*)(id,SEL))original)(object,sel);
             NSDictionary *views=@{@"hide_cast_button":@"playbackRouteButton",@"hide_watermark":@"featuredChannelWatermarkImageView",
                 @"hide_end_cards":@"creatorEndscreenView",@"hide_autoplay_preview":@"autonavPreviewView",@"hide_info_cards":@"teaserContainerView",@"hide_related_overlay":@"fullscreenEngagementOverlayView"};
-            for (NSString *feature in views) RVHideView(RVObject(object,[views[feature] UTF8String]),RVEnabled(feature));
-            RVHideView(RVObject(object,"autonavEndscreenView"),RVEnabled(@"hide_autoplay_preview"));
-            RVHideView(RVObject(object,"autonavBackgroundView"),RVEnabled(@"hide_autoplay_preview"));
+            for (NSString *feature in views) RVHideView(RVObject(object,[views[feature] UTF8String]),RVSourceFeatureEnabled(feature));
+            RVHideView(RVObject(object,"autonavEndscreenView"),RVSourceFeatureEnabled(@"hide_autoplay_preview"));
+            RVHideView(RVObject(object,"autonavBackgroundView"),RVSourceFeatureEnabled(@"hide_autoplay_preview"));
             RVHideView(RVObject(object,"previousButton"),RVEnabled(@"hide_previous_next"));
             RVHideView(RVObject(object,"nextButton"),RVEnabled(@"hide_previous_next"));
             id controls=RVObject(object,"controlsOverlayView");
@@ -717,10 +717,10 @@ static void RVInstallLayout(void) {
     RVHook(@"YTInlinePlayerBarContainerView",@"layoutSubviews",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id object) {
             ((void(*)(id,SEL))original)(object,sel);
-            RVHideView(RVObject(object,"progressView"),RVEnabled(@"hide_seekbar"));
-            RVHideView(RVObject(object,"currentTimeLabel"),RVEnabled(@"hide_timestamp"));
-            RVHideView(RVObject(object,"currentTimeTitleView"),RVEnabled(@"hide_timestamp"));
-            RVHideView(RVObject(object,"durationLabel"),RVEnabled(@"hide_timestamp"));
+            RVHideView(RVObject(object,"progressView"),RVSourceFeatureEnabled(@"hide_seekbar"));
+            RVHideView(RVObject(object,"currentTimeLabel"),RVSourceFeatureEnabled(@"hide_timestamp"));
+            RVHideView(RVObject(object,"currentTimeTitleView"),RVSourceFeatureEnabled(@"hide_timestamp"));
+            RVHideView(RVObject(object,"durationLabel"),RVSourceFeatureEnabled(@"hide_timestamp"));
         };
     });
     RVBoolGate(@"YTInlinePlayerBarContainerView",@"shouldShowDurationLabel",@"hide_timestamp",NO);
@@ -743,20 +743,26 @@ static void RVInstallLayout(void) {
     RVHook(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@B",NO,^id(IMP original,SEL sel) {
         return ^(id object,id count,id number,id font,id attributes,id color,BOOL skip) {
             RVElementDislikeEvent(@"native_number_update");
-            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,BOOL))original)(object,sel,count,number,font,attributes,color,skip); };
-            // Preserve native initialization/rendering flags and every text argument.
-            if (NSThread.isMainThread && RVEnabled(@"disable_rolling_numbers")) {
+            BOOL withoutAnimation=NSThread.isMainThread && RVSourceFeatureEnabled(@"disable_rolling_numbers");
+            BOOL nativeSkip=skip || withoutAnimation;
+            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,BOOL))original)(object,sel,count,number,font,attributes,color,nativeSkip); };
+            // Preserve count/font/layout updates; the audited skip flag suppresses digit transitions.
+            if (withoutAnimation) {
                 [CATransaction begin];[CATransaction setDisableActions:YES];[UIView performWithoutAnimation:update];[CATransaction commit];
             } else update();
+            RVRuntimeObserveRolling(object,skip,nativeSkip,withoutAnimation,NSStringFromSelector(sel));
         };
     });
     RVHook(@"YTRollingNumberView",@"setUpdatedCount:updatedCountNumber:rollFromCount:rollFromCountNumber:font:fontAttributes:color:skipAnimation:",@"v@:@@@@@@@B",NO,^id(IMP original,SEL sel) {
         return ^(id object,id count,id number,id from,id fromNumber,id font,id attributes,id color,BOOL skip) {
             RVElementDislikeEvent(@"native_number_transition");
-            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,id,id,BOOL))original)(object,sel,count,number,from,fromNumber,font,attributes,color,skip); };
-            if (NSThread.isMainThread && RVEnabled(@"disable_rolling_numbers")) {
+            BOOL withoutAnimation=NSThread.isMainThread && RVSourceFeatureEnabled(@"disable_rolling_numbers");
+            BOOL nativeSkip=skip || withoutAnimation;
+            void (^update)(void)=^{ ((void(*)(id,SEL,id,id,id,id,id,id,id,BOOL))original)(object,sel,count,number,from,fromNumber,font,attributes,color,nativeSkip); };
+            if (withoutAnimation) {
                 [CATransaction begin];[CATransaction setDisableActions:YES];[UIView performWithoutAnimation:update];[CATransaction commit];
             } else update();
+            RVRuntimeObserveRolling(object,skip,nativeSkip,withoutAnimation,NSStringFromSelector(sel));
         };
     });
 }

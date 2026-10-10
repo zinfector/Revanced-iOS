@@ -17,6 +17,10 @@ import patcher
 import branding
 import integration_check
 
+# Historical archive/Mach-O fixtures deliberately lack ObjC metadata. Keep their
+# original scope; test_adaptive.py and the real corpus test the new default path.
+def legacy_patch(*args,**kwargs): return patcher.patch(*args,adaptive_profile=False,**kwargs)
+
 def dylib_command(kind,path):
     name=path.encode()+b'\0';n=(24+len(name)+7)&~7
     return struct.pack('<6I',kind,n,24,0,0x10000,0x10000)+name+bytes(n-24-len(name))
@@ -69,6 +73,7 @@ class NativeIntervalTests(unittest.TestCase):
     def test_actual_native_interval_and_marker_helper(self):
         root=Path(__file__).resolve().parents[1]
         zig=root/'.tools/python/ziglang/zig.exe'
+        if not zig.exists(): zig=root.parent/'patcher/.tools/python/ziglang/zig.exe'
         import shutil
         compiler=[str(zig),'cc'] if zig.exists() else [shutil.which('cc')] if shutil.which('cc') else None
         if not compiler:self.skipTest('A C compiler is required for the shared native helper test')
@@ -104,7 +109,7 @@ class ArchiveTests(unittest.TestCase):
 
     def test_round_trip_manifest_original_preservation_and_signature_cleanup(self):
         before=self.input.read_bytes()
-        marker=patcher.patch(self.input,self.output,self.library,{'sponsorblock':True,'default_speed':1.25})
+        marker=legacy_patch(self.input,self.output,self.library,{'sponsorblock':True,'default_speed':1.25})
         self.assertEqual(before,self.input.read_bytes());self.assertTrue(marker['signing_required'])
         self.assertEqual(patcher.verify(self.output)['status'],'verified')
         with zipfile.ZipFile(self.output) as z:
@@ -115,16 +120,16 @@ class ArchiveTests(unittest.TestCase):
             self.assertEqual(json.loads(z.read('Payload/YouTube.app/RVPort.json'))['default_speed'],1.25)
 
     def test_refuses_existing_output_and_repatch_and_input_overwrite(self):
-        with self.assertRaises(macho.PatchError):patcher.patch(self.input,self.input,self.library,{})
-        patcher.patch(self.input,self.output,self.library,{})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.input,self.input,self.library,{})
+        legacy_patch(self.input,self.output,self.library,{})
         before=self.output.read_bytes()
-        with self.assertRaises(macho.PatchError):patcher.patch(self.input,self.output,self.library,{})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.input,self.output,self.library,{})
         self.assertEqual(before,self.output.read_bytes())
-        with self.assertRaises(macho.PatchError):patcher.patch(self.output,self.root/'again.ipa',self.library,{})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.output,self.root/'again.ipa',self.library,{})
 
     def test_profile_hash_mismatch_never_creates_output(self):
         self.p['executable_sha256']='0'*64
-        with self.assertRaises(macho.PatchError):patcher.patch(self.input,self.output,self.library,{})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.input,self.output,self.library,{})
         self.assertFalse(self.output.exists())
 
     def test_archive_traversal_duplicates_and_symlink_rejected(self):
@@ -147,13 +152,13 @@ class ArchiveTests(unittest.TestCase):
         migration = 'Payload/YouTube.app/Extensions/AppMigrationExtension.appex/extension'
         self.make_archive([(migration, b'migration extension')])
         retained = self.root/'retained.ipa'
-        patcher.patch(self.input,retained,self.library,{})
+        legacy_patch(self.input,retained,self.library,{})
         with zipfile.ZipFile(retained) as z:self.assertIn(migration,z.namelist())
-        patcher.patch(self.input,self.output,self.library,{},True)
+        legacy_patch(self.input,self.output,self.library,{},True)
         with zipfile.ZipFile(self.output) as z:self.assertFalse(any('.appex/' in n for n in z.namelist()))
 
     def test_tamper_detection(self):
-        patcher.patch(self.input,self.output,self.library,{})
+        legacy_patch(self.input,self.output,self.library,{})
         corrupt=self.root/'corrupt.ipa'
         with zipfile.ZipFile(self.output) as src,zipfile.ZipFile(corrupt,'w') as dst:
             for info in src.infolist():
@@ -168,12 +173,12 @@ class ArchiveTests(unittest.TestCase):
                   {'sponsor_categories':['unknown']},{'ad_strategy':'bad'},{'schema':True}):
             with self.assertRaises(macho.PatchError):patcher.validate_config(c)
         self.library.write_bytes(binary(2))
-        with self.assertRaises(macho.PatchError):patcher.patch(self.input,self.output,self.library,{})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.input,self.output,self.library,{})
 
     def test_expanded_features_round_trip(self):
         config={key:True for key in patcher.FEATURES}
         config.update(double_tap_seconds=15,theme='dark',seekbar_color='#123ABC',thumbnail_proxy_url='https://example.test/image',custom_speeds=[.25,1,4])
-        marker=patcher.patch(self.input,self.output,self.library,config)
+        marker=legacy_patch(self.input,self.output,self.library,config)
         result=patcher.verify(self.output)
         self.assertTrue(all(result['features'].values()))
         with zipfile.ZipFile(self.output) as z:
@@ -198,7 +203,7 @@ class ArchiveTests(unittest.TestCase):
                 'sponsor_behaviors':{'sponsor':'skip-once','hook':'manual-skip','poi_highlight':'seekbar-only'},
                 'sponsor_colors':{'sponsor':'#010203'},'sponsor_min_duration':.5,
                 'dearrow_thumbnails':True,'sponsorblock_markers':True}
-        marker=patcher.patch(self.input,self.output,self.library,config)
+        marker=legacy_patch(self.input,self.output,self.library,config)
         self.assertEqual(marker['config']['sponsor_behaviors'],config['sponsor_behaviors'])
         self.assertTrue(patcher.verify(self.output)['features']['dearrow_thumbnails'])
         for invalid in ({'sponsor_behaviors':{'sponsor':'unknown'}},{'sponsor_behaviors':{'bad':'skip'}},
@@ -211,7 +216,7 @@ class ArchiveTests(unittest.TestCase):
     def test_thumbnail_contexts_and_theme_palette_configuration(self):
         config={'thumbnail_modes':{'home':'dearrow-stills','subscriptions':'original','player':'stills','search':'dearrow'},
                 'theme_light_background':'#FFFFFF','theme_dark_background':'#101010','fast_thumbnail_stills':True}
-        marker=patcher.patch(self.input,self.output,self.library,config)
+        marker=legacy_patch(self.input,self.output,self.library,config)
         self.assertEqual(marker['config']['thumbnail_modes'],config['thumbnail_modes'])
         self.assertEqual(patcher.verify(self.output)['status'],'verified')
         for invalid in ({'thumbnail_modes':{'other':'stills'}},{'thumbnail_modes':{'home':'invalid'}},
@@ -219,7 +224,7 @@ class ArchiveTests(unittest.TestCase):
             with self.subTest(config=invalid),self.assertRaises(macho.PatchError):patcher.validate_config(invalid)
 
     def test_network_quality_policies(self):
-        marker=patcher.patch(self.input,self.output,self.library,{'wifi_quality':1080,'cellular_quality':480,'remember_quality':True})
+        marker=legacy_patch(self.input,self.output,self.library,{'wifi_quality':1080,'cellular_quality':480,'remember_quality':True})
         self.assertEqual(marker['config']['wifi_quality'],1080)
         self.assertEqual(marker['config']['cellular_quality'],480)
         self.assertEqual(patcher.verify(self.output)['status'],'verified')
@@ -231,7 +236,7 @@ class ArchiveTests(unittest.TestCase):
         for key,size in [('header_image',32),('icon_120',120),('icon_180',180),('icon_152',152)]:
             path=self.root/(key+'.png');path.write_bytes(png_bytes(size,size));assets[key]=path
         before=self.input.read_bytes()
-        marker=patcher.patch(self.input,self.output,self.library,{'app_name':'My YouTube'},branding=assets)
+        marker=legacy_patch(self.input,self.output,self.library,{'app_name':'My YouTube'},branding=assets)
         self.assertEqual(self.input.read_bytes(),before)
         self.assertTrue(marker['config']['custom_header'])
         self.assertEqual(len(marker['resources']),5)
@@ -252,14 +257,14 @@ class ArchiveTests(unittest.TestCase):
         asset=self.root/'image.png';asset.write_bytes(png_bytes(120,120))
         self.assertEqual(branding.png(asset,(120,120)),asset.read_bytes())
         with self.assertRaises(macho.PatchError):branding.png(asset,(180,180))
-        with self.assertRaises(macho.PatchError):patcher.patch(self.input,self.output,self.library,{},branding={'icon_120':asset})
+        with self.assertRaises(macho.PatchError):legacy_patch(self.input,self.output,self.library,{},branding={'icon_120':asset})
         self.assertFalse(self.output.exists())
         for data in (b'not PNG',png_bytes(8,8,5),png_bytes(8,8)[:-1],png_bytes(8,8)+b'trailing'):
             asset.write_bytes(data)
             with self.assertRaises(macho.PatchError):branding.png(asset)
 
     def test_legacy_configuration_can_be_verified(self):
-        patcher.patch(self.input,self.output,self.library,{})
+        legacy_patch(self.input,self.output,self.library,{})
         legacy=self.root/'legacy.ipa'
         with zipfile.ZipFile(self.output) as src,zipfile.ZipFile(legacy,'w') as dst:
             for info in src.infolist():

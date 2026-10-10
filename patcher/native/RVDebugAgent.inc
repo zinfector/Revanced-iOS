@@ -2,6 +2,7 @@
 #include "RVDebugState.inc"
 #include "RVDebugMemory.inc"
 #include "RVDebugObjects.inc"
+#include "RVDebugRuntime.inc"
 static id RVDBGAttachEntitlement(void) {
     typedef CFTypeRef (*Create)(CFAllocatorRef);typedef CFTypeRef (*Copy)(CFTypeRef,CFStringRef,CFErrorRef *);
     Create create=(Create)dlsym(RTLD_DEFAULT,"SecTaskCreateFromSelf");Copy copy=(Copy)dlsym(RTLD_DEFAULT,"SecTaskCopyValueForEntitlement");
@@ -10,7 +11,7 @@ static id RVDBGAttachEntitlement(void) {
     if (value) { if (CFGetTypeID(value)==CFBooleanGetTypeID()) result=@(CFBooleanGetValue(value));CFRelease(value); }return result;
 }
 static NSArray *RVDBGOperations(void) {
-    return @[@"debug.images",@"debug.regions",@"debug.read",@"debug.write",@"debug.rollback",@"debug.allocate",@"debug.free",@"debug.object",@"debug.get",@"debug.items",@"debug.value",@"debug.invoke",@"debug.retain",@"debug.release",@"debug.functions",@"debug.call",@"debug.dearrow.bindings",@"debug.native.graph",@"debug.native.roles",@"debug.dearrow.refresh",@"debug.events"];
+    return @[@"debug.images",@"debug.regions",@"debug.read",@"debug.write",@"debug.rollback",@"debug.allocate",@"debug.free",@"debug.object",@"debug.get",@"debug.items",@"debug.value",@"debug.invoke",@"debug.retain",@"debug.release",@"debug.functions",@"debug.call",@"debug.dearrow.bindings",@"debug.native.graph",@"debug.native.roles",@"debug.dearrow.refresh",@"debug.events",@"debug.runtime.bindings",@"debug.runtime.field",@"debug.runtime.setting",@"debug.runtime.visibility",@"debug.runtime.report"];
 }
 static NSDictionary *RVDBGStatus(void) {
     RVDBGState *state=RVDBGState.shared;@synchronized(state) {
@@ -25,6 +26,7 @@ static NSDictionary *RVDBGStatus(void) {
 static NSDictionary *RVDBGExecute(NSString *operation,NSDictionary *args,NSString *owner) {
     if ([@[@"debug.images",@"debug.regions",@"debug.read",@"debug.write",@"debug.rollback",@"debug.allocate",@"debug.free"] containsObject:operation]) return RVDBGMemory(operation,args,owner);
     if ([@[@"debug.object",@"debug.get",@"debug.items",@"debug.value",@"debug.invoke",@"debug.retain",@"debug.release"] containsObject:operation]) return RVDBGObjectOperation(operation,args);
+    if ([@[@"debug.runtime.bindings",@"debug.runtime.field",@"debug.runtime.setting",@"debug.runtime.visibility",@"debug.runtime.report"] containsObject:operation]) return RVDBGRuntimeOperation(operation,args);
     if ([operation isEqual:@"debug.functions"]) return @{@"ok":@YES,@"functions":RVDBGFunctions()};
     if ([operation isEqual:@"debug.call"]) return RVDBGCall(args);
     if ([@[@"debug.dearrow.bindings",@"debug.native.graph",@"debug.native.roles",@"debug.dearrow.refresh"] containsObject:operation]) return RVDBGDeArrow(operation,args);
@@ -68,7 +70,7 @@ static NSDictionary *RVDBGProcess(NSDictionary *request,NSString *owner,BOOL (^a
         // after their results leave the bounded ledger. Reusing them never calls
         // native code again. Turning debug mode off resets the process nonce.
         if ([state.mutations containsObject:identifier]) return reply(RVDBGFail(@"job_result_expired_will_not_repeat"),NO);
-        BOOL mutation=[@[@"debug.write",@"debug.rollback",@"debug.allocate",@"debug.free",@"debug.invoke",@"debug.call",@"debug.retain",@"debug.release",@"debug.native.roles",@"debug.dearrow.refresh"] containsObject:operation];
+        BOOL mutation=[@[@"debug.write",@"debug.rollback",@"debug.allocate",@"debug.free",@"debug.invoke",@"debug.call",@"debug.retain",@"debug.release",@"debug.native.roles",@"debug.dearrow.refresh",@"debug.runtime.setting",@"debug.runtime.visibility"] containsObject:operation];
         if (mutation && state.mutations.count>=2048) return reply(RVDBGFail(@"mutation_budget_reset_debug_mode"),NO);
         if (state.jobs.count>=64) for (NSString *key in state.jobOrder.copy) {
             RVDBGJob *old=state.jobs[key];if (![@[@"queued",@"running"] containsObject:old.state]) { [state.jobs removeObjectForKey:key];[state.jobOrder removeObject:key];break; }

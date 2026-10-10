@@ -157,6 +157,7 @@ static CGRect AppBounds;
 @end
 
 #include "../native/RVRuntime.inc"
+#include "adaptive_fixture.h"
 #include "../native/RVMiniplayer.inc"
 
 static BOOL Near(double a,double b) { return fabs(a-b)<1e-8; }
@@ -167,6 +168,7 @@ static BOOL RectMask(UIView *view) {
     BOOL same=CGPathEqualToPath(rect,((CAShapeLayer *)view.layer.mask).path);CGPathRelease(rect);return same;
 }
 int main(void) { @autoreleasepool {
+    FixtureAdaptivePreflight();
     Settings=[@{@"miniplayer_min_dimension_points":@0,@"miniplayer_overlay_opacity":@1} mutableCopy];RVStatus=[NSMutableArray array];
     AppBounds=CGRectMake(0,0,430,932);RVInstallMiniplayer();
     assert(RVStatus.count==18);

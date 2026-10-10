@@ -44,7 +44,8 @@ static NSArray *RVDBGFunctions(void) {
         if (!pointer || !dladdr(pointer,&info) || !info.dli_fbase) continue;
         NSString *uuid=RVDBGImageUUID(info.dli_fbase);if (!uuid) continue;
         [functions addObject:@{@"name":item[0],@"prototype":item[1],@"address":RVDBGHex((uint64_t)pointer),@"image_uuid":uuid,@"offset":RVDBGHex((uint64_t)pointer-(uint64_t)info.dli_fbase),@"queue":@"main"}];
-    }return functions;
+    }
+    return functions;
 }
 static NSDictionary *RVDBGCall(NSDictionary *args) {
     NSString *name=args[@"function"];if (![name isKindOfClass:NSString.class]) return RVDBGFail(@"function_required");NSDictionary *registered=nil;
@@ -59,6 +60,8 @@ static NSDictionary *RVDBGCall(NSDictionary *args) {
 }
 static NSDictionary *RVDBGObjectOperation(NSString *operation,NSDictionary *args) {
     RVDAUIBinding *scope=nil;id object=RVDBGResolve(args[@"handle"],&scope);if (!object) return RVDBGFail(@"object_handle_expired");
+    RVDBGHandle *runtimeHandle=RVDBGState.shared.handles[args[@"handle"]];
+    if (runtimeHandle.runtimeRole && [@[@"debug.get",@"debug.items",@"debug.invoke"] containsObject:operation]) return RVDBGFail(@"use_scoped_runtime_adapter");
     if ([operation isEqual:@"debug.get"]) {
         if (![args[@"selector"] isKindOfClass:NSString.class]) return RVDBGFail(@"selector_required");return RVDBGGet(object,args[@"selector"],scope);
     }
@@ -67,7 +70,8 @@ static NSDictionary *RVDBGObjectOperation(NSString *operation,NSDictionary *args
         RVDBGState *state=RVDBGState.shared;@synchronized(state) {
             NSUInteger count=0;for (RVDBGHandle *handle in state.handles.allValues) count+=handle.retained!=nil;
             if (count>=32) return RVDBGFail(@"retain_lease_limit");state.handles[args[@"handle"]].retained=object;
-        }return @{@"ok":@YES,@"retained":@YES};
+        }
+        return @{@"ok":@YES,@"retained":@YES};
     }
     if ([operation isEqual:@"debug.release"]) { RVDBGState *state=RVDBGState.shared;@synchronized(state) { state.handles[args[@"handle"]].retained=nil; }return @{@"ok":@YES,@"retained":@NO}; }
     if ([operation isEqual:@"debug.value"]) {
@@ -89,7 +93,8 @@ static NSDictionary *RVDBGObjectOperation(NSString *operation,NSDictionary *args
         [classes addObject:NSStringFromClass(cls)];unsigned int count=0;Method *list=class_copyMethodList(cls,&count);
         for (unsigned int index=0;index<count;index++,methodIndex++) if (methodIndex>=cursor && methods.count<128) {
             const char *encoding=method_getTypeEncoding(list[index]);[methods addObject:@{@"selector":NSStringFromSelector(method_getName(list[index])),@"encoding":encoding ? [NSString stringWithUTF8String:encoding] : @"",@"declaring_class":NSStringFromClass(cls)}];
-        }free(list);
+        }
+        free(list);
         Ivar *ivars=class_copyIvarList(cls,&count);
         for (unsigned int index=0;index<count && fields.count<128;index++) {
             const char *name=ivar_getName(ivars[index]),*encoding=ivar_getTypeEncoding(ivars[index]);
@@ -112,7 +117,8 @@ static NSDictionary *RVDBGDeArrow(NSString *operation,NSDictionary *args) {
             RVDAUIBinding *binding=current[index];
             NSDictionary *fallback=@{@"phase":binding.fallbackPhase ?: @"idle",@"reason":binding.fallbackResponseReason ?: @"none",@"http":@(binding.fallbackHTTPStatus),@"cached_http":@(binding.fallbackCachedHTTPStatus),@"retries":@(binding.fallbackRetries),@"cycles":@(binding.fallbackCycles),@"duration_source":binding.durationSource ?: @"unresolved",@"timestamp_requested":binding.fallbackTimestampRequested ?: NSNull.null,@"timestamp_returned":binding.fallbackTimestampReturned ?: NSNull.null,@"cooldown_seconds":@(MAX(0,binding.fallbackNextAttempt-RVDANow()))};
             [bindings addObject:@{@"binding":RVDBGReference(binding,binding),@"root":RVDBGReference(binding.nativeFactoryRoot,binding),@"controller":RVDBGReference(binding.controller,binding),@"surface":binding.surface ?: @"unknown",@"route":binding.route ?: @"unknown",@"factory_proven":@(binding.factoryProvenanceVerified),@"roles":binding.consumerCheckpoint ?: @{},@"visible_now":@(RVDAUIFallbackVisible(binding)),@"video_hash":RVDADiagVideo(binding.video),@"image_origin":binding.imageOrigin ?: @"native_original",@"encoded_image_ready":@(binding.imageBytes!=nil),@"image_blocker":binding.imageBlocker ?: @"policy_off",@"fallback":fallback}];
-        }return @{@"ok":@YES,@"bindings":bindings,@"count":@(current.count),@"next_cursor":@(cursor+bindings.count),@"complete":@(cursor+bindings.count>=current.count),@"order":@"current_visible_pending_then_recent"};
+        }
+        return @{@"ok":@YES,@"bindings":bindings,@"count":@(current.count),@"next_cursor":@(cursor+bindings.count),@"complete":@(cursor+bindings.count>=current.count),@"order":@"current_visible_pending_then_recent"};
     }
     RVDAUIBinding *binding=RVDBGResolve(args[@"handle"],NULL);
     if (![binding isKindOfClass:RVDAUIBinding.class] || !RVDAUICurrent(binding)) return RVDBGFail(@"binding_handle_expired");
@@ -130,5 +136,6 @@ static NSDictionary *RVDBGDeArrow(NSString *operation,NSDictionary *args) {
         }
         NSDictionary *ancestry=nil;RVDAUIResolveConsumerRoot(object,binding,&ancestry);
         [nodes addObject:@{@"index":@(index),@"object":RVDBGReference(object,binding),@"edges":edges,@"ancestry":ancestry ?: @{}}];
-    }return @{@"ok":@YES,@"nodes":nodes,@"count":@(graph.count),@"next_cursor":@(cursor+nodes.count),@"complete":@(cursor+nodes.count>=graph.count),@"truncated":@(graph.count>=256)};
+    }
+    return @{@"ok":@YES,@"nodes":nodes,@"count":@(graph.count),@"next_cursor":@(cursor+nodes.count),@"complete":@(cursor+nodes.count>=graph.count),@"truncated":@(graph.count>=256)};
 }

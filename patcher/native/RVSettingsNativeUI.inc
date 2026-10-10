@@ -8,6 +8,7 @@
 - (instancetype)initWithTitle:(id)title items:(id)items;
 @end
 static BOOL RVUIRequire(NSString *name,NSString *selector,NSString *signature,BOOL classMethod) {
+    if (!RVAdaptivePermit(name,selector,signature,classMethod)) return NO;
     Class cls=NSClassFromString(name);Class target=classMethod ? object_getClass(cls) : cls;
     BOOL valid=cls && [RVSignature(class_getInstanceMethod(target,NSSelectorFromString(selector))) isEqual:signature];
     if (!valid) RVLog([NSString stringWithFormat:@"Settings UI fallback: %@ %@",name,selector]);

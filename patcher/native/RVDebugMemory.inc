@@ -9,7 +9,8 @@ static NSString *RVDBGImageUUID(const struct mach_header *header) {
         if (command->cmd==LC_UUID && command->cmdsize>=sizeof(struct uuid_command)) {
             const struct uuid_command *uuid=(const void *)cursor;return [[NSUUID alloc] initWithUUIDBytes:uuid->uuid].UUIDString;
         }cursor+=command->cmdsize;
-    }return nil;
+    }
+    return nil;
 }
 static NSArray *RVDBGImages(void) {
     NSMutableArray *images=[NSMutableArray array];uint32_t count=MIN(_dyld_image_count(),1024u);
@@ -17,7 +18,8 @@ static NSArray *RVDBGImages(void) {
         const struct mach_header *header=_dyld_get_image_header(index);const char *path=_dyld_get_image_name(index);
         NSString *uuid=RVDBGImageUUID(header);if (!uuid) continue;
         [images addObject:@{@"uuid":uuid,@"base":RVDBGHex((uint64_t)header),@"slide":RVDBGHex((uint64_t)_dyld_get_image_vmaddr_slide(index)),@"name":path ? [[NSString stringWithUTF8String:path] lastPathComponent] ?: @"image" : @"image"}];
-    }return images;
+    }
+    return images;
 }
 static BOOL RVDBGRegion(uint64_t address,uint64_t *base,uint64_t *size,vm_prot_t *protection,kern_return_t *error) {
     vm_address_t cursor=address;vm_size_t length=0;natural_t depth=0;
@@ -49,7 +51,8 @@ static BOOL RVDBGRequestAddress(NSDictionary *args,uint64_t *address) {
     uint64_t offset=0;if (![args[@"image_uuid"] isKindOfClass:NSString.class] || !RVDBGAddress(args[@"offset"],&offset)) return NO;
     for (NSDictionary *image in RVDBGImages()) if ([image[@"uuid"] caseInsensitiveCompare:args[@"image_uuid"]]==NSOrderedSame) {
         uint64_t base=0;if (!RVDBGAddress(image[@"base"],&base) || base>UINT64_MAX-offset) return NO;*address=base+offset;return YES;
-    }return NO;
+    }
+    return NO;
 }
 static NSDictionary *RVDBGMemory(NSString *operation,NSDictionary *args,NSString *owner) {
     RVDBGState *state=RVDBGState.shared;
@@ -62,7 +65,8 @@ static NSDictionary *RVDBGMemory(NSString *operation,NSDictionary *args,NSString
             if (!RVDBGRegion(cursor,&base,&size,&protection,&error)) { complete=YES;break; }
             if (!size || base>UINT64_MAX-size || base+size<=cursor) { complete=YES;break; }
             [regions addObject:@{@"address":RVDBGHex(base),@"size":RVDBGHex(size),@"readable":@((protection&VM_PROT_READ)!=0),@"writable":@((protection&VM_PROT_WRITE)!=0),@"executable":@((protection&VM_PROT_EXECUTE)!=0)}];cursor=base+size;
-        }return @{@"ok":@YES,@"regions":regions,@"next_cursor":RVDBGHex(cursor),@"complete":@(complete)};
+        }
+        return @{@"ok":@YES,@"regions":regions,@"next_cursor":RVDBGHex(cursor),@"complete":@(complete)};
     }
     if ([operation isEqual:@"debug.allocate"]) {
         NSUInteger size=0;if (!RVDBGBound(args[@"length"],1,65536,&size)) return RVDBGFail(@"allocation_size_limit");

@@ -11,9 +11,12 @@ static NSString *const RVDBGPreference=@"rvport.usb-live-debug.enabled";
 @property(nonatomic,weak) id object,scope;
 @property(nonatomic,strong) id retained;
 @property(nonatomic) uint64_t generation,epoch,lastAccess;
-@property(nonatomic,copy) NSString *identifier;
+@property(nonatomic,copy) NSString *identifier,*runtimeRole,*runtimeSession;
+@property(nonatomic,weak) id runtimeRoot;
+@property(nonatomic) uint64_t runtimeGeneration;
 @end
 @implementation RVDBGHandle @end
+static BOOL RVDBGRuntimeCurrent(RVDBGHandle *handle);
 @interface RVDBGJob : NSObject
 @property(nonatomic,copy) NSString *identifier,*operation,*owner,*state,*nonce;
 @property(nonatomic,strong) NSDictionary *arguments,*result;
@@ -74,9 +77,9 @@ static NSString *RVDBGHandleFor(id object,RVDAUIBinding *scope) {
     if (!object || !NSThread.isMainThread || !RVDBGEnabled()) return nil;
     RVDBGState *state=RVDBGState.shared;@synchronized(state) {
         RVDBGHandle *existing=[state.reverse objectForKey:object];
-        if (existing && existing.scope==scope && existing.generation==(scope ? scope.generation : 0) && existing.epoch==(scope ? scope.consumerEpoch : 0)) { existing.lastAccess=++state.handleSequence;return existing.identifier; }
+        if (existing && RVDBGRuntimeCurrent(existing) && existing.scope==scope && existing.generation==(scope ? scope.generation : 0) && existing.epoch==(scope ? scope.consumerEpoch : 0)) { existing.lastAccess=++state.handleSequence;return existing.identifier; }
         for (NSString *key in state.handles.allKeys) { RVDBGHandle *entry=state.handles[key];RVDAUIBinding *binding=entry.scope;
-            if (!entry.object || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) { if (entry.object && [state.reverse objectForKey:entry.object]==entry) [state.reverse removeObjectForKey:entry.object];[state.handles removeObjectForKey:key]; }
+            if (!entry.object || !RVDBGRuntimeCurrent(entry) || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) { if (entry.object && [state.reverse objectForKey:entry.object]==entry) [state.reverse removeObjectForKey:entry.object];[state.handles removeObjectForKey:key]; }
         }
         if (state.handles.count>=1024) {
             // Weak inspection references may expire; explicit retain leases may
@@ -96,7 +99,7 @@ static id RVDBGResolve(id identifier,RVDAUIBinding **scope) {
     if (![identifier isKindOfClass:NSString.class]) return nil;RVDBGState *state=RVDBGState.shared;
     @synchronized(state) {
         RVDBGHandle *entry=state.handles[identifier];RVDAUIBinding *binding=entry.scope;
-        if (!entry || !entry.object || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) return nil;
+        if (!entry || !entry.object || !RVDBGRuntimeCurrent(entry) || (entry.generation && (!binding || !RVDAUICurrent(binding) || binding.generation!=entry.generation || binding.consumerEpoch!=entry.epoch))) return nil;
         entry.lastAccess=++state.handleSequence;if (scope) *scope=binding;return entry.retained ?: entry.object;
     }
 }

@@ -1,0 +1,7195 @@
+{
+  "schema": 1,
+  "adapter_catalog": "rvport-adaptive-1",
+  "baseline_release": "0.3.62",
+  "native_source_sha256": {
+    "assets/ReVancedSettings.png": "85106cce2cd1f7a88e50255fd239855661f658ec9ff765a58ba49f59a89ae165",
+    "assets/settings/DearrowLogo.svg": "0991f379b022dd189e97c19df3c709492ff4e232d662047bb81b25d0c7f91b3d",
+    "assets/settings/LogoSponsorBlock256px.png": "36402dad32b85f6de52506e28ad23b5041e2f165c0a22533b92101b5a5caf3e9",
+    "assets/settings/ReturnYTDislike.png": "c309b0a665f45670a8c0219037180dd261ecf665761da2990f19c9211f7bc0e6",
+    "CapabilityRuntime.c": "ad194b5b2096d6e00e0b1c9876d8f471a4052f942e003e89b6e6307ecfe08560",
+    "CapabilityRuntime.h": "54a6cfdf81cdc931fb33c809ce47c6084ac3ae0151839b384d6530a13cb70209",
+    "IOSProviders.m": "d2a60bed2c30c72e9256ea03f197e9832b306e4f9a13d23057c14364d6761158",
+    "RVABI.h": "b085b7148f4e7fe351968844e2f1d3bd48e128d032f25309afb906fee32c309e",
+    "RVAdaptive.inc": "56638ab36da04d00dde0dc05c90eb2122c7dd22da33701cdee64a7651438e9e1",
+    "RVAdCoordinator.inc": "0dcc8ccaaa3032863235bd2edfd185ceffcf144defaa723e4a1d6cd64df44c60",
+    "RVAdDisplay.inc": "d7af1b83aa1d2cde4b255c7d3fd830cb7a4efb27984212cf9a7bdf9a61243f69",
+    "RVAdDisplayDiagnostics.inc": "999be9bd559ebde6b0d418e8f9255e19ae8eca12258780d329e35012970d01a5",
+    "RVAdElements.inc": "89f05236ba2af6502149da74f776e696934a5031bf9200d39f6c1e8bbc567782",
+    "RVAdFeed.inc": "c176e581d483ca020950f408264f462d67253d210c9bb80a6380479378d38e7d",
+    "RVAds.inc": "4dd482bd4cf674493b88c18a18328b28e4d1a24ba7f71a103e94864fcd9ccc80",
+    "RVAdsDiagnostics.inc": "e66ee263367d88878a2a94f081811ac59bea1c1af1c151dbcf2356ec250f9455",
+    "RVAdWatchOwnership.inc": "33f72fdf13d1328ad8a905f3a4f728a107d3e36a421d385ecc5a4e0727487051",
+    "RVAuthentication.inc": "ea7e4b304246d931d050a65756d794a9e88de151351263bed0f33c6585857dc9",
+    "RVAuthenticationSupport.h": "f1d1ee287932f516833d58d80fbccec1ab8093153565e619d231838be839700b",
+    "RVDeArrowBackend.h": "538d4733ed076fe6df0748828555f65a368bbdb2fe9f5aa98595733b741c8136",
+    "RVDeArrowBackend.inc": "11166f0da83c4956f0923787eae332f1f6603e9e886717c357601717c57b9425",
+    "RVDeArrowConsumers.inc": "8916193efa2585fa1af164edd0720eed10757dac55fa5dc3bf8ec2a30855b9d6",
+    "RVDeArrowDiagnostics.inc": "2ef3154203b40ad5d9b6b43b49cd5f555da219ef2b8405b729e5501313a4e287",
+    "RVDeArrowFrameCache.inc": "13c7efb53f9a122db5a957eb3827b9cdaba67d43547e0515bf3cb18695f1a398",
+    "RVDeArrowImageNodes.inc": "c3046583b715d438ae477f9064c82e8dd91d8ba02afce8f9a789f319fb0c00b4",
+    "RVDeArrowImages.inc": "044d8936566dc1b33cd15342b58ce7c0b64e2122e368b2329d6e0a2be7c623dd",
+    "RVDeArrowLiveCapture.inc": "a48b9b56a96286ad2197a57abdd5eaaacf6200f10c65f827e492b7535bacb8ab",
+    "RVDeArrowLiveCard.inc": "248c71e93b0b19ba8dcf81bccdf241f110de8ad9558397c5eb5255294f61e4cf",
+    "RVDeArrowNested.inc": "6c86f674ae77191983577b0c7d1a537aa45342b7e3db854e627acb1fa00efc58",
+    "RVDeArrowOptions.inc": "35f0b734e795bc62265a1956381786269f5ed55b9eb89c968e10632ef29f7700",
+    "RVDeArrowPrefetch.inc": "9c60b2ae60d517aebaba96da82298e1873157c76b738b9e205f1db949a5a834f",
+    "RVDeArrowProjection.inc": "2bf76822028e5198937cd50b3520518d11d8983095fa0447f9b91cc5bd57d9ff",
+    "RVDeArrowTemplateNames.inc": "eb53b003e1d9878d3400da24fc55879d828d6d92fa89293e5c16eac48040b706",
+    "RVDeArrowTextNodes.inc": "a3891a9a8d55f06eac0e34a606416942f8acb9bf657e8ac49b3e9a3ae027b7f5",
+    "RVDeArrowUI.inc": "5e7ec8d38b331947fd8e21122b13c90c7ecfc876cc1753daa422d86efdff6546",
+    "RVDeArrowWatchDiagnostics.inc": "edf62c4ea99b25b5753a127fe8332dbec84dfa356db12cd2d9b5c5025330f027",
+    "RVDebugAgent.inc": "6b549f4930bb097dcdb52eaef0589e50fa592b76cce2cd26fc4999e2d8cb4898",
+    "RVDebugMemory.inc": "8c7d1812ee11db1bb08e2ca90f12f4870f8e2d410aeed7793f69834e31689e31",
+    "RVDebugObjects.inc": "54c9b6981e79aa8b76908995797bf13eb478f089f2ba0a10d275e0bbc72830f4",
+    "RVDebugRuntime.inc": "1ab5f796ae453dab4afb6d9f300300c97f8dbbf1f941ff03f0cd3757e8c0fe41",
+    "RVDebugState.inc": "45fb32e7a127b58fa8b5f1e9a4a4f0a6fe8bf3c6c7a47c70f713ec038e868726",
+    "RVDislikesDiagnostics.inc": "92690b297c436c2ec41eb05f4dc1824ac846958c2b7fe4703daa0fff9fb20442",
+    "RVDislikesUI.inc": "d15f96b94429611c1fd8e749913962fda1a79c4a4b2dbacc7ba25de6903919d0",
+    "RVElementDislikes.inc": "6b5292d7e82cee544d0a9847b8d8f958d3b92954640f828f94cd4bfcbcfb45ea",
+    "RVExtras.inc": "62b3133edc3ee550d26c5c6b38203f6e4f0fb1d882aca7d0846e552af7f08f30",
+    "RVFeatures.h": "3ec2e9acbb1bbfe5cfe4c8c53b385bdbad662672028a1dcb574064b4afb22936",
+    "RVImageHeader.h": "a39901f669ce3120c494bc2de3a214024bf8089ecc56876a0d609e5650ccf44d",
+    "RVImages.inc": "9ab41d54211d59ee33f1067c770c84f047403750595205e89876973c423c2940",
+    "RVIntervals.h": "f27b752f17fedaca5b24a45f2bcb884cc6a6c5d9050d93e5e34a67ff083a671a",
+    "RVJavaSupport.c": "aaacf78cca11fe2ee63b3e777d99990ee76c5df902fcce3db4a5d5310cd251ef",
+    "RVJavaSupport.h": "6fa896406364c08170df64932c8a71055032834924e80f605e5946244653d59d",
+    "RVMiniplayer.inc": "f992d899acfa00bd583b3593686e641ca482084218809c2b1cfde33b7f4db21a",
+    "RVMiniplayerSupport.h": "c70db45b3b2e04da15e41fe60cd930e163c8cff285dd1da970da3f3b341fbad9",
+    "RVNativeDislikes.inc": "525265b5d7cfdbca70c0b766fd728a44021c31d13ca01119bca6aabb2d618a68",
+    "RVNavigation.inc": "cbe0023dcb8a2cf922f3141e1cac31e0be051f59f254f325f12f2adcb5d2afab",
+    "RVPort.m": "a664e92f8ce362da37523d70cff36a99065abfd19725367ef830d62d4b40c32e",
+    "RVRuntime.inc": "fce545b92d64d193372e82356e1828958409682c55825f1ca77b278e276a2983",
+    "RVRuntimeFieldCatalog.inc": "01f733b713c522f2ffaed2cf2a57a3f7fab29079d29d5854a4b70497b351e018",
+    "RVRuntimeFields.h": "0649d594d65f2e702545ad7aeb8bc355272ef2ebeefaf66bcebd989131cff097",
+    "RVRuntimeFields.inc": "25b0272eb23890f6de2d4039ad4f18a31fe56e14c93da05a53f1826c9d6be09d",
+    "RVRuntimePolicy.inc": "b2d7eeb5558d76c2db7b56d82c890dc078001b7685b8297d5dfd96e3a635c9a5",
+    "RVRuntimePolicyDispatch.inc": "1780baf172304745678e6d1384a34a4565a593c00f477ca18c33758243fc8338",
+    "RVServices.inc": "3d152f138bc1a8162ec67048d864c3011e2fec1a8ed68f22f233ba319d700987",
+    "RVSettingsBrandIconData.h": "f663b3136faa707bc60193800104a5fb81fb5785dd9834526379f53fd1d2c228",
+    "RVSettingsBrandIcons.inc": "bcbfa39e1770d8db5d0aba4adf6e2571a7e87bee724463d365fac5fa2d59526a",
+    "RVSettingsBridge.inc": "e9a6f1f4569d13d830ae850baad49025127c8f410caf5e0661d94d3a1706094b",
+    "RVSettingsCatalog.h": "818370407611de81327a94ff9a41f83e835beff340b7310ee8153be7a61ac386",
+    "RVSettingsIcon.inc": "d506ea29dd44da86ce962bf4d7d2b409d4ee7f8af8b68dae02b1dbf263174111",
+    "RVSettingsMenuIcons.inc": "5f305536da598b767f4357c9ed1270efb34af7460e6dc5dff9905f72c7aa0a43",
+    "RVSettingsModal.inc": "28ca75bd2bcb8159225de2e68d5896f6dddfc0dff6903c084d4cabe1d4f51f84",
+    "RVSettingsModel.inc": "767eab29dfdf57dff7fea23e72ad9b40edca0422605e6ef141f213f656b9d57b",
+    "RVSettingsNativeUI.inc": "78851e0551492e4c8205d929f4c1978c22445bbb674d9a1b58be34aa63d804fd",
+    "RVSettingsNavigation.inc": "c98e3d57708cfea459b27b52d820e21e0dc20360bd2f0d8ed89fc145ee238b43",
+    "RVSettingsRows.inc": "d68f7c86c9178a55558ccd4af2c461288448758965d474558c77d5f10594b503",
+    "RVSettingsUI.inc": "21b06ac16285a7b20b0b1feba5c856cc8b4dd8a717fa7d4f1e67619cf2259155",
+    "RVShortsLayout.inc": "e25f8c390fefd4246ed4fe98255583fec39cbdc8ac56697fedcd995138f3b421",
+    "RVSourceKernels.c": "613b6a8639ac039072115fa58c3f6fe8212019c6d1420e997300a233753a6560",
+    "RVSourceKernels.h": "9b0a78ab9ed1b2df027b8d3582f194a302ded9053be09b7c6562f774ba1c8d07",
+    "RVSourceOrigins.json": "3f8811dcf21060d4f5d61e8745e7ca94b2ed65de613c0240e68881a06efd54b3",
+    "RVSourceReuse.inc": "28fa3d2362e71fc38bbf53fa3dbe2f001ff4622218a77b7d66f89c60e3d9861a",
+    "RVSpeed.inc": "a6045436ed282c8313bc54edbcfbf51f95c6fcd0424aa1753118e6fb6502d79a",
+    "RVSpeedBridge.inc": "0d619ee72a8f8e88118f3528ad28fbfed7c59c0a4d168234ca575b0918e0edd2",
+    "RVSpeedContext.inc": "e402b3dc6a33f6a9ee9a92afdd7d289a6d2dc0f51992c2661fd95afb5cf1cac0",
+    "RVSpeedDiagnostics.inc": "ec9a2c699a16e150b4e6d4762671236322bb703299d37eb74193377cfc98c131",
+    "RVSpeedThreeX.inc": "3ef9cf4d352c7bb10cd551efa887907a73de1119e4984264fe2e3b29ddb86d47",
+    "RVSponsorPrompt.inc": "a360f36e0639a5dd11d19d52cb7b2026091a19eb6a0d1bb08d7b044953d19837",
+    "RVSponsorPromptUI.inc": "f7ca873f5824dd13d5a539a25dfb40270d5089c3de801945b1aa5bcf6414f56e",
+    "RVUSBDiagnostics.inc": "742ac31edaa5414e0a7f59c40ee05f94577b08f749575deeac3b28c7da3c0dff",
+    "RVVoteFirstLaunch.inc": "5ae5a4ca382bc12c4d1cb8e32e56bbcbd971772611c9654abf466500cd8f8544",
+    "RVVoteFirstLaunchScopes.inc": "98fb3e13bf72517500ef0c12bd8508b8ab34096989913a6c56520c96ceb41579",
+    "RVVoteLayoutCompatibility.inc": "88ae2a37c2ee921cc72756b970936d80045291dbdc2cb64e1b33d36d296bdeec",
+    "RVVoteLifecycle.inc": "04a2fbe05236e1ac8ef1bcead19f6ec50b202df0b7ffa1f21ed4b8cfa0fd3229",
+    "RVVoteModel.inc": "9bd3f6ef80178da475b2ad7fd9c9cce4de58f21ab7a4b4735c8e1e0a37fc501f",
+    "RVWireFields.inc": "07d4bb414cae421472c3ab8bcf7c586b63f18e9e4f50b13012de8ff510b3c55e"
+  },
+  "required_capabilities": {
+    "background_playback": [
+      "YTIPlayabilityStatus|-|isPlayableInBackground|B@:"
+    ],
+    "video_ads": [
+      "YTIPlayerResponse|-|playerAdsArray|@@:",
+      "YTIPlayerResponse|-|adPlacementsArray|@@:",
+      "YTIPlayerResponse|-|adSlotsArray|@@:"
+    ],
+    "sponsorblock": [
+      "YTLocalPlaybackController|-|singleVideo:currentVideoTimeDidChange:|v@:@@",
+      "YTLocalPlaybackController|-|seekToTime:toleranceBefore:toleranceAfter:seekSource:|v@:@ddi"
+    ],
+    "sponsorblock_markers": [
+      "YTLocalPlaybackController|-|singleVideo:currentVideoTimeDidChange:|v@:@@"
+    ],
+    "custom_speed_menu": [
+      "YTPlayerViewController|-|setPlaybackRate:|v@:f"
+    ],
+    "remember_speed": [
+      "YTPlayerViewController|-|setPlaybackRate:|v@:f"
+    ]
+  },
+  "active_sources": [
+    "CapabilityRuntime.h",
+    "RVABI.h",
+    "RVAdCoordinator.inc",
+    "RVAdDisplay.inc",
+    "RVAdDisplayDiagnostics.inc",
+    "RVAdElements.inc",
+    "RVAdFeed.inc",
+    "RVAdWatchOwnership.inc",
+    "RVAdaptive.inc",
+    "RVAdaptiveCatalog.h",
+    "RVAds.inc",
+    "RVAdsDiagnostics.inc",
+    "RVAuthentication.inc",
+    "RVAuthenticationSupport.h",
+    "RVDeArrowBackend.h",
+    "RVDeArrowBackend.inc",
+    "RVDeArrowConsumers.inc",
+    "RVDeArrowDiagnostics.inc",
+    "RVDeArrowFrameCache.inc",
+    "RVDeArrowImageNodes.inc",
+    "RVDeArrowImages.inc",
+    "RVDeArrowLiveCapture.inc",
+    "RVDeArrowLiveCard.inc",
+    "RVDeArrowNested.inc",
+    "RVDeArrowOptions.inc",
+    "RVDeArrowPrefetch.inc",
+    "RVDeArrowProjection.inc",
+    "RVDeArrowTemplateNames.inc",
+    "RVDeArrowTextNodes.inc",
+    "RVDeArrowUI.inc",
+    "RVDeArrowWatchDiagnostics.inc",
+    "RVDebugAgent.inc",
+    "RVDebugMemory.inc",
+    "RVDebugObjects.inc",
+    "RVDebugRuntime.inc",
+    "RVDebugState.inc",
+    "RVDislikesDiagnostics.inc",
+    "RVDislikesUI.inc",
+    "RVElementDislikes.inc",
+    "RVExtras.inc",
+    "RVFeatures.h",
+    "RVImageHeader.h",
+    "RVImages.inc",
+    "RVIntervals.h",
+    "RVJavaSupport.h",
+    "RVMiniplayer.inc",
+    "RVMiniplayerSupport.h",
+    "RVNativeDislikes.inc",
+    "RVNavigation.inc",
+    "RVPort.m",
+    "RVRuntime.inc",
+    "RVRuntimeFieldCatalog.inc",
+    "RVRuntimeFields.h",
+    "RVRuntimeFields.inc",
+    "RVRuntimePolicy.inc",
+    "RVRuntimePolicyDispatch.inc",
+    "RVServices.inc",
+    "RVSettingsBrandIconData.h",
+    "RVSettingsBrandIcons.inc",
+    "RVSettingsBridge.inc",
+    "RVSettingsCatalog.h",
+    "RVSettingsIcon.inc",
+    "RVSettingsMenuIcons.inc",
+    "RVSettingsModal.inc",
+    "RVSettingsModel.inc",
+    "RVSettingsNativeUI.inc",
+    "RVSettingsNavigation.inc",
+    "RVSettingsRows.inc",
+    "RVSettingsUI.inc",
+    "RVShortsLayout.inc",
+    "RVSourceKernels.h",
+    "RVSourceReuse.inc",
+    "RVSpeed.inc",
+    "RVSpeedBridge.inc",
+    "RVSpeedContext.inc",
+    "RVSpeedDiagnostics.inc",
+    "RVSpeedThreeX.inc",
+    "RVSponsorPrompt.inc",
+    "RVSponsorPromptUI.inc",
+    "RVUSBDiagnostics.inc",
+    "RVVoteFirstLaunch.inc",
+    "RVVoteFirstLaunchScopes.inc",
+    "RVVoteLayoutCompatibility.inc",
+    "RVVoteLifecycle.inc",
+    "RVVoteModel.inc",
+    "RVWireFields.inc"
+  ],
+  "source_call_sites": 285,
+  "unresolved": [],
+  "contracts": [
+    {
+      "id": "ASDisplayNode|-|__layout|v@:",
+      "class_name": "ASDisplayNode",
+      "selector": "__layout",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 785,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASDisplayNode|-|displayDidFinish|v@:",
+      "class_name": "ASDisplayNode",
+      "selector": "displayDidFinish",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 795,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASImageNode|-|setImage:|v@:@",
+      "class_name": "ASImageNode",
+      "selector": "setImage:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 835,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASNetworkImageNode|-|_locked__setImage:|v@:@",
+      "class_name": "ASNetworkImageNode",
+      "selector": "_locked__setImage:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowImageNodes.inc",
+          "line": 163,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASNetworkImageNode|-|didEnterPreloadState|v@:",
+      "class_name": "ASNetworkImageNode",
+      "selector": "didEnterPreloadState",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowImageNodes.inc",
+          "line": 172,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASNetworkImageNode|-|setURL:resetToDefault:|v@:@B",
+      "class_name": "ASNetworkImageNode",
+      "selector": "setURL:resetToDefault:",
+      "kind": "-",
+      "abi": "v@:@B",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowImageNodes.inc",
+          "line": 148,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASNetworkImageNode|-|setURLs:|v@:@",
+      "class_name": "ASNetworkImageNode",
+      "selector": "setURLs:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowImageNodes.inc",
+          "line": 155,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASTextNode|-|didLoad|v@:",
+      "class_name": "ASTextNode",
+      "selector": "didLoad",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 795,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ASTextNode|-|setAttributedText:|v@:@",
+      "class_name": "ASTextNode",
+      "selector": "setAttributedText:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowTextNodes.inc",
+          "line": 302,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "CompositeIconController|-|imageForIcon:|@@:r^v",
+      "class_name": "CompositeIconController",
+      "selector": "imageForIcon:",
+      "kind": "-",
+      "abi": "@@:r^v",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 819,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMCellNode|+|cellNodeWithElementInternal:context:controllerUpdateBlock:|@@:@@@?",
+      "class_name": "ELMCellNode",
+      "selector": "cellNodeWithElementInternal:context:controllerUpdateBlock:",
+      "kind": "+",
+      "abi": "@@:@@@?",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 853,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMCellNode|+|nodeBlockForEntry:responder:clientDataObservable:blockRegistry:blockRegistryProvider:|@?@:@@@@@",
+      "class_name": "ELMCellNode",
+      "selector": "nodeBlockForEntry:responder:clientDataObservable:blockRegistry:blockRegistryProvider:",
+      "kind": "+",
+      "abi": "@?@:@@@@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 894,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMCollectionNode|-|collectionNode:nodeBlockForItemAtIndexPath:|@?@:@@",
+      "class_name": "ELMCollectionNode",
+      "selector": "collectionNode:nodeBlockForItemAtIndexPath:",
+      "kind": "-",
+      "abi": "@?@:@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 282,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMCollectionNode|-|collectionNode:willDisplayItemWithNode:|v@:@@",
+      "class_name": "ELMCollectionNode",
+      "selector": "collectionNode:willDisplayItemWithNode:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 305,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMComponent|-|initWithElement:context:treeLocalContext:|@@:@@@",
+      "class_name": "ELMComponent",
+      "selector": "initWithElement:context:treeLocalContext:",
+      "kind": "-",
+      "abi": "@@:@@@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteLifecycle.inc",
+          "line": 66,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMComponent|-|templateURI|@@:",
+      "class_name": "ELMComponent",
+      "selector": "templateURI",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 844,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMComponent|-|underlyingComponentDidUpdate|v@:",
+      "class_name": "ELMComponent",
+      "selector": "underlyingComponentDidUpdate",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteLifecycle.inc",
+          "line": 78,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMComponent|-|updateWithElement:forced:|v@:@B",
+      "class_name": "ELMComponent",
+      "selector": "updateWithElement:forced:",
+      "kind": "-",
+      "abi": "v@:@B",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteLifecycle.inc",
+          "line": 75,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMComponent|-|updateWithElement:|v@:@",
+      "class_name": "ELMComponent",
+      "selector": "updateWithElement:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteLifecycle.inc",
+          "line": 72,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMContainerNode|-|layoutDidFinish|v@:",
+      "class_name": "ELMContainerNode",
+      "selector": "layoutDidFinish",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 829,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMImageNode|-|initWithElement:context:|@@:@@",
+      "class_name": "ELMImageNode",
+      "selector": "initWithElement:context:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowImageNodes.inc",
+          "line": 139,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMImageNode|-|setImage:|v@:@",
+      "class_name": "ELMImageNode",
+      "selector": "setImage:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 835,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMNCollectionDataSource|-|diffableItemForSerializedElement:index:|@@:@Q",
+      "class_name": "ELMNCollectionDataSource",
+      "selector": "diffableItemForSerializedElement:index:",
+      "kind": "-",
+      "abi": "@@:@Q",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 347,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMPBElement|-|data|@@:",
+      "class_name": "ELMPBElement",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 307,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMPBModel|-|data|@@:",
+      "class_name": "ELMPBModel",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 307,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMPBVideoActionBarModel|-|data|@@:",
+      "class_name": "ELMPBVideoActionBarModel",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 307,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTextNode|-|controllerDidApplyProperties|v@:",
+      "class_name": "ELMTextNode",
+      "selector": "controllerDidApplyProperties",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowTextNodes.inc",
+          "line": 305,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTextNode|-|didLoad|v@:",
+      "class_name": "ELMTextNode",
+      "selector": "didLoad",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowTextNodes.inc",
+          "line": 305,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTextNode|-|initWithElement:context:|@@:@@",
+      "class_name": "ELMTextNode",
+      "selector": "initWithElement:context:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowTextNodes.inc",
+          "line": 286,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTextNode|-|setElement:|v@:@",
+      "class_name": "ELMTextNode",
+      "selector": "setElement:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowTextNodes.inc",
+          "line": 294,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTextNode|-|textNode:tappedLinkAttribute:value:atPoint:textRange:|v@:@@@{CGPoint=dd}{_NSRange=QQ}",
+      "class_name": "ELMTextNode",
+      "selector": "textNode:tappedLinkAttribute:value:atPoint:textRange:",
+      "kind": "-",
+      "abi": "v@:@@@{CGPoint=dd}{_NSRange=QQ}",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 148,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTouchCommandPropertiesHandler|-|gestureRecognizer:shouldReceiveTouch:|B@:@@",
+      "class_name": "ELMTouchCommandPropertiesHandler",
+      "selector": "gestureRecognizer:shouldReceiveTouch:",
+      "kind": "-",
+      "abi": "B@:@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 130,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTouchCommandPropertiesHandler|-|gestureRecognizerShouldBegin:|B@:@",
+      "class_name": "ELMTouchCommandPropertiesHandler",
+      "selector": "gestureRecognizerShouldBegin:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 136,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "ELMTouchCommandPropertiesHandler|-|handleTap|v@:",
+      "class_name": "ELMTouchCommandPropertiesHandler",
+      "selector": "handleTap",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 142,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "MDXSeamlessSignIn|-|presentSeamlessSignInIfNeeded|B@:",
+      "class_name": "MDXSeamlessSignIn",
+      "selector": "presentSeamlessSignInIfNeeded",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_tv_popup"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 532,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "MLPersistentVideoQualitySettingFormatConstraint|-|filterFormats:|@@:@",
+      "class_name": "MLPersistentVideoQualitySettingFormatConstraint",
+      "selector": "filterFormats:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "disable_hdr",
+        "disable_vp9",
+        "remember_quality"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 346,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "MLQuickMenuVideoQualitySettingFormatConstraint|-|filterFormats:|@@:@",
+      "class_name": "MLQuickMenuVideoQualitySettingFormatConstraint",
+      "selector": "filterFormats:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "disable_hdr",
+        "disable_vp9",
+        "remember_quality"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 346,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "MLVideo|-|playableInBackground|B@:",
+      "class_name": "MLVideo",
+      "selector": "playableInBackground",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "background_playback"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 221,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOConfiguration|-|applicationIdentifier|@@:",
+      "class_name": "SSOConfiguration",
+      "selector": "applicationIdentifier",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "sideload_auth_identity"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 40,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainCore|+|secItemAdd:result:|i@:@^@",
+      "class_name": "SSOKeychainCore",
+      "selector": "secItemAdd:result:",
+      "kind": "+",
+      "abi": "i@:@^@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 126,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainCore|+|secItemCopyMatching:result:|i@:@^@",
+      "class_name": "SSOKeychainCore",
+      "selector": "secItemCopyMatching:result:",
+      "kind": "+",
+      "abi": "i@:@^@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 126,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainCore|+|secItemDelete:|i@:@",
+      "class_name": "SSOKeychainCore",
+      "selector": "secItemDelete:",
+      "kind": "+",
+      "abi": "i@:@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 134,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainCore|+|secItemUpdate:value:|i@:@@",
+      "class_name": "SSOKeychainCore",
+      "selector": "secItemUpdate:value:",
+      "kind": "+",
+      "abi": "i@:@@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 140,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainHelper|+|accessGroup|@@:",
+      "class_name": "SSOKeychainHelper",
+      "selector": "accessGroup",
+      "kind": "+",
+      "abi": "@@:",
+      "features": [
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 52,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainHelper|+|sharedAccessGroup|@@:",
+      "class_name": "SSOKeychainHelper",
+      "selector": "sharedAccessGroup",
+      "kind": "+",
+      "abi": "@@:",
+      "features": [
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 52,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOKeychainHelper|+|usePrivateKeychain|B@:",
+      "class_name": "SSOKeychainHelper",
+      "selector": "usePrivateKeychain",
+      "kind": "+",
+      "abi": "B@:",
+      "features": [
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 61,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOOAuth2SignIn|-|displayRequest:|v@:@",
+      "class_name": "SSOOAuth2SignIn",
+      "selector": "displayRequest:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 100,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOOAuth2SignIn|-|loadFailedWithError:|B@:@",
+      "class_name": "SSOOAuth2SignIn",
+      "selector": "loadFailedWithError:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 106,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOSafariSignIn|-|SSOErrorFromAuthSessionError:|@@:@",
+      "class_name": "SSOSafariSignIn",
+      "selector": "SSOErrorFromAuthSessionError:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 94,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOSafariSignIn|-|signInWithURL:presentationAnchor:completionHandler:|v@:@@@?",
+      "class_name": "SSOSafariSignIn",
+      "selector": "signInWithURL:presentationAnchor:completionHandler:",
+      "kind": "-",
+      "abi": "v@:@@@?",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 88,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOService|+|fetcherWithRequest:configuration:|@@:@@",
+      "class_name": "SSOService",
+      "selector": "fetcherWithRequest:configuration:",
+      "kind": "+",
+      "abi": "@@:@@",
+      "features": [
+        "sideload_auth_identity"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 66,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOService|-|continueAuthenticationForURL:externalAuthState:|v@:@@",
+      "class_name": "SSOService",
+      "selector": "continueAuthenticationForURL:externalAuthState:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "SSOService|-|finishExternalSignInWithSceneSessionID:callbackURL:error:|v@:@@@",
+      "class_name": "SSOService",
+      "selector": "finishExternalSignInWithSceneSessionID:callbackURL:error:",
+      "kind": "-",
+      "abi": "v@:@@@",
+      "features": [
+        "sideload_auth_identity",
+        "sideload_auth_keychain"
+      ],
+      "sources": [
+        {
+          "file": "RVAuthentication.inc",
+          "line": 118,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "UIPanGestureRecognizer|-|translationInView:|{CGPoint=dd}@:@",
+      "class_name": "UIPanGestureRecognizer",
+      "selector": "translationInView:",
+      "kind": "-",
+      "abi": "{CGPoint=dd}@:@",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 126,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "UIPanGestureRecognizer|-|velocityInView:|{CGPoint=dd}@:@",
+      "class_name": "UIPanGestureRecognizer",
+      "selector": "velocityInView:",
+      "kind": "-",
+      "abi": "{CGPoint=dd}@:@",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 126,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "UIViewController|-|presentViewController:animated:completion:|v@:@B@?",
+      "class_name": "UIViewController",
+      "selector": "presentViewController:animated:completion:",
+      "kind": "-",
+      "abi": "v@:@B@?",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 169,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "UIWindow|-|sendEvent:|v@:@",
+      "class_name": "UIWindow",
+      "selector": "sendEvent:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 118,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAccountScopedInnerTubeContextFactory|-|clientInfoWithSendDeviceIdentifier:serviceType:|@@:Bq",
+      "class_name": "YTAccountScopedInnerTubeContextFactory",
+      "selector": "clientInfoWithSendDeviceIdentifier:serviceType:",
+      "kind": "-",
+      "abi": "@@:Bq",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 275,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAccountScopedInnerTubeContextFactory|-|contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:attestationResponseData:reauthProofToken:serviceType:isPrefetch:|@@:@Bi@B@@@@qB",
+      "class_name": "YTAccountScopedInnerTubeContextFactory",
+      "selector": "contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:attestationResponseData:reauthProofToken:serviceType:isPrefetch:",
+      "kind": "-",
+      "abi": "@@:@Bi@B@@@@qB",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 27,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdBelowPlayerLayoutRenderingAdapter|-|renderCompanionSection:withRenderer:|v@:@@",
+      "class_name": "YTAdBelowPlayerLayoutRenderingAdapter",
+      "selector": "renderCompanionSection:withRenderer:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "feed_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 117,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdElementsCellExternallyManagedSlotAdapterImpl|-|didBindSlotData:layoutData:|v@:@@",
+      "class_name": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "selector": "didBindSlotData:layoutData:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 159,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdElementsCellExternallyManagedSlotAdapterImpl|-|didDisposeSlotData:layoutData:|v@:@@",
+      "class_name": "YTAdElementsCellExternallyManagedSlotAdapterImpl",
+      "selector": "didDisposeSlotData:layoutData:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 159,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdElementsSectionViewRenderingAPI|+|renderSection:withRenderer:|v@:@@",
+      "class_name": "YTAdElementsSectionViewRenderingAPI",
+      "selector": "renderSection:withRenderer:",
+      "kind": "+",
+      "abi": "v@:@@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 98,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdsControlFlowManagerImpl|-|handleActivationForTriggerBundles:|v@:@",
+      "class_name": "YTAdsControlFlowManagerImpl",
+      "selector": "handleActivationForTriggerBundles:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 199,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdsControlFlowPlaybackCoordinator|-|reset|v@:",
+      "class_name": "YTAdsControlFlowPlaybackCoordinator",
+      "selector": "reset",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 238,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdsControlFlowPlaybackCoordinator|-|supportsPlaybackForContentPlayerResponse:|B@:@",
+      "class_name": "YTAdsControlFlowPlaybackCoordinator",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 224,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAdsControlFlowPlaybackCoordinator|-|willPlayNewVideoWithAutoplay:|v@:B",
+      "class_name": "YTAdsControlFlowPlaybackCoordinator",
+      "selector": "willPlayNewVideoWithAutoplay:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 249,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAppPivotBarController|-|defaultSelectedPivotIdentifier|@@:",
+      "class_name": "YTAppPivotBarController",
+      "selector": "defaultSelectedPivotIdentifier",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 738,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAppSettingsPresentationData|+|settingsCategoryOrder|@@:",
+      "class_name": "YTAppSettingsPresentationData",
+      "selector": "settingsCategoryOrder",
+      "kind": "+",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 73,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTAudioTrackSwitchControllerImpl|-|setUserSelectableFormats:|v@:@",
+      "class_name": "YTAudioTrackSwitchControllerImpl",
+      "selector": "setUserSelectableFormats:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "force_original_audio"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 590,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAGetPlaybackRateOverflowMenuRequest|-|data|@@:",
+      "class_name": "YTBAGetPlaybackRateOverflowMenuRequest",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlaybackRateSelectorMenuSheetFillerBlock|-|getPlaybackRateOverflowMenu:error:|@@:@^@",
+      "class_name": "YTBAPlaybackRateSelectorMenuSheetFillerBlock",
+      "selector": "getPlaybackRateOverflowMenu:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 85,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlaybackRateSelectorMenuSheetFillerBlock|-|getShowPlaybackRateSelectorMenuCommand:error:|@@:@^@",
+      "class_name": "YTBAPlaybackRateSelectorMenuSheetFillerBlock",
+      "selector": "getShowPlaybackRateSelectorMenuCommand:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 85,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlayerBlock|-|getPlaybackRate:error:|@@:@^@",
+      "class_name": "YTBAPlayerBlock",
+      "selector": "getPlaybackRate:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 109,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlayerBlock|-|getPlaybackRateModel:error:|@@:@^@",
+      "class_name": "YTBAPlayerBlock",
+      "selector": "getPlaybackRateModel:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 109,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlayerBlock|-|setPlaybackRate:error:|@@:@^@",
+      "class_name": "YTBAPlayerBlock",
+      "selector": "setPlaybackRate:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 109,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAPlayerBlock|-|setPlaybackRateModel:error:|@@:@^@",
+      "class_name": "YTBAPlayerBlock",
+      "selector": "setPlaybackRateModel:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 109,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAWatchPageFillerBlock|-|getCompactifyVideoActionBarElement:error:|@@:@^@",
+      "class_name": "YTBAWatchPageFillerBlock",
+      "selector": "getCompactifyVideoActionBarElement:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 322,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBAWatchPageFillerBlock|-|getVideoActionBarElement:error:|@@:@^@",
+      "class_name": "YTBAWatchPageFillerBlock",
+      "selector": "getVideoActionBarElement:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 322,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBackgroundabilityPolicyImpl|-|isBackgroundableByUserSettings|B@:",
+      "class_name": "YTBackgroundabilityPolicyImpl",
+      "selector": "isBackgroundableByUserSettings",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "background_playback"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 221,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTBackgroundabilityPolicyImpl|-|isPlayableInPictureInPictureByUserSettings|B@:",
+      "class_name": "YTBackgroundabilityPolicyImpl",
+      "selector": "isPlayableInPictureInPictureByUserSettings",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "picture_in_picture"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 505,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCardCollectionViewUIFormatter|-|insetForSectionAtIndex:sectionController:numberOfSections:|{UIEdgeInsets=dddd}@:Q@Q",
+      "class_name": "YTCardCollectionViewUIFormatter",
+      "selector": "insetForSectionAtIndex:sectionController:numberOfSections:",
+      "kind": "-",
+      "abi": "{UIEdgeInsets=dddd}@:Q@Q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 38,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTCardCollectionViewUIFormatter|-|referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:|{CGSize=dd}@:{CGSize=dd}Q@Q",
+      "class_name": "YTCardCollectionViewUIFormatter",
+      "selector": "referenceSizeForHeaderWithSize:sectionIndex:sectionController:numberOfSections:",
+      "kind": "-",
+      "abi": "{CGSize=dd}@:{CGSize=dd}Q@Q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 39,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTCardCollectionViewUIFormatter|-|setCellPositioningStyle:|v@:i",
+      "class_name": "YTCardCollectionViewUIFormatter",
+      "selector": "setCellPositioningStyle:",
+      "kind": "-",
+      "abi": "v@:i",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 35,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTCardCollectionViewUIFormatter|-|updateCell:atIndexPath:sectionController:numberofSections:|v@:@@@Q",
+      "class_name": "YTCardCollectionViewUIFormatter",
+      "selector": "updateCell:atIndexPath:sectionController:numberofSections:",
+      "kind": "-",
+      "abi": "v@:@@@Q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 36,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTCardCollectionViewUIFormatter|-|updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:|v@:@@Q@Q",
+      "class_name": "YTCardCollectionViewUIFormatter",
+      "selector": "updateSupplementaryItem:kind:sectionIndex:sectionController:numberOfSections:",
+      "kind": "-",
+      "abi": "v@:@@Q@Q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 37,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTCellController|-|setCell:|v@:@",
+      "class_name": "YTCellController",
+      "selector": "setCell:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 953,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigClientInfraClientConfigImpl|-|enablePlaybackSpeedSheetWithXplatPlayerAdapter|B@:",
+      "class_name": "YTColdConfigClientInfraClientConfigImpl",
+      "selector": "enablePlaybackSpeedSheetWithXplatPlayerAdapter",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigIosClientGlobalConfigImpl|-|enableBlockRegistryProviderForPlaybackRateSelector|B@:",
+      "class_name": "YTColdConfigIosClientGlobalConfigImpl",
+      "selector": "enableBlockRegistryProviderForPlaybackRateSelector",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigShortsConsumptionClientGlobalConfigImpl|-|iosEnableAutoAdvanceInThreeDotMenu|B@:",
+      "class_name": "YTColdConfigShortsConsumptionClientGlobalConfigImpl",
+      "selector": "iosEnableAutoAdvanceInThreeDotMenu",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "shorts_autoplay"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 510,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigShortsConsumptionClientGlobalConfigImpl|-|iosEnableBottomSheetBlocksRegistryIntegration|B@:",
+      "class_name": "YTColdConfigShortsConsumptionClientGlobalConfigImpl",
+      "selector": "iosEnableBottomSheetBlocksRegistryIntegration",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigStorage|+|loadColdConfigGroupFromBlobStorage:dataKey:|@@:@@",
+      "class_name": "YTColdConfigStorage",
+      "selector": "loadColdConfigGroupFromBlobStorage:dataKey:",
+      "kind": "+",
+      "abi": "@@:@@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 254,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigStorage|-|coldConfigGroupHash|@@:",
+      "class_name": "YTColdConfigStorage",
+      "selector": "coldConfigGroupHash",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunch.inc",
+          "line": 83,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigStorage|-|coldConfigGroup|@@:",
+      "class_name": "YTColdConfigStorage",
+      "selector": "coldConfigGroup",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunch.inc",
+          "line": 62,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfigStorage|-|saveToBlobStoreColdConfig:hash:error:|B@:@@^@",
+      "class_name": "YTColdConfigStorage",
+      "selector": "saveToBlobStoreColdConfig:hash:error:",
+      "kind": "-",
+      "abi": "B@:@@^@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 267,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|addPipMenuItem|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "addPipMenuItem",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "picture_in_picture"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 507,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|clientInfraClientConfigEnablePlaybackSpeedSheetWithXplatPlayerAdapter|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "clientInfraClientConfigEnablePlaybackSpeedSheetWithXplatPlayerAdapter",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|coldConfigGroup|@@:",
+      "class_name": "YTColdConfig",
+      "selector": "coldConfigGroup",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunch.inc",
+          "line": 62,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|configData|@@:",
+      "class_name": "YTColdConfig",
+      "selector": "configData",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunch.inc",
+          "line": 83,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enableAutoCaptionsOnMuteClient|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enableAutoCaptionsOnMuteClient",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 536,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enableFullbackgroundAmbientModeOnTablet|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enableFullbackgroundAmbientModeOnTablet",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_ambient"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 539,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enableIosFloatingMiniplayer|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enableIosFloatingMiniplayer",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "classic_miniplayer"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 509,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enablePauseForAutoCaptionOnMute|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enablePauseForAutoCaptionOnMute",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 536,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enablePipMenuItem|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enablePipMenuItem",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "picture_in_picture"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 506,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|enableResumeToShorts|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "enableResumeToShorts",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_shorts_resume"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 508,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|iosClientGlobalConfigEnableBlockRegistryProviderForPlaybackRateSelector|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "iosClientGlobalConfigEnableBlockRegistryProviderForPlaybackRateSelector",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|iosDisableCaptionsOnAppStartForVwc|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "iosDisableCaptionsOnAppStartForVwc",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 537,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|iosEnableFullbackgroundAmbientModeOnTablet|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "iosEnableFullbackgroundAmbientModeOnTablet",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_ambient"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 539,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|iosEnableTimelyShelfAmbientMode|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "iosEnableTimelyShelfAmbientMode",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_ambient"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 539,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|shortsConsumptionClientGlobalConfigIosEnableBottomSheetBlocksRegistryIntegration|B@:",
+      "class_name": "YTColdConfig",
+      "selector": "shortsConsumptionClientGlobalConfigIosEnableBottomSheetBlocksRegistryIntegration",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 59,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTColdConfig|-|storedConfigHashData|@@:",
+      "class_name": "YTColdConfig",
+      "selector": "storedConfigHashData",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunch.inc",
+          "line": 83,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCommonColorPalette|-|background1|@@:",
+      "class_name": "YTCommonColorPalette",
+      "selector": "background1",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCommonColorPalette|-|baseBackground|@@:",
+      "class_name": "YTCommonColorPalette",
+      "selector": "baseBackground",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCommonColorPalette|-|generalBackgroundA|@@:",
+      "class_name": "YTCommonColorPalette",
+      "selector": "generalBackgroundA",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCommonColorPalette|-|solidBackground|@@:",
+      "class_name": "YTCommonColorPalette",
+      "selector": "solidBackground",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCompactVideoCell|-|setEntry:|v@:@",
+      "class_name": "YTCompactVideoCell",
+      "selector": "setEntry:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 962,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCompactVideoView|-|setRenderer:|v@:@",
+      "class_name": "YTCompactVideoView",
+      "selector": "setRenderer:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 975,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTCompanionAdSectionController|-|insetWithInset:|{UIEdgeInsets=dddd}@:{UIEdgeInsets=dddd}",
+      "class_name": "YTCompanionAdSectionController",
+      "selector": "insetWithInset:",
+      "kind": "-",
+      "abi": "{UIEdgeInsets=dddd}@:{UIEdgeInsets=dddd}",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 147,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDAIAdsControlFlowPlaybackCoordinator|-|reset|v@:",
+      "class_name": "YTDAIAdsControlFlowPlaybackCoordinator",
+      "selector": "reset",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 238,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDAIAdsControlFlowPlaybackCoordinator|-|supportsPlaybackForContentPlayerResponse:|B@:@",
+      "class_name": "YTDAIAdsControlFlowPlaybackCoordinator",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 224,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDAIAdsControlFlowPlaybackCoordinator|-|willPlayNewVideoWithAutoplay:|v@:B",
+      "class_name": "YTDAIAdsControlFlowPlaybackCoordinator",
+      "selector": "willPlayNewVideoWithAutoplay:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 249,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDoubleTapToSeekController|-|didDoubleTap:|v@:@",
+      "class_name": "YTDoubleTapToSeekController",
+      "selector": "didDoubleTap:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "disable_double_tap"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 552,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDoubleTapToSeekController|-|didTwoFingerDoubleTap:|v@:@",
+      "class_name": "YTDoubleTapToSeekController",
+      "selector": "didTwoFingerDoubleTap:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "disable_chapter_skip",
+        "disable_double_tap"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 555,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTDoubleTapToSeekController|-|enableDoubleTapToSeek:|v@:B",
+      "class_name": "YTDoubleTapToSeekController",
+      "selector": "enableDoubleTapToSeek:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "disable_double_tap"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 549,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTELMContextFactory|-|contextWithResponder:blockRegistry:|@@:@@",
+      "class_name": "YTELMContextFactory",
+      "selector": "contextWithResponder:blockRegistry:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 136,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTELMContextFactory|-|contextWithResponder:|@@:@",
+      "class_name": "YTELMContextFactory",
+      "selector": "contextWithResponder:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 130,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTELMResourceLoaderImpl|-|imageWithName:color:bundleId:|@@:@@@",
+      "class_name": "YTELMResourceLoaderImpl",
+      "selector": "imageWithName:color:bundleId:",
+      "kind": "-",
+      "abi": "@@:@@@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 802,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTElementUpdateHandler|-|emlTemplateServingContext|@@:",
+      "class_name": "YTElementUpdateHandler",
+      "selector": "emlTemplateServingContext",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 290,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTElementsCellController|-|initWithEntry:parentResponder:|@@:@@",
+      "class_name": "YTElementsCellController",
+      "selector": "initWithEntry:parentResponder:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdElements.inc",
+          "line": 68,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTElementsCellController|-|updateView:|v@:@",
+      "class_name": "YTElementsCellController",
+      "selector": "updateView:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdElements.inc",
+          "line": 86,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTElementsCellController|-|viewSizeThatFits:|{CGSize=dd}@:{CGSize=dd}",
+      "class_name": "YTElementsCellController",
+      "selector": "viewSizeThatFits:",
+      "kind": "-",
+      "abi": "{CGSize=dd}@:{CGSize=dd}",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdElements.inc",
+          "line": 79,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTElementsCommandHandlerImpl|-|executeWithCommand:entry:fromView:sender:completionBlock:|v@:@@@@@?",
+      "class_name": "YTElementsCommandHandlerImpl",
+      "selector": "executeWithCommand:entry:fromView:sender:completionBlock:",
+      "kind": "-",
+      "abi": "v@:@@@@@?",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 155,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTEngagementPanelContainerViewController|-|handleShowEngagementPanelCommand:exitFullscreen:engagementPanelObserver:|B@:@B@",
+      "class_name": "YTEngagementPanelContainerViewController",
+      "selector": "handleShowEngagementPanelCommand:exitFullscreen:engagementPanelObserver:",
+      "kind": "-",
+      "abi": "B@:@B@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 111,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTEngagementPanelViewControllerManager|-|canProvideNavigationControllerForShowCommand:|B@:@",
+      "class_name": "YTEngagementPanelViewControllerManager",
+      "selector": "canProvideNavigationControllerForShowCommand:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 99,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTEngagementPanelViewControllerManager|-|modelForShowCommand:|@@:@",
+      "class_name": "YTEngagementPanelViewControllerManager",
+      "selector": "modelForShowCommand:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 105,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTFeedHeaderView|-|setCustomEdgePadding:|v@:d",
+      "class_name": "YTFeedHeaderView",
+      "selector": "setCustomEdgePadding:",
+      "kind": "-",
+      "abi": "v@:d",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 45,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTGaplessPlaybackCoordinator|-|reset|v@:",
+      "class_name": "YTGaplessPlaybackCoordinator",
+      "selector": "reset",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 238,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTGaplessPlaybackCoordinator|-|supportsPlaybackForContentPlayerResponse:|B@:@",
+      "class_name": "YTGaplessPlaybackCoordinator",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 224,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTGaplessPlaybackCoordinator|-|willPlayNewVideoWithAutoplay:|v@:B",
+      "class_name": "YTGaplessPlaybackCoordinator",
+      "selector": "willPlayNewVideoWithAutoplay:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 249,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTHeaderLogoControllerImpl|-|updateLogoWithImage:needsRescaling:withYoodle:|v@:@BB",
+      "class_name": "YTHeaderLogoControllerImpl",
+      "selector": "updateLogoWithImage:needsRescaling:withYoodle:",
+      "kind": "-",
+      "abi": "v@:@BB",
+      "features": [
+        "custom_header"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 669,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTHeaderLogoImageProviderImpl|-|defaultHeaderLogoImageWithPageStyle:isPremium:|@@:qB",
+      "class_name": "YTHeaderLogoImageProviderImpl",
+      "selector": "defaultHeaderLogoImageWithPageStyle:isPremium:",
+      "kind": "-",
+      "abi": "@@:qB",
+      "features": [
+        "custom_header"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 663,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTHeaderView|-|yt_safeAreaInsetsForBrowse|{UIEdgeInsets=dddd}@:",
+      "class_name": "YTHeaderView",
+      "selector": "yt_safeAreaInsetsForBrowse",
+      "kind": "-",
+      "abi": "{UIEdgeInsets=dddd}@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTHotConfig|-|maximumPlaybackRate|f@:",
+      "class_name": "YTHotConfig",
+      "selector": "maximumPlaybackRate",
+      "kind": "-",
+      "abi": "f@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 98,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTICommand|-|hasReelWatchEndpoint|B@:",
+      "class_name": "YTICommand",
+      "selector": "hasReelWatchEndpoint",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "open_shorts_regular"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 227,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTICommand|-|hasWatchEndpoint|B@:",
+      "class_name": "YTICommand",
+      "selector": "hasWatchEndpoint",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "open_shorts_regular"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 224,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTICommand|-|watchEndpoint|@@:",
+      "class_name": "YTICommand",
+      "selector": "watchEndpoint",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "open_shorts_regular"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 230,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTICompactifyVideoActionBarViewModel|-|data|@@:",
+      "class_name": "YTICompactifyVideoActionBarViewModel",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 307,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIElementRenderer|-|elementData|@@:",
+      "class_name": "YTIElementRenderer",
+      "selector": "elementData",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 163,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 847,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIGranularVariableSpeedConfig_PlaybackRateOption|-|isPremiumUpsell|B@:",
+      "class_name": "YTIGranularVariableSpeedConfig_PlaybackRateOption",
+      "selector": "isPremiumUpsell",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 92,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIGranularVariableSpeedConfig|-|data|@@:",
+      "class_name": "YTIGranularVariableSpeedConfig",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIGranularVariableSpeedConfig|-|maximumPlaybackRate|i@:",
+      "class_name": "YTIGranularVariableSpeedConfig",
+      "selector": "maximumPlaybackRate",
+      "kind": "-",
+      "abi": "i@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 95,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIIosPlayerConfig|-|useNoOpAdsCoordinator|B@:",
+      "class_name": "YTIIosPlayerConfig",
+      "selector": "useNoOpAdsCoordinator",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 134,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayabilityStatus|-|isPlayableInBackground|B@:",
+      "class_name": "YTIPlayabilityStatus",
+      "selector": "isPlayableInBackground",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "background_playback"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 221,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlaybackRateSelectorMenuSheetViewModel|+|defaultGranularVariableSpeedConfig|@@:",
+      "class_name": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "defaultGranularVariableSpeedConfig",
+      "kind": "+",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 104,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlaybackRateSelectorMenuSheetViewModel|+|playbackRateSelectorMenuSheetFillerBlockWithParentResponder:|@@:@",
+      "class_name": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "playbackRateSelectorMenuSheetFillerBlockWithParentResponder:",
+      "kind": "+",
+      "abi": "@@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 68,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlaybackRateSelectorMenuSheetViewModel|+|playbackRateSelectorMenuSheetViewModelWithConfig:|@@:@",
+      "class_name": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "playbackRateSelectorMenuSheetViewModelWithConfig:",
+      "kind": "+",
+      "abi": "@@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 107,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlaybackRateSelectorMenuSheetViewModel|+|playbackRateSelectorShowSheetCommandWithParentResponder:|@@:@",
+      "class_name": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "playbackRateSelectorShowSheetCommandWithParentResponder:",
+      "kind": "+",
+      "abi": "@@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedContext.inc",
+          "line": 99,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlaybackRateSelectorMenuSheetViewModel|-|data|@@:",
+      "class_name": "YTIPlaybackRateSelectorMenuSheetViewModel",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerConfig|-|data|@@:",
+      "class_name": "YTIPlayerConfig",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 112,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerConfig|-|granularVariableSpeedConfig|@@:",
+      "class_name": "YTIPlayerConfig",
+      "selector": "granularVariableSpeedConfig",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedThreeX.inc",
+          "line": 101,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|adPlacementsArray_Count|Q@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "adPlacementsArray_Count",
+      "kind": "-",
+      "abi": "Q@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 121,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|adPlacementsArray|@@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "adPlacementsArray",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 109,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|adSlotsArray_Count|Q@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "adSlotsArray_Count",
+      "kind": "-",
+      "abi": "Q@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 121,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|adSlotsArray|@@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "adSlotsArray",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 109,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|playerAdsArray_Count|Q@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "playerAdsArray_Count",
+      "kind": "-",
+      "abi": "Q@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 121,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIPlayerResponse|-|playerAdsArray|@@:",
+      "class_name": "YTIPlayerResponse",
+      "selector": "playerAdsArray",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 109,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIThumbnailDetails_Thumbnail|-|URL|@@:",
+      "class_name": "YTIThumbnailDetails_Thumbnail",
+      "selector": "URL",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 236,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIThumbnailDetails_Thumbnail|-|url|@@:",
+      "class_name": "YTIThumbnailDetails_Thumbnail",
+      "selector": "url",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 236,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIUrlEndpoint|-|URL|@@:",
+      "class_name": "YTIUrlEndpoint",
+      "selector": "URL",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 205,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIUrlEndpoint|-|url|@@:",
+      "class_name": "YTIUrlEndpoint",
+      "selector": "url",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 205,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIVideoActionBarViewModel|-|data|@@:",
+      "class_name": "YTIVideoActionBarViewModel",
+      "selector": "data",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteModel.inc",
+          "line": 307,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIWatchNextResponse|-|onResponseReceivedActionsArray|@@:",
+      "class_name": "YTIWatchNextResponse",
+      "selector": "onResponseReceivedActionsArray",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "disable_popup_panels"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 523,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIWatchNextResponse|-|onResponseReceivedEndpointsArray|@@:",
+      "class_name": "YTIWatchNextResponse",
+      "selector": "onResponseReceivedEndpointsArray",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "disable_popup_panels"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 523,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTIconResolverImpl|-|imageForIcon:color:|@@:i@",
+      "class_name": "YTIconResolverImpl",
+      "selector": "imageForIcon:color:",
+      "kind": "-",
+      "abi": "@@:i@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 810,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTImageView|-|setImage:animated:|v@:@B",
+      "class_name": "YTImageView",
+      "selector": "setImage:animated:",
+      "kind": "-",
+      "abi": "v@:@B",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 978,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|didPanFineScrubberEntryPoint:|v@:@",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "didPanFineScrubberEntryPoint:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "disable_precise_seeking"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 561,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|layoutSubviews|v@:",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_seekbar",
+        "hide_timestamp"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 717,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|onCurrentChapterTitleTapped:|v@:@",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "onCurrentChapterTitleTapped:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 84,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|setPlayedProgressBarColor:|v@:@",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "setPlayedProgressBarColor:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 728,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|shouldShowCurrentTitleLabel|B@:",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "shouldShowCurrentTitleLabel",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "hide_timestamp"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 727,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarContainerView|-|shouldShowDurationLabel|B@:",
+      "class_name": "YTInlinePlayerBarContainerView",
+      "selector": "shouldShowDurationLabel",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "hide_timestamp"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 726,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInlinePlayerBarView|-|layoutSubviews|v@:",
+      "class_name": "YTInlinePlayerBarView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_seekbar",
+        "tap_to_seek"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 693,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionNodeSectionDataSource|-|elementForItem:|@@:@",
+      "class_name": "YTInnerTubeCollectionNodeSectionDataSource",
+      "selector": "elementForItem:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 321,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionNodeSectionDataSource|-|initWithSection:controller:service:context:|@@:@@@@",
+      "class_name": "YTInnerTubeCollectionNodeSectionDataSource",
+      "selector": "initWithSection:controller:service:context:",
+      "kind": "-",
+      "abi": "@@:@@@@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 313,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionNodeSectionDataSource|-|itemAtIndex:|@@:q",
+      "class_name": "YTInnerTubeCollectionNodeSectionDataSource",
+      "selector": "itemAtIndex:",
+      "kind": "-",
+      "abi": "@@:q",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowNested.inc",
+          "line": 334,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|addSectionsFromArray:|v@:@",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "addSectionsFromArray:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 188,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 326,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|insertContents:byPosition:inSection:error:|@@:@i@^@",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "insertContents:byPosition:inSection:error:",
+      "kind": "-",
+      "abi": "@@:@i@^@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 203,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 332,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|insertSections:byPosition:error:|B@:@i^@",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "insertSections:byPosition:error:",
+      "kind": "-",
+      "abi": "B@:@i^@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 195,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 329,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|loadWithModel:|v@:@",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "loadWithModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 182,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 323,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|replaceEntry:withReplacementRenderer:inSectionController:undoKey:operation:|@@:@@@@@",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "replaceEntry:withReplacementRenderer:inSectionController:undoKey:operation:",
+      "kind": "-",
+      "abi": "@@:@@@@@",
+      "features": [
+        "feed_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 211,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeCollectionViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTInnerTubeCollectionViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 226,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeContextFactory|-|clientInfoWithSendDeviceIdentifier:serviceType:|@@:Bq",
+      "class_name": "YTInnerTubeContextFactory",
+      "selector": "clientInfoWithSendDeviceIdentifier:serviceType:",
+      "kind": "-",
+      "abi": "@@:Bq",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting",
+        "spoof_app_version",
+        "spoof_dimensions",
+        "spoof_form_factor"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 487,
+          "wrapper": "RVHook"
+        },
+        {
+          "file": "RVVoteModel.inc",
+          "line": 275,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTInnerTubeContextFactory|-|contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:innertubeTokenJar:attestationResponseData:reauthProofToken:serviceType:isPrefetch:|@@:@Bi@B@@@@@qB",
+      "class_name": "YTInnerTubeContextFactory",
+      "selector": "contextWithPageID:isIncognitoActive:criticality:clickTrackingInfo:sendDeviceIdentifier:clientScreenNonce:consistencyTokenJars:innertubeTokenJar:attestationResponseData:reauthProofToken:serviceType:isPrefetch:",
+      "kind": "-",
+      "abi": "@@:@Bi@B@@@@@qB",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 19,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|adsPlaybackCoordinator:didFinishBreakWithBreakType:|v@:@q",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "adsPlaybackCoordinator:didFinishBreakWithBreakType:",
+      "kind": "-",
+      "abi": "v@:@q",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 205,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|adsPlaybackCoordinatorForNewPlayback|@@:",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "adsPlaybackCoordinatorForNewPlayback",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 257,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|didTransitionToContentSequenceForVideoSequencer:|v@:@",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "didTransitionToContentSequenceForVideoSequencer:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 299,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|finishPlayback|v@:",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "finishPlayback",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "exit_fullscreen_end",
+        "loop_video"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 571,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|resetWithCurrentVideoSequencer|v@:",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "resetWithCurrentVideoSequencer",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 287,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|seekToTime:toleranceBefore:toleranceAfter:seekSource:|v@:@ddi",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "seekToTime:toleranceBefore:toleranceAfter:seekSource:",
+      "kind": "-",
+      "abi": "v@:@ddi",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 162,
+          "wrapper": "RVDAWatchHook"
+        },
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 275,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|setPlaybackRateModel:|v@:@",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "setPlaybackRateModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 237,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|singleVideo:currentVideoTimeDidChange:|v@:@@",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "singleVideo:currentVideoTimeDidChange:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 315,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|startPlaybackWithVideoResolver:|v@:@",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "startPlaybackWithVideoResolver:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 277,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTLocalPlaybackController|-|videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData:|v@:@@@@",
+      "class_name": "YTLocalPlaybackController",
+      "selector": "videoSequencer:willTransitionToNextContentSequenceWithPlayerTransition:playbackConfig:playbackData:",
+      "kind": "-",
+      "abi": "v@:@@@@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 283,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppControlsOverlayView|-|forceAutonavSwitchHidden|B@:",
+      "class_name": "YTMainAppControlsOverlayView",
+      "selector": "forceAutonavSwitchHidden",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "hide_autoplay_button"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 689,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppControlsOverlayView|-|setForceAutonavSwitchHidden:|v@:B",
+      "class_name": "YTMainAppControlsOverlayView",
+      "selector": "setForceAutonavSwitchHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_autoplay_button"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 690,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppControlsOverlayView|-|setNextButtonHidden:|v@:B",
+      "class_name": "YTMainAppControlsOverlayView",
+      "selector": "setNextButtonHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_previous_next"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 660,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppControlsOverlayView|-|setPreviousButtonHidden:|v@:B",
+      "class_name": "YTMainAppControlsOverlayView",
+      "selector": "setPreviousButtonHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_previous_next"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 660,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|currentPlaybackRateModel|@@:",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "currentPlaybackRateModel",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 208,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|currentPlaybackRate|d@:",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "currentPlaybackRate",
+      "kind": "-",
+      "abi": "d@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 199,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|didPressVarispeed:|v@:@",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "didPressVarispeed:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 191,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|setPlaybackRate:|v@:d",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "setPlaybackRate:",
+      "kind": "-",
+      "abi": "v@:d",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 216,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|setPlaybackRateModel:|v@:@",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "setPlaybackRateModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 226,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|shouldEnableAutoCaptionsOnMuteFeature|B@:",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "shouldEnableAutoCaptionsOnMuteFeature",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 534,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|shouldShowAutoCaptionsOnMuteForMutedVideo|B@:",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "shouldShowAutoCaptionsOnMuteForMutedVideo",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 534,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayViewController|-|shouldUpdateAutoCaptionsOnMute|B@:",
+      "class_name": "YTMainAppVideoPlayerOverlayViewController",
+      "selector": "shouldUpdateAutoCaptionsOnMute",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "disable_auto_captions"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 534,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|forceHidePreviousAndNextButtons|B@:",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "forceHidePreviousAndNextButtons",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "hide_previous_next"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 659,
+          "wrapper": "RVBoolGate"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|hitTest:withEvent:|@@:{CGPoint=dd}@",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "hitTest:withEvent:",
+      "kind": "-",
+      "abi": "@@:{CGPoint=dd}@",
+      "features": [
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 263,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|layoutSubviews|v@:",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_autoplay_button",
+        "hide_autoplay_preview",
+        "hide_captions_button",
+        "hide_cast_button",
+        "hide_end_cards",
+        "hide_info_cards",
+        "hide_previous_next",
+        "hide_related_overlay",
+        "hide_watermark",
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 696,
+          "wrapper": "RVHook"
+        },
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 260,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|setClosedCaptionsOrSubtitlesButtonAvailable:|v@:B",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "setClosedCaptionsOrSubtitlesButtonAvailable:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_captions_button"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 714,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|setNextButtonHidden:|v@:B",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "setNextButtonHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_previous_next"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 660,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainAppVideoPlayerOverlayView|-|setPreviousButtonHidden:|v@:B",
+      "class_name": "YTMainAppVideoPlayerOverlayView",
+      "selector": "setPreviousButtonHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_previous_next"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 660,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainVideoEntityModel|-|dislikeAccessibilityText|@@:",
+      "class_name": "YTMainVideoEntityModel",
+      "selector": "dislikeAccessibilityText",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 128,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainVideoEntityModel|-|dislikeCountString|@@:",
+      "class_name": "YTMainVideoEntityModel",
+      "selector": "dislikeCountString",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 122,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMainVideoEntityModel|-|dislikeCount|Q@:",
+      "class_name": "YTMainVideoEntityModel",
+      "selector": "dislikeCount",
+      "kind": "-",
+      "abi": "Q@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 115,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTMiniplayerLayerView|-|didPanMiniplayer:|v@:@",
+      "class_name": "YTMiniplayerLayerView",
+      "selector": "didPanMiniplayer:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "miniplayer_disable_drag"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 110,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTModularPlayerBarView|-|layoutSubviews|v@:",
+      "class_name": "YTModularPlayerBarView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 641,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTNavigationBar|-|setupStyle|v@:",
+      "class_name": "YTNavigationBar",
+      "selector": "setupStyle",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsModal.inc",
+          "line": 48,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTNavigationCommandHandlerImpl|-|handleUrlEndpoint:event:fromView:|B@:@@@",
+      "class_name": "YTNavigationCommandHandlerImpl",
+      "selector": "handleUrlEndpoint:event:fromView:",
+      "kind": "-",
+      "abi": "B@:@@@",
+      "features": [
+        "open_links_external"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 212,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTNavigationController|-|initWithParentResponder:|@@:@",
+      "class_name": "YTNavigationController",
+      "selector": "initWithParentResponder:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsModal.inc",
+          "line": 47,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTNeonMetalView|-|setAmbientStrength:|v@:f",
+      "class_name": "YTNeonMetalView",
+      "selector": "setAmbientStrength:",
+      "kind": "-",
+      "abi": "v@:f",
+      "features": [
+        "disable_ambient"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 540,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTNoOpAdsPlaybackCoordinator|-|reset|v@:",
+      "class_name": "YTNoOpAdsPlaybackCoordinator",
+      "selector": "reset",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 238,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTNoOpAdsPlaybackCoordinator|-|supportsPlaybackForContentPlayerResponse:|B@:@",
+      "class_name": "YTNoOpAdsPlaybackCoordinator",
+      "selector": "supportsPlaybackForContentPlayerResponse:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 224,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTNoOpAdsPlaybackCoordinator|-|willPlayNewVideoWithAutoplay:|v@:B",
+      "class_name": "YTNoOpAdsPlaybackCoordinator",
+      "selector": "willPlayNewVideoWithAutoplay:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdCoordinator.inc",
+          "line": 249,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPageStyleControllerImpl|-|pageStyle|q@:",
+      "class_name": "YTPageStyleControllerImpl",
+      "selector": "pageStyle",
+      "kind": "-",
+      "abi": "q@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 676,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPageStyleControllerImpl|-|setEffectivePageStyle:|v@:q",
+      "class_name": "YTPageStyleControllerImpl",
+      "selector": "setEffectivePageStyle:",
+      "kind": "-",
+      "abi": "v@:q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 683,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPageStyleControllerImpl|-|setPageStyle:|v@:q",
+      "class_name": "YTPageStyleControllerImpl",
+      "selector": "setPageStyle:",
+      "kind": "-",
+      "abi": "v@:q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 683,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPivotBarItemView|-|updateTitleAndLayoutForRenderer|v@:",
+      "class_name": "YTPivotBarItemView",
+      "selector": "updateTitleAndLayoutForRenderer",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_home_navigation",
+        "hide_library_navigation",
+        "hide_navigation_labels",
+        "hide_shorts_navigation",
+        "hide_subscriptions_navigation"
+      ],
+      "sources": [
+        {
+          "file": "RVNavigation.inc",
+          "line": 96,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPivotBarViewController|-|setSelectedPivotIdentifier:|v@:@",
+      "class_name": "YTPivotBarViewController",
+      "selector": "setSelectedPivotIdentifier:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 197,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPivotBarViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTPivotBarViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "hide_shorts",
+        "shorts_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVShortsLayout.inc",
+          "line": 300,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPivotBarView|-|layoutSubviews|v@:",
+      "class_name": "YTPivotBarView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_shorts",
+        "shorts_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVShortsLayout.inc",
+          "line": 309,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPivotBarView|-|setRenderer:|v@:@",
+      "class_name": "YTPivotBarView",
+      "selector": "setRenderer:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "hide_shorts",
+        "shorts_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVShortsLayout.inc",
+          "line": 291,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayabilityResolutionUserActionUIControllerImpl|-|resolvePlayabilityResolutionUserActionRequest:|v@:@",
+      "class_name": "YTPlayabilityResolutionUserActionUIControllerImpl",
+      "selector": "resolvePlayabilityResolutionUserActionRequest:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "remove_discretion_dialog"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 475,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlaybackData|-|isPlayableInBackground|B@:",
+      "class_name": "YTPlaybackData",
+      "selector": "isPlayableInBackground",
+      "kind": "-",
+      "abi": "B@:",
+      "features": [
+        "background_playback"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 221,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlaybackEventCenterBlockImpl|-|initWithContext:video:playerViewController:|@@:@@@",
+      "class_name": "YTPlaybackEventCenterBlockImpl",
+      "selector": "initWithContext:video:playerViewController:",
+      "kind": "-",
+      "abi": "@@:@@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 93,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlaybackEventCenterBlockImpl|-|subscribeToActivePlaybackRateChange:writer:error:|B@:@@^@",
+      "class_name": "YTPlaybackEventCenterBlockImpl",
+      "selector": "subscribeToActivePlaybackRateChange:writer:error:",
+      "kind": "-",
+      "abi": "B@:@@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 100,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlaybackEventCenterBlockImpl|-|subscribeToPlaybackRateChange:writer:error:|B@:@@^@",
+      "class_name": "YTPlaybackEventCenterBlockImpl",
+      "selector": "subscribeToPlaybackRateChange:writer:error:",
+      "kind": "-",
+      "abi": "B@:@@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 100,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBarController|-|didTapCurrentTimeTitle|v@:",
+      "class_name": "YTPlayerBarController",
+      "selector": "didTapCurrentTimeTitle",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 91,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBarController|-|setTimeTitleTapCommand:withButtonType:|v@:@i",
+      "class_name": "YTPlayerBarController",
+      "selector": "setTimeTitleTapCommand:withButtonType:",
+      "kind": "-",
+      "abi": "v@:@i",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowWatchDiagnostics.inc",
+          "line": 74,
+          "wrapper": "RVDAWatchHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBarSegmentedProgressView|-|layoutSubviews|v@:",
+      "class_name": "YTPlayerBarSegmentedProgressView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "hide_seekbar",
+        "tap_to_seek"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 693,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|getPlaybackRate:error:|@@:@^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "getPlaybackRate:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|getPlaybackRateModel:error:|@@:@^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "getPlaybackRateModel:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|getPlayerEventCenter:error:|@@:@^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "getPlayerEventCenter:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|initWithContext:playerViewController:|@@:@@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "initWithContext:playerViewController:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 35,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|retrievePlayerOrFailWithError:|@@:^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "retrievePlayerOrFailWithError:",
+      "kind": "-",
+      "abi": "@@:^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 41,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|setPlaybackRate:error:|@@:@^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "setPlaybackRate:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerBlockImpl|-|setPlaybackRateModel:error:|@@:@^@",
+      "class_name": "YTPlayerBlockImpl",
+      "selector": "setPlaybackRateModel:error:",
+      "kind": "-",
+      "abi": "@@:@^@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeedBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|currentPlaybackRateForVarispeedSwitchController:|f@:@",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "currentPlaybackRateForVarispeedSwitchController:",
+      "kind": "-",
+      "abi": "f@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 174,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|currentPlaybackRateModelForVarispeedSwitchController:|@@:@",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "currentPlaybackRateModelForVarispeedSwitchController:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 183,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|initWithOverlayFactory:playerViewController:delegate:|@@:@@@",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "initWithOverlayFactory:playerViewController:delegate:",
+      "kind": "-",
+      "abi": "@@:@@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 266,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|updateActiveOverlayWithActiveVideoCurrentState:|v@:@",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "updateActiveOverlayWithActiveVideoCurrentState:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 161,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|varispeedController|@@:",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "varispeedController",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 167,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|varispeedSwitchController:didSelectRate:|v@:@f",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "varispeedSwitchController:didSelectRate:",
+      "kind": "-",
+      "abi": "v@:@f",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 274,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerOverlayManager|-|varispeedSwitchController:didSelectRateModel:|v@:@@",
+      "class_name": "YTPlayerOverlayManager",
+      "selector": "varispeedSwitchController:didSelectRateModel:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 283,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|notifyDidEndScrubbingAtTime:|v@:@",
+      "class_name": "YTPlayerViewController",
+      "selector": "notifyDidEndScrubbingAtTime:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 284,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|notifyDidStartScrubbingAtTime:|v@:@",
+      "class_name": "YTPlayerViewController",
+      "selector": "notifyDidStartScrubbingAtTime:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "sponsorblock",
+        "sponsorblock_contribute",
+        "sponsorblock_manual",
+        "sponsorblock_markers"
+      ],
+      "sources": [
+        {
+          "file": "RVSponsorPromptUI.inc",
+          "line": 281,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|playbackController:didActivateVideo:withPlaybackData:|v@:@@@",
+      "class_name": "YTPlayerViewController",
+      "selector": "playbackController:didActivateVideo:withPlaybackData:",
+      "kind": "-",
+      "abi": "v@:@@@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 292,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|playbackController:didLoadContentPlaybackData:|v@:@@",
+      "class_name": "YTPlayerViewController",
+      "selector": "playbackController:didLoadContentPlaybackData:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 329,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|potentiallyMutatedSingleVideo:currentVideoTimeDidChange:|v@:@@",
+      "class_name": "YTPlayerViewController",
+      "selector": "potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 321,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|setPlaybackRate:|v@:f",
+      "class_name": "YTPlayerViewController",
+      "selector": "setPlaybackRate:",
+      "kind": "-",
+      "abi": "v@:f",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVPort.m",
+          "line": 338,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|setPlaybackRateModel:|v@:@",
+      "class_name": "YTPlayerViewController",
+      "selector": "setPlaybackRateModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 255,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTPlayerViewController|-|singleVideo:playbackRateDidChange:|v@:@f",
+      "class_name": "YTPlayerViewController",
+      "selector": "singleVideo:playbackRateDidChange:",
+      "kind": "-",
+      "abi": "v@:@f",
+      "features": [
+        "custom_speed_menu",
+        "remember_speed"
+      ],
+      "sources": [
+        {
+          "file": "RVSpeed.inc",
+          "line": 249,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTQuickActionsController|-|shortcutItems|@@:",
+      "class_name": "YTQuickActionsController",
+      "selector": "shortcutItems",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "hide_shorts_shortcut"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 202,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTRealAdsPlayerServices|-|adsPlaybackCoordinatorWithOverlayManager:delegate:parentResponder:contentPlayerResponse:|@@:@@@@",
+      "class_name": "YTRealAdsPlayerServices",
+      "selector": "adsPlaybackCoordinatorWithOverlayManager:delegate:parentResponder:contentPlayerResponse:",
+      "kind": "-",
+      "abi": "@@:@@@@",
+      "features": [
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAds.inc",
+          "line": 143,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTReelContentModel|+|makeContentModelForEntry:|@@:@",
+      "class_name": "YTReelContentModel",
+      "selector": "makeContentModelForEntry:",
+      "kind": "+",
+      "abi": "@@:@",
+      "features": [
+        "shorts_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 232,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTReelPlayerViewController|-|playbackControllerDidFinishPlaybackAndWillTransitionInternallyToNextPlayback:|v@:B",
+      "class_name": "YTReelPlayerViewController",
+      "selector": "playbackControllerDidFinishPlaybackAndWillTransitionInternallyToNextPlayback:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "shorts_autoplay"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 511,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTRollingNumberView|-|setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:|v@:@@@@@B",
+      "class_name": "YTRollingNumberView",
+      "selector": "setUpdatedCount:updatedCountNumber:font:fontAttributes:color:skipAnimation:",
+      "kind": "-",
+      "abi": "v@:@@@@@B",
+      "features": [
+        "disable_rolling_numbers"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 743,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTRollingNumberView|-|setUpdatedCount:updatedCountNumber:rollFromCount:rollFromCountNumber:font:fontAttributes:color:skipAnimation:|v@:@@@@@@@B",
+      "class_name": "YTRollingNumberView",
+      "selector": "setUpdatedCount:updatedCountNumber:rollFromCount:rollFromCountNumber:font:fontAttributes:color:skipAnimation:",
+      "kind": "-",
+      "abi": "v@:@@@@@@@B",
+      "features": [
+        "disable_rolling_numbers"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 756,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSearchResultsViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTSearchResultsViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSearchResultsViewController|-|viewDidDisappear:|v@:B",
+      "class_name": "YTSearchResultsViewController",
+      "selector": "viewDidDisappear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSearchViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTSearchViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSearchViewController|-|viewDidDisappear:|v@:B",
+      "class_name": "YTSearchViewController",
+      "selector": "viewDidDisappear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSectionController|-|loadWithModel:|v@:@",
+      "class_name": "YTSectionController",
+      "selector": "loadWithModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 323,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSectionController|-|nodeBlockForItemAtIndex:|@?@:q",
+      "class_name": "YTSectionController",
+      "selector": "nodeBlockForItemAtIndex:",
+      "kind": "-",
+      "abi": "@?@:q",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 885,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSectionController|-|updateCell:forIndex:|v@:@q",
+      "class_name": "YTSectionController",
+      "selector": "updateCell:forIndex:",
+      "kind": "-",
+      "abi": "v@:@q",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 945,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSectionListViewController|-|loadWithModel:|v@:@",
+      "class_name": "YTSectionListViewController",
+      "selector": "loadWithModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles",
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 182,
+          "wrapper": "RVAdHook"
+        },
+        {
+          "file": "RVDeArrowPrefetch.inc",
+          "line": 323,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSectionListViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTSectionListViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdFeed.inc",
+          "line": 226,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSemanticHapticsController|-|playWithSemantic:throttleTimeout:|v@:qd",
+      "class_name": "YTSemanticHapticsController",
+      "selector": "playWithSemantic:throttleTimeout:",
+      "kind": "-",
+      "abi": "v@:qd",
+      "features": [
+        "disable_haptics"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 546,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSemanticHapticsController|-|playWithSemantic:|v@:q",
+      "class_name": "YTSemanticHapticsController",
+      "selector": "playWithSemantic:",
+      "kind": "-",
+      "abi": "v@:q",
+      "features": [
+        "disable_haptics"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 543,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSettingsCell|-|pageStyleDidChange:|v@:q",
+      "class_name": "YTSettingsCell",
+      "selector": "pageStyleDidChange:",
+      "kind": "-",
+      "abi": "v@:q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 40,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsCell|-|setParentResponder:|v@:@",
+      "class_name": "YTSettingsCell",
+      "selector": "setParentResponder:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 41,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsCell|-|setSwitchBlock:|v@:@?",
+      "class_name": "YTSettingsCell",
+      "selector": "setSwitchBlock:",
+      "kind": "-",
+      "abi": "v@:@?",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 42,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsGroupData|-|orderedCategories|@@:",
+      "class_name": "YTSettingsGroupData",
+      "selector": "orderedCategories",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 76,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSettingsSectionController|-|classForHeader|#@:",
+      "class_name": "YTSettingsSectionController",
+      "selector": "classForHeader",
+      "kind": "-",
+      "abi": "#@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 29,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|didSelectItemAtIndex:fromView:|v@:q@",
+      "class_name": "YTSettingsSectionController",
+      "selector": "didSelectItemAtIndex:fromView:",
+      "kind": "-",
+      "abi": "v@:q@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 32,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|initWithTitle:items:|@@:@@",
+      "class_name": "YTSettingsSectionController",
+      "selector": "initWithTitle:items:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 26,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|setHeaderHidden:|v@:B",
+      "class_name": "YTSettingsSectionController",
+      "selector": "setHeaderHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 33,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|setUseUpdatedSettingsColors:|v@:B",
+      "class_name": "YTSettingsSectionController",
+      "selector": "setUseUpdatedSettingsColors:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 34,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|sizeForHeaderWithSize:|{CGSize=dd}@:{CGSize=dd}",
+      "class_name": "YTSettingsSectionController",
+      "selector": "sizeForHeaderWithSize:",
+      "kind": "-",
+      "abi": "{CGSize=dd}@:{CGSize=dd}",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 30,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|sizeForItemAtIndex:withSize:|{CGSize=dd}@:q{CGSize=dd}",
+      "class_name": "YTSettingsSectionController",
+      "selector": "sizeForItemAtIndex:withSize:",
+      "kind": "-",
+      "abi": "{CGSize=dd}@:q{CGSize=dd}",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 28,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|updateCell:forIndex:|v@:@q",
+      "class_name": "YTSettingsSectionController",
+      "selector": "updateCell:forIndex:",
+      "kind": "-",
+      "abi": "v@:@q",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 27,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionController|-|updateHeader:|v@:@",
+      "class_name": "YTSettingsSectionController",
+      "selector": "updateHeader:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 31,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionItem|+|itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:|@@:@@@@?@?",
+      "class_name": "YTSettingsSectionItem",
+      "selector": "itemWithTitle:titleDescription:accessibilityIdentifier:detailTextBlock:selectBlock:",
+      "kind": "+",
+      "abi": "@@:@@@@?@?",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 22,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionItem|+|switchItemWithTitle:titleDescription:accessibilityIdentifier:switchOn:switchBlock:|@@:@@@B@?",
+      "class_name": "YTSettingsSectionItem",
+      "selector": "switchItemWithTitle:titleDescription:accessibilityIdentifier:switchOn:switchBlock:",
+      "kind": "+",
+      "abi": "@@:@@@B@?",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 23,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionItem|-|setEnabled:|v@:B",
+      "class_name": "YTSettingsSectionItem",
+      "selector": "setEnabled:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 24,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsSectionItem|-|setOn:|v@:B",
+      "class_name": "YTSettingsSectionItem",
+      "selector": "setOn:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 25,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTSettingsViewController|-|setSectionControllers|v@:",
+      "class_name": "YTSettingsViewController",
+      "selector": "setSectionControllers",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 58,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSettingsViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTSettingsViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 46,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSettingsViewController|-|viewDidLayoutSubviews|v@:",
+      "class_name": "YTSettingsViewController",
+      "selector": "viewDidLayoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 52,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSettingsViewController|-|viewDidLoad|v@:",
+      "class_name": "YTSettingsViewController",
+      "selector": "viewDidLoad",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsBridge.inc",
+          "line": 67,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoDetailsActionView|+|actionViewWithSlimMetadataButtonSupportedRenderer:parentResponder:|@@:@@",
+      "class_name": "YTSlimVideoDetailsActionView",
+      "selector": "actionViewWithSlimMetadataButtonSupportedRenderer:parentResponder:",
+      "kind": "+",
+      "abi": "@@:@@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 84,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoDetailsActionView|-|accessibilityLabel|@@:",
+      "class_name": "YTSlimVideoDetailsActionView",
+      "selector": "accessibilityLabel",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 106,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoDetailsActionView|-|layoutSubviews|v@:",
+      "class_name": "YTSlimVideoDetailsActionView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVDislikesUI.inc",
+          "line": 149,
+          "wrapper": "RVHook"
+        },
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 100,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoDetailsActionView|-|setToggled:|v@:B",
+      "class_name": "YTSlimVideoDetailsActionView",
+      "selector": "setToggled:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVNativeDislikes.inc",
+          "line": 103,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoDetailsActionView|-|sizeThatFits:|{CGSize=dd}@:{CGSize=dd}",
+      "class_name": "YTSlimVideoDetailsActionView",
+      "selector": "sizeThatFits:",
+      "kind": "-",
+      "abi": "{CGSize=dd}@:{CGSize=dd}",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVDislikesUI.inc",
+          "line": 137,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTSlimVideoInformationCell|-|setEntry:|v@:@",
+      "class_name": "YTSlimVideoInformationCell",
+      "selector": "setEntry:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 962,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTStyledViewController|-|initWithParentResponder:|@@:@",
+      "class_name": "YTStyledViewController",
+      "selector": "initWithParentResponder:",
+      "kind": "-",
+      "abi": "@@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 183,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|setShouldSetupNavigationBarStyle:|v@:B",
+      "class_name": "YTStyledViewController",
+      "selector": "setShouldSetupNavigationBarStyle:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 188,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|setupNavigationBarAppearance|v@:",
+      "class_name": "YTStyledViewController",
+      "selector": "setupNavigationBarAppearance",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 189,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTStyledViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 186,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|viewDidLayoutSubviews|v@:",
+      "class_name": "YTStyledViewController",
+      "selector": "viewDidLayoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 187,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|viewDidLoad|v@:",
+      "class_name": "YTStyledViewController",
+      "selector": "viewDidLoad",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 184,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTStyledViewController|-|viewWillAppear:|v@:B",
+      "class_name": "YTStyledViewController",
+      "selector": "viewWillAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVSettingsNativeUI.inc",
+          "line": 185,
+          "wrapper": "RVUIRequire"
+        }
+      ],
+      "hook": false
+    },
+    {
+      "id": "YTTokensColorPalette|-|background1|@@:",
+      "class_name": "YTTokensColorPalette",
+      "selector": "background1",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTTokensColorPalette|-|baseBackground|@@:",
+      "class_name": "YTTokensColorPalette",
+      "selector": "baseBackground",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTTokensColorPalette|-|generalBackgroundA|@@:",
+      "class_name": "YTTokensColorPalette",
+      "selector": "generalBackgroundA",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTTokensColorPalette|-|solidBackground|@@:",
+      "class_name": "YTTokensColorPalette",
+      "selector": "solidBackground",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 647,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoCell|-|setEntry:|v@:@",
+      "class_name": "YTVideoCell",
+      "selector": "setEntry:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 962,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoPlayerOverlayConfigTransformer|+|doubleTapSeekIntervalForVideoPlayerOverlayConfig:|d@:@",
+      "class_name": "YTVideoPlayerOverlayConfigTransformer",
+      "selector": "doubleTapSeekIntervalForVideoPlayerOverlayConfig:",
+      "kind": "+",
+      "abi": "d@:@",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 558,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoQualitySwitchOriginalController|-|createActionSheetActions|@@:",
+      "class_name": "YTVideoQualitySwitchOriginalController",
+      "selector": "createActionSheetActions",
+      "kind": "-",
+      "abi": "@@:",
+      "features": [
+        "hide_premium_quality"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 613,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoQualitySwitchOriginalController|-|setSelectedQualityLabel:|v@:@",
+      "class_name": "YTVideoQualitySwitchOriginalController",
+      "selector": "setSelectedQualityLabel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "remember_quality"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 626,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoQualitySwitchOriginalController|-|showMenuFromView:|v@:@",
+      "class_name": "YTVideoQualitySwitchOriginalController",
+      "selector": "showMenuFromView:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "advanced_quality_menu"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 605,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTVideoView|-|setModel:|v@:@",
+      "class_name": "YTVideoView",
+      "selector": "setModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "dearrow_thumbnails",
+        "dearrow_titles"
+      ],
+      "sources": [
+        {
+          "file": "RVDeArrowUI.inc",
+          "line": 975,
+          "wrapper": "RVDAUIHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerActionButtonView|-|setHidden:|v@:B",
+      "class_name": "YTWatchFloatingMiniplayerActionButtonView",
+      "selector": "setHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "miniplayer_hide_overlay_buttons"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 87,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerBadgeView|-|setMessagingText:showingPremiumBadge:|v@:@B",
+      "class_name": "YTWatchFloatingMiniplayerBadgeView",
+      "selector": "setMessagingText:showingPremiumBadge:",
+      "kind": "-",
+      "abi": "v@:@B",
+      "features": [
+        "miniplayer_hide_subtext"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 139,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerCircularBackgroundView|-|layoutSubviews|v@:",
+      "class_name": "YTWatchFloatingMiniplayerCircularBackgroundView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 192,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerCircularBackgroundView|-|setAlpha:|v@:d",
+      "class_name": "YTWatchFloatingMiniplayerCircularBackgroundView",
+      "selector": "setAlpha:",
+      "kind": "-",
+      "abi": "v@:d",
+      "features": [
+        "miniplayer_hide_overlay_buttons"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 175,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView|-|layoutSubviews|v@:",
+      "class_name": "YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 192,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView|-|setAlpha:|v@:d",
+      "class_name": "YTWatchFloatingMiniplayerFrostedGlassCircularBackgroundView",
+      "selector": "setAlpha:",
+      "kind": "-",
+      "abi": "v@:d",
+      "features": [
+        "miniplayer_hide_overlay_buttons"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 175,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerViewController|-|didDoubleTap:|v@:@",
+      "class_name": "YTWatchFloatingMiniplayerViewController",
+      "selector": "didDoubleTap:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "miniplayer_disable_double_tap"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 134,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerViewController|-|didPan:|v@:@",
+      "class_name": "YTWatchFloatingMiniplayerViewController",
+      "selector": "didPan:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "miniplayer_disable_drag"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 104,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerViewController|-|didPanMiniBarWithRecognizer:state:delta:velocity:|v@:@q{CGPoint=dd}{CGPoint=dd}",
+      "class_name": "YTWatchFloatingMiniplayerViewController",
+      "selector": "didPanMiniBarWithRecognizer:state:delta:velocity:",
+      "kind": "-",
+      "abi": "v@:@q{CGPoint=dd}{CGPoint=dd}",
+      "features": [
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 116,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerViewController|-|gestureRecognizerShouldBegin:|B@:@",
+      "class_name": "YTWatchFloatingMiniplayerViewController",
+      "selector": "gestureRecognizerShouldBegin:",
+      "kind": "-",
+      "abi": "B@:@",
+      "features": [
+        "miniplayer_disable_drag"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 98,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerWithPersistentControlsView|-|layoutSubviews|v@:",
+      "class_name": "YTWatchFloatingMiniplayerWithPersistentControlsView",
+      "selector": "layoutSubviews",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 83,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchFloatingMiniplayerWithPersistentControlsView|-|maskMiniplayerView|v@:",
+      "class_name": "YTWatchFloatingMiniplayerWithPersistentControlsView",
+      "selector": "maskMiniplayerView",
+      "kind": "-",
+      "abi": "v@:",
+      "features": [
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 145,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchMiniBarButtonView|-|setHidden:|v@:B",
+      "class_name": "YTWatchMiniBarButtonView",
+      "selector": "setHidden:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "miniplayer_hide_overlay_buttons"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 87,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchMiniplayerConstants|+|minimumDefaultDimension|d@:",
+      "class_name": "YTWatchMiniplayerConstants",
+      "selector": "minimumDefaultDimension",
+      "kind": "+",
+      "abi": "d@:",
+      "features": [
+        "classic_miniplayer",
+        "miniplayer_disable_double_tap",
+        "miniplayer_disable_drag",
+        "miniplayer_disable_horizontal_drag",
+        "miniplayer_hide_overlay_buttons",
+        "miniplayer_hide_subtext",
+        "miniplayer_square_corners"
+      ],
+      "sources": [
+        {
+          "file": "RVMiniplayer.inc",
+          "line": 158,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchNextResultsViewController|-|didUpdateBelowPlayerLayoutWithRenderer:|v@:@",
+      "class_name": "YTWatchNextResultsViewController",
+      "selector": "didUpdateBelowPlayerLayoutWithRenderer:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "feed_ads",
+        "shorts_ads",
+        "video_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 110,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchNextResultsViewController|-|initWithNullableService:parentResponder:format:layout:|@@:@@q@",
+      "class_name": "YTWatchNextResultsViewController",
+      "selector": "initWithNullableService:parentResponder:format:layout:",
+      "kind": "-",
+      "abi": "@@:@@q@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 46,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchNextResultsViewController|-|loadWithModel:|v@:@",
+      "class_name": "YTWatchNextResultsViewController",
+      "selector": "loadWithModel:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 62,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchNextResultsViewController|-|setCompanionAd:layoutID:interactionLoggingAdsClientData:|v@:@@@",
+      "class_name": "YTWatchNextResultsViewController",
+      "selector": "setCompanionAd:layoutID:interactionLoggingAdsClientData:",
+      "kind": "-",
+      "abi": "v@:@@@",
+      "features": [
+        "feed_ads"
+      ],
+      "sources": [
+        {
+          "file": "RVAdDisplay.inc",
+          "line": 84,
+          "wrapper": "RVAdHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchNextServiceImpl|-|makeRequest:refresh:retryEnabled:timeoutInterval:responseBlock:errorBlock:|v@:@BBd@?@?",
+      "class_name": "YTWatchNextServiceImpl",
+      "selector": "makeRequest:refresh:retryEnabled:timeoutInterval:responseBlock:errorBlock:",
+      "kind": "-",
+      "abi": "v@:@BBd@?@?",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 9,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|initWithThumbnailProvider:parentResponder:|@@:@@",
+      "class_name": "YTWatchViewController",
+      "selector": "initWithThumbnailProvider:parentResponder:",
+      "kind": "-",
+      "abi": "@@:@@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 38,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|playerViewController:didActivateVideo:|v@:@@",
+      "class_name": "YTWatchViewController",
+      "selector": "playerViewController:didActivateVideo:",
+      "kind": "-",
+      "abi": "v@:@@",
+      "features": [
+        "open_videos_fullscreen"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 564,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|playerViewModifierDidBeginGesture:|v@:@",
+      "class_name": "YTWatchViewController",
+      "selector": "playerViewModifierDidBeginGesture:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 750,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|playerViewModifierDidEndGesture:|v@:@",
+      "class_name": "YTWatchViewController",
+      "selector": "playerViewModifierDidEndGesture:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 750,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|setPlayerViewController:|v@:@",
+      "class_name": "YTWatchViewController",
+      "selector": "setPlayerViewController:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 757,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|updateWithWatchNextResponse:|v@:@",
+      "class_name": "YTWatchViewController",
+      "selector": "updateWithWatchNextResponse:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVVoteFirstLaunchScopes.inc",
+          "line": 54,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|viewDidAppear:|v@:B",
+      "class_name": "YTWatchViewController",
+      "selector": "viewDidAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|viewDidDisappear:|v@:B",
+      "class_name": "YTWatchViewController",
+      "selector": "viewDidDisappear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "core"
+      ],
+      "sources": [
+        {
+          "file": "RVExtras.inc",
+          "line": 181,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|viewWillAppear:|v@:B",
+      "class_name": "YTWatchViewController",
+      "selector": "viewWillAppear:",
+      "kind": "-",
+      "abi": "v@:B",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 743,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    },
+    {
+      "id": "YTWatchViewController|-|watchViewDidLayoutSubviews:|v@:@",
+      "class_name": "YTWatchViewController",
+      "selector": "watchViewDidLayoutSubviews:",
+      "kind": "-",
+      "abi": "v@:@",
+      "features": [
+        "first_launch_ui",
+        "paired_vote_buttons",
+        "return_dislikes",
+        "ryd_voting"
+      ],
+      "sources": [
+        {
+          "file": "RVElementDislikes.inc",
+          "line": 764,
+          "wrapper": "RVHook"
+        }
+      ],
+      "hook": true
+    }
+  ]
+}

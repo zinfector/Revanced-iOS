@@ -30,6 +30,7 @@ def check(source, target):
         assert patcher.file_sha(source) == manifest['input_ipa_sha256'], 'Input archive hash mismatch'
         assert patcher.sha(original) == manifest['original_executable_sha256'], 'Original executable hash mismatch'
         expected_new = {app+'/Frameworks/'+patcher.PAYLOAD_NAME, app+'/'+patcher.CONFIG_NAME, app+'/'+patcher.STAMP_NAME}
+        if manifest.get('adaptive_profile_sha256'): expected_new.add(app+'/RVPortProfile.json')
         expected_new.update(app+'/'+name for name in manifest.get('resources',{}) if app+'/'+name not in before.namelist())
         assert set(after.namelist()) - set(before.namelist()) == expected_new, 'Unexpected new files'
         skipped = set()

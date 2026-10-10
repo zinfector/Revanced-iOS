@@ -57,7 +57,8 @@ static BOOL RVDANestedPresent(RVDAUIBinding *binding,NSUInteger titleMatches,NSU
         binding.materializations++;
         RVDADiagRecord(@"N06_nested_owned_pixels_applied",binding,nil,
             @{@"title":@(binding.nestedEditedTitle!=nil),@"image":@(binding.nestedEditedImage!=nil),@"shared_model_modified":@NO});
-    }return changed;
+    }
+    return changed;
 }
 static void RVDANestedRefresh(RVDAUIBinding *binding) {
     if (!RVDAUICurrent(binding)) return;
@@ -168,7 +169,8 @@ static id RVDANativeShelfOwner(id context,NSData **source) {
         id options=RVAdResolvedObject(renderer,"compatibilityOptions");
         if (!RVAdResolve(options,"hasAdLoggingData",@"B@:") || RVBool(options,"hasAdLoggingData")) return nil;
         if (source) *source=[data copy];return owner;
-    }return nil;
+    }
+    return nil;
 }
 static NSString *RVDANativeChildVideo(id element,NSUInteger *length,NSString **blocker) {
     // Reviewed Objective-C bridge reads the immutable Element arena. It never
@@ -183,7 +185,8 @@ static NSString *RVDANativeChildVideo(id element,NSUInteger *length,NSString **b
     NSString *video=[text substringWithRange:[matches[0] rangeAtIndex:1]];
     for (NSTextCheckingResult *match in matches) if (![[text substringWithRange:[match rangeAtIndex:1]] isEqual:video]) {
         if (blocker) *blocker=@"native_child_video_identity_ambiguous";return nil;
-    }return video;
+    }
+    return video;
 }
 static void RVDANativeChildPrepare(RVDANativeChildObservation *observation) {
     if (!NSThread.isMainThread || observation.pending || observation.attempts>=2 || !observation.element || !observation.nativeController || !observation.node || !observation.collection) return;
@@ -335,7 +338,8 @@ static void RVDANestedInstall(void) {
             if (item) {
                 RVDANestedInput *input=RVDANestedRecordItem(dataSource,item);
                 objc_setAssociatedObject(item,RVDANestedInputKey,input,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            }return item;
+            }
+            return item;
         };
     });
     // Read-only boundary for the modern diffable route. Its returned element
@@ -348,7 +352,8 @@ static void RVDANestedInstall(void) {
                 NSData *snapshot=[bytes copy];dispatch_async(dispatch_get_main_queue(),^{
                     RVDALiveCaptureRoot(snapshot,@"RVDANestedDiffableItem",nil,nil);
                 });
-            }return result;
+            }
+            return result;
         };
     });
 }

@@ -7,3 +7,6 @@
 *.[mM][dD] export-ignore
 /README.md -export-ignore
 /SIGNING.md -export-ignore
+
+# Preserve generated-source and native build provenance bytes.
+/patcher/native/** -text

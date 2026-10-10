@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Shared Objective-C ABI guards and class-local hook installation.
-static NSString *RVSignature(Method method) {
-    if (!method) return nil;
-    NSString *encoding=@(method_getTypeEncoding(method));
-    return [encoding stringByReplacingOccurrencesOfString:@"[0-9]+" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0,encoding.length)];
-}
+#include "RVAdaptive.inc"
 static BOOL RVCan(id object, const char *name, NSString *signature) {
     if (!object) return NO;
     SEL selector=sel_registerName(name);
@@ -33,23 +29,23 @@ static void RVSetObject(id object,const char *name,id value) {
 
 typedef id (^RVReplacementFactory)(IMP,SEL);
 static BOOL RVHook(NSString *className,NSString *selectorName,NSString *signature,BOOL classMethod,RVReplacementFactory factory) {
+    if (!RVAdaptivePermit(className,selectorName,signature,classMethod)) return NO;
     Class cls=NSClassFromString(className);
     if (!cls) { RVLog([@"Missing class: " stringByAppendingString:className]);return NO; }
     SEL selector=NSSelectorFromString(selectorName);
-    if ([cls respondsToSelector:NSSelectorFromString(@"descriptor")])
-        ((id(*)(id,SEL))objc_msgSend)(cls,NSSelectorFromString(@"descriptor"));
     Class target=classMethod ? object_getClass(cls) : cls;
-    Method method=class_getInstanceMethod(target,selector);
-    if (!method && !classMethod && [cls respondsToSelector:@selector(resolveInstanceMethod:)]) {
-        [cls resolveInstanceMethod:selector];
-        method=class_getInstanceMethod(target,selector);
-    }
+    Method method=RVAdaptiveMethod(className,selectorName,classMethod);
     if (![RVSignature(method) isEqualToString:signature]) {
         RVLog([NSString stringWithFormat:@"Skipped %@ %@: ABI %@, expected %@",className,selectorName,RVSignature(method),signature]);
-        return NO;
+        RVAdaptiveRollback();return NO;
     }
     IMP original=method_getImplementation(method);
-    IMP replacement=imp_implementationWithBlock(factory(original,selector));
+    IMP replacement=NULL;
+    @try { replacement=imp_implementationWithBlock(factory(original,selector)); }
+    @catch (NSException *exception) { RVAdaptiveRollback();return NO; }
+    if (!replacement) { RVAdaptiveRollback();return NO; }
+    [RVAdaptiveLedger addObject:@{@"class":className,@"selector":selectorName,@"class_method":@(classMethod),
+        @"original":[NSValue valueWithPointer:original],@"encoding":@(method_getTypeEncoding(method))}];
     // class_replaceMethod creates a class-local override when the method is inherited.
     class_replaceMethod(target,selector,replacement,method_getTypeEncoding(method));
     RVLog([NSString stringWithFormat:@"Installed %@ %@",className,selectorName]);return YES;

@@ -14,7 +14,8 @@ static NSData *RVDACheckedPath(NSData *data,NSArray *path,NSString **failure,NSU
         NSString *blocker=!fields ? @"invalid_parent_protobuf" : !count ? @"field_absent" : count!=1 ? @"field_repeated" : match.wire!=2 ? @"wrong_wire_type" : nil;
         if (blocker) { if (failure) *failure=blocker;if (failedStep) *failedStep=step;return nil; }
         data=match.value;step++;
-    }return data;
+    }
+    return data;
 }
 // Reviewed YTICommand extensions, not a search for arbitrary 11-byte strings.
 // Only the card's primary tap command is inspected; commands are never executed.
@@ -74,7 +75,8 @@ static NSDictionary *RVDALiveCardNavigationAt(NSData *model,NSArray *path) {
             result[@"blocker"]=[@"live_card_identity_" stringByAppendingString:failure ?: @"unresolved"];
             result[@"failed_step"]=@(failed);return result;
         }
-    }return result;
+    }
+    return result;
 }
 
 static NSDictionary *RVDALiveCardNavigation(NSData *model) { return RVDALiveCardNavigationAt(model,RVDALiveCardCommandPath()); }
@@ -88,7 +90,8 @@ static NSArray<NSString *> *RVDALiveCardImageURLs(NSData *image,NSString *video)
             RVDAChild(field.value,2) || RVDAChild(field.value,3) || RVDAChild(field.value,6)) return nil;
         NSString *url=RVDAImageURL(RVVoteMessageField(1,field.value),video);
         if (!url) return nil;[urls addObject:url];
-    }return urls.count ? urls.copy : nil;
+    }
+    return urls.count ? urls.copy : nil;
 }
 static NSString *RVDALiveTitleFailure(NSData *attributed) {
     NSArray *fields=RVVoteFields(attributed);
@@ -107,7 +110,8 @@ static NSString *RVDAStructuralFingerprint(NSString *adapter,BOOL title,BOOL ima
         NSData *data=[shape dataUsingEncoding:NSUTF8StringEncoding];unsigned char digest[CC_SHA256_DIGEST_LENGTH];CC_SHA256(data.bytes,(CC_LONG)data.length,digest);
         NSMutableString *value=[NSMutableString string];for (NSUInteger i=0;i<12;i++) [value appendFormat:@"%02x",digest[i]];
         fingerprint=value.copy;[cache setObject:fingerprint forKey:shape];
-    }return fingerprint;
+    }
+    return fingerprint;
 }
 static NSDictionary *RVDALiveCardContract(NSData *model) {
     NSMutableDictionary *result=[RVDALiveCardNavigation(model) mutableCopy];NSString *failure=nil;NSUInteger failed=0;

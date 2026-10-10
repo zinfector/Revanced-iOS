@@ -16,6 +16,7 @@ static id RVSetting(NSString *key) { return Settings[key]; }
 static BOOL RVEnabled(NSString *key) { return RVCompatible && [RVSetting(key) boolValue]; }
 static void RVLog(NSString *message) { [RVStatus addObject:message]; }
 #include "../native/RVRuntime.inc"
+#include "adaptive_fixture.h"
 #include "../native/RVAuthentication.inc"
 
 @interface SSOConfiguration : NSObject
@@ -124,6 +125,7 @@ static void Private(id value) {
         assert(![text containsString:secret]);
 }
 int main(void) { @autoreleasepool {
+    FixtureAdaptivePreflight();
     Settings=[@{@"diagnostics":@YES,@"sideload_auth_identity":@YES,@"sideload_auth_keychain":@YES} mutableCopy];
     RVStatus=[NSMutableArray array];
     // Construct before installation: the getter must adapt existing objects too.

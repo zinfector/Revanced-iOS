@@ -278,11 +278,11 @@ static void RVSPInstall(void) {
             ((void(*)(id,SEL,id,double,double,int))original)(object,sel,time,before,after,source);
         };
     }));
-    RVSPHooks[@"player_scrubbing"]=@(RVHook(@"YTPlayerViewController",@"notifyDidStartScrubbingAtTime:",@"v@:d",NO,^id(IMP original,SEL sel) {
-        return ^(id object,double seconds) { if (object==RVCurrentPlayer) RVSPUserSeek(@"scrubbing");((void(*)(id,SEL,double))original)(object,sel,seconds); };
+    RVSPHooks[@"player_scrubbing"]=@(RVHook(@"YTPlayerViewController",@"notifyDidStartScrubbingAtTime:",@"v@:@",NO,^id(IMP original,SEL sel) {
+        return ^(id object,id time) { if (object==RVCurrentPlayer) RVSPUserSeek(@"scrubbing");((void(*)(id,SEL,id))original)(object,sel,time); };
     }));
-    RVSPHooks[@"player_scrubbing_end"]=@(RVHook(@"YTPlayerViewController",@"notifyDidEndScrubbingAtTime:",@"v@:d",NO,^id(IMP original,SEL sel) {
-        return ^(id object,double seconds) { ((void(*)(id,SEL,double))original)(object,sel,seconds);if (object==RVCurrentPlayer) RVSPRefreshUI(); };
+    RVSPHooks[@"player_scrubbing_end"]=@(RVHook(@"YTPlayerViewController",@"notifyDidEndScrubbingAtTime:",@"v@:@",NO,^id(IMP original,SEL sel) {
+        return ^(id object,id time) { ((void(*)(id,SEL,id))original)(object,sel,time);if (object==RVCurrentPlayer) RVSPRefreshUI(); };
     }));
     RVSPHooks[@"content_reset"]=@(RVHook(@"YTLocalPlaybackController",@"resetWithCurrentVideoSequencer",@"v@:",NO,^id(IMP original,SEL sel) {
         return ^(id object) {

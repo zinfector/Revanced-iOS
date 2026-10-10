@@ -21,7 +21,7 @@ import uuid
 
 PORT = 49629
 MAX_RESPONSE = 16 * 1024 * 1024
-TOPICS = ('dearrow', 'watch', 'all', 'adblock', 'speed', 'ryd', 'sponsorblock', 'navigation')
+TOPICS = ('dearrow', 'watch', 'all', 'adblock', 'speed', 'ryd', 'sponsorblock', 'navigation', 'adaptive')
 ROOT = Path(sys.executable).resolve().parent.parent if getattr(sys, 'frozen', False) else Path(__file__).resolve().parent
 
 

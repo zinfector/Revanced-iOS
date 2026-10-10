@@ -15,6 +15,7 @@ static id RVSetting(NSString *key) { return [TestDefaults objectForKey:[RVPrefer
 static void RVLog(NSString *value) { [RVStatus addObject:value]; }
 static NSUserDefaults *FixtureDefaults(id object,SEL selector) { (void)object;(void)selector;return TestDefaults; }
 #include "../native/RVRuntime.inc"
+#include "adaptive_fixture.h"
 #include "../native/RVSettingsRows.inc"
 static id FixtureIcon;
 static id RVSettingsEntryIcon(void) { return FixtureIcon; }
@@ -92,6 +93,7 @@ static id NestedController;
 @end
 
 int main(void) { @autoreleasepool {
+    FixtureAdaptivePreflight();
     NSString *suite=[@"RVPort.SettingsFixture." stringByAppendingString:NSUUID.UUID.UUIDString];
     TestDefaults=[[NSUserDefaults alloc] initWithSuiteName:suite];
     Method defaults=class_getClassMethod(NSUserDefaults.class,@selector(standardUserDefaults));

@@ -1,5 +1,6 @@
-"""YouTube iOS native-payload patcher. Python standard library only."""
+"""YouTube iOS patcher with target-bound adaptive discovery and runtime preflight."""
 import argparse
+import base64
 import hashlib
 import json
 import math
@@ -86,9 +87,12 @@ def inspect(ipa):
         p = profile()
         compatible = (info.get('CFBundleIdentifier') == p['bundle'] and info.get('CFBundleShortVersionString') == p['version']
             and image.uuid == p['uuid'] and sha(binary) == p['executable_sha256'] and not image.encrypted)
+        candidate=(info.get('CFBundleIdentifier')=='com.google.ios.youtube' and info.get('CFBundleExecutable')=='YouTube'
+                   and not image.encrypted and app+'/'+STAMP_NAME not in z.namelist())
         return {'app': app, 'bundle': info.get('CFBundleIdentifier'), 'version': info.get('CFBundleShortVersionString'),
                 'uuid': image.uuid, 'executable_sha256': sha(binary), 'encrypted': image.encrypted,
-                'supported_original': compatible, 'already_patched': app+'/'+STAMP_NAME in z.namelist(),
+                'supported_original': compatible, 'adaptive_candidate':candidate, 'discovery_required':True,
+                'already_patched': app+'/'+STAMP_NAME in z.namelist(),
                 'header_padding': image.first_content-image.end, 'dylibs': [n for _, n in image.dylibs()]}
 
 def validate_config(config):
@@ -188,18 +192,30 @@ def payload(path):
             raise PatchError(f'Non-system payload dependency is not packaged: {name}')
     return data
 
-def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
+def patch(ipa, output, dylib, config, strip_extensions=False, branding=None, *, adaptive_profile='auto'):
     from macho import inject_library
     ipa, output, dylib = Path(ipa).resolve(), Path(output).resolve(), Path(dylib).resolve()
     if output == ipa: raise PatchError('Output must not replace the input IPA')
     if output.exists(): raise PatchError(f'Output already exists: {output}')
     c = validate_config(config)
     library = payload(dylib)
-    p = profile()
+    if adaptive_profile is False and b'RVPORT_ADAPTIVE_1:' in library:
+        raise PatchError('An adaptive payload requires an adaptive profile')
+    p = profile() if adaptive_profile is False else None
     with zipfile.ZipFile(ipa) as z:
         app, info, binary, image = read_app(z)
         if app+'/'+STAMP_NAME in z.namelist(): raise PatchError('Already patched; use the original IPA')
         if image.encrypted: raise PatchError('Main executable is encrypted')
+        original_header=binary[:image.first_content]
+        if adaptive_profile is not False:
+            from adaptive import discover_binary, validate, payload_tag, canonical, PROFILE_NAME
+            # Always rediscover: a supplied profile is a review/cache artifact,
+            # never authority to authorize a changed callback or stale address.
+            discovered=discover_binary(info,binary)
+            supplied=json.loads(Path(adaptive_profile).read_text()) if adaptive_profile!='auto' else discovered
+            if canonical(supplied)!=canonical(discovered): raise PatchError('Supplied adaptive profile differs from fresh discovery')
+            p=validate(discovered,info,image,sha(binary))
+            if payload_tag(p) not in library: raise PatchError('Payload does not contain this adaptive catalog; rebuild it')
         if info.get('CFBundleIdentifier')!=p['bundle'] or info.get('CFBundleShortVersionString')!=p['version'] or image.uuid!=p['uuid'] or sha(binary)!=p['executable_sha256']:
             raise PatchError('Unsupported app version or executable hash; no output produced')
         binary = inject_library(binary, LOAD_PATH)
@@ -208,10 +224,17 @@ def patch(ipa, output, dylib, config, strip_extensions=False, branding=None):
                   'original_executable_sha256': p['executable_sha256'], 'patched_executable_sha256': sha(binary),
                   'payload_sha256': sha(library), 'config': c, 'signing_required': True,
                   'device_validated': False, 'extensions_removed': strip_extensions}
+        if adaptive_profile is not False:
+            profile_bytes=canonical(p)
+            marker.update(patcher_version='0.4.0-adaptive',release_flavor='adaptive',
+                          adaptive_profile_sha256=sha(profile_bytes), catalog_sha256=p['catalog_sha256'],
+                          disabled_features=p['disabled_features'], discovery_summary=p['summary'],
+                          original_header_base64=base64.b64encode(original_header).decode('ascii'))
         replaced = {app+'/'+info['CFBundleExecutable']: binary,
                     app+'/Frameworks/'+PAYLOAD_NAME: library,
                     app+'/'+CONFIG_NAME: json.dumps(c,indent=2).encode(),
                     app+'/'+STAMP_NAME: json.dumps(marker,indent=2).encode()}
+        if adaptive_profile is not False: replaced[app+'/'+PROFILE_NAME]=profile_bytes
         if c['app_name']:
             info['CFBundleDisplayName']=c['app_name']
             replaced[app+'/Info.plist']=plistlib.dumps(info,fmt=plistlib.FMT_BINARY)
@@ -261,7 +284,25 @@ def verify(ipa):
             c = json.loads(z.read(app+'/'+CONFIG_NAME))
             library = z.read(app+'/Frameworks/'+PAYLOAD_NAME)
         except (KeyError, ValueError) as ex: raise PatchError('Missing or invalid patch artifacts') from ex
-        p = profile()
+        if not marker.get('adaptive_profile_sha256') and (b'RVPORT_ADAPTIVE_1:' in library or marker.get('release_flavor')=='adaptive'):
+            raise PatchError('Adaptive payload/profile binding cannot be downgraded to a legacy manifest')
+        if marker.get('adaptive_profile_sha256'):
+            from adaptive import validate, payload_tag, PROFILE_NAME
+            try: profile_bytes=z.read(app+'/'+PROFILE_NAME);p=json.loads(profile_bytes)
+            except (KeyError,ValueError) as ex: raise PatchError('Missing/invalid adaptive profile') from ex
+            if sha(profile_bytes)!=marker['adaptive_profile_sha256']: raise PatchError('Adaptive profile integrity mismatch')
+            validate(p,info,image)
+            if p['executable_sha256']!=marker.get('original_executable_sha256') or p['catalog_sha256']!=marker.get('catalog_sha256') or payload_tag(p) not in library:
+                raise PatchError('Adaptive profile/catalog/payload binding mismatch')
+            try: original_header=base64.b64decode(marker['original_header_base64'],validate=True)
+            except (KeyError,ValueError) as ex: raise PatchError('Invalid original header receipt') from ex
+            if len(original_header)!=image.first_content: raise PatchError('Original header size mismatch')
+            original=original_header+binary[image.first_content:]
+            if sha(original)!=p['executable_sha256']: raise PatchError('Reconstructed original executable hash mismatch')
+            from adaptive import discover_binary, canonical
+            if canonical(p)!=canonical(discover_binary(info,original)):
+                raise PatchError('Adaptive profile differs from rediscovery of the original executable')
+        else: p = profile()
         if marker.get('profile') != p['id'] or info.get('CFBundleIdentifier') != p['bundle'] or info.get('CFBundleShortVersionString') != p['version'] or image.uuid != p['uuid']:
             raise PatchError('Profile/identity mismatch')
         if sha(binary)!=marker.get('patched_executable_sha256') or sha(library)!=marker.get('payload_sha256'):
@@ -278,17 +319,24 @@ def verify(ipa):
         if payload_image.filetype != 6 or payload_image.platform != 2 or (LC_ID_DYLIB, LOAD_PATH) not in payload_image.dylibs():
             raise PatchError('Invalid payload image')
         return {'status':'verified', 'signing_required':True, 'device_validated':False,
-                'profile':p['id'], 'features':{k:c[k] for k in FEATURES}, 'default_speed':c['default_speed'], 'default_quality':c['default_quality']}
+                'profile':p['id'], 'disabled_features':p.get('disabled_features',[]),
+                'runtime_preflight_required':bool(marker.get('adaptive_profile_sha256')),
+                'features':{k:c[k] for k in FEATURES}, 'default_speed':c['default_speed'], 'default_quality':c['default_quality']}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command',required=True)
     for name in ('inspect','verify'):
         sub=commands.add_parser(name);sub.add_argument('ipa',type=Path)
+    sub=commands.add_parser('discover',help='Discover and save the exact target profile')
+    sub.add_argument('ipa',type=Path);sub.add_argument('-o','--output',type=Path,required=True)
+    sub=commands.add_parser('explain',help='Explain resolved and blocked contracts')
+    sub.add_argument('profile',type=Path)
     sub=commands.add_parser('patch')
     sub.add_argument('ipa',type=Path);sub.add_argument('-o','--output',type=Path,required=True)
     sub.add_argument('--payload',type=Path,default=ROOT/'build/RVPort.dylib')
     sub.add_argument('--config',type=Path)
+    sub.add_argument('--profile',type=Path,help='Require a reviewed profile to equal fresh discovery')
     sub.add_argument('--features',help='Comma-separated enabled features; replaces defaults')
     sub.add_argument('--speed',type=float)
     sub.add_argument('--quality',type=int)
@@ -302,6 +350,15 @@ def main():
     try:
         if args.command=='inspect':result=inspect(args.ipa)
         elif args.command=='verify':result=verify(args.ipa)
+        elif args.command=='discover':
+            from adaptive import discover, canonical, explanation
+            p=discover(args.ipa)
+            args.output.parent.mkdir(parents=True,exist_ok=True)
+            with args.output.open('xb') as stream: stream.write(canonical(p))
+            result=explanation(p)
+        elif args.command=='explain':
+            from adaptive import explanation
+            result=explanation(json.loads(args.profile.read_text()))
         else:
             c=json.loads(args.config.read_text()) if args.config else {}
             if args.all_features:c.update({f:True for f in FEATURES})
@@ -314,7 +371,8 @@ def main():
             if args.ad_strategy:c['ad_strategy']=args.ad_strategy
             if args.app_name is not None:c['app_name']=args.app_name
             branding={k:getattr(args,k) for k in ('header_image','icon_120','icon_180','icon_152') if getattr(args,k)}
-            result=patch(args.ipa,args.output,args.payload,c,args.strip_extensions,branding)
+            result=patch(args.ipa,args.output,args.payload,c,args.strip_extensions,branding,adaptive_profile=args.profile or 'auto')
+        if args.command=='patch': result={k:v for k,v in result.items() if k!='original_header_base64'}
         print(json.dumps(result,indent=2))
         return 0
     except (PatchError,OSError,zipfile.BadZipFile,KeyError,ValueError) as ex:

@@ -12,7 +12,8 @@ static NSData *RVDAPathChild(NSData *data,id step) {
     if (!number || wanted>=16) return nil;
     for (RVVoteField *field in RVVoteFields(data)) if (field.number==number) {
         if (field.wire!=2) return nil;if (index++==wanted) return field.value;
-    }return nil;
+    }
+    return nil;
 }
 static NSData *RVDAPath(NSData *data,NSArray *path) {
     for (id step in path) { data=RVDAPathChild(data,step);if (!data) return nil; }return data;
@@ -34,7 +35,8 @@ static NSData *RVDASetPath(NSData *data,NSArray *path,NSData *value) {
     for (RVVoteField *field in fields) {
         if (field.number==number && index++==wanted) { [result appendData:RVVoteMessageField(number,next)];replaced=YES; }
         else [result appendData:field.raw];
-    }return replaced ? result : nil;
+    }
+    return replaced ? result : nil;
 }
 static NSString *RVDAText(NSData *data) {
     return data.length<=4096 ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
@@ -205,7 +207,8 @@ static double RVDADurationText(NSString *text) {
     for (NSString *part in parts) {
         if (!part.length || [part rangeOfCharacterFromSet:NSCharacterSet.decimalDigitCharacterSet.invertedSet].location!=NSNotFound) return 0;
         double next=part.doubleValue;if (next<0 || (index++ && next>=60)) return 0;value=value*60+next;
-    }return value>0 && value<=604800 ? value : 0;
+    }
+    return value>0 && value<=604800 ? value : 0;
 }
 static NSString *RVDAImageURL(NSData *image,NSString *video) {
     NSString *best=nil;uint64_t width=0;NSUInteger count=0;
@@ -216,7 +219,8 @@ static NSString *RVDAImageURL(NSData *image,NSString *video) {
         if (![parts.scheme isEqual:@"https"] || ![@[@"i.ytimg.com",@"i1.ytimg.com",@"i2.ytimg.com",@"i3.ytimg.com",@"i4.ytimg.com"] containsObject:parts.host.lowercaseString] || parts.user || parts.password || path.count!=4 || ![@[@"vi",@"vi_webp"] containsObject:path[1]] || ![path[2] isEqual:video]) continue;
         RVVoteField *size=RVVoteOne(RVVoteFields(field.value),4,0);
         if (!best || size.scalar>=width) { best=url;width=size.scalar; }
-    }return best;
+    }
+    return best;
 }
 static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
     NSArray *fields=RVVoteFields(data);if (!fields) return nil;
@@ -234,7 +238,8 @@ static NSData *RVDASlots(NSData *data,BOOL title,BOOL image) {
             if (image && [@[@"thumbnail_slot",@"compact_thumbnail_slot"] containsObject:name]) continue;
         }
         [result appendData:field.raw];
-    }return result;
+    }
+    return result;
 }
 #include "RVDeArrowLiveCard.inc"
 // Native descriptors: HorizontalShelfModel.shelfData=20,
@@ -286,7 +291,8 @@ static NSArray<RVDAProjection *> *RVDAShelfProfiles(NSData *model,NSString *key)
         profile.duration=RVDADurationText(RVDAText(RVDAChild(thumbnail,2)));
         profile.livestream=RVVoteOne(tf,4,0).scalar==2;
         profile.structuralFingerprint=RVDAStructuralFingerprint(profile.adapterID,profile.titleRole,profile.imageRole);[found addObject:profile];
-    }return found.copy;
+    }
+    return found.copy;
 }
 // Descriptor-proven alternative: ShelfCard.viewModel (YTIRenderer) ->
 // YTIElementViewModel extension 36905 -> ELMPBElement field 1. These bytes
@@ -310,7 +316,8 @@ static NSArray<NSDictionary *> *RVDAShelfViewModels(NSData *model,NSString *key)
         total+=element.length;if (total>2*1024*1024) return @[];
         [children addObject:@{@"element":element,@"occurrence":@(index),
             @"path":@[@312131490,@20,@{@"field":@17,@"occurrence":@(index)},@2,@36905,@1]}];
-    }return children.copy;
+    }
+    return children.copy;
 }
 static void RVDADiscover(NSData *element,NSArray *path,NSMutableArray<RVDAProjection *> *found,
                        NSUInteger depth,NSUInteger *budget,NSString *watchVideo) {

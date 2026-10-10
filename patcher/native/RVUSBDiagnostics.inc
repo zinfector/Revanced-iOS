@@ -54,12 +54,17 @@ static NSDictionary *RVDiagnosticsSnapshot(NSString *topic) {
     else if ([topic isEqual:@"ryd"]) data=RVDislikeCheckpointReport();
     else if ([topic isEqual:@"sponsorblock"]) data=RVSponsorReport();
     else if ([topic isEqual:@"navigation"]) data=RVShortsReport();
+    else if ([topic isEqual:@"adaptive"]) data=@{@"profile":RVAdaptiveProfile[@"id"] ?: @"",
+        @"catalog_sha256":RV_ADAPTIVE_CATALOG_SHA256,@"contracts":RVAdaptiveDiagnostics ?: @{},
+        @"disabled_features":RVAdaptiveProfile[@"disabled_features"] ?: @[],@"runtime_disabled_features":RVAdaptiveBlockedFeatures.allObjects ?: @[],@"installed_layers":@(RVAdaptiveLedger.count)};
     else if ([topic isEqual:@"all"]) {
         NSArray *hooks;@synchronized(RVStatus) { hooks=RVStatus.copy; }
         data=@{@"effective_config":RVEffectivePreferences(),@"hooks":hooks ?: @[],@"authentication":RVAuthenticationReport(),
             @"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),
             @"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),
-            @"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
+            @"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport(),
+            @"adaptive":@{@"profile":RVAdaptiveProfile[@"id"] ?: @"",@"contracts":RVAdaptiveDiagnostics ?: @{},
+                @"disabled_features":RVAdaptiveProfile[@"disabled_features"] ?: @[],@"runtime_disabled_features":RVAdaptiveBlockedFeatures.allObjects ?: @[],@"installed_layers":@(RVAdaptiveLedger.count)}};
     }
     if (!data) return nil;
     NSMutableDictionary *report=[data mutableCopy];
@@ -274,7 +279,7 @@ static BOOL RVUSBWrite(int fd,const void *buffer,size_t length) {
     });
     if ([operation isEqual:@"status"]) return @{@"schema":@1,@"ok":@YES,@"operation":operation,@"data":[self status]};
     if (![@[@"report",@"capture-start",@"capture-stop",@"probe"] containsObject:operation]) return RVUSBError(@"unsupported_operation");
-    if ([operation isEqual:@"report"] && ![@[@"all",@"dearrow",@"watch",@"adblock",@"speed",@"ryd",@"sponsorblock",@"navigation"] containsObject:topic]) return RVUSBError(@"unsupported_report_topic");
+    if ([operation isEqual:@"report"] && ![@[@"all",@"dearrow",@"watch",@"adblock",@"speed",@"ryd",@"sponsorblock",@"navigation",@"adaptive"] containsObject:topic]) return RVUSBError(@"unsupported_report_topic");
     @synchronized(self) { if (self.snapshotPending) return RVUSBError(@"main_queue_snapshot_pending");self.snapshotPending=YES; }
     RVUSBDiagnosticTicket *ticket=[RVUSBDiagnosticTicket new];dispatch_semaphore_t completed=dispatch_semaphore_create(0);
     dispatch_async(dispatch_get_main_queue(),^{

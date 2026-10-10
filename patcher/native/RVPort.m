@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.62"
+#define RV_PORT_VERSION @"0.4.2-runtime-pilot-xcode"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
@@ -79,8 +79,12 @@ static id RVSetting(NSString *key) {
     id override=[[NSUserDefaults standardUserDefaults] objectForKey:[RVPreferencePrefix stringByAppendingString:key]];
     return override ?: RVConfig[key];
 }
-static BOOL RVEnabled(NSString *key) { return RVCompatible && [RVSetting(key) boolValue]; }
+static BOOL RVAdaptiveFeature(NSString *key);
+static BOOL RVEnabled(NSString *key) { return RVCompatible && RVAdaptiveFeature(key) && [RVSetting(key) boolValue]; }
 #include "RVRuntime.inc"
+#include "RVSourceReuse.inc"
+#include "RVRuntimePolicy.inc"
+#define RVSourceFeatureEnabled RVRuntimeSourceFeatureEnabled
 // The player's native clock observes its active video's event center directly.
 // Resolve the same core controller rather than associating a second session with
 // the player facade (whose seek method takes a double, not YTSingleVideoTime).
@@ -88,10 +92,7 @@ static id RVPlaybackForPlayer(id player) {
     Class playerClass=NSClassFromString(@"YTPlayerViewController");
     Class localClass=NSClassFromString(@"YTLocalPlaybackController");
     if (!playerClass || !localClass || ![player isKindOfClass:playerClass]) return nil;
-    Ivar field=class_getInstanceVariable(playerClass,"_playbackController");
-    const char *type=field ? ivar_getTypeEncoding(field) : NULL;
-    if (!type || strcmp(type,"@\"<YTCorePlaybackController>\"")!=0) return nil;
-    id controller=object_getIvar(player,field);
+    id controller=RVRuntimeFieldObject(player,@"YTPlayerViewController",@"_playbackController",NULL);
     return [controller isKindOfClass:localClass] ? controller : nil;
 }
 static id RVContentResponse(id controller) {
@@ -275,11 +276,7 @@ static void RVObservePlayerClock(id player,id time) {
 }
 
 static BOOL RVDataMatches(NSData *data,NSArray<NSString *> *patterns) {
-    for (NSString *pattern in patterns) {
-        NSData *needle=[pattern dataUsingEncoding:NSUTF8StringEncoding];
-        if ([data rangeOfData:needle options:0 range:NSMakeRange(0,data.length)].location!=NSNotFound) return YES;
-    }
-    return NO;
+    return RVSourceDataMatches(data,patterns);
 }
 #include "RVWireFields.inc"
 #include "RVAdFeed.inc"
@@ -300,7 +297,7 @@ static id RVLimitFormats(id formats) {
         int resolution=cap ? RVInt(format,"singleDimensionResolution") : 0;
         if (cap && resolution>cap) continue;
         NSString *mime=RVObject(format,"MIMEType");
-        if (RVEnabled(@"disable_vp9") && [mime isKindOfClass:[NSString class]] &&
+        if (RVSourceFeatureEnabled(@"disable_vp9") && [mime isKindOfClass:[NSString class]] &&
             ([mime.lowercaseString containsString:@"vp9"] || [mime.lowercaseString containsString:@"vp09"])) continue;
         if (RVEnabled(@"disable_hdr") && RVCan(format,"transferCharacteristics",@"C@:")) {
             unsigned char transfer=((unsigned char(*)(id,SEL))objc_msgSend)(format,sel_registerName("transferCharacteristics"));
@@ -409,22 +406,7 @@ static NSDictionary *RVSponsorReport(void) {
 @end
 
 static BOOL RVCheckIdentity(void) {
-    NSDictionary *info=NSBundle.mainBundle.infoDictionary;
-    // Installation tools may reassign the bundle ID. Main-image UUID is the
-    // executable identity; preserve that check while allowing re-signing.
-    if (![info[@"CFBundleShortVersionString"] isEqual:@"21.39.4"] || ![info[@"CFBundleExecutable"] isEqual:@"YouTube"]) return NO;
-    const struct mach_header_64 *header=(const struct mach_header_64 *)_dyld_get_image_header(0);
-    if (!header || header->magic!=MH_MAGIC_64) return NO;
-    const uint8_t expected[16]={0x1f,0x61,0x66,0x5a,0x5d,0x4a,0x35,0x66,0x8b,0x77,0xda,0x82,0x1e,0x1d,0x6c,0x17};
-    const uint8_t *cursor=(const uint8_t *)(header+1),*end=cursor+header->sizeofcmds;
-    for (uint32_t i=0;i<header->ncmds && cursor+sizeof(struct load_command)<=end;i++) {
-        const struct load_command *command=(const struct load_command *)cursor;
-        if (command->cmdsize<8 || cursor+command->cmdsize>end) return NO;
-        if (command->cmd==LC_UUID && command->cmdsize>=sizeof(struct uuid_command))
-            return memcmp(((const struct uuid_command *)command)->uuid,expected,16)==0;
-        cursor+=command->cmdsize;
-    }
-    return NO;
+    return RVAdaptiveIdentity();
 }
 __attribute__((constructor)) static void RVStart(void) {
     @autoreleasepool {
@@ -433,8 +415,8 @@ __attribute__((constructor)) static void RVStart(void) {
         NSData *data=[NSData dataWithContentsOfFile:path];
         id config=data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
-        RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
-        RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
+        RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1 && RVAdaptivePreflight();
+        RVLog(RVCompatible ? @"Target-bound adaptive profile accepted" : @"App identity/config/profile mismatch: hooks disabled");
         if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];

@@ -16,7 +16,7 @@ from features import CATALOG as LABELS
 class App:
     def __init__(self, root):
         self.root = root
-        root.title('YouTube iOS Patcher 0.3.62 (merged) - 21.39.4')
+        root.title('YouTube iOS Adaptive Patcher 0.4.0')
         root.geometry('740x720')
         root.minsize(660, 680)
         self.events = queue.Queue()
@@ -36,7 +36,7 @@ class App:
         frame.pack(fill='both', expand=True)
         frame.columnconfigure(1, weight=1)
         ttk.Label(frame, text='YouTube iOS Patcher', font=('Segoe UI', 18, 'bold')).grid(row=0, column=0, columnspan=3, sticky='w')
-        ttk.Label(frame, text='Supports the analyzed, decrypted YouTube 21.39.4 ARM64 build.').grid(row=1, column=0, columnspan=3, sticky='w', pady=(3, 14))
+        ttk.Label(frame, text='Discovers decrypted ARM64 builds; profiles report unavailable patches.').grid(row=1, column=0, columnspan=3, sticky='w', pady=(3, 14))
         for row, text, variable, callback in ((2, 'Original IPA', self.input, self.choose_input), (3, 'Output IPA', self.output, self.choose_output)):
             ttk.Label(frame, text=text).grid(row=row, column=0, sticky='w', padx=(0, 12))
             ttk.Entry(frame, textvariable=variable).grid(row=row, column=1, sticky='ew', pady=4)

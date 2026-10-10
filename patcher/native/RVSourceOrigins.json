@@ -1,0 +1,841 @@
+{
+  "schema": 1,
+  "upstream_source_sha256": {
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\BackgroundPlaybackPatch.java": "ec4cb67999925021b986fca075521c29414c20b6e9b8ecb3b05c452f703590a4",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableAutoCaptionsPatch.java": "3e5da7bc6c97f624ad3810bbf466b749e69be3b5f80326f8070dabd2516467e4",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableDoubleTapActionsPatch.java": "dd326eb8689b59233236fe7b8b30cc5d53955e9c37c97cc490ef3381355ebe45",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableFullscreenAmbientModePatch.java": "ed237c2a3c51a06e16b98c966eaec318b199ca87d7149e049188cde5e63e2fec",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePlayerPopupPanelsPatch.java": "605bd3d16d0772956dbdf5a855f819fb733b1d31768aa4052261cef41470899c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePreciseSeekingGesturePatch.java": "df0ad68445d2e883b11f775dd44646d822daae5d9c8fcb2082dbd19ee276b471",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableResumingStartupShortsPlayerPatch.java": "d7dcca2bc9e855fe8ff38b39e067ac56fedfb4846c45cc1e572b5c95e4bca51c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableRollingNumberAnimationsPatch.java": "688e4f20e58ec3ccfe943731b9786b800ae7c47e8ea29d0d4a5c8f1c358c2e12",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableSignInToTVPopupPatch.java": "007d53fde9fb521b300675e34b41caa5c839229fb25759b5d413757396903fe8",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableVideoCodecsPatch.java": "6c39db7f2742e86d492152ccc688af3af8d49e7d2469306a04a409aae608b5a0",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\FixPlaybackSpeedWhilePlayingPatch.java": "40fa89ab8976a1f811a7cd223ca67366fdd0cd4f2e30964ed4d5e620c6887dbd",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideAutoplayPreviewPatch.java": "a16ad16126282def0429917e38b3f770da58999250320eb0ec37941335766262",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideEndScreenCardsPatch.java": "161c815a9d5b9129b16976a1b73522d54f5ed98a648e1bf009cebd77a72ff756",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideInfoCardsPatch.java": "83bfdd4b89bcc8e7b189b2e896cc6b6c2f2c62a5a738cfd0b978c2c96aed6746",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideRelatedVideoOverlayPatch.java": "0b80e521a1db03c18fa711a1593c0f75089a18e074ae6f0bccca4f5dee0f2bee",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideSeekbarPatch.java": "d9b9519f2b26185a0aedfed3e4b51ba88261532b9d8ddc8b107cdf3601f5fbde",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideTimestampPatch.java": "a7a627970e9830f86cc5315a97cf517a5b8647b800f6a3276d148c3e75016d3c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\PauseOnAudioInterruptPatch.java": "b6f4e96bc0f93de5caa70371325f11c3f3c1484915700a350ae8ba55a632cb16",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\SlideToSeekPatch.java": "463d0fece1394dddbf27da9ba8af83cbc5b9976dc1f4d786f4d45ffac16de774",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\TapToSeekPatch.java": "a17d176500aa1a96d8590e68c99514575d3698cc9145c1c0aa68542270719e36",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\VideoAdsPatch.java": "c71d5caf610c3c01f90d636f12955c8298f2949abd2c12e36959ef4fc9057459",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroup.java": "c1cb7543026528f4189a7b2009abe5ebd2e8ad236ec6d54785a216f04b934b9a"
+  },
+  "kernels": [
+    {
+      "owner": "VideoAdsPatch",
+      "method": "shouldShowAds",
+      "symbol": "rvj_show_video_ads",
+      "parameters": [],
+      "feature": "video_ads",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\VideoAdsPatch.java",
+      "source_sha256": "c71d5caf610c3c01f90d636f12955c8298f2949abd2c12e36959ef4fc9057459",
+      "line": 13,
+      "settings": [
+        "HIDE_VIDEO_ADS"
+      ],
+      "fields": [
+        "SHOW_VIDEO_ADS"
+      ],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "BackgroundPlaybackPatch",
+      "method": "isBackgroundPlaybackAllowed",
+      "symbol": "rvj_background_allowed",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "background_playback",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\BackgroundPlaybackPatch.java",
+      "source_sha256": "ec4cb67999925021b986fca075521c29414c20b6e9b8ecb3b05c452f703590a4",
+      "line": 13,
+      "settings": [],
+      "fields": [],
+      "context_bindings": [
+        "PlayerType.getCurrent",
+        "ShortsPlayerState.isOpen",
+        "current.isNoneOrHidden"
+      ],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "BackgroundPlaybackPatch",
+      "method": "isBackgroundShortsPlaybackAllowed",
+      "symbol": "rvj_shorts_background_allowed",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "background_playback",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\BackgroundPlaybackPatch.java",
+      "source_sha256": "ec4cb67999925021b986fca075521c29414c20b6e9b8ecb3b05c452f703590a4",
+      "line": 39,
+      "settings": [
+        "DISABLE_SHORTS_BACKGROUND_PLAYBACK"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableAutoCaptionsPatch",
+      "method": "disableAutoCaptions",
+      "symbol": "rvj_disable_auto_captions",
+      "parameters": [],
+      "feature": "disable_auto_captions",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableAutoCaptionsPatch.java",
+      "source_sha256": "3e5da7bc6c97f624ad3810bbf466b749e69be3b5f80326f8070dabd2516467e4",
+      "line": 13,
+      "settings": [
+        "DISABLE_AUTO_CAPTIONS"
+      ],
+      "fields": [
+        "captionsButtonStatus"
+      ],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableAutoCaptionsPatch",
+      "method": "setCaptionsButtonStatus",
+      "symbol": "rvj_set_captions_status",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "disable_auto_captions",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableAutoCaptionsPatch.java",
+      "source_sha256": "3e5da7bc6c97f624ad3810bbf466b749e69be3b5f80326f8070dabd2516467e4",
+      "line": 20,
+      "settings": [],
+      "fields": [
+        "captionsButtonStatus"
+      ],
+      "context_bindings": [],
+      "return_type": "void",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableHapticFeedbackPatch",
+      "method": "disableChapterVibrate",
+      "symbol": "rvj_disable_chapter_haptic",
+      "parameters": [],
+      "feature": "disable_haptics",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+      "source_sha256": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+      "line": 14,
+      "settings": [
+        "DISABLE_HAPTIC_FEEDBACK_CHAPTERS"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableHapticFeedbackPatch",
+      "method": "disablePreciseSeekingVibrate",
+      "symbol": "rvj_disable_precise_haptic",
+      "parameters": [],
+      "feature": "disable_haptics",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+      "source_sha256": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+      "line": 21,
+      "settings": [
+        "DISABLE_HAPTIC_FEEDBACK_PRECISE_SEEKING"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableHapticFeedbackPatch",
+      "method": "disableSeekUndoVibrate",
+      "symbol": "rvj_disable_undo_haptic",
+      "parameters": [],
+      "feature": "disable_haptics",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+      "source_sha256": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+      "line": 28,
+      "settings": [
+        "DISABLE_HAPTIC_FEEDBACK_SEEK_UNDO"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableHapticFeedbackPatch",
+      "method": "disableZoomVibrate",
+      "symbol": "rvj_disable_zoom_haptic",
+      "parameters": [],
+      "feature": "disable_haptics",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+      "source_sha256": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+      "line": 44,
+      "settings": [
+        "DISABLE_HAPTIC_FEEDBACK_ZOOM"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableHapticFeedbackPatch",
+      "method": "disableVibrate",
+      "symbol": "rvj_disable_haptics",
+      "parameters": [],
+      "feature": "disable_haptics",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+      "source_sha256": "74735950bfbe72fdf7be0152b556d3f47365b675ca12bb0ce6f3d1cf8f13dad0",
+      "line": 65,
+      "settings": [
+        "DISABLE_HAPTIC_FEEDBACK_CHAPTERS",
+        "DISABLE_HAPTIC_FEEDBACK_PRECISE_SEEKING",
+        "DISABLE_HAPTIC_FEEDBACK_SEEK_UNDO",
+        "DISABLE_HAPTIC_FEEDBACK_TAP_AND_HOLD",
+        "DISABLE_HAPTIC_FEEDBACK_ZOOM"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_haptics",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "DisableFullscreenAmbientModePatch",
+      "method": "getFullScreenBackgroundColor",
+      "symbol": "rvj_fullscreen_background_color",
+      "parameters": [
+        "int"
+      ],
+      "feature": "disable_ambient",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableFullscreenAmbientModePatch.java",
+      "source_sha256": "ed237c2a3c51a06e16b98c966eaec318b199ca87d7149e049188cde5e63e2fec",
+      "line": 18,
+      "settings": [
+        "DISABLE_FULLSCREEN_AMBIENT_MODE"
+      ],
+      "fields": [
+        "DISABLE_FULLSCREEN_AMBIENT_MODE",
+        "DIVIDER_ATTRIBUTES_COLOR_SYSTEM_DEFAULT"
+      ],
+      "context_bindings": [],
+      "return_type": "int",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableDoubleTapActionsPatch",
+      "method": "disableDoubleTapChapters",
+      "symbol": "rvj_chapter_double_tap_allowed",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "disable_chapter_skip",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableDoubleTapActionsPatch.java",
+      "source_sha256": "dd326eb8689b59233236fe7b8b30cc5d53955e9c37c97cc490ef3381355ebe45",
+      "line": 13,
+      "settings": [
+        "DISABLE_CHAPTER_SKIP_DOUBLE_TAP"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_chapter_skip",
+        "invert": true,
+        "arguments": [
+          true
+        ]
+      }
+    },
+    {
+      "owner": "DisablePreciseSeekingGesturePatch",
+      "method": "isGestureDisabled",
+      "symbol": "rvj_precise_gesture_disabled",
+      "parameters": [],
+      "feature": "disable_precise_seeking",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePreciseSeekingGesturePatch.java",
+      "source_sha256": "df0ad68445d2e883b11f775dd44646d822daae5d9c8fcb2082dbd19ee276b471",
+      "line": 7,
+      "settings": [
+        "DISABLE_PRECISE_SEEKING_GESTURE"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_precise_seeking",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideInfoCardsPatch",
+      "method": "hideInfoCardsMethodCall",
+      "symbol": "rvj_hide_info_cards",
+      "parameters": [],
+      "feature": "hide_info_cards",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideInfoCardsPatch.java",
+      "source_sha256": "83bfdd4b89bcc8e7b189b2e896cc6b6c2f2c62a5a738cfd0b978c2c96aed6746",
+      "line": 14,
+      "settings": [
+        "HIDE_INFO_CARDS"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_info_cards",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideEndScreenCardsPatch",
+      "method": "hideEndScreenCards",
+      "symbol": "rvj_hide_end_cards",
+      "parameters": [],
+      "feature": "hide_end_cards",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideEndScreenCardsPatch.java",
+      "source_sha256": "161c815a9d5b9129b16976a1b73522d54f5ed98a648e1bf009cebd77a72ff756",
+      "line": 21,
+      "settings": [
+        "HIDE_END_SCREEN_CARDS"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_end_cards",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideAutoplayPreviewPatch",
+      "method": "hideAutoplayPreview",
+      "symbol": "rvj_hide_autoplay_preview",
+      "parameters": [],
+      "feature": "hide_autoplay_preview",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideAutoplayPreviewPatch.java",
+      "source_sha256": "a16ad16126282def0429917e38b3f770da58999250320eb0ec37941335766262",
+      "line": 10,
+      "settings": [
+        "HIDE_AUTOPLAY_PREVIEW"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_autoplay_preview",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideRelatedVideoOverlayPatch",
+      "method": "hideRelatedVideoOverlay",
+      "symbol": "rvj_hide_related_overlay",
+      "parameters": [],
+      "feature": "hide_related_overlay",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideRelatedVideoOverlayPatch.java",
+      "source_sha256": "0b80e521a1db03c18fa711a1593c0f75089a18e074ae6f0bccca4f5dee0f2bee",
+      "line": 10,
+      "settings": [
+        "HIDE_RELATED_VIDEOS_OVERLAY"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_related_overlay",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideSeekbarPatch",
+      "method": "hideSeekbar",
+      "symbol": "rvj_hide_seekbar",
+      "parameters": [],
+      "feature": "hide_seekbar",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideSeekbarPatch.java",
+      "source_sha256": "d9b9519f2b26185a0aedfed3e4b51ba88261532b9d8ddc8b107cdf3601f5fbde",
+      "line": 10,
+      "settings": [
+        "HIDE_SEEKBAR"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_seekbar",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideSeekbarPatch",
+      "method": "useFullscreenLargeSeekbar",
+      "symbol": "rvj_large_seekbar",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "hide_seekbar",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideSeekbarPatch.java",
+      "source_sha256": "d9b9519f2b26185a0aedfed3e4b51ba88261532b9d8ddc8b107cdf3601f5fbde",
+      "line": 17,
+      "settings": [
+        "FULLSCREEN_LARGE_SEEKBAR"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableResumingStartupShortsPlayerPatch",
+      "method": "disableResumingStartupShortsPlayer",
+      "symbol": "rvj_disable_shorts_resume",
+      "parameters": [],
+      "feature": "disable_shorts_resume",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableResumingStartupShortsPlayerPatch.java",
+      "source_sha256": "d7dcca2bc9e855fe8ff38b39e067ac56fedfb4846c45cc1e572b5c95e4bca51c",
+      "line": 11,
+      "settings": [
+        "DISABLE_RESUMING_SHORTS_PLAYER"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_shorts_resume",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "DisableResumingStartupShortsPlayerPatch",
+      "method": "disableResumingStartupShortsPlayer",
+      "symbol": "rvj_resume_shorts_allowed",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "disable_shorts_resume",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableResumingStartupShortsPlayerPatch.java",
+      "source_sha256": "d7dcca2bc9e855fe8ff38b39e067ac56fedfb4846c45cc1e572b5c95e4bca51c",
+      "line": 18,
+      "settings": [
+        "DISABLE_RESUMING_SHORTS_PLAYER"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "TapToSeekPatch",
+      "method": "tapToSeekEnabled",
+      "symbol": "rvj_tap_to_seek",
+      "parameters": [],
+      "feature": "tap_to_seek",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\TapToSeekPatch.java",
+      "source_sha256": "a17d176500aa1a96d8590e68c99514575d3698cc9145c1c0aa68542270719e36",
+      "line": 7,
+      "settings": [
+        "TAP_TO_SEEK"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "tap_to_seek",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "SlideToSeekPatch",
+      "method": "isSlideToSeekDisabled",
+      "symbol": "rvj_slide_to_seek_disabled",
+      "parameters": [
+        "boolean"
+      ],
+      "feature": "tap_to_seek",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\SlideToSeekPatch.java",
+      "source_sha256": "463d0fece1394dddbf27da9ba8af83cbc5b9976dc1f4d786f4d45ffac16de774",
+      "line": 9,
+      "settings": [
+        "SLIDE_TO_SEEK"
+      ],
+      "fields": [
+        "SLIDE_TO_SEEK_DISABLED"
+      ],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "FixPlaybackSpeedWhilePlayingPatch",
+      "method": "playbackSpeedChanged",
+      "symbol": "rvj_block_speed_reset",
+      "parameters": [
+        "float"
+      ],
+      "feature": "remember_speed",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\FixPlaybackSpeedWhilePlayingPatch.java",
+      "source_sha256": "40fa89ab8976a1f811a7cd223ca67366fdd0cd4f2e30964ed4d5e620c6887dbd",
+      "line": 11,
+      "settings": [],
+      "fields": [
+        "DEFAULT_YOUTUBE_PLAYBACK_SPEED"
+      ],
+      "context_bindings": [
+        "Logger.printDebug -> host diagnostics omitted",
+        "PlayerType.getCurrent().isMaximizedOrFullscreen"
+      ],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "DisableVideoCodecsPatch",
+      "method": "allowVP9",
+      "symbol": "rvj_allow_vp9",
+      "parameters": [],
+      "feature": "disable_vp9",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableVideoCodecsPatch.java",
+      "source_sha256": "6c39db7f2742e86d492152ccc688af3af8d49e7d2469306a04a409aae608b5a0",
+      "line": 22,
+      "settings": [
+        "FORCE_AVC_CODEC"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_vp9",
+        "invert": true,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "DisablePlayerPopupPanelsPatch",
+      "method": "disablePlayerPopupPanels",
+      "symbol": "rvj_disable_player_popup_panels",
+      "parameters": [],
+      "feature": "disable_popup_panels",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePlayerPopupPanelsPatch.java",
+      "source_sha256": "605bd3d16d0772956dbdf5a855f819fb733b1d31768aa4052261cef41470899c",
+      "line": 10,
+      "settings": [
+        "DISABLE_PLAYER_POPUP_PANELS"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_popup_panels",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "DisableSignInToTVPopupPatch",
+      "method": "disableSignInToTvPopup",
+      "symbol": "rvj_disable_tv_signin_popup",
+      "parameters": [],
+      "feature": "disable_tv_popup",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableSignInToTVPopupPatch.java",
+      "source_sha256": "007d53fde9fb521b300675e34b41caa5c839229fb25759b5d413757396903fe8",
+      "line": 11,
+      "settings": [
+        "DISABLE_SIGN_IN_TO_TV_POPUP"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_tv_popup",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "DisableRollingNumberAnimationsPatch",
+      "method": "disableRollingNumberAnimations",
+      "symbol": "rvj_disable_rolling_numbers",
+      "parameters": [],
+      "feature": "disable_rolling_numbers",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableRollingNumberAnimationsPatch.java",
+      "source_sha256": "688e4f20e58ec3ccfe943731b9786b800ae7c47e8ea29d0d4a5c8f1c358c2e12",
+      "line": 10,
+      "settings": [
+        "DISABLE_ROLLING_NUMBER_ANIMATIONS"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "disable_rolling_numbers",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "HideTimestampPatch",
+      "method": "hideTimestamp",
+      "symbol": "rvj_hide_timestamp",
+      "parameters": [],
+      "feature": "hide_timestamp",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideTimestampPatch.java",
+      "source_sha256": "a7a627970e9830f86cc5315a97cf517a5b8647b800f6a3276d148c3e75016d3c",
+      "line": 7,
+      "settings": [
+        "HIDE_TIMESTAMP"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "hide_timestamp",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "PauseOnAudioInterruptPatch",
+      "method": "shouldPauseOnAudioInterrupt",
+      "symbol": "rvj_pause_on_audio_interrupt",
+      "parameters": [],
+      "feature": "pause_on_interrupt",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\PauseOnAudioInterruptPatch.java",
+      "source_sha256": "b6f4e96bc0f93de5caa70371325f11c3f3c1484915700a350ae8ba55a632cb16",
+      "line": 15,
+      "settings": [
+        "PAUSE_ON_AUDIO_INTERRUPT"
+      ],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "boolean",
+      "source_compiled": true,
+      "device_validated": false,
+      "native_policy": {
+        "feature": "pause_on_interrupt",
+        "invert": false,
+        "arguments": []
+      }
+    },
+    {
+      "owner": "FilterGroup$ByteArrayFilterGroup",
+      "method": "createFailurePattern",
+      "symbol": "rvj_kmp_failure",
+      "parameters": [
+        "byte[]"
+      ],
+      "feature": "filtering",
+      "precondition": "Pattern length between 1 and 1048576; returned array owned by caller",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroup.java",
+      "source_sha256": "c1cb7543026528f4189a7b2009abe5ebd2e8ad236ec6d54785a216f04b934b9a",
+      "line": 151,
+      "settings": [],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "int[]",
+      "source_compiled": true,
+      "device_validated": false
+    },
+    {
+      "owner": "FilterGroup$ByteArrayFilterGroup",
+      "method": "indexOf",
+      "symbol": "rvj_kmp_index",
+      "parameters": [
+        "byte[]",
+        "byte[]",
+        "int[]"
+      ],
+      "feature": "filtering",
+      "precondition": "Nonempty pattern and its complete failure array; lengths fit int32",
+      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroup.java",
+      "source_sha256": "c1cb7543026528f4189a7b2009abe5ebd2e8ad236ec6d54785a216f04b934b9a",
+      "line": 133,
+      "settings": [],
+      "fields": [],
+      "context_bindings": [],
+      "return_type": "int",
+      "source_compiled": true,
+      "device_validated": false
+    }
+  ],
+  "settings": {
+    "HIDE_VIDEO_ADS": "video_ads",
+    "DISABLE_SHORTS_BACKGROUND_PLAYBACK": null,
+    "DISABLE_AUTO_CAPTIONS": "disable_auto_captions",
+    "DISABLE_HAPTIC_FEEDBACK_CHAPTERS": "disable_haptics",
+    "DISABLE_HAPTIC_FEEDBACK_PRECISE_SEEKING": "disable_haptics",
+    "DISABLE_HAPTIC_FEEDBACK_SEEK_UNDO": "disable_haptics",
+    "DISABLE_HAPTIC_FEEDBACK_TAP_AND_HOLD": "disable_haptics",
+    "DISABLE_HAPTIC_FEEDBACK_ZOOM": "disable_haptics",
+    "DISABLE_FULLSCREEN_AMBIENT_MODE": "disable_ambient",
+    "DISABLE_CHAPTER_SKIP_DOUBLE_TAP": "disable_chapter_skip",
+    "DISABLE_PRECISE_SEEKING_GESTURE": "disable_precise_seeking",
+    "HIDE_INFO_CARDS": "hide_info_cards",
+    "HIDE_END_SCREEN_CARDS": "hide_end_cards",
+    "HIDE_AUTOPLAY_PREVIEW": "hide_autoplay_preview",
+    "HIDE_RELATED_VIDEOS_OVERLAY": "hide_related_overlay",
+    "HIDE_SEEKBAR": "hide_seekbar",
+    "FULLSCREEN_LARGE_SEEKBAR": null,
+    "DISABLE_RESUMING_SHORTS_PLAYER": "disable_shorts_resume",
+    "TAP_TO_SEEK": "tap_to_seek",
+    "SLIDE_TO_SEEK": null,
+    "FORCE_AVC_CODEC": "disable_vp9",
+    "DISABLE_PLAYER_POPUP_PANELS": "disable_popup_panels",
+    "DISABLE_SIGN_IN_TO_TV_POPUP": "disable_tv_popup",
+    "DISABLE_ROLLING_NUMBER_ANIMATIONS": "disable_rolling_numbers",
+    "HIDE_TIMESTAMP": "hide_timestamp",
+    "PAUSE_ON_AUDIO_INTERRUPT": "pause_on_interrupt"
+  },
+  "native_bindings": {
+    "rvj_allow_vp9": "disable_vp9",
+    "rvj_hide_info_cards": "hide_info_cards",
+    "rvj_hide_end_cards": "hide_end_cards",
+    "rvj_hide_autoplay_preview": "hide_autoplay_preview",
+    "rvj_hide_related_overlay": "hide_related_overlay",
+    "rvj_hide_seekbar": "hide_seekbar",
+    "rvj_tap_to_seek": "tap_to_seek",
+    "rvj_disable_shorts_resume": "disable_shorts_resume",
+    "rvj_precise_gesture_disabled": "disable_precise_seeking",
+    "rvj_chapter_double_tap_allowed": "disable_chapter_skip",
+    "rvj_disable_haptics": "disable_haptics",
+    "rvj_kmp_failure": "filtering",
+    "rvj_kmp_index": "filtering",
+    "rvj_disable_player_popup_panels": "disable_popup_panels",
+    "rvj_disable_tv_signin_popup": "disable_tv_popup",
+    "rvj_disable_rolling_numbers": "disable_rolling_numbers",
+    "rvj_hide_timestamp": "hide_timestamp",
+    "rvj_pause_on_audio_interrupt": "pause_on_interrupt"
+  },
+  "compiler": "JDK AST to bounded checked C",
+  "tree_command": [
+    "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.4.7-hotspot\\bin\\java.EXE",
+    "-cp",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\jadx-gui-1.5.6-with-jre-win\\lib\\jadx-gui-1.5.6-all.jar;C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\source-reuse\\build\\java",
+    "JavaTreeDump",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\source-reuse\\build\\trees.json",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\BackgroundPlaybackPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableAutoCaptionsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableDoubleTapActionsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableFullscreenAmbientModePatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableHapticFeedbackPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePlayerPopupPanelsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePreciseSeekingGesturePatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableResumingStartupShortsPlayerPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableRollingNumberAnimationsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableSignInToTVPopupPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableVideoCodecsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\FixPlaybackSpeedWhilePlayingPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideAutoplayPreviewPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideEndScreenCardsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideInfoCardsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideRelatedVideoOverlayPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideSeekbarPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideTimestampPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\PauseOnAudioInterruptPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\SlideToSeekPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\TapToSeekPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\VideoAdsPatch.java",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroup.java"
+  ],
+  "compiler_sha256": {
+    "JavaTreeDump.java": "41df0c9fb329ea83527a8d722e9af3410ceadbfe2ba48d1480d95f8e5f222bdd",
+    "compiler.py": "255cb962aaaba48fdc714940bdcfa0731d7d8e135d1b877f2dd101fd853c8dfc",
+    "catalog.py": "02e804921e6279855cecf8e1d6efda0be7f0fc6d54a9f884ff618265a7f83368"
+  },
+  "driver_sha256": {
+    "catalog.py": "02e804921e6279855cecf8e1d6efda0be7f0fc6d54a9f884ff618265a7f83368",
+    "compiler.py": "255cb962aaaba48fdc714940bdcfa0731d7d8e135d1b877f2dd101fd853c8dfc",
+    "decompiler_links.py": "9e31710e079ffc161e521d4949ece2b98752dd5fa882acdacee8da5d036fe06b",
+    "integration.py": "de26cd767df480ea6ff05f6e045bf1ab540395338429d774540bc25d713eab4a",
+    "j2objc_backend.py": "5742ceb5f0bbe55e03e417f5e471b2045811fb5ba3eb2529c7e17c30aa83d6f8",
+    "JavaTreeDump.java": "41df0c9fb329ea83527a8d722e9af3410ceadbfe2ba48d1480d95f8e5f222bdd",
+    "pipeline.py": "da7d5f7b0885b2297810186f6ad067306c4e7f78d64718df3b093d6c097b12f5",
+    "RebuildDex.java": "a7e47cb5b896bd72ab48b3b0a8296324ba6095e44c92f3727fbbb0f958bfa3fe",
+    "source_reuse_build.py": "6cba1aa9ea6a50c16b16ff43b41faa00c5763ff35a3898858cf854073f687a42",
+    "testing.py": "a5c5aeec89d6215f347dc78528da2da14188933de65258113bb14b3f243b2d09",
+    "tests/test_contracts.py": "faec546eb0127c445f3a75b06f4fd0cadc9f7a2e32718dff7501acb048d8ad4d",
+    "workflow.py": "e99419fcae53491bc010d65b7ade6eadf38124d42f78ad4e4a1f45588f9fd443"
+  },
+  "toolchain_sha256": {
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\jadx-gui-1.5.6-with-jre-win\\lib\\jadx-gui-1.5.6-all.jar": "966d314282d95ff7c72f597bb9c744999856666a3b856575e3c035a9c12a0b65",
+    "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.4.7-hotspot\\bin\\java.EXE": "1dfe0b08636bc74b56db5e246f038cfe67c18f567053373fa601d310f29ed9da",
+    "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.4.7-hotspot\\bin\\javac.EXE": "a41dbdf0740275e6941129959bb3f95fe30244694b92d7406cb87ad66523d85c"
+  },
+  "native_sha256": {
+    "RVJavaSupport.c": "aaacf78cca11fe2ee63b3e777d99990ee76c5df902fcce3db4a5d5310cd251ef",
+    "RVJavaSupport.h": "6fa896406364c08170df64932c8a71055032834924e80f605e5946244653d59d",
+    "RVSourceKernels.c": "613b6a8639ac039072115fa58c3f6fe8212019c6d1420e997300a233753a6560",
+    "RVSourceKernels.h": "9b0a78ab9ed1b2df027b8d3582f194a302ded9053be09b7c6562f774ba1c8d07",
+    "RVSourceReuse.inc": "28fa3d2362e71fc38bbf53fa3dbe2f001ff4622218a77b7d66f89c60e3d9861a"
+  },
+  "device_validated": false,
+  "unsupported_construct_policy": "Reject generation; never emit raw Java as C",
+  "kernel_fingerprint": "b3c652c536834448651b7847eb8105d833fb9fb4078d414d6d8ff7fd36ee3553"
+}
