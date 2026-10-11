@@ -57,6 +57,10 @@ jobs:
           test "$(git -C icu-headers rev-parse HEAD)" = 8eca245c7484ac6cc179e3e5f7c1ea7680810f39
       - name: Translate and compile ARM64 iOS
         run: python batch-delivery/native_build.py --j2objc-home j2objc/dist --input batch-delivery/java --native batch-delivery/native --out batch-output/native --icu-headers icu-headers
+      - name: Compile fresh app integration
+        run: python batch-delivery/integration/build_host.py --source batch-delivery/integration/AppHost.m --core batch-output/native/TranslatedBatch.dylib --native batch-delivery/native --out batch-output/app
+      - name: Include generated app catalogs
+        run: cp batch-delivery/integration/RVB*.json batch-output/app/
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()
         with:

@@ -60,7 +60,7 @@ JNIEXPORT void JNICALL Java_rv_batch_NativeOperations_post(JNIEnv *env,jobject s
  ready();if(!runnable)fail(@"Null scheduled callback");id<JavaLangRunnable> retained=runnable;
  int64_t ns=delay<=0?0:delay>INT64_MAX/NSEC_PER_MSEC?INT64_MAX:delay*NSEC_PER_MSEC;
  dispatch_queue_t q=main?dispatch_get_main_queue():dispatch_get_global_queue(QOS_CLASS_USER_INITIATED,0);
- dispatch_after(dispatch_time(DISPATCH_TIME_NOW,ns),q,^{@autoreleasepool{[retained run];}});
+ dispatch_after(dispatch_time(DISPATCH_TIME_NOW,ns),q,^{@autoreleasepool{@try{[retained run];}@catch(NSException *e){NSLog(@"[RVB callback failure] %@",e);}}});
 }
 JNIEXPORT jstring JNICALL Java_rv_batch_NativeOperations_resource(JNIEnv *env,jobject self,jstring key,jobjectArray args){ready();return resources(key,args);}
 JNIEXPORT jobject JNICALL Java_rv_batch_NativeOperations_invoke(JNIEnv *env,jobject self,jstring op,jobjectArray args){

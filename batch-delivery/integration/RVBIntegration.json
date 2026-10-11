@@ -1,0 +1,1261 @@
+{
+  "schema": 1,
+  "version": "0.4.7-translated",
+  "app_version": "21.39.4",
+  "app_uuid": "1f61665a5d4a35668b77da821e1d6c17",
+  "original_executable_sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+  "original_archive_sha256": "37fd59f89d706fb7f93614e12ddb9c09fe3f4a18c1e4609c2b715db6e9f3d88c",
+  "hooks": [
+    {
+      "class": "YTIPlayabilityStatus",
+      "kind": "-",
+      "selector": "isPlayableInBackground",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "background_playback",
+      "value": true
+    },
+    {
+      "class": "MLVideo",
+      "kind": "-",
+      "selector": "playableInBackground",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "background_playback",
+      "value": true
+    },
+    {
+      "class": "YTPlaybackData",
+      "kind": "-",
+      "selector": "isPlayableInBackground",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "background_playback",
+      "value": true
+    },
+    {
+      "class": "YTLocalPlaybackController",
+      "kind": "-",
+      "selector": "isPlaybackBackgroundable",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "background_playback",
+      "value": true
+    },
+    {
+      "class": "YTBackgroundabilityPolicyImpl",
+      "kind": "-",
+      "selector": "isBackgroundableByUserSettings",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "background_playback",
+      "value": true
+    },
+    {
+      "class": "YTBackgroundabilityPolicyImpl",
+      "kind": "-",
+      "selector": "isPlayableInPictureInPictureByUserSettings",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "picture_in_picture",
+      "value": true
+    },
+    {
+      "class": "YTColdConfig",
+      "kind": "-",
+      "selector": "enablePipMenuItem",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "picture_in_picture",
+      "value": true
+    },
+    {
+      "class": "YTColdConfig",
+      "kind": "-",
+      "selector": "addPipMenuItem",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "picture_in_picture",
+      "value": true
+    },
+    {
+      "class": "YTColdConfig",
+      "kind": "-",
+      "selector": "enableResumeToShorts",
+      "types": "B@:",
+      "driver": "bool",
+      "feature": "disable_shorts_resume",
+      "value": false
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "potentiallyMutatedSingleVideo:currentVideoTimeDidChange:",
+      "types": "v@:@@",
+      "driver": "clock"
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "playbackController:didLoadContentPlaybackData:",
+      "types": "v@:@@",
+      "driver": "loaded"
+    },
+    {
+      "class": "YTPlayerViewController",
+      "kind": "-",
+      "selector": "setPlaybackRate:",
+      "types": "v@:f",
+      "driver": "rate"
+    },
+    {
+      "class": "YTMainAppVideoPlayerOverlayViewController",
+      "kind": "-",
+      "selector": "didPressVarispeed:",
+      "types": "v@:@",
+      "driver": "speed_menu"
+    },
+    {
+      "class": "YTSlimVideoDetailsActionView",
+      "kind": "-",
+      "selector": "layoutSubviews",
+      "types": "v@:",
+      "driver": "layout"
+    },
+    {
+      "class": "YTMainVideoEntityModel",
+      "kind": "-",
+      "selector": "dislikeCountString",
+      "types": "@@:",
+      "driver": "dislike_text"
+    },
+    {
+      "class": "YTSectionListViewController",
+      "kind": "-",
+      "selector": "loadWithModel:",
+      "types": "v@:@",
+      "driver": "filter"
+    },
+    {
+      "class": "YTInnerTubeCollectionViewController",
+      "kind": "-",
+      "selector": "loadWithModel:",
+      "types": "v@:@",
+      "driver": "filter"
+    },
+    {
+      "class": "YTWatchNextResultsViewController",
+      "kind": "-",
+      "selector": "loadWithModel:",
+      "types": "v@:@",
+      "driver": "filter"
+    },
+    {
+      "class": "SSOBundleIdServiceImpl",
+      "kind": "-",
+      "selector": "bundleId",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "com.google.ios.youtube"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "applicationIdentifier",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "com.google.ios.youtube"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "applicationScheme",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "com.google.sso.755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "authCallbackURLString",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "com.google.sso.755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd:/authCallback"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "clientID",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "755541669657-kbosfavg7pk7sr3849c3tf657hpi5jpd.apps.googleusercontent.com"
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "+",
+      "selector": "libraryClientID",
+      "types": "@@:",
+      "driver": "identity",
+      "value": "936475272427.apps.googleusercontent.com"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "accessGroup",
+      "types": "@@:",
+      "driver": "identity",
+      "value": null
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "sharedAccessGroup",
+      "types": "@@:",
+      "driver": "identity",
+      "value": null
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "usePrivateKeychain",
+      "types": "B@:",
+      "driver": "identity_bool",
+      "value": true
+    },
+    {
+      "class": "SSOConfiguration",
+      "kind": "-",
+      "selector": "shouldEnableSafariSignIn",
+      "types": "B@:",
+      "driver": "identity_bool",
+      "value": true
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "queryMatchingID:serviceName:",
+      "types": "@@:@@",
+      "driver": "keychain_query"
+    },
+    {
+      "class": "SSOKeychainHelper",
+      "kind": "+",
+      "selector": "deleteQueryMatchingID:serviceName:",
+      "types": "@@:@@",
+      "driver": "keychain_query"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "playerAdsArray",
+      "types": "@@:",
+      "driver": "ad_array"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "playerAdsArray_Count",
+      "types": "Q@:",
+      "driver": "ad_count"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "adPlacementsArray",
+      "types": "@@:",
+      "driver": "ad_array"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "adPlacementsArray_Count",
+      "types": "Q@:",
+      "driver": "ad_count"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "adSlotsArray",
+      "types": "@@:",
+      "driver": "ad_array"
+    },
+    {
+      "class": "YTIPlayerResponse",
+      "kind": "-",
+      "selector": "adSlotsArray_Count",
+      "types": "Q@:",
+      "driver": "ad_count"
+    }
+  ],
+  "messages": {
+    "YTIAdSlotRenderer": {
+      "children": [
+        {
+          "getter": "fulfillmentContent",
+          "setter": "setFulfillmentContent:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIPlayerResponse": {
+      "children": [
+        {
+          "getter": "threed",
+          "setter": "setThreed:",
+          "array": false
+        },
+        {
+          "getter": "playerCompanionAd",
+          "setter": "setPlayerCompanionAd:",
+          "array": false
+        },
+        {
+          "getter": "ctaOverlay",
+          "setter": "setCtaOverlay:",
+          "array": false
+        },
+        {
+          "getter": "playerOverlayLayerRenderersArray",
+          "setter": "setPlayerOverlayLayerRenderersArray:",
+          "array": true
+        },
+        {
+          "getter": "miniPlayerByline",
+          "setter": "setMiniPlayerByline:",
+          "array": false
+        },
+        {
+          "getter": "adSlotsArray",
+          "setter": "setAdSlotsArray:",
+          "array": true
+        }
+      ],
+      "classify": []
+    },
+    "YTIPlayerCompanionAdsSupportedRenderers": {
+      "children": [
+        {
+          "getter": "belowPlayerAdLayoutRenderer",
+          "setter": "setBelowPlayerAdLayoutRenderer:",
+          "array": false
+        }
+      ],
+      "classify": [
+        {
+          "presence": "hasCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAppPromoCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasShoppingCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasMultiItemCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasBelowPlayerAdLayoutRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTIBelowPlayerAdLayoutRenderer": {
+      "children": [
+        {
+          "getter": "renderingContent",
+          "setter": "setRenderingContent:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTISectionListRenderer": {
+      "children": [
+        {
+          "getter": "contentsArray",
+          "setter": "setContentsArray:",
+          "array": true
+        },
+        {
+          "getter": "header",
+          "setter": "setHeader:",
+          "array": false
+        },
+        {
+          "getter": "footer",
+          "setter": "setFooter:",
+          "array": false
+        },
+        {
+          "getter": "contentOverlay",
+          "setter": "setContentOverlay:",
+          "array": false
+        },
+        {
+          "getter": "background",
+          "setter": "setBackground:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTISectionListHeaderSupportedRenderers": {
+      "children": [],
+      "classify": []
+    },
+    "YTISectionListSupportedRenderers": {
+      "children": [
+        {
+          "getter": "horizontalListRenderer",
+          "setter": "setHorizontalListRenderer:",
+          "array": false
+        },
+        {
+          "getter": "gridRenderer",
+          "setter": "setGridRenderer:",
+          "array": false
+        },
+        {
+          "getter": "shelfRenderer",
+          "setter": "setShelfRenderer:",
+          "array": false
+        },
+        {
+          "getter": "adSlotRenderer",
+          "setter": "setAdSlotRenderer:",
+          "array": false
+        }
+      ],
+      "classify": [
+        {
+          "presence": "hasCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAdSlotRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTIItemSectionSupportedRenderers": {
+      "children": [
+        {
+          "getter": "horizontalListRenderer",
+          "setter": "setHorizontalListRenderer:",
+          "array": false
+        },
+        {
+          "getter": "gridRenderer",
+          "setter": "setGridRenderer:",
+          "array": false
+        },
+        {
+          "getter": "shelfRenderer",
+          "setter": "setShelfRenderer:",
+          "array": false
+        },
+        {
+          "getter": "adSlotRenderer",
+          "setter": "setAdSlotRenderer:",
+          "array": false
+        }
+      ],
+      "classify": [
+        {
+          "presence": "hasPromotedVideoRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedAppInstallRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedTextBannerRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickTextWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickTextCtdWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickPtTextWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickPtTextCtdWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatch15ClickRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatchWideFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatch15ClickRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatchWideFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasReelItemRenderer",
+          "family": "shorts",
+          "semantic": "shorts_shelf",
+          "feature": "hide_shorts"
+        },
+        {
+          "presence": "hasPromotedVideoInlineMutedRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextProductWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasReelGridRenderer",
+          "family": "shorts",
+          "semantic": "shorts_shelf",
+          "feature": "hide_shorts"
+        },
+        {
+          "presence": "hasPromotedSparklesTextHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextSearchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAdsWebViewRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextProductHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdHomeCompactFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedDiscoveryAppPromoCompactFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAdSlotRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTICompanionAdSupportedRenderers": {
+      "children": [
+        {
+          "getter": "belowPlayerAdLayoutRenderer",
+          "setter": "setBelowPlayerAdLayoutRenderer:",
+          "array": false
+        }
+      ],
+      "classify": [
+        {
+          "presence": "hasCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAppPromoCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasShoppingCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasCompactCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasMultiItemCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasSuggestedVideosCompanionAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAdLayoutLoggingDataRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasBelowPlayerAdLayoutRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTIBrowseMastheadAdSupportedRenderers": {
+      "children": [],
+      "classify": [
+        {
+          "presence": "hasVideoMastheadAdRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTIInFeedAdLayoutRenderer": {
+      "children": [
+        {
+          "getter": "renderingContent",
+          "setter": "setRenderingContent:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIGridRenderer": {
+      "children": [
+        {
+          "getter": "itemsArray",
+          "setter": "setItemsArray:",
+          "array": true
+        },
+        {
+          "getter": "header",
+          "setter": "setHeader:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIGridSupportedRenderers": {
+      "children": [],
+      "classify": [
+        {
+          "presence": "hasPromotedSparklesTextCtdWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasReelItemRenderer",
+          "family": "shorts",
+          "semantic": "shorts_shelf",
+          "feature": "hide_shorts"
+        }
+      ]
+    },
+    "YTIHorizontalListRenderer": {
+      "children": [
+        {
+          "getter": "itemsArray",
+          "setter": "setItemsArray:",
+          "array": true
+        },
+        {
+          "getter": "nextButton",
+          "setter": "setNextButton:",
+          "array": false
+        },
+        {
+          "getter": "previousButton",
+          "setter": "setPreviousButton:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIHorizontalListSupportedRenderers": {
+      "children": [
+        {
+          "getter": "adSlotRenderer",
+          "setter": "setAdSlotRenderer:",
+          "array": false
+        }
+      ],
+      "classify": [
+        {
+          "presence": "hasPromoted15ClickTextWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickTextCtdWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickPtTextWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromoted15ClickPtTextCtdWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatch15ClickRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdWatchWideFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatch15ClickRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatchGridFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextWatchWideFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasReelItemRenderer",
+          "family": "shorts",
+          "semantic": "shorts_shelf",
+          "feature": "hide_shorts"
+        },
+        {
+          "presence": "hasPromotedSparklesTextProductWatchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextSearchRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextProductHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdHomeRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedSparklesTextCtdHomeCompactFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasPromotedDiscoveryAppPromoCompactFormRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        },
+        {
+          "presence": "hasAdSlotRenderer",
+          "family": "ads",
+          "semantic": "carousel_ad",
+          "feature": "feed_ads"
+        }
+      ]
+    },
+    "YTIShelfRenderer": {
+      "children": [
+        {
+          "getter": "content",
+          "setter": "setContent:",
+          "array": false
+        },
+        {
+          "getter": "headerRenderer",
+          "setter": "setHeaderRenderer:",
+          "array": false
+        },
+        {
+          "getter": "sortFilter",
+          "setter": "setSortFilter:",
+          "array": false
+        },
+        {
+          "getter": "footerRenderer",
+          "setter": "setFooterRenderer:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIFulfillmentContent": {
+      "children": [
+        {
+          "getter": "fulfilledLayout",
+          "setter": "setFulfilledLayout:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIShelfSupportedRenderers": {
+      "children": [
+        {
+          "getter": "horizontalListRenderer",
+          "setter": "setHorizontalListRenderer:",
+          "array": false
+        },
+        {
+          "getter": "gridRenderer",
+          "setter": "setGridRenderer:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIWatchNextResponse": {
+      "children": [
+        {
+          "getter": "companionAds",
+          "setter": "setCompanionAds:",
+          "array": false
+        },
+        {
+          "getter": "topbar",
+          "setter": "setTopbar:",
+          "array": false
+        },
+        {
+          "getter": "unpluggedReportDvrIssue",
+          "setter": "setUnpluggedReportDvrIssue:",
+          "array": false
+        },
+        {
+          "getter": "transportControls",
+          "setter": "setTransportControls:",
+          "array": false
+        },
+        {
+          "getter": "autoplayOffDialogRenderer",
+          "setter": "setAutoplayOffDialogRenderer:",
+          "array": false
+        },
+        {
+          "getter": "fullscreenCompanionAdLayout",
+          "setter": "setFullscreenCompanionAdLayout:",
+          "array": false
+        },
+        {
+          "getter": "castUserActionsRenderer",
+          "setter": "setCastUserActionsRenderer:",
+          "array": false
+        },
+        {
+          "getter": "contentVideoCompanionAds",
+          "setter": "setContentVideoCompanionAds:",
+          "array": false
+        },
+        {
+          "getter": "belowPlayerImmersiveLayout",
+          "setter": "setBelowPlayerImmersiveLayout:",
+          "array": false
+        },
+        {
+          "getter": "pageVisualEffectsArray",
+          "setter": "setPageVisualEffectsArray:",
+          "array": true
+        },
+        {
+          "getter": "statusBar",
+          "setter": "setStatusBar:",
+          "array": false
+        },
+        {
+          "getter": "adSlotsArray",
+          "setter": "setAdSlotsArray:",
+          "array": true
+        },
+        {
+          "getter": "microformat",
+          "setter": "setMicroformat:",
+          "array": false
+        }
+      ],
+      "classify": []
+    },
+    "YTIRenderer": {
+      "children": [],
+      "classify": []
+    },
+    "YTIItemSectionRenderer": {
+      "children": [
+        {
+          "getter": "contentsArray",
+          "setter": "setContentsArray:",
+          "array": true
+        }
+      ],
+      "classify": []
+    }
+  },
+  "settings": [
+    {
+      "native": "video_ads",
+      "source": "revanced_hide_video_ads",
+      "type": "bool"
+    },
+    {
+      "native": "feed_ads",
+      "source": "revanced_hide_general_ads",
+      "type": "bool"
+    },
+    {
+      "native": "return_dislikes",
+      "source": "revanced_ryd_enabled",
+      "type": "bool"
+    },
+    {
+      "native": "sponsorblock",
+      "source": "sb_enabled",
+      "type": "bool"
+    },
+    {
+      "native": "remember_speed",
+      "source": "revanced_remember_playback_speed_last_selected",
+      "type": "bool"
+    },
+    {
+      "native": "hide_info_cards",
+      "source": "revanced_hide_info_cards",
+      "type": "bool"
+    },
+    {
+      "native": "hide_end_cards",
+      "source": "revanced_hide_end_screen_cards",
+      "type": "bool"
+    },
+    {
+      "native": "hide_autoplay_preview",
+      "source": "revanced_hide_autoplay_preview",
+      "type": "bool"
+    },
+    {
+      "native": "disable_popup_panels",
+      "source": "revanced_disable_player_popup_panels",
+      "type": "bool"
+    },
+    {
+      "native": "disable_shorts_resume",
+      "source": "revanced_disable_resuming_shorts_player",
+      "type": "bool"
+    },
+    {
+      "native": "hide_shorts",
+      "source": "revanced_hide_shorts_home",
+      "type": "bool"
+    },
+    {
+      "native": "hide_shorts",
+      "source": "revanced_hide_shorts_subscriptions",
+      "type": "bool"
+    },
+    {
+      "native": "hide_shorts",
+      "source": "revanced_hide_shorts_search",
+      "type": "bool"
+    },
+    {
+      "native": "hide_shorts",
+      "source": "revanced_hide_shorts_video_description",
+      "type": "bool"
+    },
+    {
+      "native": "hide_shorts",
+      "source": "revanced_hide_shorts_history",
+      "type": "bool"
+    },
+    {
+      "native": "default_speed",
+      "source": "revanced_playback_speed_default",
+      "type": "f32"
+    },
+    {
+      "native": "custom_speeds",
+      "source": "revanced_custom_playback_speeds",
+      "type": "speeds"
+    },
+    {
+      "native": "sponsor_min_duration",
+      "source": "sb_min_segment_duration",
+      "type": "f32"
+    }
+  ],
+  "categories": [
+    {
+      "native": "sponsor",
+      "source": "sb_sponsor"
+    },
+    {
+      "native": "selfpromo",
+      "source": "sb_selfpromo"
+    },
+    {
+      "native": "interaction",
+      "source": "sb_interaction"
+    },
+    {
+      "native": "intro",
+      "source": "sb_intro"
+    },
+    {
+      "native": "outro",
+      "source": "sb_outro"
+    },
+    {
+      "native": "preview",
+      "source": "sb_preview"
+    },
+    {
+      "native": "hook",
+      "source": "sb_hook"
+    },
+    {
+      "native": "filler",
+      "source": "sb_filler"
+    },
+    {
+      "native": "music_offtopic",
+      "source": "sb_music_offtopic"
+    },
+    {
+      "native": "poi_highlight",
+      "source": "sb_highlight"
+    }
+  ],
+  "defaults": {
+    "video_ads": true,
+    "feed_ads": true,
+    "return_dislikes": true,
+    "sponsorblock": true,
+    "remember_speed": true,
+    "hide_info_cards": false,
+    "hide_end_cards": false,
+    "hide_autoplay_preview": false,
+    "disable_popup_panels": false,
+    "disable_shorts_resume": true,
+    "background_playback": true,
+    "picture_in_picture": true,
+    "hide_shorts": true,
+    "custom_speed_menu": true,
+    "diagnostics": false,
+    "default_speed": 1.0,
+    "custom_speeds": [
+      0.25,
+      0.5,
+      0.75,
+      1,
+      1.25,
+      1.5,
+      1.75,
+      2,
+      2.5,
+      3,
+      4
+    ],
+    "sponsor_min_duration": 0,
+    "sponsor_categories": [
+      "sponsor",
+      "selfpromo",
+      "interaction",
+      "intro",
+      "outro"
+    ],
+    "sponsor_behaviors": {
+      "sponsor": "skip-once",
+      "selfpromo": "manual-skip",
+      "interaction": "manual-skip",
+      "intro": "skip",
+      "outro": "skip"
+    }
+  },
+  "menu": [
+    {
+      "key": "video_ads",
+      "title": "Block video ads"
+    },
+    {
+      "key": "feed_ads",
+      "title": "Hide feed ads"
+    },
+    {
+      "key": "background_playback",
+      "title": "Background playback"
+    },
+    {
+      "key": "picture_in_picture",
+      "title": "Picture in Picture"
+    },
+    {
+      "key": "sponsorblock",
+      "title": "SponsorBlock"
+    },
+    {
+      "key": "return_dislikes",
+      "title": "Return YouTube Dislike"
+    },
+    {
+      "key": "custom_speed_menu",
+      "title": "Translated speed menu"
+    },
+    {
+      "key": "remember_speed",
+      "title": "Remember playback speed"
+    },
+    {
+      "key": "hide_shorts",
+      "title": "Hide Shorts feed items"
+    },
+    {
+      "key": "disable_shorts_resume",
+      "title": "Disable returning to Shorts"
+    },
+    {
+      "key": "diagnostics",
+      "title": "USB diagnostics"
+    }
+  ],
+  "legacy_ios_code_used": false,
+  "device_verified": false
+}

@@ -78,7 +78,7 @@ int main(void){@autoreleasepool{
     except RuntimeError as e:probe_error=e
     sdk=subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip()
     payload=out/'TranslatedBatch.dylib'
-    ios=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0','-isysroot',sdk,*common,home/'lib/iphone/libjre_emul.a',home/'lib/iphone/libjson.a','-framework','UIKit','-dynamiclib','-Wl,-install_name,@executable_path/Frameworks/TranslatedBatch.dylib','-o',payload]
+    ios=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0','-isysroot',sdk,*common,home/'lib/iphone/libjre_emul.a',home/'lib/iphone/libjson.a','-framework','UIKit','-dynamiclib','-Wl,-install_name,@executable_path/Frameworks/TranslatedBatch.dylib','-Wl,-headerpad,0x4000','-o',payload]
     run(ios,out/'compile-ios.log')
     if probe_error:raise probe_error
     expected=inputs.parent/'original-trace.txt'
