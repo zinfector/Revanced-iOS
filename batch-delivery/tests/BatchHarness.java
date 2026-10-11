@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 /** Deliberately fake operation environment shared by the source oracle and IR output. */
 public final class BatchHarness {
  private static final StringBuilder trace=new StringBuilder();
+ private static final StringBuilder diagnostic=new StringBuilder();
+ public static String diagnosticTrace(){return trace.toString()+"\nDIAGNOSTICS\n"+diagnostic;}
  static void line(String key,Object value){trace.append(key).append('|').append(value).append('\n');}
  static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
  public static final class Ops implements Platform.Operations {
@@ -38,7 +40,7 @@ public final class BatchHarness {
    if(op.equals("thread.is_main"))return main;if(op.equals("network.connected"))return true;if(op.equals("locale"))return "en-US";
    if(op.equals("theme.dark"))return false;if(op.equals("theme.background"))return 0xffffffff;if(op.equals("theme.foreground"))return 0xff000000;
    if(op.startsWith("context."))return context;if(op.equals("application.version"))return "21.39.4";
-   if(op.equals("log"))return null;if(op.equals("resource.id"))return a[1].hashCode();if(op.equals("resource.integer"))return 200;
+   if(op.equals("log")){diagnostic.append(a[0]).append('\n');return null;}if(op.equals("resource.id"))return a[1].hashCode();if(op.equals("resource.integer"))return 200;
    if(op.equals("text.measure"))return ((String)a[0]).length()*8f;
    if(op.equals("text.font_metrics")){Paint.FontMetricsInt f=new Paint.FontMetricsInt();f.ascent=-12;f.top=-14;f.descent=3;f.bottom=4;return f;}
    if(op.equals("format.number")){java.text.NumberFormat f;String style=(String)a[2];Locale locale=Locale.forLanguageTag((String)a[1]);

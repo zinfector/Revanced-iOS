@@ -3,13 +3,14 @@ import argparse
 import hashlib
 import json
 import subprocess
+import difflib
 from pathlib import Path
 
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def run(cmd,log):
     with log.open('w',encoding='utf-8') as f:r=subprocess.run(list(map(str,cmd)),stdout=f,stderr=subprocess.STDOUT)
-    if r.returncode:raise RuntimeError(log.read_text(encoding='utf-8',errors='replace')[-14000:])
+    if r.returncode:raise RuntimeError(f'Command exited with {r.returncode}; log: {log}\n'+log.read_text(encoding='utf-8',errors='replace')[-14000:])
 
 
 ICU_COMMIT='8eca245c7484ac6cc179e3e5f7c1ea7680810f39'
@@ -39,6 +40,7 @@ def build(home,inputs,native,out,icu):
 #include "java/lang/Long.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Double.h"
+#include "java/lang/Throwable.h"
 #include "IOSObjectArray.h"
 #include "NSObject+JavaObject.h"
 #include "Format.h"
@@ -61,20 +63,27 @@ int main(void){@autoreleasepool{
  RVBEvents_playerStateWithNSString_withBoolean_(@"WATCH_WHILE_MAXIMIZED",YES);
  if(RVBEvents_allowBackgroundWithBoolean_(NO))return 4;
  [p removePersistentDomainForName:@"org.revanced.batch.native-probe"];
- NSString *trace=TEST_PREFIXBatchHarness_run();fputs(trace.UTF8String,stdout);return 0;
+ @try{NSString *trace=TEST_PREFIXBatchHarness_run();fputs(trace.UTF8String,stdout);return 0;}
+ @catch(JavaLangThrowable *e){fputs(TEST_PREFIXBatchHarness_diagnosticTrace().UTF8String,stdout);[e printStackTrace];return 7;}
 }}
 '''.replace('TEST_PREFIX',test_prefix).replace('FORMAT_PROBE_PATH',str(out/'formatter-probe.json')),encoding='utf-8')
     # Apple exports unsuffixed ICU C symbols. Header-only upstream ICU normally
     # renames them by release; do not link those version-suffixed declarations.
-    common=['-fobjc-arc','-fobjc-arc-exceptions','-fblocks','-O2','-Wno-parentheses-equality','-DU_DISABLE_RENAMING=1','-DU_SHOW_CPLUSPLUS_API=0','-I',icu_i18n,'-I',icu_common,'-I',home/'include','-I',objc,'-I',native,*sorted(objc.rglob('*.m')),*sorted(native.glob('*.m')),'-framework','Foundation','-framework','Security','-liconv','-lz','-licucore']
+    common=['-fobjc-arc','-fobjc-arc-exceptions','-fblocks','-O2','-g','-Wno-parentheses-equality','-DU_DISABLE_RENAMING=1','-DU_SHOW_CPLUSPLUS_API=0','-I',icu_i18n,'-I',icu_common,'-I',home/'include','-I',objc,'-I',native,*sorted(objc.rglob('*.m')),*sorted(native.glob('*.m')),'-framework','Foundation','-framework','Security','-liconv','-lz','-licucore']
     host=['xcrun','clang',*common,'-I',test_objc,*sorted(test_objc.rglob('*.m')),runner,home/'lib/macosx/libjre_emul.a',home/'lib/macosx/libjson.a','-o',out/'Probe']
-    run(host,out/'compile-host.log');run([out/'Probe'],out/'provider-probe.txt')
-    expected=inputs.parent/'original-trace.txt'
-    if (out/'provider-probe.txt').read_text(encoding='utf-8')!=expected.read_text(encoding='utf-8'):raise ValueError('Original source versus native generated batch traces differ')
+    run(host,out/'compile-host.log')
     sdk=subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip()
     payload=out/'TranslatedBatch.dylib'
     ios=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0','-isysroot',sdk,*common,home/'lib/iphone/libjre_emul.a',home/'lib/iphone/libjson.a','-framework','UIKit','-dynamiclib','-Wl,-install_name,@executable_path/Frameworks/TranslatedBatch.dylib','-o',payload]
     run(ios,out/'compile-ios.log')
+    run([out/'Probe'],out/'provider-probe.txt')
+    expected=inputs.parent/'original-trace.txt'
+    actual_trace=(out/'provider-probe.txt').read_text(encoding='utf-8')
+    expected_trace=expected.read_text(encoding='utf-8')
+    if actual_trace!=expected_trace:
+        diff=''.join(difflib.unified_diff(expected_trace.splitlines(True),actual_trace.splitlines(True),fromfile='original JVM',tofile='generated native'))
+        (out/'behavior-diff.txt').write_text(diff,encoding='utf-8')
+        raise ValueError('Original source versus native generated batch traces differ:\n'+diff[:8000])
     symbols=subprocess.check_output(['xcrun','nm','-g',payload],text=True);(out/'symbols.txt').write_text(symbols,encoding='utf-8')
     if '_RVBEvents_beginVideoWithNSString_' not in symbols:raise ValueError('Missing generated event placement API')
     receipt=dict(schema='stateful.batch.native.v1',java_files={str(p.relative_to(inputs)):sha(p) for p in files},objc_files={str(p.relative_to(objc)):sha(p) for p in objc.rglob('*') if p.is_file()},payload_sha256=sha(payload),translation_command=list(map(str,command)),host_command=list(map(str,host)),ios_command=list(map(str,ios)),arm64_ios_compiled=True,provider_probe_passed=True,source_jvm_native_traces_equal=True,trace_cases=len(expected.read_text(encoding='utf-8').splitlines()),app_hooks_installed=False,device_verified=False)
