@@ -5,11 +5,12 @@
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\settings\\Settings.java": "0c7e027ee976649cfbd21ec8743d2d97a0df330cfce2e792c397e8840a5125e6",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\CustomPlaybackSpeedPatch.java": "6d85d512bed38ef3f7582b42bf1025001d29471b046222f99408aca728177468",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\Utils.java": "fb98c0f4068e0de8eef47f868614c67ad08e432cb73181c548aeb4d979f44103",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\cloud_checks.py": "f8095b8de044fa325463dee7eff6abd051f90f4349f95c5bd5cc551e30391ad0",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\contracts.py": "60ca770c26e4f9049b1b2d363b504f31eb35b5495f4df7f56e8419220f72d277",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\driver.py": "c4d03cbbbbd108a0876ef13f380b619e3291094cd0bf48cbf72b17160a2d1d73",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\driver.py": "71343f3d22248fe39b3674a949547e345b669c13622b255683aebcf134e737a5",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\native_build.py": "f71dba1f1281853a22abd85236c4bf03270a1876187725ae69fa4c6188fb4018",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\providers.py": "6e19044afd2060098cafe9fda4765e6b2d2f5e6ed42480d2b7eeac6ce102183b",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "71962c3e3ba45f7e5fea328f9379d0d1a7b4f15eeaa6cd669dc0e7f225152ee5",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "0a95d75448d568b5dfabf2c31392faa3eccac7ce74a5099ef575fba019bfb091",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\survey.py": "42a939b88b85579cc46a641df15c6ff303fbbe87e519e8b16d9d734cf9106805",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\validate.py": "c77637339a2ffcad4c8c08fe742b5805202bea657f07212d6b9c86004f839248",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\ExportPatch.java": "c94ab42cf2f02f6cda5f3b0eaf98f12bf5e91288ec18bf9b05e0bc46340f757d",
@@ -24,8 +25,8 @@
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\TraceHarness.java": "0bebace37b7aebd4e67f41de12e2a70d8992420af14f223df14f3ecab41cb1e8",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java": "78ed350487300147af53363a55247a78a792f3333f29c3b1faa6b0a284deef56"
   },
-  "module_sha256": "0362f6b9079d92f64a45a95a9ba80eade58531dd63f3c70f4636e6794514888b",
-  "graph_sha256": "e9e750996ca71c5fe0eb0ef8f8f8db192c845c1aecce559d71cef4b945814503",
+  "module_sha256": "30724be8a9f948c8afeed55574bff67aca51de39cbca561e1195a8c819a45a36",
+  "graph_sha256": "aed54cd674e71f16de8605f3561f952ffd00e68976e07713a805dded313c9bf4",
   "admission": {
     "classes": 1,
     "methods": 3,
@@ -41,14 +42,14 @@
       "id": "n_1844_2682_LAMBDA_EXPRESSION",
       "captures": [
         {
-          "name": "now",
+          "type": "long",
           "symbol": "local_1645_now",
-          "type": "long"
+          "name": "now"
         },
         {
-          "name": "finalPlaybackSpeed",
+          "type": "float",
           "symbol": "local_1751_finalPlaybackSpeed",
-          "type": "float"
+          "name": "finalPlaybackSpeed"
         }
       ]
     },

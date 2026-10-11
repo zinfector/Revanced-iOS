@@ -37,7 +37,12 @@ jobs:
           make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx macosx64 iphone64" dist_includes ../dist/lib/macosx/libjre_core.a ../dist/lib/iphone/libjre_core.a 2>&1 | tee stateful-output/vendor-runtime.log
           cp j2objc/scripts/j2objcc.sh j2objc/dist/j2objcc
           chmod +x j2objc/dist/j2objcc
-      - name: Execute stateful translation checks when present
+      - name: Independently regenerate from retained Android source
+        run: |
+          curl --fail --location --retry 3 -o stateful-output/gson.jar https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.13.2/gson-2.13.2.jar
+          python stateful/tooling/cloud_checks.py --gson stateful-output/gson.jar --input stateful/delivery --out stateful-output/source-validation
+          python stateful/tooling/validate.py --input stateful/delivery --out stateful-output/edit-validation
+      - name: Execute stateful translation checks
         run: |
           if [ -f stateful/native_build.py ]; then
             python stateful/native_build.py --j2objc-home j2objc/dist --out stateful-output/validation
