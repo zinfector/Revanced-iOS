@@ -24,7 +24,7 @@ jobs:
       - name: Verify byte-stable source archive
         run: |
           set -e
-          echo "656b078e2ff957a692b367dc3ec6d4fbc50c0b6bb567a14aeec072d3276008ef  executable-delivery/executable-bodies.tar" | shasum -a 256 -c
+          echo "86b165890c03a6a89d1e0e27f20637168786b2791b38d0808e3cf0645d875542  executable-delivery/executable-bodies.tar" | shasum -a 256 -c
           tar -xf executable-delivery/executable-bodies.tar -C executable-delivery
       - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         id: runtime-cache
