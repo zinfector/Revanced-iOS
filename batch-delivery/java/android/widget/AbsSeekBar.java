@@ -1,0 +1,1 @@
+package android.widget;import android.content.Context;import android.graphics.drawable.*;import android.graphics.drawable.shapes.RectShape;public class AbsSeekBar extends ProgressBar {private final Drawable thumb=new ShapeDrawable(new RectShape());public AbsSeekBar(Context c){super(c);}public void setMax(int n){max=n;emit("maximum",n);}public Drawable getThumb(){return thumb;}}

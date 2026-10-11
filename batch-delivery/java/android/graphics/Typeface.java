@@ -1,0 +1,1 @@
+package android.graphics;public final class Typeface {public static final int NORMAL=0,BOLD=1;public static final Typeface DEFAULT=new Typeface(),DEFAULT_BOLD=new Typeface();}

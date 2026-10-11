@@ -1,0 +1,1 @@
+package android.text.style;public final class RelativeSizeSpan {public final float proportion;public RelativeSizeSpan(float p){proportion=p;}public float getSizeChange(){return proportion;}}

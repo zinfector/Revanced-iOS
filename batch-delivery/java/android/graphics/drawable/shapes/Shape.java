@@ -1,0 +1,1 @@
+package android.graphics.drawable.shapes;public abstract class Shape {}

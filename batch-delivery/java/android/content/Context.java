@@ -1,0 +1,1 @@
+package android.content;public class Context {public Object handle;}

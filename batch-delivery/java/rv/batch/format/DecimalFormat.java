@@ -1,0 +1,1 @@
+package rv.batch.format;import java.util.Locale;public class DecimalFormat extends NumberFormat {public DecimalFormatSymbols symbols;protected DecimalFormat(Locale l,String s){super(l,s);}public void setDecimalFormatSymbols(DecimalFormatSymbols s){symbols=s;}}

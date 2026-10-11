@@ -1,0 +1,1 @@
+package app.revanced.extension.youtube.shared;public final class ShortsPlayerState {private static volatile boolean open;private static final Event<Boolean> event=new Event<>();public static Event<Boolean> getOnChange(){return event;}public static boolean isOpen(){return open;}public static void setOpen(boolean value){if(open!=value){open=value;event.invoke(value);}}}

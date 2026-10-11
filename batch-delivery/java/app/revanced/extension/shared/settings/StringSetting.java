@@ -1,0 +1,2 @@
+package app.revanced.extension.shared.settings;
+public class StringSetting extends Setting {public final String defaultValue;public StringSetting(String key,String value,Object... flags){super(key,flags);defaultValue=value;}public String get(){return (String)rv.batch.Platform.read(key,defaultValue);}public void save(String value){rv.batch.Platform.write(key,value);}public boolean isSetToDefault(){return java.util.Objects.equals(get(),defaultValue);}public String resetToDefault(){save(defaultValue);return defaultValue;}}

@@ -1,0 +1,1 @@
+package android.widget;import android.content.Context;import android.text.*;public class EditText extends TextView {public EditText(Context c){super(c);text=new SpannableStringBuilder();}public void setText(CharSequence s){super.setText(new SpannableStringBuilder(s));}public Editable getText(){return (Editable)text;}}

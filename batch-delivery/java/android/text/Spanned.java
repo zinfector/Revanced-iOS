@@ -1,0 +1,1 @@
+package android.text;public interface Spanned extends CharSequence {int SPAN_EXCLUSIVE_EXCLUSIVE=33;int SPAN_INCLUSIVE_EXCLUSIVE=17; <T> T[] getSpans(int start,int end,Class<T> type);int getSpanFlags(Object span);int getSpanStart(Object span);int getSpanEnd(Object span);}

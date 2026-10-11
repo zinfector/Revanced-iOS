@@ -1,0 +1,2 @@
+package app.revanced.extension.shared.settings;
+public class FloatSetting extends Setting {public final Float defaultValue;public FloatSetting(String key,Float value,Object... flags){super(key,flags);defaultValue=value;}public Float get(){return (Float)rv.batch.Platform.read(key,defaultValue);}public void save(Float value){rv.batch.Platform.write(key,value);}public boolean isSetToDefault(){return java.util.Objects.equals(get(),defaultValue);}public Float resetToDefault(){save(defaultValue);return defaultValue;}}

@@ -1,0 +1,1 @@
+package android.view;import java.util.*;public class ViewTreeObserver {public interface OnDrawListener{void onDraw();}public final List<OnDrawListener> listeners=new ArrayList<>();public void addOnDrawListener(OnDrawListener l){listeners.add(l);}public void dispatchDraw(){for(OnDrawListener l:listeners)l.onDraw();}}

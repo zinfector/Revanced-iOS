@@ -1,0 +1,2 @@
+package app.revanced.extension.shared.settings;
+public class IntegerSetting extends Setting {public final Integer defaultValue;public IntegerSetting(String key,Integer value,Object... flags){super(key,flags);defaultValue=value;}public Integer get(){return (Integer)rv.batch.Platform.read(key,defaultValue);}public void save(Integer value){rv.batch.Platform.write(key,value);}public boolean isSetToDefault(){return java.util.Objects.equals(get(),defaultValue);}public Integer resetToDefault(){save(defaultValue);return defaultValue;}}

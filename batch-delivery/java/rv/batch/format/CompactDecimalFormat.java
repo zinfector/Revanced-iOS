@@ -1,0 +1,1 @@
+package rv.batch.format;import java.util.Locale;public final class CompactDecimalFormat extends DecimalFormat {public enum CompactStyle{SHORT,LONG}private CompactDecimalFormat(Locale l,CompactStyle s){super(l,s==CompactStyle.SHORT?"compact_short":"compact_long");}public static CompactDecimalFormat getInstance(Locale l,CompactStyle s){return new CompactDecimalFormat(l,s);}}

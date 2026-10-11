@@ -1,0 +1,1 @@
+package android.text;public final class SpannableString extends SpannableStringInternal {public SpannableString(CharSequence s){super(s);}}

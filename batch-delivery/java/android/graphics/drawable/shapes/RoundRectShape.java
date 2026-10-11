@@ -1,0 +1,1 @@
+package android.graphics.drawable.shapes;import android.graphics.RectF;public class RoundRectShape extends RectShape {public final float[] radii,inner;public final RectF inset;public RoundRectShape(float[] r,RectF i,float[] n){radii=r;inset=i;inner=n;}}

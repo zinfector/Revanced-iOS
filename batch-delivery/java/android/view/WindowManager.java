@@ -1,0 +1,1 @@
+package android.view;public interface WindowManager {class LayoutParams extends ViewGroup.LayoutParams {public static final int FLAG_DIM_BEHIND=2,FLAG_NOT_FOCUSABLE=8,SOFT_INPUT_STATE_ALWAYS_HIDDEN=3,SOFT_INPUT_ADJUST_NOTHING=48,SOFT_INPUT_ADJUST_RESIZE=16;public int gravity,y,flags;public float dimAmount;public LayoutParams(){super(-1,-2);}}}

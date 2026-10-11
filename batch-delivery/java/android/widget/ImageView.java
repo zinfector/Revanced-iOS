@@ -1,0 +1,1 @@
+package android.widget;import android.content.Context;import android.view.View;public class ImageView extends View {public ImageView(Context c){super(c);}public void setImageAlpha(int a){emit("image_alpha",a);}public void setImageResource(int id){emit("image_resource",id);}}

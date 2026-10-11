@@ -1,0 +1,98 @@
+{
+  "admission": {
+    "classes": 65,
+    "methods": 407,
+    "fields": 308
+  },
+  "graph_sha256": "6798ab65a679b6aa6e2635584c587d290a9a40337ca78c8d66f519d12659c468",
+  "policy_generated_from_ir": true,
+  "reattribution": {
+    "independently_reattributed": true,
+    "semantic_form_sha256": "fe9a54dcbf7820bdf80fb5290760fa9ad33b9bd9bfd49b29dc3e043bab68a6f8"
+  },
+  "source_sha256": {
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\ByteTrieSearch.java": "6f1e99a7fb5f69727c09a56ce8f619fa84e43055887c8595e4af7dd81f3dd213",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\Filter.java": "4e27894cb7f857ce4b3101803eaeaaf73a9a6eff95054480de3efa865644137e",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroup.java": "c1cb7543026528f4189a7b2009abe5ebd2e8ad236ec6d54785a216f04b934b9a",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\patches\\litho\\FilterGroupList.java": "1b613e686451dc6c1c19d0ab9f3a0d34f8eadec00b1a9b4cc17ae1a47d68ecc8",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\requests\\Requester.java": "b5a7eac918417fe5fe8a68b5693aa7419be489ffd574690fb414fc02d519ed40",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\requests\\Route.java": "1ea59ad5dd10215a88412bb33229381afb72055f0489e73826bf4ad1581d2d0c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\StringTrieSearch.java": "a5a002f52200f76312118bb84b1e956de21517ac6aeab4c523ba079a0af8c1b7",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\TrieSearch.java": "dbea672fe81809f7092fc62b24064ec4aa95c1aa642431b8cfb752b63c124f30",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\BackgroundPlaybackPatch.java": "ec4cb67999925021b986fca075521c29414c20b6e9b8ecb3b05c452f703590a4",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisablePlayerPopupPanelsPatch.java": "605bd3d16d0772956dbdf5a855f819fb733b1d31768aa4052261cef41470899c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\DisableResumingStartupShortsPlayerPatch.java": "d7dcca2bc9e855fe8ff38b39e067ac56fedfb4846c45cc1e572b5c95e4bca51c",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideAutoplayPreviewPatch.java": "a16ad16126282def0429917e38b3f770da58999250320eb0ec37941335766262",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideEndScreenCardsPatch.java": "161c815a9d5b9129b16976a1b73522d54f5ed98a648e1bf009cebd77a72ff756",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideInfoCardsPatch.java": "83bfdd4b89bcc8e7b189b2e896cc6b6c2f2c62a5a738cfd0b978c2c96aed6746",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HidePlayerOverlayButtonsPatch.java": "f82dac94f188030d40f14883ff613d1b06b417dc70e4f72796ba481ecc685b3a",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\HideRelatedVideoOverlayPatch.java": "0b80e521a1db03c18fa711a1593c0f75089a18e074ae6f0bccca4f5dee0f2bee",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\litho\\AdsFilter.java": "79e3da13455ab7dc4666b65cbcf1053d57b0952c7871e9305ec5670b9ddf1a04",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\litho\\ReturnYouTubeDislikeFilter.java": "7b19141b3d2533f8330109ccaa535a05aae96fa0345200ae96a07c3bf90ba5ab",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\litho\\ShortsFilter.java": "b9c1c2d0f52eed2edf7a63f509cda9247daf3017f2e9933aa70ddbdb3baea122",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\CustomPlaybackSpeedPatch.java": "6d85d512bed38ef3f7582b42bf1025001d29471b046222f99408aca728177468",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java": "e0b35196516ed21169254cc43aa5c78c551360601c117ff9dcd7b9d6348688bf",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\ReturnYouTubeDislikePatch.java": "ada0c0633c824109bdb857dd42142568ef0e5229e2745ba91f0820c38e6cea41",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\VersionCheckPatch.java": "ad05a54221614dea37556850808e865dcd93b204f761efeed1ba71c580a96d7f",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\VideoAdsPatch.java": "c71d5caf610c3c01f90d636f12955c8298f2949abd2c12e36959ef4fc9057459",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\returnyoutubedislike\\requests\\ReturnYouTubeDislikeAPI.java": "649a225a5a620053a618e97cbc45e0e43348c5dee6e3239a67f0419d4a2d2348",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\returnyoutubedislike\\requests\\ReturnYouTubeDislikeRoutes.java": "643122d749640ce59f8fada8a268a8bf7eb475a6a98f4fecd73d61ba35936a63",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\returnyoutubedislike\\requests\\RYDVoteData.java": "2d08eb26f27555c5efdc2ff64fc45f439dce8ca65afd1b0900a2df9de8956c94",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\returnyoutubedislike\\ReturnYouTubeDislike.java": "fc4c8daf911e699454fcfdcc41c39d3e8caa43d5d152bd0325432f0dd4097f3a",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\objects\\CategoryBehaviour.java": "049d05a56ff951b9418820ab432075aa3196cbd176a26927616d7342b332c1b9",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\objects\\SegmentCategory.java": "5189848bac7fab12d867df76798343746c6633190b57e30518c86f1efa6ee8aa",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\objects\\SponsorSegment.java": "1b8975f065a41c5332afc32fb1911a54e83beb54d31e1dcda58326103a7db796",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\objects\\UserStats.java": "17955b60c34e2859343b71a34a9536b328fee2d1e5a62efa3a11ec2e16eb89af",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\requests\\SBRequester.java": "dd95b242f334d76f32ba4b31eb922eb08860dfd24b7f414b9a882059bbfac2e0",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\requests\\SBRoutes.java": "e951f4b901ce1b103b4d6da025df0157c4ac3d17acef147e908b4cb57110ebe7",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\SegmentPlaybackController.java": "34e433658aa3cd284579cff773f8afcc85f879cf1d7b60708df2abfc2f35e868",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\SponsorBlockSettings.java": "2fe1db1632e692191144869f00516623d4ad6fe937ee8bed907e2236f018b953",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\sponsorblock\\SponsorBlockUtils.java": "7c2f61bb92a42e1035aedf700e251e792eff34d2c8dfc90e13966a0412e33a24"
+  },
+  "batch": {
+    "ads": [
+      "patches/VideoAdsPatch.java",
+      "patches/litho/AdsFilter.java"
+    ],
+    "background_pip": [
+      "patches/BackgroundPlaybackPatch.java"
+    ],
+    "sponsorblock": [
+      "sponsorblock/SegmentPlaybackController.java",
+      "sponsorblock/objects/SponsorSegment.java",
+      "sponsorblock/objects/CategoryBehaviour.java",
+      "sponsorblock/objects/SegmentCategory.java",
+      "sponsorblock/objects/UserStats.java",
+      "sponsorblock/requests/SBRequester.java",
+      "sponsorblock/requests/SBRoutes.java",
+      "sponsorblock/SponsorBlockSettings.java",
+      "sponsorblock/SponsorBlockUtils.java"
+    ],
+    "speed": [
+      "patches/playback/speed/RememberPlaybackSpeedPatch.java",
+      "patches/playback/speed/CustomPlaybackSpeedPatch.java"
+    ],
+    "shorts": [
+      "patches/litho/ShortsFilter.java",
+      "patches/DisableResumingStartupShortsPlayerPatch.java"
+    ],
+    "player_cleanup": [
+      "patches/HidePlayerOverlayButtonsPatch.java",
+      "patches/HideInfoCardsPatch.java",
+      "patches/HideEndScreenCardsPatch.java",
+      "patches/HideRelatedVideoOverlayPatch.java",
+      "patches/HideAutoplayPreviewPatch.java",
+      "patches/DisablePlayerPopupPanelsPatch.java"
+    ],
+    "ryd": [
+      "returnyoutubedislike/ReturnYouTubeDislike.java",
+      "returnyoutubedislike/requests/RYDVoteData.java",
+      "returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "returnyoutubedislike/requests/ReturnYouTubeDislikeRoutes.java",
+      "patches/ReturnYouTubeDislikePatch.java",
+      "patches/litho/ReturnYouTubeDislikeFilter.java"
+    ]
+  },
+  "whole_app_hooks_installed": false,
+  "device_verified": false
+}

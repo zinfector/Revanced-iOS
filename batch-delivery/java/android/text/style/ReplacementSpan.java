@@ -1,0 +1,1 @@
+package android.text.style;import android.graphics.*;public abstract class ReplacementSpan {public abstract int getSize(Paint paint,CharSequence text,int start,int end,Paint.FontMetricsInt fm);public abstract void draw(Canvas c,CharSequence t,int start,int end,float x,int top,int y,int bottom,Paint p);}

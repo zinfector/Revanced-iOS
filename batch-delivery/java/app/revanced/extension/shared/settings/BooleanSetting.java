@@ -1,0 +1,2 @@
+package app.revanced.extension.shared.settings;
+public class BooleanSetting extends Setting {public final Boolean defaultValue;public BooleanSetting(String key,Boolean value,Object... flags){super(key,flags);defaultValue=value;}public Boolean get(){return (Boolean)rv.batch.Platform.read(key,defaultValue);}public void save(Boolean value){rv.batch.Platform.write(key,value);}public boolean isSetToDefault(){return java.util.Objects.equals(get(),defaultValue);}public Boolean resetToDefault(){save(defaultValue);return defaultValue;}}

@@ -1,0 +1,1 @@
+package android.support.v7.widget;public class RecyclerView extends android.view.ViewGroup {public RecyclerView(android.content.Context c){super(c);}protected void onLayout(boolean changed,int l,int t,int r,int b){}}

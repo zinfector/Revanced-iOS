@@ -1,0 +1,1 @@
+package android.content;public interface DialogInterface {int BUTTON_POSITIVE=-1,BUTTON_NEGATIVE=-2,BUTTON_NEUTRAL=-3;void dismiss();interface OnClickListener{void onClick(DialogInterface d,int which);}interface OnDismissListener{void onDismiss(DialogInterface d);}}

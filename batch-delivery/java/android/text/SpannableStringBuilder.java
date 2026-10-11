@@ -1,0 +1,3 @@
+package android.text;public class SpannableStringBuilder extends SpannableStringInternal implements Editable {public SpannableStringBuilder(){super("");}public SpannableStringBuilder(CharSequence s){super(s);}
+public SpannableStringBuilder append(char c){text+=c;return this;}public SpannableStringBuilder append(CharSequence s){return append(s,0,s==null?4:s.length());}
+public SpannableStringBuilder append(CharSequence s,int start,int end){if(s==null)s="null";int old=length();text+=s.subSequence(start,end);if(s instanceof Spanned p)for(Object x:p.getSpans(start,end,Object.class))setSpan(x,old+Math.max(start,p.getSpanStart(x))-start,old+Math.min(end,p.getSpanEnd(x))-start,p.getSpanFlags(x));return this;}}

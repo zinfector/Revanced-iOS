@@ -1,0 +1,1 @@
+package android.view.animation;public class AlphaAnimation extends Animation {public final float from,to;public AlphaAnimation(float f,float t){from=f;to=t;}}

@@ -1,0 +1,1 @@
+package android.widget;public final class Toast {public static final int LENGTH_SHORT=0,LENGTH_LONG=1;}

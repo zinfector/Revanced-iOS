@@ -1,0 +1,1 @@
+package android.widget;import android.content.Context;import android.view.ViewGroup;public class RelativeLayout extends ViewGroup {public RelativeLayout(Context c){super(c);}public static class LayoutParams extends ViewGroup.MarginLayoutParams {public LayoutParams(int w,int h){super(w,h);}}}

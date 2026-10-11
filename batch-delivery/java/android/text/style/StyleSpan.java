@@ -1,0 +1,1 @@
+package android.text.style;public final class StyleSpan {public final int style;public StyleSpan(int s){style=s;}public int getStyle(){return style;}}

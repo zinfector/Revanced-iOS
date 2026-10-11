@@ -1,0 +1,2 @@
+package app.revanced.extension.shared.settings;
+public class LongSetting extends Setting {public final Long defaultValue;public LongSetting(String key,Long value,Object... flags){super(key,flags);defaultValue=value;}public Long get(){return (Long)rv.batch.Platform.read(key,defaultValue);}public void save(Long value){rv.batch.Platform.write(key,value);}public boolean isSetToDefault(){return java.util.Objects.equals(get(),defaultValue);}public Long resetToDefault(){save(defaultValue);return defaultValue;}}

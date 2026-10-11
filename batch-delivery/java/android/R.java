@@ -1,0 +1,1 @@
+package android;public final class R {public static final class string {public static final int ok=17039370,cancel=17039360;}public static final class attr {public static final int borderlessButtonStyle=16843563;}}

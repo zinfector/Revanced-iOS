@@ -1,0 +1,2 @@
+package app.revanced.extension.youtube.shared;
+public enum VideoState{NEW,PLAYING,PAUSED,RECOVERABLE_ERROR,UNRECOVERABLE_ERROR,ENDED;private static volatile VideoState current=NEW;private static final Event<VideoState> event=new Event<>();public static VideoState getCurrent(){return current;}public static void setFromString(String value){VideoState next=valueOf(value);if(next!=current){current=next;event.invoke(next);}}public static Event<VideoState> getOnChange(){return event;}}
