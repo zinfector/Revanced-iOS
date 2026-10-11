@@ -177,14 +177,16 @@ LIKE_REMOVE(0);
         }
     }
     private static java.lang.String formatDislikePercentage(float dislikePercentage) {
+        java.lang.Object __rv_pattern_input_8 = null;
+        rv.batch.format.DecimalFormat __rv_pattern_8 = null;
         synchronized ((app.revanced.extension.youtube.returnyoutubedislike.ReturnYouTubeDislike.class)) {
             if (((dislikePercentageFormatter == null))) {
                 java.util.Locale locale = java.util.Locale.getDefault();
                 dislikePercentageFormatter = rv.batch.format.NumberFormat.getPercentInstance(locale);
-                if ((((android.os.Build.VERSION.SDK_INT >= 28) && (dislikePercentageFormatter instanceof rv.batch.format.DecimalFormat decimalFormatter)))) {
+                if ((((android.os.Build.VERSION.SDK_INT >= 28) && (((__rv_pattern_input_8 = dislikePercentageFormatter) instanceof rv.batch.format.DecimalFormat) && ((__rv_pattern_8 = ((rv.batch.format.DecimalFormat)__rv_pattern_input_8)) != null))))) {
                     rv.batch.format.DecimalFormatSymbols symbols = rv.batch.format.DecimalFormatSymbols.getInstance(locale);
                     symbols.setDigitStrings(rv.batch.format.DecimalFormatSymbols.getInstance(java.util.Locale.ENGLISH).getDigitStrings());
-                    decimalFormatter.setDecimalFormatSymbols(symbols);
+                    __rv_pattern_8.setDecimalFormatSymbols(symbols);
                 }
             }
             if (((dislikePercentage >= 0.01d))) {

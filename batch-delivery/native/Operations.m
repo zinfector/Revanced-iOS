@@ -1,5 +1,6 @@
 #import "Operations.h"
 #import "HTTP.h"
+#import "Format.h"
 #include "jni.h"
 #include "IOSObjectArray.h"
 #include "java/lang/Boolean.h"
@@ -61,5 +62,6 @@ JNIEXPORT jobject JNICALL Java_rv_batch_NativeOperations_invoke(JNIEnv *env,jobj
  ready();if([op isEqual:@"thread.is_main"])return JavaLangBoolean_valueOfWithBoolean_(NSThread.isMainThread);
  if([op isEqual:@"log"]){NSLog(@"[RVB] %@",IOSObjectArray_Get(args,0));return nil;}
  BOOL handled=NO;id result=RVBHTTP(op,args,&handled);if(handled)return result;
+ result=RVBFormat(op,args,&handled);if(handled)return result;
  return operation(op,args);
 }

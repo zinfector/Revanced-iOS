@@ -94,7 +94,7 @@ def generate(out):
     compile_sources(full,out/'generated-classes',out/'generated-javac.log',str(ANDROID))
     run(['java','-cp',str(GSON)+os.pathsep+str(compiler),'ExportBatch',out/'reattributed.json',str(out/'generated-classes')+os.pathsep+str(ANDROID),'',*sorted(generated.rglob('*.java'))],out/'reattribution.log')
     reattribution=roundtrip.check(module,json.loads((out/'reattributed.json').read_text(encoding='utf-8')))
-    native_module=lowering.platform_types(module)
+    native_module=lowering.binding_patterns(lowering.platform_types(module))
     native_contracts=lowering.platform_types(contracts)
     native_contracts['java.lang.System#currentTimeMillis()']=dict(family='wall-clock',effects=['clock.wall'],emit_call='rv.batch.Platform.wallMillis')
     native_contracts['java.net.URL#openConnection()']=dict(family='http-transport',effects=['http.allocate'],emit_call='rv.batch.Network.open',receiver_first=True)

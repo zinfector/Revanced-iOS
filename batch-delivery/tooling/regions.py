@@ -52,19 +52,29 @@ def verify(module,contracts,external_fields):
         if c['kind']!='INTERFACE' and not any(m.get('constructor') for m in c['members']):
             calls.add(c['name']+'#<init>()')
     unresolved=[]
+    declarations={n['symbol']:n for n in walk(module) if n['kind']=='VARIABLE'}
     for n in walk(module):
         require(n['kind'] in KINDS and not n.get('unsupported'),'Unsupported '+n['kind']+' at '+str(n.get('origin')))
         require('raw' not in n and 'text' not in n,'Executable source escape')
         if n.get('modifiers'):mods(n['modifiers'])
+        if n['kind']=='LAMBDA_EXPRESSION':
+            local={p['symbol'] for p in n['parameters']}
+            local.update(x['symbol'] for x in walk(n['body']) if x['kind']=='VARIABLE')
+            free={x['symbol'] for x in walk(n['body']) if x['kind'] in ('IDENTIFIER','MEMBER_SELECT') and x.get('symbol','').startswith('local_') and 'constant' not in x and x['symbol'] not in local}
+            captures={x['symbol'] for x in n['captures']}
+            require(free==captures,'Closure capture inventory differs from free references')
+            for capture in n['captures']:
+                require(capture['symbol'] in declarations,'Capture declaration missing')
+                require(capture['type']==declarations[capture['symbol']]['declared_type'],'Capture type differs from declaration')
         for key in ('type','declared_type','result'):
-            if key in n and n[key] and '<anonymous' not in n[key]:safe_type(re.sub(r'capture#\d+','capture',n[key]))
+            if key in n and n[key] and '<anonymous' not in n[key] and n[key]!='<nulltype>':safe_type(re.sub(r'capture#\d+','capture',n[key]))
         if n['kind'] in ('METHOD_INVOCATION','NEW_CLASS'):
             target=n['target']
             if target not in calls and target not in contracts and not n.get('anonymous'):unresolved.append(dict(target=target,origin=n.get('origin')))
         if n.get('field') and not n.get('array_length') and n.get('symbol') not in fields and 'constant' not in n and n['symbol'] not in external_fields:
             unresolved.append(dict(field=n['symbol'],origin=n.get('origin')))
     require(not unresolved,'Unresolved operation frontier: '+json.dumps(unresolved))
-    return dict(classes=sum(n['kind'] in ('CLASS','ENUM','INTERFACE') for n in walk(module)),methods=len(calls),fields=len(fields))
+    return dict(classes=sum(n['kind'] in ('CLASS','ENUM','INTERFACE') for n in walk(module)),methods=sum(n['kind']=='METHOD' for n in walk(module)),language_defined_members=len(calls)-sum(n['kind']=='METHOD' for n in walk(module)),fields=len(fields))
 
 
 def annotate(module,contracts):

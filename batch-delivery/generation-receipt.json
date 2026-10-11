@@ -1,10 +1,11 @@
 {
   "admission": {
     "classes": 65,
-    "methods": 407,
+    "methods": 372,
+    "language_defined_members": 35,
     "fields": 308
   },
-  "graph_sha256": "6798ab65a679b6aa6e2635584c587d290a9a40337ca78c8d66f519d12659c468",
+  "graph_sha256": "81e520e9617899e76c07d51d320f6b083a20b4d9853e75602a494e190d2f1a77",
   "policy_generated_from_ir": true,
   "reattribution": {
     "independently_reattributed": true,

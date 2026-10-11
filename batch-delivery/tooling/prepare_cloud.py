@@ -10,6 +10,11 @@ def prepare(worktree,generation):
     shutil.copytree(generation/'portable-src',dest/'java',dirs_exist_ok=True)
     shutil.copytree(ROOT/'native',dest/'native',dirs_exist_ok=True)
     for name in ('native_build.py',):shutil.copy2(ROOT/name,dest/name)
+    shutil.copytree(ROOT/'tests',dest/'tests',dirs_exist_ok=True)
+    validation=generation.parent/'validation-current'
+    if not validation.exists():raise ValueError('Run the latest source/native fixture validation before staging')
+    shutil.copy2(validation/'oracle-trace.txt',dest/'original-trace.txt')
+    shutil.copy2(validation/'receipt.json',dest/'behavior-receipt.json')
     shutil.copy2(generation/'generation-receipt.json',dest/'generation-receipt.json')
     shutil.copytree(generation/'retained',dest/'retained',dirs_exist_ok=True)
     tooling=dest/'tooling';tooling.mkdir(exist_ok=True)

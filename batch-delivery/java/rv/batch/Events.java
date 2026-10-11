@@ -19,6 +19,8 @@ public final class Events {
  public static void playerState(String type,boolean shorts){PlayerType.setFromString(type);ShortsPlayerState.setOpen(shorts);}
  public static void beginVideo(String videoId){RememberPlaybackSpeedPatch.newVideoStarted(null);SegmentPlaybackController.initialize(null);SegmentPlaybackController.setCurrentVideoId(videoId);ReturnYouTubeDislikePatch.newVideoLoaded(videoId);}
  public static void timeChanged(long millis){SegmentPlaybackController.setVideoTime(millis);}
+ public static void skipSegment(app.revanced.extension.youtube.sponsorblock.objects.SponsorSegment segment){SegmentPlaybackController.onSkipSegmentClicked(segment);}
+ public static void showSpeedMenu(){CustomPlaybackSpeedPatch.showModernCustomPlaybackSpeedDialog(app.revanced.extension.shared.Utils.getContext());}
  public static void rateSelected(float rate){RememberPlaybackSpeedPatch.userSelectedPlaybackSpeed(rate);}
  public static float rateOverride(){return RememberPlaybackSpeedPatch.getPlaybackSpeedOverride();}
  public static void vote(int value){ReturnYouTubeDislikePatch.sendVote(value);}

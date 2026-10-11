@@ -1,0 +1,150 @@
+{
+  "schema": "stateful.batch.behavior.v1",
+  "source_generated_traces_equal": true,
+  "trace_cases": 71,
+  "source_transport_clock_edits": [
+    {
+      "file": "app/revanced/extension/shared/requests/Requester.java",
+      "start": 872,
+      "end": 901,
+      "original": "new URL(url).openConnection()",
+      "replacement": "rv.batch.Network.open(new URL(url))"
+    },
+    {
+      "file": "app/revanced/extension/youtube/patches/playback/speed/CustomPlaybackSpeedPatch.java",
+      "start": 8720,
+      "end": 8746,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/patches/playback/speed/RememberPlaybackSpeedPatch.java",
+      "start": 1662,
+      "end": 1688,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 26737,
+      "end": 26763,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 25632,
+      "end": 25658,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 11165,
+      "end": 11191,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 9154,
+      "end": 9180,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 8708,
+      "end": 8734,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 8248,
+      "end": 8274,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/requests/ReturnYouTubeDislikeAPI.java",
+      "start": 6857,
+      "end": 6883,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/ReturnYouTubeDislike.java",
+      "start": 17644,
+      "end": 17670,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/returnyoutubedislike/ReturnYouTubeDislike.java",
+      "start": 16621,
+      "end": 16647,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/objects/UserStats.java",
+      "start": 1756,
+      "end": 1782,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/objects/UserStats.java",
+      "start": 1644,
+      "end": 1670,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/requests/SBRequester.java",
+      "start": 15901,
+      "end": 15927,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/SegmentPlaybackController.java",
+      "start": 29739,
+      "end": 29765,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/SegmentPlaybackController.java",
+      "start": 29266,
+      "end": 29292,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/SegmentPlaybackController.java",
+      "start": 21236,
+      "end": 21262,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/SegmentPlaybackController.java",
+      "start": 20573,
+      "end": 20599,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    },
+    {
+      "file": "app/revanced/extension/youtube/sponsorblock/SegmentPlaybackController.java",
+      "start": 13161,
+      "end": 13187,
+      "original": "System.currentTimeMillis()",
+      "replacement": "rv.batch.Platform.wallMillis()"
+    }
+  ],
+  "source_algorithms_retained": true,
+  "operation_fixture": "Deterministic Java facade and recorded operations; not Android runtime or live iOS",
+  "device_verified": false
+}

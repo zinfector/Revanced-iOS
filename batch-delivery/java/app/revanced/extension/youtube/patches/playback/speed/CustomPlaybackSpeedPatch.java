@@ -125,26 +125,32 @@ public class CustomPlaybackSpeedPatch {
 });
     }
     private static boolean hideLithoMenuAndShowSpeedMenu(android.support.v7.widget.RecyclerView recyclerView, int expectedChildCount) {
+        java.lang.Object __rv_pattern_input_5 = null;
+        android.view.ViewGroup __rv_pattern_5 = null;
+        java.lang.Object __rv_pattern_input_6 = null;
+        android.view.ViewGroup __rv_pattern_6 = null;
+        java.lang.Object __rv_pattern_input_7 = null;
+        android.view.ViewGroup __rv_pattern_7 = null;
         if (((recyclerView.getChildCount() == 0))) {
             return false;
         }
-        if (((!((recyclerView.getChildAt(0) instanceof android.view.ViewGroup playbackSpeedParentView))))) {
+        if (((!((((__rv_pattern_input_5 = recyclerView.getChildAt(0)) instanceof android.view.ViewGroup) && ((__rv_pattern_5 = ((android.view.ViewGroup)__rv_pattern_input_5)) != null)))))) {
             return false;
         }
-        if (((playbackSpeedParentView.getChildCount() != expectedChildCount))) {
+        if (((__rv_pattern_5.getChildCount() != expectedChildCount))) {
             return false;
         }
-        if (((!((app.revanced.extension.shared.Utils.getParentView(recyclerView, 3) instanceof android.view.ViewGroup parentView3rd))))) {
+        if (((!((((__rv_pattern_input_6 = app.revanced.extension.shared.Utils.getParentView(recyclerView, 3)) instanceof android.view.ViewGroup) && ((__rv_pattern_6 = ((android.view.ViewGroup)__rv_pattern_input_6)) != null)))))) {
             return false;
         }
-        if (((!((parentView3rd.getParent() instanceof android.view.ViewGroup parentView4th))))) {
+        if (((!((((__rv_pattern_input_7 = __rv_pattern_6.getParent()) instanceof android.view.ViewGroup) && ((__rv_pattern_7 = ((android.view.ViewGroup)__rv_pattern_input_7)) != null)))))) {
             return false;
         }
-        android.view.View touchInsidedView = parentView4th.getChildAt(0);
+        android.view.View touchInsidedView = __rv_pattern_7.getChildAt(0);
         touchInsidedView.setSoundEffectsEnabled(false);
         touchInsidedView.performClick();
-        parentView3rd.setVisibility(8);
-        parentView4th.setVisibility(8);
+        __rv_pattern_6.setVisibility(8);
+        __rv_pattern_7.setVisibility(8);
         if ((app.revanced.extension.youtube.settings.Settings.RESTORE_OLD_SPEED_MENU.get())) {
             app.revanced.extension.youtube.patches.playback.speed.CustomPlaybackSpeedPatch.showOldPlaybackSpeedMenu();
             app.revanced.extension.shared.Logger.printDebug(() -> "Old playback speed dialog shown");

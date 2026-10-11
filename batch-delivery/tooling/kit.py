@@ -143,7 +143,7 @@ public final class Utils {
  public static String getTextDirectionString(){return isRightToLeftLocale()?"\\u200f":"\\u200e";}
  public static int adjustColorBrightness(int c,float light,float dark){float f=isDarkModeEnabled()?dark:light;int r=Color.red(c),g=Color.green(c),b=Color.blue(c);float t=1-1/f;
  if(f>1){r=Math.round(r+(255-r)*t);g=Math.round(g+(255-g)*t);b=Math.round(b+(255-b)*t);}else{r=Math.round(r*f);g=Math.round(g*f);b=Math.round(b*f);}return Color.argb(Color.alpha(c),Math.min(255,Math.max(0,r)),Math.min(255,Math.max(0,g)),Math.min(255,Math.max(0,b)));}
- public static void hideViewByRemovingFromParentUnderCondition(boolean hide,View v){if(hide&&v.getParent() instanceof ViewGroup parent)parent.removeView(v);}
+ public static void hideViewByRemovingFromParentUnderCondition(boolean hide,View v){if(hide&&v.getParent() instanceof ViewGroup)((ViewGroup)v.getParent()).removeView(v);}
 }
 ''',
  SP+'ResourceType.java':'package app.revanced.extension.shared;public enum ResourceType{ID,LAYOUT,DRAWABLE,STRING,COLOR,INTEGER,ANIM}\n',

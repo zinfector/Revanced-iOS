@@ -1,6 +1,6 @@
 package android.view;
 import android.content.Context;import android.graphics.drawable.Drawable;import android.view.animation.Animation;
-public class View implements ViewParent {public static final int VISIBLE=0,INVISIBLE=4,GONE=8,TEXT_ALIGNMENT_CENTER=4,SYSTEM_UI_FLAG_HIDE_NAVIGATION=2,SYSTEM_UI_FLAG_IMMERSIVE_STICKY=4096,SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION=512,SYSTEM_UI_FLAG_FULLSCREEN=4;
+public class View implements ViewParent {public static final int SYSTEM_UI_FLAG_VISIBLE=0,TEXT_ALIGNMENT_GRAVITY=1,VISIBLE=0,INVISIBLE=4,GONE=8,TEXT_ALIGNMENT_CENTER=4,SYSTEM_UI_FLAG_HIDE_NAVIGATION=2,SYSTEM_UI_FLAG_IMMERSIVE_STICKY=4096,SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION=512,SYSTEM_UI_FLAG_FULLSCREEN=4;
 public final Context context;public Object handle;public int id,visibility=VISIBLE;public boolean enabled=true,clickable;public float alpha=1;public ViewParent parent;public ViewGroup.LayoutParams layout=new ViewGroup.LayoutParams(-2,-2);public OnClickListener click;private final ViewTreeObserver observer=new ViewTreeObserver();
 public View(Context c){context=c;}public interface OnClickListener{void onClick(View v);}public Context getContext(){return context;}public ViewParent getParent(){return parent;}public ViewGroup.LayoutParams getLayoutParams(){return layout;}
 public void setLayoutParams(ViewGroup.LayoutParams p){layout=p;emit("layout",p);}public <T extends View> T findViewById(int id){return (T)(this.id==id?this:null);}public void setVisibility(int v){visibility=v;emit("visibility",v);}public int getVisibility(){return visibility;}

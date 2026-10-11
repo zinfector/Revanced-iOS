@@ -1,1 +1,1 @@
-package android;public final class R {public static final class string {public static final int ok=17039370,cancel=17039360;}public static final class attr {public static final int borderlessButtonStyle=16843563;}}
+package android;public final class R {public static final class string {public static final int yes=17039379,no=17039369,ok=17039370,cancel=17039360;}public static final class color {public static final int transparent=17170445;}public static final class attr {public static final int borderlessButtonStyle=16843563;}}

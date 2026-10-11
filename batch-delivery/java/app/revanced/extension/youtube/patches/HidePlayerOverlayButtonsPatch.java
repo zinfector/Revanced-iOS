@@ -41,12 +41,14 @@ final public class HidePlayerOverlayButtonsPatch {
         }
     }
     public static void setTitleAnchorStartMargin(android.view.View titleAnchorView) {
+        java.lang.Object __rv_pattern_input_1 = null;
+        android.widget.RelativeLayout.LayoutParams __rv_pattern_1 = null;
         if (((!app.revanced.extension.youtube.settings.Settings.HIDE_COLLAPSE_BUTTON.get()))) {
             return;
         }
         android.view.ViewGroup.LayoutParams layoutParams = titleAnchorView.getLayoutParams();
-        if (((layoutParams instanceof android.widget.RelativeLayout.LayoutParams relativeParams))) {
-            relativeParams.setMarginStart(0);
+        if (((((__rv_pattern_input_1 = layoutParams) instanceof android.widget.RelativeLayout.LayoutParams) && ((__rv_pattern_1 = ((android.widget.RelativeLayout.LayoutParams)__rv_pattern_input_1)) != null)))) {
+            __rv_pattern_1.setMarginStart(0);
         } else {
             app.revanced.extension.shared.Logger.printDebug(() -> ("Unknown title anchor layout params: " + layoutParams));
         }
@@ -92,12 +94,16 @@ final public class HidePlayerOverlayButtonsPatch {
         app.revanced.extension.shared.Utils.hideViewByRemovingFromParentUnderCondition(true, nextPreviousButton);
     }
     private static void removeImageViewsBackgroundRecursive(android.view.View currentView) {
-        if (((currentView instanceof android.widget.ImageView imageView))) {
-            imageView.setBackground(null);
+        java.lang.Object __rv_pattern_input_2 = null;
+        android.widget.ImageView __rv_pattern_2 = null;
+        java.lang.Object __rv_pattern_input_3 = null;
+        android.view.ViewGroup __rv_pattern_3 = null;
+        if (((((__rv_pattern_input_2 = currentView) instanceof android.widget.ImageView) && ((__rv_pattern_2 = ((android.widget.ImageView)__rv_pattern_input_2)) != null)))) {
+            __rv_pattern_2.setBackground(null);
         }
-        if (((currentView instanceof android.view.ViewGroup viewGroup))) {
-            for (int i = 0; (i < viewGroup.getChildCount()); i++) {
-                app.revanced.extension.youtube.patches.HidePlayerOverlayButtonsPatch.removeImageViewsBackgroundRecursive(viewGroup.getChildAt(i));
+        if (((((__rv_pattern_input_3 = currentView) instanceof android.view.ViewGroup) && ((__rv_pattern_3 = ((android.view.ViewGroup)__rv_pattern_input_3)) != null)))) {
+            for (int i = 0; (i < __rv_pattern_3.getChildCount()); i++) {
+                app.revanced.extension.youtube.patches.HidePlayerOverlayButtonsPatch.removeImageViewsBackgroundRecursive(__rv_pattern_3.getChildAt(i));
             }
         }
     }

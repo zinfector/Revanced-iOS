@@ -51,6 +51,8 @@ final public class AdsFilter extends app.revanced.extension.shared.patches.litho
         return (!exceptions.matches(path));
     }
     public static void closeFullscreenAd(java.lang.Object customDialog, byte[] buffer) {
+        java.lang.Object __rv_pattern_input_4 = null;
+        android.app.Dialog __rv_pattern_4 = null;
         try {
             if (((!app.revanced.extension.youtube.settings.Settings.HIDE_FULLSCREEN_ADS.get()))) {
                 return;
@@ -59,9 +61,9 @@ final public class AdsFilter extends app.revanced.extension.shared.patches.litho
                 app.revanced.extension.shared.Logger.printDebug(() -> "buffer is null");
                 return;
             }
-            if (((fullscreenAd.check(buffer).isFiltered() && (customDialog instanceof android.app.Dialog dialog)))) {
+            if (((fullscreenAd.check(buffer).isFiltered() && (((__rv_pattern_input_4 = customDialog) instanceof android.app.Dialog) && ((__rv_pattern_4 = ((android.app.Dialog)__rv_pattern_input_4)) != null))))) {
                 app.revanced.extension.shared.Logger.printDebug(() -> "Closing fullscreen ad");
-                android.view.Window window = dialog.getWindow();
+                android.view.Window window = __rv_pattern_4.getWindow();
                 if (((window != null))) {
                     android.view.WindowManager.LayoutParams params = window.getAttributes();
                     params.height = 0;
@@ -71,7 +73,7 @@ final public class AdsFilter extends app.revanced.extension.shared.patches.litho
                     window.setSoftInputMode(0);
                     window.getDecorView().setSystemUiVisibility(0);
                 }
-                dialog.dismiss();
+                __rv_pattern_4.dismiss();
             }
         } catch (java.lang.Exception ex) {
             app.revanced.extension.shared.Logger.printException(() -> "closeFullscreenAd failure", ex);

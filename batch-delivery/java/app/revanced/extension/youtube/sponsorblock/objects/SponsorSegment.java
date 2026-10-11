@@ -71,13 +71,15 @@ CATEGORY_CHANGE(app.revanced.extension.shared.StringRef.sf("revanced_sb_vote_cat
         return ((start == o.start) ? java.lang.Long.compare(o.length(), length()) : java.lang.Long.compare(start, o.start));
     }
     public boolean equals(java.lang.Object o) {
+        java.lang.Object __rv_pattern_input_9 = null;
+        app.revanced.extension.youtube.sponsorblock.objects.SponsorSegment __rv_pattern_9 = null;
         if (((this == o))) {
             return true;
         }
-        if (((!((o instanceof app.revanced.extension.youtube.sponsorblock.objects.SponsorSegment other))))) {
+        if (((!((((__rv_pattern_input_9 = o) instanceof app.revanced.extension.youtube.sponsorblock.objects.SponsorSegment) && ((__rv_pattern_9 = ((app.revanced.extension.youtube.sponsorblock.objects.SponsorSegment)__rv_pattern_input_9)) != null)))))) {
             return false;
         }
-        return (((java.util.Objects.equals(UUID, other.UUID) && (category == other.category)) && (start == other.start)) && (end == other.end));
+        return (((java.util.Objects.equals(UUID, __rv_pattern_9.UUID) && (category == __rv_pattern_9.category)) && (start == __rv_pattern_9.start)) && (end == __rv_pattern_9.end));
     }
     public int hashCode() {
         return java.util.Objects.hashCode(UUID);
