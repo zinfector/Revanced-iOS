@@ -1,0 +1,25 @@
+name: Generated typed diagnostic backend
+on:
+  push:
+    branches: [feat/generated-native-diagnostics-20261011]
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: macos-15
+    timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Compile generated observation code only
+        run: python3 generated-diagnostics/diagnostic_build.py --source generated-diagnostics --out diagnostic-output
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: generated-diagnostic-backend
+          path: diagnostic-output
+          if-no-files-found: error
+          retention-days: 7

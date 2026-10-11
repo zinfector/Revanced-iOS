@@ -1,0 +1,85 @@
+{
+  "image": {
+    "sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "uuid": "1f61665a5d4a35668b77da821e1d6c17",
+    "vmaddr": "0x100000000"
+  },
+  "sources": {
+    "GeneratedObservations.m": "ce24dfc87ff0558f50b840978b43e2d8229a3029c876b01e8c618417e4afb449",
+    "diagnostic_build.py": "5eaf6457bafc23553eda28bdaa91d7046bf8dc060a1353fcebb44513f71ebd3a"
+  },
+  "probes": [
+    {
+      "method": "native-method:67206cc73b0240043f2f13f8",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": true,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:fd972edfa499aee28a12dae9",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:8a1197ab4ed4d59f582b5f37",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:6274ba0d6015d0d2ecac1a5d",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:4f04ddb70b00ddc7512b4604",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:b1073cc8c6bd3b5441097dde",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:f8d4835dc1335ebe6d140782",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:100727d12555746613810a2b",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "schema": "installer.observation-emission.v2",
+  "probes": [
+    {
+      "method": "native-method:67206cc73b0240043f2f13f8",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": true,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:fd972edfa499aee28a12dae9",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:8a1197ab4ed4d59f582b5f37",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:6274ba0d6015d0d2ecac1a5d",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:4f04ddb70b00ddc7512b4604",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:b1073cc8c6bd3b5441097dde",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:f8d4835dc1335ebe6d140782",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    },
+    {
+      "method": "native-method:100727d12555746613810a2b",
+      "status": "generated_read_only_probe",
+      "arguments_captured": true,
+      "scalar_result_captured": false,
+      "object_content_read": false,
+      "owner_dereferenced": false,
+      "native_binding_admitted": false
+    }
+  ],
+  "image": {
+    "sha256": "ca9e2f62bdd7fe612f9e7d9f14c395a3c50c9495b572328bd4abd981ed4ec5cf",
+    "uuid": "1f61665a5d4a35668b77da821e1d6c17",
+    "vmaddr": "0x100000000"
+  },
+  "configuration_sha256": "e2cd9ab9056982466213c99943d29e178d8195f3f0d751b2254e4746109bec1e",
+  "source_sha256": "fa3b0971f3feea91ef4432f5c7bcdd9701e7969ac5bb1ef77dfa21bbcdd3a3c1",
+  "scope": "typed arguments/scalar results, Objective-C exceptional exit, invocation/order/time, object identity/class, process and queue; no content getter or role admission",
+  "device_executed": false
+}
