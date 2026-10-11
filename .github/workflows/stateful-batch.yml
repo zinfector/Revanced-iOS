@@ -21,7 +21,8 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: '3.14'
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: runtime-cache
         with:
           path: j2objc
           key: j2objc-1671e9a-xcode164-jdk21-full-host-ios-v1
@@ -36,8 +37,22 @@ jobs:
           test "$(git -C j2objc rev-parse HEAD)" = 1671e9afb72a16126d448f468db3e582358fba47
           make -C j2objc -j3 translator_dist 2>&1 | tee batch-output/vendor-translator.log
           make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx macosx64 iphone64" dist_includes ../dist/lib/macosx/libjre_emul.a ../dist/lib/iphone/libjre_emul.a ../dist/lib/macosx/libjson.a ../dist/lib/iphone/libjson.a 2>&1 | tee batch-output/vendor-runtime.log
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: steps.runtime-cache.outputs.cache-hit != 'true'
+        with:
+          path: j2objc
+          key: j2objc-1671e9a-xcode164-jdk21-full-host-ios-v1
+      - name: Fetch pinned ICU C headers
+        run: |
+          git init icu-headers
+          git -C icu-headers remote add origin https://github.com/unicode-org/icu.git
+          git -C icu-headers sparse-checkout init --cone
+          git -C icu-headers sparse-checkout set icu4c/source/common/unicode icu4c/source/i18n/unicode
+          git -C icu-headers fetch --depth 1 --filter=blob:none origin 8eca245c7484ac6cc179e3e5f7c1ea7680810f39
+          git -C icu-headers checkout --detach FETCH_HEAD
+          test "$(git -C icu-headers rev-parse HEAD)" = 8eca245c7484ac6cc179e3e5f7c1ea7680810f39
       - name: Translate, execute and compile ARM64 iOS
-        run: python batch-delivery/native_build.py --j2objc-home j2objc/dist --input batch-delivery/java --native batch-delivery/native --out batch-output/native
+        run: python batch-delivery/native_build.py --j2objc-home j2objc/dist --input batch-delivery/java --native batch-delivery/native --out batch-output/native --icu-headers icu-headers
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()
         with:
