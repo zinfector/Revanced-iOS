@@ -1,0 +1,36 @@
+name: Original extension closure inputs
+on:
+  push:
+    branches: [feat/original-extension-closure-20261011]
+permissions:
+  contents: read
+  packages: read
+jobs:
+  extensions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android toolchain
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;36.0.0"'
+      - name: Extract byte-preserving original source snapshot
+        run: python3 -c "import tarfile; tarfile.open('original-extension-source.tar.gz').extractall('original-extensions', filter='data')"
+      - name: Build upstream extension tasks with pinned source plugin
+        env:
+          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_githubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 original-extensions/extension_build.py build --prepared original-extensions --out extension-output
+      - name: Upload exact compiler inputs and extension artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: original-extension-inputs
+          path: extension-output
+          if-no-files-found: error
+          retention-days: 7
