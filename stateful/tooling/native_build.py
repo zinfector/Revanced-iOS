@@ -92,7 +92,7 @@ def main():
     if out.exists():raise ValueError('Fresh native output required')
     out.mkdir(parents=True);objc=out/'objc';objc.mkdir()
     prefixes=out/'prefixes.properties'
-    prefixes.write_text('app.revanced.extension.youtube.patches.playback.speed=RVSTPolicy\napp.revanced.extension.shared=RVSTShared\napp.revanced.extension.youtube.settings=RVSTSettings\napp.revanced.extension.youtube.patches=RVSTContext\nrv.translated=RVSTTest\nrv.fixture=RVSTFixture\nrv.platform=RVSTPlatform\n')
+    prefixes.write_bytes((inputs/'production-native/prefixes.properties').read_bytes())
     files=sorted((inputs/'generated').rglob('*.java'))
     if not files:raise ValueError('No graph-generated source')
     command=[home/'j2objc','-source','11','-use-arc','--prefixes',prefixes,'-classpath',home/'lib/j2objc_annotations.jar',

@@ -1,6 +1,4 @@
 {
-  "schema": "editable-code.patch.regions.v2",
-  "types_attributed": true,
   "classes": [
     {
       "name": "rv.fixture.Box",
@@ -15,9 +13,9 @@
           "id": "n_49_67_VARIABLE",
           "origin": {
             "start": 49,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+            "line": 3,
             "end": 67,
-            "line": 3
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
           },
           "type": "int",
           "symbol": "rv.fixture.Box#value",
@@ -33,9 +31,9 @@
           "id": "n_72_113_VARIABLE",
           "origin": {
             "start": 72,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+            "line": 4,
             "end": 113,
-            "line": 4
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
           },
           "type": "java.lang.Object",
           "symbol": "rv.fixture.Box#lock",
@@ -50,9 +48,9 @@
             "id": "n_100_112_NEW_CLASS",
             "origin": {
               "start": 100,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+              "line": 4,
               "end": 112,
-              "line": 4
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
             },
             "type": "java.lang.Object",
             "target": "java.lang.Object#<init>()",
@@ -67,9 +65,9 @@
           "id": "n_118_160_METHOD",
           "origin": {
             "start": 118,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+            "line": 5,
             "end": 160,
-            "line": 5
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
           },
           "symbol": "rv.fixture.Box#<init>(int)",
           "name": "<init>",
@@ -84,9 +82,9 @@
               "id": "n_129_140_VARIABLE",
               "origin": {
                 "start": 129,
-                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                "line": 5,
                 "end": 140,
-                "line": 5
+                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
               },
               "type": "int",
               "symbol": "local_129_initial",
@@ -101,9 +99,9 @@
             "id": "n_142_160_BLOCK",
             "origin": {
               "start": 142,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+              "line": 5,
               "end": 160,
-              "line": 5
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
             },
             "statements": [
               {
@@ -111,18 +109,18 @@
                 "id": "n_144_158_EXPRESSION_STATEMENT",
                 "origin": {
                   "start": 144,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                  "line": 5,
                   "end": 158,
-                  "line": 5
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                 },
                 "value": {
                   "kind": "ASSIGNMENT",
                   "id": "n_144_157_ASSIGNMENT",
                   "origin": {
                     "start": 144,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                    "line": 5,
                     "end": 157,
-                    "line": 5
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                   },
                   "type": "int",
                   "target": {
@@ -130,9 +128,9 @@
                     "id": "n_144_149_IDENTIFIER",
                     "origin": {
                       "start": 144,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                      "line": 5,
                       "end": 149,
-                      "line": 5
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                     },
                     "type": "int",
                     "symbol": "rv.fixture.Box#value",
@@ -149,9 +147,9 @@
                     "id": "n_150_157_IDENTIFIER",
                     "origin": {
                       "start": 150,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                      "line": 5,
                       "end": 157,
-                      "line": 5
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                     },
                     "type": "int",
                     "symbol": "local_129_initial",
@@ -178,9 +176,9 @@
           "id": "n_165_252_METHOD",
           "origin": {
             "start": 165,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+            "line": 6,
             "end": 252,
-            "line": 6
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
           },
           "symbol": "rv.fixture.Box#add(int)",
           "name": "add",
@@ -195,9 +193,9 @@
               "id": "n_180_190_VARIABLE",
               "origin": {
                 "start": 180,
-                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                "line": 6,
                 "end": 190,
-                "line": 6
+                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
               },
               "type": "int",
               "symbol": "local_180_amount",
@@ -212,9 +210,9 @@
             "id": "n_192_252_BLOCK",
             "origin": {
               "start": 192,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+              "line": 6,
               "end": 252,
-              "line": 6
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
             },
             "statements": [
               {
@@ -222,18 +220,18 @@
                 "id": "n_194_250_SYNCHRONIZED",
                 "origin": {
                   "start": 194,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                  "line": 6,
                   "end": 250,
-                  "line": 6
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                 },
                 "lock": {
                   "kind": "PARENTHESIZED",
                   "id": "n_206_212_PARENTHESIZED",
                   "origin": {
                     "start": 206,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                    "line": 6,
                     "end": 212,
-                    "line": 6
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                   },
                   "type": "java.lang.Object",
                   "value": {
@@ -241,9 +239,9 @@
                     "id": "n_207_211_IDENTIFIER",
                     "origin": {
                       "start": 207,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                      "line": 6,
                       "end": 211,
-                      "line": 6
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                     },
                     "type": "java.lang.Object",
                     "symbol": "rv.fixture.Box#lock",
@@ -265,9 +263,9 @@
                   "id": "n_213_250_BLOCK",
                   "origin": {
                     "start": 213,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                    "line": 6,
                     "end": 250,
-                    "line": 6
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                   },
                   "statements": [
                     {
@@ -275,18 +273,18 @@
                       "id": "n_215_234_EXPRESSION_STATEMENT",
                       "origin": {
                         "start": 215,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                        "line": 6,
                         "end": 234,
-                        "line": 6
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                       },
                       "value": {
                         "kind": "ASSIGNMENT",
                         "id": "n_215_233_ASSIGNMENT",
                         "origin": {
                           "start": 215,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                          "line": 6,
                           "end": 233,
-                          "line": 6
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                         },
                         "type": "int",
                         "target": {
@@ -294,9 +292,9 @@
                           "id": "n_215_220_IDENTIFIER",
                           "origin": {
                             "start": 215,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                            "line": 6,
                             "end": 220,
-                            "line": 6
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                           },
                           "type": "int",
                           "symbol": "rv.fixture.Box#value",
@@ -313,9 +311,9 @@
                           "id": "n_221_233_PLUS",
                           "origin": {
                             "start": 221,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                            "line": 6,
                             "end": 233,
-                            "line": 6
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                           },
                           "type": "int",
                           "left": {
@@ -323,9 +321,9 @@
                             "id": "n_221_226_IDENTIFIER",
                             "origin": {
                               "start": 221,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                              "line": 6,
                               "end": 226,
-                              "line": 6
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                             },
                             "type": "int",
                             "symbol": "rv.fixture.Box#value",
@@ -344,9 +342,9 @@
                             "id": "n_227_233_IDENTIFIER",
                             "origin": {
                               "start": 227,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                              "line": 6,
                               "end": 233,
-                              "line": 6
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                             },
                             "type": "int",
                             "symbol": "local_180_amount",
@@ -368,18 +366,18 @@
                       "id": "n_235_248_RETURN",
                       "origin": {
                         "start": 235,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                        "line": 6,
                         "end": 248,
-                        "line": 6
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                       },
                       "value": {
                         "kind": "IDENTIFIER",
                         "id": "n_242_247_IDENTIFIER",
                         "origin": {
                           "start": 242,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                          "line": 6,
                           "end": 247,
-                          "line": 6
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                         },
                         "type": "int",
                         "symbol": "rv.fixture.Box#value",
@@ -418,9 +416,9 @@
           "id": "n_257_291_METHOD",
           "origin": {
             "start": 257,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+            "line": 7,
             "end": 291,
-            "line": 7
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
           },
           "symbol": "rv.fixture.Box#get()",
           "name": "get",
@@ -435,9 +433,9 @@
             "id": "n_274_291_BLOCK",
             "origin": {
               "start": 274,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+              "line": 7,
               "end": 291,
-              "line": 7
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
             },
             "statements": [
               {
@@ -445,18 +443,18 @@
                 "id": "n_276_289_RETURN",
                 "origin": {
                   "start": 276,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                  "line": 7,
                   "end": 289,
-                  "line": 7
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                 },
                 "value": {
                   "kind": "IDENTIFIER",
                   "id": "n_283_288_IDENTIFIER",
                   "origin": {
                     "start": 283,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java",
+                    "line": 7,
                     "end": 288,
-                    "line": 7
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java"
                   },
                   "type": "int",
                   "symbol": "rv.fixture.Box#value",
@@ -495,9 +493,9 @@
           "id": "n_57_399_METHOD",
           "origin": {
             "start": 57,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+            "line": 3,
             "end": 399,
-            "line": 3
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
           },
           "symbol": "rv.fixture.ObjectProbe#run()",
           "name": "run",
@@ -513,9 +511,9 @@
             "id": "n_81_399_BLOCK",
             "origin": {
               "start": 81,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+              "line": 3,
               "end": 399,
-              "line": 3
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
             },
             "statements": [
               {
@@ -523,9 +521,9 @@
                 "id": "n_91_110_VARIABLE",
                 "origin": {
                   "start": 91,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 4,
                   "end": 110,
-                  "line": 4
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "type": "rv.fixture.Box",
                 "symbol": "local_91_box",
@@ -537,9 +535,9 @@
                   "id": "n_99_109_NEW_CLASS",
                   "origin": {
                     "start": 99,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 4,
                     "end": 109,
-                    "line": 4
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "type": "rv.fixture.Box",
                   "target": "rv.fixture.Box#<init>(int)",
@@ -550,9 +548,9 @@
                       "id": "n_107_108_INT_LITERAL",
                       "origin": {
                         "start": 107,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                        "line": 4,
                         "end": 108,
-                        "line": 4
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                       },
                       "type": "int",
                       "value": 3,
@@ -571,9 +569,9 @@
                 "id": "n_119_141_VARIABLE",
                 "origin": {
                   "start": 119,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 5,
                   "end": 141,
-                  "line": 5
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "type": "int",
                 "symbol": "local_119_increment",
@@ -587,9 +585,9 @@
                   "id": "n_139_140_INT_LITERAL",
                   "origin": {
                     "start": 139,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 5,
                     "end": 140,
-                    "line": 5
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "type": "int",
                   "value": 4,
@@ -602,9 +600,9 @@
                 "id": "n_150_198_VARIABLE",
                 "origin": {
                   "start": 150,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 6,
                   "end": 198,
-                  "line": 6
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "type": "java.lang.Runnable",
                 "symbol": "local_150_callback",
@@ -616,9 +614,9 @@
                   "id": "n_168_197_LAMBDA_EXPRESSION",
                   "origin": {
                     "start": 168,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 6,
                     "end": 197,
-                    "line": 6
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "type": "java.lang.Runnable",
                   "parameters": [],
@@ -627,9 +625,9 @@
                     "id": "n_174_197_BLOCK",
                     "origin": {
                       "start": 174,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                      "line": 6,
                       "end": 197,
-                      "line": 6
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                     },
                     "statements": [
                       {
@@ -637,18 +635,18 @@
                         "id": "n_176_195_EXPRESSION_STATEMENT",
                         "origin": {
                           "start": 176,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                          "line": 6,
                           "end": 195,
-                          "line": 6
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                         },
                         "value": {
                           "kind": "METHOD_INVOCATION",
                           "id": "n_176_194_METHOD_INVOCATION",
                           "origin": {
                             "start": 176,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                            "line": 6,
                             "end": 194,
-                            "line": 6
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                           },
                           "type": "int",
                           "target": "rv.fixture.Box#add(int)",
@@ -663,9 +661,9 @@
                             "id": "n_176_179_IDENTIFIER",
                             "origin": {
                               "start": 176,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                              "line": 6,
                               "end": 179,
-                              "line": 6
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                             },
                             "type": "rv.fixture.Box",
                             "symbol": "local_91_box",
@@ -680,9 +678,9 @@
                               "id": "n_184_193_IDENTIFIER",
                               "origin": {
                                 "start": 184,
-                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                                "line": 6,
                                 "end": 193,
-                                "line": 6
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                               },
                               "type": "int",
                               "symbol": "local_119_increment",
@@ -706,9 +704,9 @@
                   },
                   "captures": [
                     {
-                      "name": "box",
+                      "type": "rv.fixture.Box",
                       "symbol": "local_91_box",
-                      "type": "rv.fixture.Box"
+                      "name": "box"
                     }
                   ],
                   "effects": [
@@ -722,18 +720,18 @@
                 "id": "n_207_222_EXPRESSION_STATEMENT",
                 "origin": {
                   "start": 207,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 7,
                   "end": 222,
-                  "line": 7
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "value": {
                   "kind": "METHOD_INVOCATION",
                   "id": "n_207_221_METHOD_INVOCATION",
                   "origin": {
                     "start": 207,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 7,
                     "end": 221,
-                    "line": 7
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "type": "void",
                   "target": "java.lang.Runnable#run()",
@@ -746,9 +744,9 @@
                     "id": "n_207_215_IDENTIFIER",
                     "origin": {
                       "start": 207,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                      "line": 7,
                       "end": 215,
-                      "line": 7
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                     },
                     "type": "java.lang.Runnable",
                     "symbol": "local_150_callback",
@@ -769,18 +767,18 @@
                 "id": "n_231_367_TRY",
                 "origin": {
                   "start": 231,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 8,
                   "end": 367,
-                  "line": 8
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "body": {
                   "kind": "BLOCK",
                   "id": "n_235_279_BLOCK",
                   "origin": {
                     "start": 235,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 8,
                     "end": 279,
-                    "line": 8
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "statements": [
                     {
@@ -788,18 +786,18 @@
                       "id": "n_237_277_THROW",
                       "origin": {
                         "start": 237,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                        "line": 8,
                         "end": 277,
-                        "line": 8
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                       },
                       "value": {
                         "kind": "NEW_CLASS",
                         "id": "n_243_276_NEW_CLASS",
                         "origin": {
                           "start": 243,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                          "line": 8,
                           "end": 276,
-                          "line": 8
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                         },
                         "type": "java.lang.IllegalStateException",
                         "target": "java.lang.IllegalStateException#<init>(java.lang.String)",
@@ -810,9 +808,9 @@
                             "id": "n_269_275_STRING_LITERAL",
                             "origin": {
                               "start": 269,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                              "line": 8,
                               "end": 275,
-                              "line": 8
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                             },
                             "type": "java.lang.String",
                             "value": "test",
@@ -837,18 +835,18 @@
                     "id": "n_288_335_CATCH",
                     "origin": {
                       "start": 288,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                      "line": 9,
                       "end": 335,
-                      "line": 9
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                     },
                     "parameter": {
                       "kind": "VARIABLE",
                       "id": "n_294_318_VARIABLE",
                       "origin": {
                         "start": 294,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                        "line": 9,
                         "end": 318,
-                        "line": 9
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                       },
                       "type": "java.lang.IllegalStateException",
                       "symbol": "local_294_ex",
@@ -863,9 +861,9 @@
                       "id": "n_320_335_BLOCK",
                       "origin": {
                         "start": 320,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                        "line": 9,
                         "end": 335,
-                        "line": 9
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                       },
                       "statements": [
                         {
@@ -873,18 +871,18 @@
                           "id": "n_322_333_EXPRESSION_STATEMENT",
                           "origin": {
                             "start": 322,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                            "line": 9,
                             "end": 333,
-                            "line": 9
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                           },
                           "value": {
                             "kind": "METHOD_INVOCATION",
                             "id": "n_322_332_METHOD_INVOCATION",
                             "origin": {
                               "start": 322,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                              "line": 9,
                               "end": 332,
-                              "line": 9
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                             },
                             "type": "int",
                             "target": "rv.fixture.Box#add(int)",
@@ -899,9 +897,9 @@
                               "id": "n_322_325_IDENTIFIER",
                               "origin": {
                                 "start": 322,
-                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                                "line": 9,
                                 "end": 325,
-                                "line": 9
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                               },
                               "type": "rv.fixture.Box",
                               "symbol": "local_91_box",
@@ -916,9 +914,9 @@
                                 "id": "n_330_331_INT_LITERAL",
                                 "origin": {
                                   "start": 330,
-                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                                  "line": 9,
                                   "end": 331,
-                                  "line": 9
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                                 },
                                 "type": "int",
                                 "value": 2,
@@ -942,9 +940,9 @@
                   "id": "n_352_367_BLOCK",
                   "origin": {
                     "start": 352,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 10,
                     "end": 367,
-                    "line": 10
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "statements": [
                     {
@@ -952,18 +950,18 @@
                       "id": "n_354_365_EXPRESSION_STATEMENT",
                       "origin": {
                         "start": 354,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                        "line": 10,
                         "end": 365,
-                        "line": 10
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                       },
                       "value": {
                         "kind": "METHOD_INVOCATION",
                         "id": "n_354_364_METHOD_INVOCATION",
                         "origin": {
                           "start": 354,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                          "line": 10,
                           "end": 364,
-                          "line": 10
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                         },
                         "type": "int",
                         "target": "rv.fixture.Box#add(int)",
@@ -978,9 +976,9 @@
                           "id": "n_354_357_IDENTIFIER",
                           "origin": {
                             "start": 354,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                            "line": 10,
                             "end": 357,
-                            "line": 10
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                           },
                           "type": "rv.fixture.Box",
                           "symbol": "local_91_box",
@@ -995,9 +993,9 @@
                             "id": "n_362_363_INT_LITERAL",
                             "origin": {
                               "start": 362,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                              "line": 10,
                               "end": 363,
-                              "line": 10
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                             },
                             "type": "int",
                             "value": 1,
@@ -1022,18 +1020,18 @@
                 "id": "n_376_393_RETURN",
                 "origin": {
                   "start": 376,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                  "line": 11,
                   "end": 393,
-                  "line": 11
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                 },
                 "value": {
                   "kind": "METHOD_INVOCATION",
                   "id": "n_383_392_METHOD_INVOCATION",
                   "origin": {
                     "start": 383,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                    "line": 11,
                     "end": 392,
-                    "line": 11
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                   },
                   "type": "int",
                   "target": "rv.fixture.Box#get()",
@@ -1046,9 +1044,9 @@
                     "id": "n_383_386_IDENTIFIER",
                     "origin": {
                       "start": 383,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java",
+                      "line": 11,
                       "end": 386,
-                      "line": 11
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java"
                     },
                     "type": "rv.fixture.Box",
                     "symbol": "local_91_box",
@@ -1092,9 +1090,9 @@
           "id": "n_59_97_VARIABLE",
           "origin": {
             "start": 59,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+            "line": 3,
             "end": 97,
-            "line": 3
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
           },
           "type": "boolean",
           "symbol": "rv.fixture.VolatileProbe#ready",
@@ -1112,9 +1110,9 @@
           "id": "n_102_127_VARIABLE",
           "origin": {
             "start": 102,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+            "line": 4,
             "end": 127,
-            "line": 4
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
           },
           "type": "int",
           "symbol": "rv.fixture.VolatileProbe#value",
@@ -1133,9 +1131,9 @@
           "id": "n_132_427_METHOD",
           "origin": {
             "start": 132,
-            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+            "line": 5,
             "end": 427,
-            "line": 5
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
           },
           "symbol": "rv.fixture.VolatileProbe#run()",
           "name": "run",
@@ -1151,9 +1149,9 @@
             "id": "n_156_427_BLOCK",
             "origin": {
               "start": 156,
-              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+              "line": 5,
               "end": 427,
-              "line": 5
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
             },
             "statements": [
               {
@@ -1161,18 +1159,18 @@
                 "id": "n_166_178_EXPRESSION_STATEMENT",
                 "origin": {
                   "start": 166,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 6,
                   "end": 178,
-                  "line": 6
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "value": {
                   "kind": "ASSIGNMENT",
                   "id": "n_166_177_ASSIGNMENT",
                   "origin": {
                     "start": 166,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 6,
                     "end": 177,
-                    "line": 6
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "boolean",
                   "target": {
@@ -1180,9 +1178,9 @@
                     "id": "n_166_171_IDENTIFIER",
                     "origin": {
                       "start": 166,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 6,
                       "end": 171,
-                      "line": 6
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "boolean",
                     "symbol": "rv.fixture.VolatileProbe#ready",
@@ -1201,9 +1199,9 @@
                     "id": "n_172_177_BOOLEAN_LITERAL",
                     "origin": {
                       "start": 172,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 6,
                       "end": 177,
-                      "line": 6
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "boolean",
                     "value": false,
@@ -1220,18 +1218,18 @@
                 "id": "n_187_195_EXPRESSION_STATEMENT",
                 "origin": {
                   "start": 187,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 7,
                   "end": 195,
-                  "line": 7
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "value": {
                   "kind": "ASSIGNMENT",
                   "id": "n_187_194_ASSIGNMENT",
                   "origin": {
                     "start": 187,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 7,
                     "end": 194,
-                    "line": 7
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "int",
                   "target": {
@@ -1239,9 +1237,9 @@
                     "id": "n_187_192_IDENTIFIER",
                     "origin": {
                       "start": 187,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 7,
                       "end": 192,
-                      "line": 7
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "int",
                     "symbol": "rv.fixture.VolatileProbe#value",
@@ -1259,9 +1257,9 @@
                     "id": "n_193_194_INT_LITERAL",
                     "origin": {
                       "start": 193,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 7,
                       "end": 194,
-                      "line": 7
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "int",
                     "value": 0,
@@ -1278,9 +1276,9 @@
                 "id": "n_204_261_VARIABLE",
                 "origin": {
                   "start": 204,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 8,
                   "end": 261,
-                  "line": 8
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "type": "java.lang.Thread",
                 "symbol": "local_204_writer",
@@ -1292,9 +1290,9 @@
                   "id": "n_218_260_NEW_CLASS",
                   "origin": {
                     "start": 218,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 8,
                     "end": 260,
-                    "line": 8
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "java.lang.Thread",
                   "target": "java.lang.Thread#<init>(java.lang.Runnable)",
@@ -1305,9 +1303,9 @@
                       "id": "n_229_259_LAMBDA_EXPRESSION",
                       "origin": {
                         "start": 229,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                        "line": 8,
                         "end": 259,
-                        "line": 8
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                       },
                       "type": "java.lang.Runnable",
                       "parameters": [],
@@ -1316,9 +1314,9 @@
                         "id": "n_235_259_BLOCK",
                         "origin": {
                           "start": 235,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                          "line": 8,
                           "end": 259,
-                          "line": 8
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                         },
                         "statements": [
                           {
@@ -1326,18 +1324,18 @@
                             "id": "n_237_245_EXPRESSION_STATEMENT",
                             "origin": {
                               "start": 237,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                              "line": 8,
                               "end": 245,
-                              "line": 8
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                             },
                             "value": {
                               "kind": "ASSIGNMENT",
                               "id": "n_237_244_ASSIGNMENT",
                               "origin": {
                                 "start": 237,
-                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                "line": 8,
                                 "end": 244,
-                                "line": 8
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                               },
                               "type": "int",
                               "target": {
@@ -1345,9 +1343,9 @@
                                 "id": "n_237_242_IDENTIFIER",
                                 "origin": {
                                   "start": 237,
-                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                  "line": 8,
                                   "end": 242,
-                                  "line": 8
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                                 },
                                 "type": "int",
                                 "symbol": "rv.fixture.VolatileProbe#value",
@@ -1365,9 +1363,9 @@
                                 "id": "n_243_244_INT_LITERAL",
                                 "origin": {
                                   "start": 243,
-                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                  "line": 8,
                                   "end": 244,
-                                  "line": 8
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                                 },
                                 "type": "int",
                                 "value": 7,
@@ -1384,18 +1382,18 @@
                             "id": "n_246_257_EXPRESSION_STATEMENT",
                             "origin": {
                               "start": 246,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                              "line": 8,
                               "end": 257,
-                              "line": 8
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                             },
                             "value": {
                               "kind": "ASSIGNMENT",
                               "id": "n_246_256_ASSIGNMENT",
                               "origin": {
                                 "start": 246,
-                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                "line": 8,
                                 "end": 256,
-                                "line": 8
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                               },
                               "type": "boolean",
                               "target": {
@@ -1403,9 +1401,9 @@
                                 "id": "n_246_251_IDENTIFIER",
                                 "origin": {
                                   "start": 246,
-                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                  "line": 8,
                                   "end": 251,
-                                  "line": 8
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                                 },
                                 "type": "boolean",
                                 "symbol": "rv.fixture.VolatileProbe#ready",
@@ -1424,9 +1422,9 @@
                                 "id": "n_252_256_BOOLEAN_LITERAL",
                                 "origin": {
                                   "start": 252,
-                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                                  "line": 8,
                                   "end": 256,
-                                  "line": 8
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                                 },
                                 "type": "boolean",
                                 "value": true,
@@ -1459,18 +1457,18 @@
                 "id": "n_270_285_EXPRESSION_STATEMENT",
                 "origin": {
                   "start": 270,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 9,
                   "end": 285,
-                  "line": 9
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "value": {
                   "kind": "METHOD_INVOCATION",
                   "id": "n_270_284_METHOD_INVOCATION",
                   "origin": {
                     "start": 270,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 9,
                     "end": 284,
-                    "line": 9
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "void",
                   "target": "java.lang.Thread#start()",
@@ -1483,9 +1481,9 @@
                     "id": "n_270_276_IDENTIFIER",
                     "origin": {
                       "start": 270,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 9,
                       "end": 276,
-                      "line": 9
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "java.lang.Thread",
                     "symbol": "local_204_writer",
@@ -1506,18 +1504,18 @@
                 "id": "n_294_370_TRY",
                 "origin": {
                   "start": 294,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 10,
                   "end": 370,
-                  "line": 10
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "body": {
                   "kind": "BLOCK",
                   "id": "n_298_316_BLOCK",
                   "origin": {
                     "start": 298,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 10,
                     "end": 316,
-                    "line": 10
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "statements": [
                     {
@@ -1525,18 +1523,18 @@
                       "id": "n_300_314_EXPRESSION_STATEMENT",
                       "origin": {
                         "start": 300,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                        "line": 10,
                         "end": 314,
-                        "line": 10
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                       },
                       "value": {
                         "kind": "METHOD_INVOCATION",
                         "id": "n_300_313_METHOD_INVOCATION",
                         "origin": {
                           "start": 300,
-                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                          "line": 10,
                           "end": 313,
-                          "line": 10
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                         },
                         "type": "void",
                         "target": "java.lang.Thread#join()",
@@ -1549,9 +1547,9 @@
                           "id": "n_300_306_IDENTIFIER",
                           "origin": {
                             "start": 300,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                            "line": 10,
                             "end": 306,
-                            "line": 10
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                           },
                           "type": "java.lang.Thread",
                           "symbol": "local_204_writer",
@@ -1576,18 +1574,18 @@
                     "id": "n_325_370_CATCH",
                     "origin": {
                       "start": 325,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 11,
                       "end": 370,
-                      "line": 11
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "parameter": {
                       "kind": "VARIABLE",
                       "id": "n_331_354_VARIABLE",
                       "origin": {
                         "start": 331,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                        "line": 11,
                         "end": 354,
-                        "line": 11
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                       },
                       "type": "java.lang.InterruptedException",
                       "symbol": "local_331_ex",
@@ -1602,9 +1600,9 @@
                       "id": "n_356_370_BLOCK",
                       "origin": {
                         "start": 356,
-                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                        "line": 11,
                         "end": 370,
-                        "line": 11
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                       },
                       "statements": [
                         {
@@ -1612,18 +1610,18 @@
                           "id": "n_358_368_RETURN",
                           "origin": {
                             "start": 358,
-                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                            "line": 11,
                             "end": 368,
-                            "line": 11
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                           },
                           "value": {
                             "kind": "INT_LITERAL",
                             "id": "n_365_367_INT_LITERAL",
                             "origin": {
                               "start": 365,
-                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                              "line": 11,
                               "end": 367,
-                              "line": 11
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                             },
                             "type": "int",
                             "value": -1,
@@ -1647,18 +1645,18 @@
                 "id": "n_379_402_IF",
                 "origin": {
                   "start": 379,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 12,
                   "end": 402,
-                  "line": 12
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "condition": {
                   "kind": "PARENTHESIZED",
                   "id": "n_381_388_PARENTHESIZED",
                   "origin": {
                     "start": 381,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 12,
                     "end": 388,
-                    "line": 12
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "boolean",
                   "value": {
@@ -1666,9 +1664,9 @@
                     "id": "n_382_387_IDENTIFIER",
                     "origin": {
                       "start": 382,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 12,
                       "end": 387,
-                      "line": 12
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "boolean",
                     "symbol": "rv.fixture.VolatileProbe#ready",
@@ -1691,18 +1689,18 @@
                   "id": "n_389_402_RETURN",
                   "origin": {
                     "start": 389,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 12,
                     "end": 402,
-                    "line": 12
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "value": {
                     "kind": "IDENTIFIER",
                     "id": "n_396_401_IDENTIFIER",
                     "origin": {
                       "start": 396,
-                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                      "line": 12,
                       "end": 401,
-                      "line": 12
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                     },
                     "type": "int",
                     "symbol": "rv.fixture.VolatileProbe#value",
@@ -1727,18 +1725,18 @@
                 "id": "n_411_421_RETURN",
                 "origin": {
                   "start": 411,
-                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                  "line": 13,
                   "end": 421,
-                  "line": 13
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                 },
                 "value": {
                   "kind": "INT_LITERAL",
                   "id": "n_418_420_INT_LITERAL",
                   "origin": {
                     "start": 418,
-                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java",
+                    "line": 13,
                     "end": 420,
-                    "line": 13
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java"
                   },
                   "type": "int",
                   "value": -2,
@@ -1765,5 +1763,7 @@
       ]
     }
   ],
+  "types_attributed": true,
+  "schema": "editable-code.patch.regions.v2",
   "effect_semantics": "Java left-to-right evaluation and ordered structured regions; callback bodies execute on invocation, not allocation"
 }

@@ -19,6 +19,7 @@ def main():
     out.mkdir(parents=True)
     if sha(gson)!='dd0ce1b55a3ed2080cb70f9c655850cda86c206862310009dcb5e5c95265a5e0':raise ValueError('Gson tool hash mismatch')
     for path,value in json.loads((inputs/'delivery-ledger.json').read_text()).items():
+        path=path.replace('\\','/')
         if sha(inputs/path)!=value:raise ValueError('Delivery drift: '+path)
     retained=inputs/'retained/RememberPlaybackSpeedPatch.java'
     receipt=json.loads((inputs/'generation-receipt.json').read_text())

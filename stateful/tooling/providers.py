@@ -4,6 +4,17 @@ import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from regions import emit_java, walk, require
+PREFIXES = {'app.revanced.extension.youtube.patches.playback.speed':'RVSTPolicy',
+            'app.revanced.extension.shared':'RVSTShared','app.revanced.extension.youtube.settings':'RVSTSettings',
+            'app.revanced.extension.youtube.patches':'RVSTContext','rv.translated':'RVSTTest',
+            'rv.fixture':'RVSTFixture','rv.platform':'RVSTPlatform'}
+
+
+def objc_type(name):
+    matches=[key for key in PREFIXES if name.startswith(key+'.')]
+    require(matches, 'Backend namespace prefix required for '+name)
+    package=max(matches,key=len)
+    return PREFIXES[package]+name[len(package)+1:].replace('.','_')
 
 NATIVE_BRIDGE = '''package rv.platform;
 public final class NativeBridge {
@@ -89,7 +100,7 @@ def event_bridge(module):
     inventory = []
     names = set()
     for cls in module['classes']:
-        objc = 'RVSTPolicy' + cls['simple_name']
+        objc = objc_type(cls['name'])
         bodies.append('#include "' + cls['name'].replace('.', '/') + '.h"')
         for method in cls['methods']:
             if 'public' not in method['modifiers'] or method['constructor']: continue
@@ -102,8 +113,7 @@ def event_bridge(module):
                     ct, jt = types[p['declared_type']]; params.append(ct + ' ' + p['name']); args.append(p['name'])
                 else:
                     require(p['symbol'] not in used, 'Read object parameter requires a reviewed identity adapter')
-                    require(p['declared_type'].endswith('VideoInformation.PlaybackController'), 'Unmapped backend type name')
-                    jt = 'RVSTContextVideoInformation_PlaybackController';args.append('nil');dropped.append(p['symbol'])
+                    jt = objc_type(p['declared_type']);args.append('nil');dropped.append(p['symbol'])
                 suffix += ('With' if index == 0 else 'with') + jt + '_'
             cname = 'RVST_' + cls['simple_name'] + '_' + method['name']
             require(cname not in names, 'Overloaded event needs explicit ABI disambiguation'); names.add(cname)
@@ -121,6 +131,7 @@ def generate(out, module, contracts, settings, resource_file, source_writer, jso
     for path, text in sources.items(): source_writer(out/'production-java'/path, text)
     h, m, events = event_bridge(module)
     source_writer(out/'production-native/Events.h', h);source_writer(out/'production-native/Events.m', m)
+    source_writer(out/'production-native/prefixes.properties',''.join(k+'='+v+'\n' for k,v in PREFIXES.items()))
     here = Path(__file__).resolve().parent
     for path in (here/'adapters').glob('*'):
         if path.suffix not in ('.h', '.m'): continue

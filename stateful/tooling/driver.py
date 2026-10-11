@@ -11,6 +11,7 @@ import subprocess
 from contracts import CONTRACTS
 from regions import annotate, emit_java, hash_graph, verify, walk, semantic_form
 from providers import generate as generate_providers
+from frontier import report as frontier_report
 
 ROOT = Path(__file__).resolve().parent
 REVANCED = ROOT.parent
@@ -34,7 +35,7 @@ def run(command, log):
 def classes(src, dest, log):
     dest.mkdir();run([shutil.which('javac'), '-d', dest, *sorted(src.rglob('*.java'))], log)
 def ledger(out):
-    write(out / 'artifact-ledger.json', {str(p.relative_to(out)): sha(p) for p in out.rglob('*')
+    write(out / 'artifact-ledger.json', {p.relative_to(out).as_posix(): sha(p) for p in out.rglob('*')
                                        if p.is_file() and p.name != 'artifact-ledger.json'})
 
 
@@ -202,11 +203,25 @@ def verify_delivery(out):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command',choices=['generate','verify','emit','edit'])
+    parser.add_argument('command',choices=['generate','verify','emit','edit','import'])
     parser.add_argument('--out',type=Path,default=ROOT/'build'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'))
     parser.add_argument('--input',type=Path);parser.add_argument('--node');parser.add_argument('--value');parser.add_argument('--expected-hash')
+    parser.add_argument('--sources',nargs='+',type=Path);parser.add_argument('--classpath',default='')
     args=parser.parse_args()
-    if args.command=='generate':generate(args.out.resolve())
+    if args.command=='import':
+        if not args.sources:parser.error('import requires --sources and an attributed dependency classpath')
+        out=args.out.resolve()
+        if out.exists():raise ValueError('Fresh import output required')
+        out.mkdir(parents=True);compiler=out/'exporter';compiler.mkdir()
+        run([shutil.which('javac'),'-cp',JAR,'-d',compiler,ROOT/'ExportPatch.java'],out/'exporter-javac.log')
+        module=export([p.resolve() for p in args.sources],args.classpath,out,compiler,'attributed.json')
+        module=annotate(module,CONTRACTS);write(out/'module.json',module)
+        report=frontier_report(module,CONTRACTS);write(out/'dependency-report.json',report)
+        write(out/'import-receipt.json',dict(source_sha256={str(p.resolve()):sha(p) for p in args.sources},
+                    frontend_sha256=sha(ROOT/'ExportPatch.java'),graph_sha256=hash_graph(module),types_attributed=True,
+                    admitted=report['admitted'],scope='Import/admission report; does not establish dependency or application-role equivalence'))
+        ledger(out);print(json.dumps(report,indent=2))
+    elif args.command=='generate':generate(args.out.resolve())
     elif args.command=='verify':verify_delivery(args.out.resolve())
     else:
         module=json.loads(args.input.read_text())
