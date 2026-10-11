@@ -55,7 +55,7 @@ static id invoke(NSString *op,NSArray *args){
  if([op isEqual:@"network.connected"]){@synchronized(preferences){return @(networkOnline);}}
  if([op isEqual:@"player.seek_ms"]){__block BOOL result=NO;void(^action)(void)=^{result=seek([args[0] doubleValue]);};if(NSThread.isMainThread)action();else dispatch_sync(dispatch_get_main_queue(),action);return @(result);}
  if([op isEqual:@"player.set_rate"]){float rate=[args[0] floatValue];if(!NSThread.isMainThread||!ordinary()||!isfinite(rate)||rate<.25||rate>4||!accepts(player,@"setPlaybackRate:",@"v@:f"))return nil;applyingRate=YES;@try{((void(*)(id,SEL,float))objc_msgSend)(player,NSSelectorFromString(@"setPlaybackRate:"),rate);}@finally{applyingRate=NO;}NSMutableDictionary *next=[snapshot mutableCopy];next[@"player.rate"]=@(rate);@synchronized(preferences){snapshot=next.copy;}return nil;}
- if([op isEqual:@"resource.integer"]&&[args[0] isEqual:@"fade_in_duration"])return @200;
+ if([op isEqual:@"resource.integer"]&&[args[0] isEqual:@"fade_duration_fast"])return @200;
  return NSNull.null;
 }
 static NSString *resource(NSString *key,NSArray *args){NSMutableString *s=[(resources[key]?:key) mutableCopy];for(NSUInteger i=0;i<args.count;i++){NSString *value=[args[i] description];for(NSString *format in @[@"s",@"d",@"f"]){NSString *token=[NSString stringWithFormat:@"%%%lu$%@",(unsigned long)i+1,format];[s replaceOccurrencesOfString:token withString:value options:0 range:NSMakeRange(0,s.length)];}NSRange r=[s rangeOfString:@"%s"];if(r.location==NSNotFound)r=[s rangeOfString:@"%d"];if(r.location!=NSNotFound)[s replaceCharactersInRange:r withString:value];}return s;}

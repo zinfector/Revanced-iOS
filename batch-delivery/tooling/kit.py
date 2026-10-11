@@ -130,7 +130,7 @@ public final class Utils {
  public static boolean containsAny(String s,String... parts){for(String p:parts)if(s.contains(p))return true;return false;}
  public static int getAppForegroundColor(){return ((Number)rv.batch.Platform.invoke("theme.foreground")).intValue();}public static int getAppBackgroundColor(){return ((Number)rv.batch.Platform.invoke("theme.background")).intValue();}public static int getDialogBackgroundColor(){return getAppBackgroundColor();}
  public static int getResourceIdentifierOrThrow(ResourceType type,String key){return ((Number)rv.batch.Platform.invoke("resource.id",type.name(),key)).intValue();}public static int getResourceInteger(String key){return ((Number)rv.batch.Platform.invoke("resource.integer",key)).intValue();}
- public static Animation getResourceAnimation(String key){return new android.view.animation.AlphaAnimation(0,1);}
+ public static Animation getResourceAnimation(String key){return (Animation)rv.batch.Platform.invoke("resource.animation",key);}
  public static void setDialogWindowParameters(Window w,int gravity,int y,int margin,boolean dim){rv.batch.Platform.present("window.layout",w,gravity,y,margin,dim);}
  public static Context getContext(){return (Context)rv.batch.Platform.invoke("context.application");}public static String getAppVersionName(){return (String)rv.batch.Platform.invoke("application.version");}public static String getPatchesReleaseVersion(){return "stateful-batch";}
  public static void doNothingForDuration(long millis){try{Thread.sleep(millis);}catch(InterruptedException e){Thread.currentThread().interrupt();}}

@@ -14,6 +14,11 @@
 #include "android/view/View.h"
 #include "android/view/ViewGroup.h"
 #include "android/view/Window.h"
+#include "android/view/WindowManager.h"
+#include "android/view/animation/Animation.h"
+#include "android/view/animation/AlphaAnimation.h"
+#include "android/widget/AbsSeekBar.h"
+#include "android/widget/ProgressBar.h"
 #include "android/widget/TextView.h"
 #include "android/widget/Button.h"
 #include "android/widget/EditText.h"
@@ -40,6 +45,8 @@
 static UIViewController *(^topPresenter)(void);
 static UIView *(^playerOverlay)(void);
 static NSMapTable *controllers;
+static NSMapTable *windowLayouts;
+static NSHashTable *allViews;
 static NSMutableDictionary<NSString *,UIButton *> *roleButtons;
 static const void *ModelKey=&ModelKey;
 static const void *ForegroundKey=&ForegroundKey;
@@ -52,7 +59,7 @@ static const void *ForegroundKey=&ForegroundKey;
 static const void *DismissKey=&DismissKey;
 void RVBConfigureUIKit(UIViewController *(^p)(void),UIView *(^v)(void)){
  if(!NSThread.isMainThread||!p||!v)@throw [[JavaLangIllegalStateException alloc] initWithNSString:@"Configure UIKit roles on main"];
- topPresenter=[p copy];playerOverlay=[v copy];controllers=[NSMapTable weakToStrongObjectsMapTable];roleButtons=[NSMutableDictionary dictionary];
+ topPresenter=[p copy];playerOverlay=[v copy];controllers=[NSMapTable weakToStrongObjectsMapTable];windowLayouts=[NSMapTable weakToStrongObjectsMapTable];allViews=[NSHashTable weakObjectsHashTable];roleButtons=[NSMutableDictionary dictionary];
 }
 static UIColor *color(int32_t c){return [UIColor colorWithRed:((c>>16)&255)/255.0 green:((c>>8)&255)/255.0 blue:(c&255)/255.0 alpha:((uint32_t)c>>24)/255.0];}
 static id arg(IOSObjectArray *a,int i){return IOSObjectArray_Get(a,i);}
@@ -63,10 +70,12 @@ static void mainThread(void){if(!NSThread.isMainThread)@throw [[JavaLangIllegalS
 +(void)clicked:(UIControl *)sender;
 +(void)slider:(UISlider *)sender;
 +(void)text:(UITextField *)sender;
++(void)tapped:(UITapGestureRecognizer *)gesture;
 @end
 @implementation RVBUIActions
-+(void)clicked:(UIControl *)sender{AndroidViewView *model=objc_getAssociatedObject(sender,ModelKey);[model performClick];}
-+(void)slider:(UISlider *)sender{AndroidWidgetSeekBar *model=objc_getAssociatedObject(sender,ModelKey);[model userProgressWithInt:(int32_t)lroundf(sender.value)];}
++(void)clicked:(UIControl *)sender{AndroidViewView *model=objc_getAssociatedObject(sender,ModelKey);@try{[model performClick];}@catch(NSException *e){NSLog(@"[RVB UI callback] %@",e);}}
++(void)tapped:(UITapGestureRecognizer *)gesture{[self clicked:(id)gesture.view];}
++(void)slider:(UISlider *)sender{AndroidWidgetSeekBar *model=objc_getAssociatedObject(sender,ModelKey);@try{[model userProgressWithInt:(int32_t)lroundf(sender.value)];}@catch(NSException *e){NSLog(@"[RVB UI callback] %@",e);}}
 +(void)text:(UITextField *)sender{AndroidWidgetEditText *model=objc_getAssociatedObject(sender,ModelKey);[model setTextWithJavaLangCharSequence:sender.text?:@""];}
 @end
 static UIView *view(AndroidViewView *model){
@@ -80,6 +89,7 @@ static UIView *view(AndroidViewView *model){
  else if([model isKindOfClass:AndroidWidgetLinearLayout.class]||[model isKindOfClass:AndroidWidgetGridLayout.class]){UIStackView *s=[UIStackView new];s.axis=UILayoutConstraintAxisVertical;s.spacing=8;s.layoutMarginsRelativeArrangement=YES;native=s;}
  else native=[UIView new];
  model->handle_=native;objc_setAssociatedObject(native,ModelKey,model,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+ [allViews addObject:native];
  native.hidden=model->visibility_!=0;native.alpha=model->alpha_;native.userInteractionEnabled=model->enabled_;
  return native;
 }
@@ -109,6 +119,7 @@ static void layoutChild(UIView *parent,UIView *child,AndroidViewView *model){
 static void showDialog(AndroidAppDialog *d){
  UIViewController *presenter=topPresenter();if(!presenter)@throw [[JavaLangIllegalStateException alloc] initWithNSString:@"No current presenter"];
  while(presenter.presentedViewController)presenter=presenter.presentedViewController;
+ if(([d->window_ getAttributes]->flags_&32)!=0){UIViewController *container=[UIViewController new];UIView *content=view(d->content_);container.view=content;UIView *owner=topPresenter().view;content.translatesAutoresizingMaskIntoConstraints=NO;[owner addSubview:content];NSDictionary *layout=[windowLayouts objectForKey:d->window_];CGFloat y=[layout[@"y"] doubleValue],margin=[layout[@"margin"] doubleValue];[NSLayoutConstraint activateConstraints:@[[content.leadingAnchor constraintEqualToAnchor:owner.safeAreaLayoutGuide.leadingAnchor constant:margin],[content.trailingAnchor constraintEqualToAnchor:owner.safeAreaLayoutGuide.trailingAnchor constant:-margin],[content.bottomAnchor constraintEqualToAnchor:owner.safeAreaLayoutGuide.bottomAnchor constant:-y]]];[controllers setObject:container forKey:d];return;}
  if([d isKindOfClass:AndroidAppAlertDialog.class]){
   AndroidAppAlertDialog *a=(id)d;UIAlertController *alert=[UIAlertController alertControllerWithTitle:[a->title_ description] message:[a->message_ description] preferredStyle:UIAlertControllerStyleAlert];
   for(int i=0;a->items_&&i<a->items_->size_;i++){int item=i;[alert addAction:[UIAlertAction actionWithTitle:[arg(a->items_,i) description] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){[a->itemListener_ onClickWithRVB57FCEF64DialogInterface:a withInt:item];if(!a->singleChoice_)[a dismiss];}]];}
@@ -143,13 +154,16 @@ id RVBUIKit(NSString *op,IOSObjectArray *a,BOOL *handled){
   *handled=NO;return nil;
  }
  if([op isEqual:@"drawable.shape"]){AndroidGraphicsDrawableShapeDrawable *drawable=arg(a,0);AndroidGraphicsCanvas *canvas=arg(a,1);AndroidGraphicsRect *bounds=[drawable getBounds];CGContextRef c=[canvas->handle_ pointerValue];CGRect rect=CGRectMake(bounds->left_,bounds->top_,bounds->right_-bounds->left_,bounds->bottom_-bounds->top_);CGFloat radius=0;if([drawable->shape_ isKindOfClass:AndroidGraphicsDrawableShapesRoundRectShape.class]){AndroidGraphicsDrawableShapesRoundRectShape *round=(id)drawable->shape_;if(round->radii_&&round->radii_->size_)radius=IOSFloatArray_Get(round->radii_,0);}CGContextSetFillColorWithColor(c,color([drawable getPaint]->color_).CGColor);CGContextAddPath(c,[UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);CGContextFillPath(c);return nil;}
- if([op isEqual:@"drawable.tint"]){return nil;} // Applied to the owning seek control below, not to the source callback.
- if([op hasPrefix:@"window."]){mainThread();return nil;} // The sheet controller owns window animation, input and presentation flags.
+ if([op isEqual:@"drawable.tint"]){mainThread();id drawable=arg(a,0);UIColor *tint=color([arg(a,1) intValue]);for(UIView *v in allViews){AndroidWidgetAbsSeekBar *model=objc_getAssociatedObject(v,ModelKey);if([model isKindOfClass:AndroidWidgetAbsSeekBar.class]&&[v isKindOfClass:UISlider.class]){if([model getThumb]==drawable)((UISlider *)v).thumbTintColor=tint;if([model getProgressDrawable]==drawable)((UISlider *)v).minimumTrackTintColor=tint;}}return nil;}
+ if([op isEqual:@"resource.animation"]){NSString *name=arg(a,0);if([name isEqual:@"fade_in"]||[name isEqual:@"fade_out"])return [[AndroidViewAnimationAlphaAnimation alloc] initWithFloat:[name isEqual:@"fade_in"]?0:1 withFloat:[name isEqual:@"fade_in"]?1:0];*handled=NO;return nil;}
+ if([op isEqual:@"window.layout"]){mainThread();[windowLayouts setObject:@{@"gravity":@([arg(a,1) intValue]),@"y":@([arg(a,2) intValue]),@"margin":@([arg(a,3) intValue])} forKey:arg(a,0)];return nil;}
+ if([op hasPrefix:@"window."]){mainThread();return nil;} // Source window flags are consumed by the generic dialog provider.
  if([op isEqual:@"toast"]){NSString *message=[arg(a,0) description];dispatch_async(dispatch_get_main_queue(),^{mainThread();UIView *parent=topPresenter().view;UILabel *label=[UILabel new];label.text=message;label.numberOfLines=0;label.textAlignment=NSTextAlignmentCenter;label.textColor=UIColor.whiteColor;label.backgroundColor=[UIColor.blackColor colorWithAlphaComponent:0.85];label.layer.cornerRadius=8;label.clipsToBounds=YES;label.frame=CGRectMake(16,parent.bounds.size.height-110,parent.bounds.size.width-32,70);[parent addSubview:label];dispatch_after(dispatch_time(DISPATCH_TIME_NOW,2*NSEC_PER_SEC),dispatch_get_main_queue(),^{[label removeFromSuperview];});});return nil;}
  if([op isEqual:@"text.measure"]){NSString *text=arg(a,0);return JavaLangFloat_valueOfWithFloat_([text sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width);}
  if([op isEqual:@"text.font_metrics"]){UIFont *font=[UIFont systemFontOfSize:14];RVBA4326462Paint_FontMetricsInt *m=[[RVBA4326462Paint_FontMetricsInt alloc] init];m->ascent_=-ceil(font.ascender);m->descent_=-floor(font.descender);m->top_=m->ascent_;m->bottom_=m->descent_;m->leading_=ceil(font.leading);return m;}
  if([op hasPrefix:@"view."]){
   mainThread();AndroidViewView *model=arg(a,0);UIView *v=view(model);IOSObjectArray *args=a->size_==2&&[arg(a,1) isKindOfClass:IOSObjectArray.class]?arg(a,1):nil;
+  if([op isEqual:@"view.animation"]){AndroidViewAnimationAnimation *animation=arg(a,1);if(![animation isKindOfClass:AndroidViewAnimationAlphaAnimation.class]){*handled=NO;return nil;}AndroidViewAnimationAlphaAnimation *alpha=(id)animation;v.alpha=alpha->from_;[UIView animateWithDuration:animation->duration_/1000.0 animations:^{v.alpha=alpha->to_;}];return nil;}
   if([op isEqual:@"view.visibility"]){v.hidden=model->visibility_!=0;return nil;}
   if([op isEqual:@"view.alpha"]){v.alpha=model->alpha_;return nil;}
   if([op isEqual:@"view.enabled"]){v.userInteractionEnabled=model->enabled_;if([v isKindOfClass:UIControl.class])((UIControl *)v).enabled=model->enabled_;return nil;}
@@ -162,7 +176,9 @@ id RVBUIKit(NSString *op,IOSObjectArray *a,BOOL *handled){
   if([op isEqual:@"view.orientation"]){if([v isKindOfClass:UIStackView.class])((UIStackView *)v).axis=[arg(args,0) intValue]?UILayoutConstraintAxisVertical:UILayoutConstraintAxisHorizontal;return nil;}
   if([op isEqual:@"view.maximum"]){if([v isKindOfClass:UISlider.class])((UISlider *)v).maximumValue=[arg(args,0) intValue];return nil;}
   if([op isEqual:@"view.progress"]){if([v isKindOfClass:UISlider.class])((UISlider *)v).value=[arg(args,0) intValue];return nil;}
-  if([op isEqual:@"view.click_listener"]||[op isEqual:@"view.seek_listener"])return nil; // Native targets dispatch the retained source callbacks.
+  if([op isEqual:@"view.click_listener"]){if(![v isKindOfClass:UIButton.class]&&!v.gestureRecognizers.count)[v addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:RVBUIActions.class action:@selector(tapped:)]];return nil;}
+  if([op isEqual:@"view.clickable"]){v.userInteractionEnabled=model->clickable_;return nil;}
+  if([op isEqual:@"view.seek_listener"])return nil; // Native targets dispatch the retained source callbacks.
   if([op isEqual:@"view.layout"]){RVBCDBF4C11ViewGroup_LayoutParams *p=model->layout_;if(p->width_>=0){CGRect f=v.frame;f.size.width=p->width_;v.frame=f;}if(p->height_>=0){CGRect f=v.frame;f.size.height=p->height_;v.frame=f;}return nil;}
   if([op isEqual:@"view.padding"]){if([v isKindOfClass:UIStackView.class])((UIStackView *)v).layoutMargins=UIEdgeInsetsMake([arg(args,1) intValue],[arg(args,0) intValue],[arg(args,3) intValue],[arg(args,2) intValue]);return nil;}
   if([op isEqual:@"view.hint"]){if([v isKindOfClass:UITextField.class])((UITextField *)v).placeholder=[arg(args,0) description];return nil;}
@@ -181,15 +197,17 @@ id RVBUIKit(NSString *op,IOSObjectArray *a,BOOL *handled){
  if([op isEqual:@"dialog.feature"])return JavaLangBoolean_valueOfWithBoolean_(YES);
  if([op isEqual:@"dialog.content"])return nil; // Content belongs to the source dialog model until presentation.
  if([op isEqual:@"dialog.show"]){mainThread();showDialog(arg(a,0));return nil;}
- if([op isEqual:@"dialog.dismiss"]){mainThread();AndroidAppDialog *d=arg(a,0);UIViewController *c=[controllers objectForKey:d];[c dismissViewControllerAnimated:YES completion:^{NSMutableArray *pending=[NSMutableArray arrayWithObject:c.view];for(NSUInteger i=0;i<pending.count;i++){UIView *v=pending[i];[pending addObjectsFromArray:v.subviews];AndroidViewView *m=objc_getAssociatedObject(v,ModelKey);if(m)m->handle_=nil;objc_setAssociatedObject(v,ModelKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}objc_setAssociatedObject(c,DismissKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}];[controllers removeObjectForKey:d];return nil;}
+ if([op isEqual:@"dialog.dismiss"]){mainThread();AndroidAppDialog *d=arg(a,0);UIViewController *c=[controllers objectForKey:d];void(^cleanup)(void)=^{if(!c)return;NSMutableArray *pending=[NSMutableArray arrayWithObject:c.view];for(NSUInteger i=0;i<pending.count;i++){UIView *v=pending[i];[pending addObjectsFromArray:v.subviews];AndroidViewView *m=objc_getAssociatedObject(v,ModelKey);if(m)m->handle_=nil;objc_setAssociatedObject(v,ModelKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}objc_setAssociatedObject(c,DismissKey,nil,OBJC_ASSOCIATION_RETAIN_NONATOMIC);};if(([d->window_ getAttributes]->flags_&32)!=0){[c.view removeFromSuperview];cleanup();}else [c dismissViewControllerAnimated:YES completion:cleanup];[controllers removeObjectForKey:d];return nil;}
  if([op isEqual:@"roles.hide_all"]){mainThread();for(UIButton *b in roleButtons.allValues)b.hidden=YES;return nil;}
+ if([op isEqual:@"role.hide"]){mainThread();roleButtons[arg(a,0)].hidden=YES;return nil;}
  if([op hasPrefix:@"role.button."]){
   mainThread();NSString *role=arg(a,0);UIButton *button=roleButtons[role];
   if([op hasSuffix:@"hide"]){button.hidden=YES;return nil;}
   RVB88F95091SponsorSegment *segment=arg(a,1);
   if(!button){UIView *owner=playerOverlay();if(!owner)@throw [[JavaLangIllegalStateException alloc] initWithNSString:@"Player overlay owner is unavailable"];
-   button=[UIButton buttonWithType:UIButtonTypeSystem];button.backgroundColor=UIColor.secondarySystemBackgroundColor;button.layer.cornerRadius=8;button.frame=CGRectMake(16,MAX(16,owner.bounds.size.height-150),220,44);[owner addSubview:button];roleButtons[role]=button;}
-  [button setTitle:[segment getSkipButtonText] forState:UIControlStateNormal];button.hidden=NO;
+   button=[UIButton buttonWithType:UIButtonTypeSystem];button.hidden=YES;button.backgroundColor=UIColor.secondarySystemBackgroundColor;button.layer.cornerRadius=8;roleButtons[role]=button;}
+  UIView *owner=playerOverlay();if(!owner)@throw [[JavaLangIllegalStateException alloc] initWithNSString:@"Player overlay owner is unavailable"];if(button.superview!=owner)[owner addSubview:button];button.frame=CGRectMake(16,MAX(16,owner.bounds.size.height-150-([role isEqual:@"sponsor-highlight"]?48:0)),220,44);
+  [button setTitle:[segment getSkipButtonText] forState:UIControlStateNormal];if([op hasSuffix:@"show"])button.hidden=NO;
   [button removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
   [button addAction:[UIAction actionWithHandler:^(UIAction *action){RVBEvents_skipSegmentWithRVB88F95091SponsorSegment_(segment);}] forControlEvents:UIControlEventTouchUpInside];return nil;
  }

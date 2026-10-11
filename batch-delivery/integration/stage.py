@@ -79,6 +79,10 @@ def catalog():
 
 def stage(worktree,generation):
     prepare(worktree,generation)
+    utils=worktree/'batch-delivery/java/app/revanced/extension/shared/Utils.java'
+    facade=utils.read_text(encoding='utf-8');old='public static Animation getResourceAnimation(String key){return new android.view.animation.AlphaAnimation(0,1);}'
+    if facade.count(old)!=1:raise ValueError('Unexpected resource-animation facade')
+    utils.write_text(facade.replace(old,'public static Animation getResourceAnimation(String key){return (Animation)rv.batch.Platform.invoke("resource.animation",key);}'),encoding='utf-8',newline='\n')
     dest=worktree/'batch-delivery/integration';dest.mkdir(exist_ok=True)
     for p in ROOT.glob('*.py'):shutil.copy2(p,dest/p.name)
     shutil.copy2(ROOT/'AppHost.m',dest/'AppHost.m')
