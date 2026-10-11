@@ -1,0 +1,64 @@
+name: Stateful source translator with Xcode
+on:
+  push:
+    branches: [feat/stateful-translator-0.1]
+permissions:
+  contents: read
+jobs:
+  translate:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.14'
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: j2objc
+          key: j2objc-1671e9a-xcode164-jdk21-core-host-ios-v1
+      - name: Build pinned Java runtime and translator
+        run: |
+          if [ ! -d j2objc/.git ]; then
+            git clone --depth 1 --branch 3.1 https://github.com/google/j2objc.git j2objc
+          fi
+          test "$(git -C j2objc rev-parse HEAD)" = 1671e9afb72a16126d448f468db3e582358fba47
+          mkdir -p stateful-output
+          make -C j2objc -j3 translator_dist 2>&1 | tee stateful-output/vendor-translator.log
+          make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx iphone64" dist_includes ../dist/lib/macosx/libjre_core.a ../dist/lib/iphone/libjre_core.a 2>&1 | tee stateful-output/vendor-runtime.log
+          cp j2objc/scripts/j2objcc.sh j2objc/dist/j2objcc
+          chmod +x j2objc/dist/j2objcc
+      - name: Execute stateful translation checks when present
+        run: |
+          if [ -f stateful/native_build.py ]; then
+            python stateful/native_build.py --j2objc-home j2objc/dist --out stateful-output/validation
+          fi
+          python - <<'PY'
+          import hashlib,json,os,subprocess
+          from pathlib import Path
+          d=Path('j2objc/dist')
+          r={'head_sha':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],
+             'vendor_commit':subprocess.check_output(['git','-C','j2objc','rev-parse','HEAD'],text=True).strip(),
+             'xcode':subprocess.check_output(['xcodebuild','-version'],text=True).strip(),
+             'java':subprocess.check_output(['java','-version'],stderr=subprocess.STDOUT,text=True).strip(),
+             'vendor_files':{str(p.relative_to(d)):hashlib.sha256(p.read_bytes()).hexdigest() for p in d.rglob('*') if p.is_file()},
+             'native_harness_executed':Path('stateful-output/validation/receipt.json').exists(),
+             'device_verified':False}
+          Path('stateful-output/cloud-build.json').write_text(json.dumps(r,indent=2)+'\n')
+          PY
+      - name: Retain compiled runtime distribution
+        run: tar -czf stateful-output/j2objc-dist.tar.gz -C j2objc dist
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: stateful-translation
+          path: stateful-output
+          if-no-files-found: error
+          retention-days: 14
