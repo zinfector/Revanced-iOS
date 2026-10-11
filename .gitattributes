@@ -1,12 +1,1 @@
-* text=auto eol=lf
-*.ipa binary
-*.dylib binary
-*.exe binary
-
-# Exclude internal Markdown from published source archives.
-*.[mM][dD] export-ignore
-/README.md -export-ignore
-/SIGNING.md -export-ignore
-
-# Preserve generated-source and native build provenance bytes.
-/patcher/native/** -text
+/stateful/** -text

@@ -1,0 +1,42 @@
+{
+  "events": [
+    {
+      "source": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted(app.revanced.extension.youtube.patches.VideoInformation.PlaybackController)",
+      "exported": "RVST_RememberPlaybackSpeedPatch_newVideoStarted",
+      "dropped_unread_parameters": [
+        "local_655_ignoredPlayerController"
+      ],
+      "affinity": "main",
+      "role": "Requires reviewed event placement; not inferred from method name"
+    },
+    {
+      "source": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#userSelectedPlaybackSpeed(float)",
+      "exported": "RVST_RememberPlaybackSpeedPatch_userSelectedPlaybackSpeed",
+      "dropped_unread_parameters": [],
+      "affinity": "main",
+      "role": "Requires reviewed event placement; not inferred from method name"
+    },
+    {
+      "source": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#getPlaybackSpeedOverride()",
+      "exported": "RVST_RememberPlaybackSpeedPatch_getPlaybackSpeedOverride",
+      "dropped_unread_parameters": [],
+      "affinity": "main",
+      "role": "Requires reviewed event placement; not inferred from method name"
+    }
+  ],
+  "resources": {
+    "locale": "Source English fallback, JVM locale formatting; localized catalogs not yet imported",
+    "resources": {
+      "revanced_remember_playback_speed_toast": "Changed default speed to: %s"
+    }
+  },
+  "preferences_suite": "org.revanced.translated.stateful-v1",
+  "float_encoding": "Typed f32 raw IEEE bits in NSUserDefaults",
+  "scheduling": "dispatch_after, always queued, strong capture until execution, Java exception wrapper",
+  "runtime_ready_requires": [
+    "Configure preference domain and toast presenter",
+    "Main-thread event placement"
+  ],
+  "automatic_hook_installation": false,
+  "device_verified": false
+}

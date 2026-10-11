@@ -5,18 +5,26 @@
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\settings\\Settings.java": "0c7e027ee976649cfbd21ec8743d2d97a0df330cfce2e792c397e8840a5125e6",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\CustomPlaybackSpeedPatch.java": "6d85d512bed38ef3f7582b42bf1025001d29471b046222f99408aca728177468",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\Utils.java": "fb98c0f4068e0de8eef47f868614c67ad08e432cb73181c548aeb4d979f44103",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\contracts.py": "d1b76f72a9d2f67b64a8e5e7ca3f9b05a3bf755c91e7d974b4ec0dadbecccf23",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\driver.py": "4ebff2be82e3704257aa356fab051fd620400ea62ef3b24957f0e62d76fb6180",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "a307c80fc2dbded88e58a7ac676f03b90262f66c30cdf9ded60235bcc7aedd28",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\contracts.py": "60ca770c26e4f9049b1b2d363b504f31eb35b5495f4df7f56e8419220f72d277",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\driver.py": "c4d03cbbbbd108a0876ef13f380b619e3291094cd0bf48cbf72b17160a2d1d73",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\native_build.py": "f71dba1f1281853a22abd85236c4bf03270a1876187725ae69fa4c6188fb4018",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\providers.py": "6e19044afd2060098cafe9fda4765e6b2d2f5e6ed42480d2b7eeac6ce102183b",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "71962c3e3ba45f7e5fea328f9379d0d1a7b4f15eeaa6cd669dc0e7f225152ee5",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\survey.py": "42a939b88b85579cc46a641df15c6ff303fbbe87e519e8b16d9d734cf9106805",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\ExportPatch.java": "051dccf0fd0211717cf522732529fba1e23d26bb87c91ab1fba7578e0a764813",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\validate.py": "c77637339a2ffcad4c8c08fe742b5805202bea657f07212d6b9c86004f839248",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\ExportPatch.java": "c94ab42cf2f02f6cda5f3b0eaf98f12bf5e91288ec18bf9b05e0bc46340f757d",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\jadx-gui-1.5.6-with-jre-win\\lib\\jadx-gui-1.5.6-all.jar": "966d314282d95ff7c72f597bb9c744999856666a3b856575e3c035a9c12a0b65",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\adapters\\Operations.h": "f5b2b14050335abe5cdd7d11a075348e4efed03484bb0f102b13f0e12de38cdf",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\adapters\\Operations.m": "825dbc5a568cc35bb63bbd557a83bddecbc91eb003d8ebae134019dc097a53e4",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\adapters\\ProviderProbe.java": "fe60288049117dd04b1b5fe6bb4de7e39e7f96555fe9448bc96f3af1556d8838",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\patches\\src\\main\\resources\\addresources\\values\\strings.xml": "02ed31550efea95dd7a397b9be2472fa6bbd63e963614ceddcb136b73ce684b0",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java": "a6c7ad1a416a148029bbaf89beec80755d3355fc021c5b8e78761d3dd99ed037",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java": "3426c04511249cfad6fb85fa5b0835eadf42c06cebe9e15cd067676c4494b5e4",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Simulator.java": "fd72e9ef9b52d8e2f9170f5f3c6b15c546e8e827001f7009bc60476c515f1ecd",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\TraceHarness.java": "0bebace37b7aebd4e67f41de12e2a70d8992420af14f223df14f3ecab41cb1e8"
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\TraceHarness.java": "0bebace37b7aebd4e67f41de12e2a70d8992420af14f223df14f3ecab41cb1e8",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java": "78ed350487300147af53363a55247a78a792f3333f29c3b1faa6b0a284deef56"
   },
-  "module_sha256": "defc8be4ead921d2d77fc53c647f6532c4af626cfb46189449b9b7f751c99d13",
+  "module_sha256": "0362f6b9079d92f64a45a95a9ba80eade58531dd63f3c70f4636e6794514888b",
   "graph_sha256": "e9e750996ca71c5fe0eb0ef8f8f8db192c845c1aecce559d71cef4b945814503",
   "admission": {
     "classes": 1,
@@ -33,14 +41,14 @@
       "id": "n_1844_2682_LAMBDA_EXPRESSION",
       "captures": [
         {
-          "type": "long",
+          "name": "now",
           "symbol": "local_1645_now",
-          "name": "now"
+          "type": "long"
         },
         {
-          "type": "float",
+          "name": "finalPlaybackSpeed",
           "symbol": "local_1751_finalPlaybackSpeed",
-          "name": "finalPlaybackSpeed"
+          "type": "float"
         }
       ]
     },
@@ -58,9 +66,11 @@
   "jvm_trace_sha256": "c802f23d44a20d07beafc142ad71f307f17667d3ed286f53ea44e53d3af8d8b9",
   "jvm_traces_equal": true,
   "policy_generated_from_ir": true,
+  "reimported_semantics_equal": true,
   "handwritten_ios_policy_used": false,
   "dependency_closure": "Selected class plus explicitly modeled operation/library boundaries",
   "object_probe_generated": true,
+  "production_policy_reimport_equal": true,
   "device_verified": false,
   "native_compiled": false,
   "dialect": "Attributed typed structured regions; not full SSA or arbitrary Java",

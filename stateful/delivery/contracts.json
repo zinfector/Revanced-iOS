@@ -74,6 +74,24 @@
     ],
     "family": "java.callback"
   },
+  "java.lang.Thread#<init>(java.lang.Runnable)": {
+    "effects": [
+      "object.allocate"
+    ],
+    "family": "java.thread"
+  },
+  "java.lang.Thread#start()": {
+    "effects": [
+      "thread.start"
+    ],
+    "family": "java.thread"
+  },
+  "java.lang.Thread#join()": {
+    "effects": [
+      "thread.join"
+    ],
+    "family": "java.thread"
+  },
   "java.lang.IllegalStateException#<init>(java.lang.String)": {
     "effects": [
       "object.allocate"
