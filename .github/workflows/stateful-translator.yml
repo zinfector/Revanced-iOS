@@ -41,7 +41,7 @@ jobs:
         run: |
           curl --fail --location --retry 3 -o stateful-output/gson.jar https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.13.2/gson-2.13.2.jar
           python stateful/tooling/cloud_checks.py --gson stateful-output/gson.jar --input stateful/delivery --out stateful-output/source-validation
-          python stateful/tooling/validate.py --input stateful/delivery --out stateful-output/edit-validation
+          python stateful/tooling/validate.py --gson stateful-output/gson.jar --input stateful/delivery --out stateful-output/edit-validation
       - name: Execute stateful translation checks
         run: |
           if [ -f stateful/native_build.py ]; then

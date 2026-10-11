@@ -12,10 +12,10 @@
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\frontier.py": "aee8cdc37f26d60b78a7f623e1d6c01fe6dbf50bee4eb8a197a3f9589a4566f5",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\native_build.py": "5796fc8beb97bfdc216228ca46c111bdce6a07dc4cb7869e2d65dda22b569f97",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\providers.py": "a628815a63c87d4f91310d09e1604f0c4aa5062a8dcc5b31d5891f31f8222392",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "0a95d75448d568b5dfabf2c31392faa3eccac7ce74a5099ef575fba019bfb091",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "82c56322a9e345daea2337aeb960226f0449954bbc6edf3bd05ac5eccaf4d4ce",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\stage.py": "3994282ec4eb8a7ca9cf2252cf58ed7c3b7fae65c1915ba789cb7cd3bfab133d",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\survey.py": "42a939b88b85579cc46a641df15c6ff303fbbe87e519e8b16d9d734cf9106805",
-    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\validate.py": "c77637339a2ffcad4c8c08fe742b5805202bea657f07212d6b9c86004f839248",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\validate.py": "e32b5e38af6017434a5a5a7b064b8cee452ad72c5d8a60ec8d9f309f5d1914c8",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\ExportPatch.java": "c94ab42cf2f02f6cda5f3b0eaf98f12bf5e91288ec18bf9b05e0bc46340f757d",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\jadx-gui-1.5.6-with-jre-win\\lib\\jadx-gui-1.5.6-all.jar": "966d314282d95ff7c72f597bb9c744999856666a3b856575e3c035a9c12a0b65",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\adapters\\Operations.h": "f5b2b14050335abe5cdd7d11a075348e4efed03484bb0f102b13f0e12de38cdf",
@@ -28,7 +28,7 @@
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\TraceHarness.java": "0bebace37b7aebd4e67f41de12e2a70d8992420af14f223df14f3ecab41cb1e8",
     "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\VolatileProbe.java": "78ed350487300147af53363a55247a78a792f3333f29c3b1faa6b0a284deef56"
   },
-  "module_sha256": "30724be8a9f948c8afeed55574bff67aca51de39cbca561e1195a8c819a45a36",
+  "module_sha256": "6b29294107a326b776d6cce779ba02a6dc26b67408adebbb6c1d917ef3b8aa84",
   "graph_sha256": "aed54cd674e71f16de8605f3561f952ffd00e68976e07713a805dded313c9bf4",
   "admission": {
     "classes": 1,
@@ -45,14 +45,14 @@
       "id": "n_1844_2682_LAMBDA_EXPRESSION",
       "captures": [
         {
-          "type": "long",
+          "name": "now",
           "symbol": "local_1645_now",
-          "name": "now"
+          "type": "long"
         },
         {
-          "type": "float",
+          "name": "finalPlaybackSpeed",
           "symbol": "local_1751_finalPlaybackSpeed",
-          "name": "finalPlaybackSpeed"
+          "type": "float"
         }
       ]
     },

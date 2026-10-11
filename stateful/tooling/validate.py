@@ -2,17 +2,19 @@
 import argparse
 import copy
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 from contracts import CONTRACTS
-from driver import classes, ledger, run, source, write, PACKAGE
-from regions import AdmissionError, hash_graph, verify, walk
+from driver import classes, ledger, run, source, write, PACKAGE, JAR
+from regions import AdmissionError, hash_graph, verify, walk, semantic_form
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--input',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--gson',type=Path,default=JAR)
     a=p.parse_args();out=a.out.resolve();inputs=a.input.resolve()
     if out.exists():raise ValueError('Fresh validation output required')
     out.mkdir(parents=True);module=json.loads((inputs/'module.json').read_text())
@@ -32,6 +34,11 @@ def main():
     try:verify(changed,CONTRACTS)
     except AdmissionError:rejected.append('missing-capture')
     else:raise AssertionError('Missing capture admitted')
+    changed=copy.deepcopy(module);callback=next(n for n in walk(changed) if n['kind']=='LAMBDA_EXPRESSION' and n['captures'])
+    callback['captures'][0]['type']='java.lang.String'
+    try:verify(changed,CONTRACTS)
+    except AdmissionError:rejected.append('forged-capture-type')
+    else:raise AssertionError('Forged capture type admitted')
     driver=Path(__file__).with_name('driver.py')
     wrong=subprocess.run([sys.executable,str(driver),'edit','--input',str(inputs/'module.json'),'--out',str(out/'wrong.json'),
                           '--expected-hash','0'*64,'--node','none','--value','250'],capture_output=True,text=True)
@@ -54,10 +61,16 @@ public final class EditProbe {public static void main(String[] ignored){
     System.out.println("IR-only edit changed save boundary from 1750ms to 1250ms");}}
 ''')
     classes(out/'edited-java',out/'edited-classes',out/'edit-javac.log')
+    compiler=out/'exporter';compiler.mkdir();gson=a.gson.resolve()
+    run([shutil.which('javac'),'-cp',gson,'-d',compiler,Path(__file__).with_name('ExportPatch.java')],out/'exporter-javac.log')
+    run([shutil.which('java'),'-cp',str(gson)+os.pathsep+str(compiler),'ExportPatch',out/'edited-reimported.json',out/'edited-classes','',
+         out/'edited-java'/(PACKAGE+'/RememberPlaybackSpeedPatch.java')],out/'edited-reimport.log')
+    if semantic_form(json.loads((out/'edited.json').read_text()),CONTRACTS)!=semantic_form(json.loads((out/'edited-reimported.json').read_text()),CONTRACTS):
+        raise AssertionError('Edited graph changed semantics during regeneration')
     run([shutil.which('java'),'-cp',out/'edited-classes','EditProbe'],out/'edit-probe.txt')
     write(out/'receipt.json',dict(rejected=rejected,edit_only_in_ir=True,source_changed=False,
           original_delay_ms=750,edited_delay_ms=250,edited_graph_sha256=hash_graph(json.loads((out/'edited.json').read_text())),
-          edit_compiled_and_executed=True,coverage='Admission boundaries and observable edit; not all-input equivalence proof'))
+          edit_compiled_and_executed=True,edited_reimport_semantics_equal=True,coverage='Admission boundaries and observable edit; not all-input equivalence proof'))
     ledger(out);print('Rejected '+str(len(rejected))+' unsafe/stale inputs; IR-only edit compiled and changed callback timing')
 
 

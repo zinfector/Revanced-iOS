@@ -112,6 +112,11 @@ def verify(module, contracts):
                     used = {v['symbol'] for v in walk(n['body']) if v['kind'] in ('IDENTIFIER', 'MEMBER_SELECT') and not v.get('field') and 'symbol' in v and 'constant' not in v}
                     expected = used - declared
                     require(expected == {v['symbol'] for v in n['captures']}, 'Closure capture inventory mismatch')
+                    require(len(expected)==len(n['captures']), 'Duplicate closure capture')
+                    references={v['symbol']:v for v in walk(n['body']) if v.get('symbol') in expected}
+                    for capture in n['captures']:
+                        require(capture['type']==references[capture['symbol']]['type'] and capture['name']==references[capture['symbol']]['name'],
+                                'Closure capture type/name mismatch')
         for method in cls['methods']:
             require(TYPE.fullmatch(method['result']), 'Invalid method result')
     require(not frontier, 'Unresolved dependency frontier: ' + json.dumps(frontier))
@@ -233,7 +238,9 @@ def semantic_form(module, contracts):
             k=v.get('kind')
             if k=='PARENTHESIZED': return normalize(v['value'])
             if k in LITERALS or (k in ('IDENTIFIER','MEMBER_SELECT') and 'constant' in v):
-                return dict(kind='constant',type=v['type'],value=v.get('constant',v.get('value')))
+                value=v.get('constant',v.get('value'))
+                if v['type']=='long':value=str(value)
+                return dict(kind='constant',type=v['type'],value=value)
             if k in ('IDENTIFIER','MEMBER_SELECT') and 'symbol' in v:
                 receiver = v.get('receiver')
                 if receiver and (receiver.get('this') or receiver.get('name') == 'this'):
