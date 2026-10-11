@@ -1,0 +1,61 @@
+name: Original executable body core
+on:
+  push:
+    branches: [feat/executable-body-core-20261011]
+permissions:
+  contents: read
+jobs:
+  body-core:
+    runs-on: macos-15
+    timeout-minutes: 55
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.14'
+      - name: Verify byte-stable source archive
+        run: |
+          set -e
+          echo "83f34b824cdc28f552f3f61215c01f50df4c196f4d38ddab4c65782b360f5b4e  executable-delivery/executable-bodies.tar" | shasum -a 256 -c
+          tar -xf executable-delivery/executable-bodies.tar -C executable-delivery
+      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: runtime-cache
+        with:
+          path: j2objc
+          key: j2objc-1671e9a-xcode164-jdk21-full-host-ios-v1
+          restore-keys: j2objc-1671e9a-xcode164-jdk21-core-host-ios-v2
+      - name: Prepare pinned translator and runtime
+        run: |
+          set -eo pipefail
+          mkdir -p body-output
+          if [ ! -d j2objc/.git ]; then
+            git clone --depth 1 --branch 3.1 https://github.com/google/j2objc.git j2objc
+          fi
+          test "$(git -C j2objc rev-parse HEAD)" = 1671e9afb72a16126d448f468db3e582358fba47
+          if [ "${{ steps.runtime-cache.outputs.cache-hit }}" != "true" ]; then
+            make -C j2objc -j3 translator_dist 2>&1 | tee body-output/vendor-translator.log
+            make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx macosx64 iphone64" dist_includes ../dist/lib/macosx/libjre_emul.a ../dist/lib/iphone/libjre_emul.a ../dist/lib/macosx/libjson.a ../dist/lib/iphone/libjson.a 2>&1 | tee body-output/vendor-runtime.log
+          fi
+          test -x j2objc/dist/j2objc
+          shasum -a 256 j2objc/dist/lib/iphone/libjre_emul.a | tee body-output/vendor-libraries.sha256
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        if: steps.runtime-cache.outputs.cache-hit != 'true'
+        with:
+          path: j2objc
+          key: j2objc-1671e9a-xcode164-jdk21-full-host-ios-v1
+      - name: Translate and compile original ARM64 body core
+        run: python executable-delivery/executable-bodies/macos_body_build.py --bundle executable-delivery/executable-bodies --j2objc-home j2objc/dist --out body-output/native
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: original-executable-body-core
+          path: body-output
+          retention-days: 14
