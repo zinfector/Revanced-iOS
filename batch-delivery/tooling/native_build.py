@@ -72,11 +72,14 @@ int main(void){@autoreleasepool{
     common=['-fobjc-arc','-fobjc-arc-exceptions','-fblocks','-O2','-g','-Wno-parentheses-equality','-DU_DISABLE_RENAMING=1','-DU_SHOW_CPLUSPLUS_API=0','-I',icu_i18n,'-I',icu_common,'-I',home/'include','-I',objc,'-I',native,*sorted(objc.rglob('*.m')),*sorted(native.glob('*.m')),'-framework','Foundation','-framework','Security','-liconv','-lz','-licucore']
     host=['xcrun','clang',*common,'-I',test_objc,*sorted(test_objc.rglob('*.m')),runner,home/'lib/macosx/libjre_emul.a',home/'lib/macosx/libjson.a','-o',out/'Probe']
     run(host,out/'compile-host.log')
+    probe_error=None
+    try:run([out/'Probe'],out/'provider-probe.txt')
+    except RuntimeError as e:probe_error=e
     sdk=subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip()
     payload=out/'TranslatedBatch.dylib'
     ios=['xcrun','--sdk','iphoneos','clang','-target','arm64-apple-ios17.0','-isysroot',sdk,*common,home/'lib/iphone/libjre_emul.a',home/'lib/iphone/libjson.a','-framework','UIKit','-dynamiclib','-Wl,-install_name,@executable_path/Frameworks/TranslatedBatch.dylib','-o',payload]
     run(ios,out/'compile-ios.log')
-    run([out/'Probe'],out/'provider-probe.txt')
+    if probe_error:raise probe_error
     expected=inputs.parent/'original-trace.txt'
     actual_trace=(out/'provider-probe.txt').read_text(encoding='utf-8')
     expected_trace=expected.read_text(encoding='utf-8')

@@ -5,6 +5,8 @@
 #include "java/lang/Float.h"
 #include "java/lang/IllegalStateException.h"
 #include "java/lang/UnsupportedOperationException.h"
+#include "java/lang/CharSequence.h"
+#include "NSString+JavaString.h"
 #include <math.h>
 #if TARGET_OS_IOS
 #include "android/content/Context.h"

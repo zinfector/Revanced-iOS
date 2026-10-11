@@ -60,8 +60,12 @@ jobs:
             git clone --depth 1 --branch 3.1 https://github.com/google/j2objc.git j2objc
           fi
           test "$(git -C j2objc rev-parse HEAD)" = 1671e9afb72a16126d448f468db3e582358fba47
-          make -C j2objc -j3 translator_dist 2>&1 | tee batch-output/vendor-translator.log
-          make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx macosx64 iphone64" dist_includes ../dist/lib/macosx/libjre_emul.a ../dist/lib/iphone/libjre_emul.a ../dist/lib/macosx/libjson.a ../dist/lib/iphone/libjson.a 2>&1 | tee batch-output/vendor-runtime.log
+          if [ "${{ steps.runtime-cache.outputs.cache-hit }}" != "true" ]; then
+            make -C j2objc -j3 translator_dist 2>&1 | tee batch-output/vendor-translator.log
+            make -C j2objc/jre_emul -j3 J2OBJC_ARCHS="macosx macosx64 iphone64" dist_includes ../dist/lib/macosx/libjre_emul.a ../dist/lib/iphone/libjre_emul.a ../dist/lib/macosx/libjson.a ../dist/lib/iphone/libjson.a 2>&1 | tee batch-output/vendor-runtime.log
+          fi
+          test -x j2objc/dist/j2objc
+          shasum -a 256 j2objc/dist/lib/macosx/libjre_emul.a j2objc/dist/lib/iphone/libjre_emul.a j2objc/dist/lib/macosx/libjson.a j2objc/dist/lib/iphone/libjson.a | tee batch-output/vendor-libraries.sha256
       - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
         if: steps.runtime-cache.outputs.cache-hit != 'true'
         with:
