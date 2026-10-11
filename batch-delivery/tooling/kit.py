@@ -162,7 +162,7 @@ public final class VideoInformation {public interface PlaybackController{}
  public static void overridePlaybackSpeed(float rate){rv.batch.Platform.present("player.set_rate",rate);}}
 ''',
  YP+'videoplayer/PlayerControlButton.java':'''package app.revanced.extension.youtube.videoplayer;
-public final class PlayerControlButton {public static final int fadeInDuration=200;public static int getDialogBackgroundColor(){return 0xffffffff;}}
+public final class PlayerControlButton {public static final int fadeInDuration=200;public static int getDialogBackgroundColor(){return app.revanced.extension.shared.Utils.getDialogBackgroundColor();}}
 ''',
  YP+'patches/litho/PlaybackSpeedMenuFilter.java':'package app.revanced.extension.youtube.patches.litho;public final class PlaybackSpeedMenuFilter {public static volatile boolean isPlaybackRateSelectorMenuVisible,isOldPlaybackSpeedMenuVisible;}\n',
  YP+'sponsorblock/ui/SponsorBlockViewController.java':'''package app.revanced.extension.youtube.sponsorblock.ui;
