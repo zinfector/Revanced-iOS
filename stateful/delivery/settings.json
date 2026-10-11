@@ -1,0 +1,20 @@
+[
+  {
+    "symbol": "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT",
+    "key": "revanced_playback_speed_default",
+    "type": "FloatSetting",
+    "default": -2.0
+  },
+  {
+    "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED",
+    "key": "revanced_remember_playback_speed_last_selected",
+    "type": "BooleanSetting",
+    "default": false
+  },
+  {
+    "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_TOAST",
+    "key": "revanced_remember_playback_speed_last_selected_toast",
+    "type": "BooleanSetting",
+    "default": true
+  }
+]

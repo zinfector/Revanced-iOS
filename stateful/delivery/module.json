@@ -1,0 +1,1776 @@
+{
+  "classes": [
+    {
+      "name": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+      "simple_name": "RememberPlaybackSpeedPatch",
+      "modifiers": [
+        "final",
+        "public"
+      ],
+      "fields": [
+        {
+          "kind": "VARIABLE",
+          "id": "n_416_473_VARIABLE",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 416,
+            "line": 13,
+            "end": 473
+          },
+          "type": "long",
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#TOAST_DELAY_MILLISECONDS",
+          "name": "TOAST_DELAY_MILLISECONDS",
+          "declared_type": "long",
+          "modifiers": [
+            "final",
+            "private",
+            "static"
+          ],
+          "value": {
+            "kind": "INT_LITERAL",
+            "id": "n_469_472_INT_LITERAL",
+            "origin": {
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+              "start": 469,
+              "line": 13,
+              "end": 472
+            },
+            "type": "int",
+            "value": 750
+          }
+        },
+        {
+          "kind": "VARIABLE",
+          "id": "n_479_527_VARIABLE",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 479,
+            "line": 15,
+            "end": 527
+          },
+          "type": "boolean",
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted",
+          "name": "newVideoStarted",
+          "declared_type": "boolean",
+          "modifiers": [
+            "private",
+            "static",
+            "volatile"
+          ],
+          "value": null
+        },
+        {
+          "kind": "VARIABLE",
+          "id": "n_533_574_VARIABLE",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 533,
+            "line": 17,
+            "end": 574
+          },
+          "type": "long",
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#lastTimeSpeedChanged",
+          "name": "lastTimeSpeedChanged",
+          "declared_type": "long",
+          "modifiers": [
+            "private",
+            "static"
+          ],
+          "value": null
+        }
+      ],
+      "methods": [
+        {
+          "kind": "METHOD",
+          "id": "n_620_807_METHOD",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 620,
+            "line": 22,
+            "end": 807
+          },
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted(app.revanced.extension.youtube.patches.VideoInformation.PlaybackController)",
+          "name": "newVideoStarted",
+          "result": "void",
+          "constructor": false,
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "parameters": [
+            {
+              "kind": "VARIABLE",
+              "id": "n_655_714_VARIABLE",
+              "origin": {
+                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                "start": 655,
+                "line": 22,
+                "end": 714
+              },
+              "type": "app.revanced.extension.youtube.patches.VideoInformation.PlaybackController",
+              "symbol": "local_655_ignoredPlayerController",
+              "name": "ignoredPlayerController",
+              "declared_type": "app.revanced.extension.youtube.patches.VideoInformation.PlaybackController",
+              "modifiers": [],
+              "value": null
+            }
+          ],
+          "body": {
+            "kind": "BLOCK",
+            "id": "n_716_807_BLOCK",
+            "origin": {
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+              "start": 716,
+              "line": 22,
+              "end": 807
+            },
+            "statements": [
+              {
+                "kind": "EXPRESSION_STATEMENT",
+                "id": "n_726_769_EXPRESSION_STATEMENT",
+                "origin": {
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                  "start": 726,
+                  "line": 23,
+                  "end": 769
+                },
+                "value": {
+                  "kind": "METHOD_INVOCATION",
+                  "id": "n_726_768_METHOD_INVOCATION",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 726,
+                    "line": 23,
+                    "end": 768
+                  },
+                  "type": "void",
+                  "target": "app.revanced.extension.shared.Logger#printDebug(app.revanced.extension.shared.Logger.LogMessage)",
+                  "owner": "app.revanced.extension.shared.Logger",
+                  "name": "printDebug",
+                  "static": true,
+                  "parameter_types": [
+                    "app.revanced.extension.shared.Logger.LogMessage"
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "LAMBDA_EXPRESSION",
+                      "id": "n_744_767_LAMBDA_EXPRESSION",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 744,
+                        "line": 23,
+                        "end": 767
+                      },
+                      "type": "app.revanced.extension.shared.Logger.LogMessage",
+                      "parameters": [],
+                      "body": {
+                        "kind": "STRING_LITERAL",
+                        "id": "n_750_767_STRING_LITERAL",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 750,
+                          "line": 23,
+                          "end": 767
+                        },
+                        "type": "java.lang.String",
+                        "value": "newVideoStarted",
+                        "effects": []
+                      },
+                      "captures": [],
+                      "effects": [
+                        "closure.capture"
+                      ]
+                    }
+                  ],
+                  "effects": [
+                    "diagnostic.lazy"
+                  ]
+                },
+                "effects": []
+              },
+              {
+                "kind": "EXPRESSION_STATEMENT",
+                "id": "n_778_801_EXPRESSION_STATEMENT",
+                "origin": {
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                  "start": 778,
+                  "line": 24,
+                  "end": 801
+                },
+                "value": {
+                  "kind": "ASSIGNMENT",
+                  "id": "n_778_800_ASSIGNMENT",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 778,
+                    "line": 24,
+                    "end": 800
+                  },
+                  "type": "boolean",
+                  "target": {
+                    "kind": "IDENTIFIER",
+                    "id": "n_778_793_IDENTIFIER",
+                    "origin": {
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                      "start": 778,
+                      "line": 24,
+                      "end": 793
+                    },
+                    "type": "boolean",
+                    "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted",
+                    "name": "newVideoStarted",
+                    "field": true,
+                    "modifiers": [
+                      "private",
+                      "static",
+                      "volatile"
+                    ],
+                    "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                    "effects": [
+                      "state.volatile.read"
+                    ]
+                  },
+                  "value": {
+                    "kind": "BOOLEAN_LITERAL",
+                    "id": "n_796_800_BOOLEAN_LITERAL",
+                    "origin": {
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                      "start": 796,
+                      "line": 24,
+                      "end": 800
+                    },
+                    "type": "boolean",
+                    "value": true,
+                    "effects": []
+                  },
+                  "effects": [
+                    "state.volatile.write"
+                  ]
+                },
+                "effects": []
+              }
+            ],
+            "effects": []
+          },
+          "effects": [
+            "closure.capture",
+            "diagnostic.lazy",
+            "state.volatile.read",
+            "state.volatile.write"
+          ]
+        },
+        {
+          "kind": "METHOD",
+          "id": "n_975_2855_METHOD",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 975,
+            "line": 33,
+            "end": 2855
+          },
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#userSelectedPlaybackSpeed(float)",
+          "name": "userSelectedPlaybackSpeed",
+          "result": "void",
+          "constructor": false,
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "parameters": [
+            {
+              "kind": "VARIABLE",
+              "id": "n_1020_1039_VARIABLE",
+              "origin": {
+                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                "start": 1020,
+                "line": 33,
+                "end": 1039
+              },
+              "type": "float",
+              "symbol": "local_1020_playbackSpeed",
+              "name": "playbackSpeed",
+              "declared_type": "float",
+              "modifiers": [],
+              "value": null
+            }
+          ],
+          "body": {
+            "kind": "BLOCK",
+            "id": "n_1041_2855_BLOCK",
+            "origin": {
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+              "start": 1041,
+              "line": 33,
+              "end": 2855
+            },
+            "statements": [
+              {
+                "kind": "TRY",
+                "id": "n_1051_2849_TRY",
+                "origin": {
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                  "start": 1051,
+                  "line": 34,
+                  "end": 2849
+                },
+                "body": {
+                  "kind": "BLOCK",
+                  "id": "n_1055_2734_BLOCK",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 1055,
+                    "line": 34,
+                    "end": 2734
+                  },
+                  "statements": [
+                    {
+                      "kind": "IF",
+                      "id": "n_1069_2724_IF",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 1069,
+                        "line": 35,
+                        "end": 2724
+                      },
+                      "condition": {
+                        "kind": "PARENTHESIZED",
+                        "id": "n_1072_1126_PARENTHESIZED",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 1072,
+                          "line": 35,
+                          "end": 1126
+                        },
+                        "type": "boolean",
+                        "value": {
+                          "kind": "METHOD_INVOCATION",
+                          "id": "n_1073_1125_METHOD_INVOCATION",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 1073,
+                            "line": 35,
+                            "end": 1125
+                          },
+                          "type": "boolean",
+                          "target": "app.revanced.extension.youtube.settings.Settings.BooleanSetting#get()",
+                          "owner": "app.revanced.extension.youtube.settings.Settings.BooleanSetting",
+                          "name": "get",
+                          "static": false,
+                          "parameter_types": [],
+                          "receiver": {
+                            "kind": "MEMBER_SELECT",
+                            "id": "n_1073_1119_MEMBER_SELECT",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1073,
+                              "line": 35,
+                              "end": 1119
+                            },
+                            "type": "app.revanced.extension.youtube.settings.Settings.BooleanSetting",
+                            "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED",
+                            "name": "REMEMBER_PLAYBACK_SPEED_LAST_SELECTED",
+                            "field": true,
+                            "modifiers": [
+                              "final",
+                              "public",
+                              "static"
+                            ],
+                            "owner": "app.revanced.extension.youtube.settings.Settings",
+                            "effects": [
+                              "state.read"
+                            ]
+                          },
+                          "arguments": [],
+                          "effects": [
+                            "preferences.read"
+                          ]
+                        },
+                        "effects": []
+                      },
+                      "then": {
+                        "kind": "BLOCK",
+                        "id": "n_1127_2724_BLOCK",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 1127,
+                          "line": 35,
+                          "end": 2724
+                        },
+                        "statements": [
+                          {
+                            "kind": "EXPRESSION_STATEMENT",
+                            "id": "n_1368_1457_EXPRESSION_STATEMENT",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1368,
+                              "line": 39,
+                              "end": 1457
+                            },
+                            "value": {
+                              "kind": "ASSIGNMENT",
+                              "id": "n_1368_1456_ASSIGNMENT",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 1368,
+                                "line": 39,
+                                "end": 1456
+                              },
+                              "type": "float",
+                              "target": {
+                                "kind": "IDENTIFIER",
+                                "id": "n_1368_1381_IDENTIFIER",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 1368,
+                                  "line": 39,
+                                  "end": 1381
+                                },
+                                "type": "float",
+                                "symbol": "local_1020_playbackSpeed",
+                                "name": "playbackSpeed",
+                                "field": false,
+                                "modifiers": [],
+                                "effects": []
+                              },
+                              "value": {
+                                "kind": "METHOD_INVOCATION",
+                                "id": "n_1384_1456_METHOD_INVOCATION",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 1384,
+                                  "line": 39,
+                                  "end": 1456
+                                },
+                                "type": "float",
+                                "target": "java.lang.Math#min(float,float)",
+                                "owner": "java.lang.Math",
+                                "name": "min",
+                                "static": true,
+                                "parameter_types": [
+                                  "float",
+                                  "float"
+                                ],
+                                "arguments": [
+                                  {
+                                    "kind": "IDENTIFIER",
+                                    "id": "n_1393_1406_IDENTIFIER",
+                                    "origin": {
+                                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                      "start": 1393,
+                                      "line": 39,
+                                      "end": 1406
+                                    },
+                                    "type": "float",
+                                    "symbol": "local_1020_playbackSpeed",
+                                    "name": "playbackSpeed",
+                                    "field": false,
+                                    "modifiers": [],
+                                    "effects": []
+                                  },
+                                  {
+                                    "kind": "MEMBER_SELECT",
+                                    "id": "n_1408_1455_MEMBER_SELECT",
+                                    "origin": {
+                                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                      "start": 1408,
+                                      "line": 39,
+                                      "end": 1455
+                                    },
+                                    "type": "float",
+                                    "symbol": "app.revanced.extension.youtube.patches.playback.speed.CustomPlaybackSpeedPatch#PLAYBACK_SPEED_MAXIMUM",
+                                    "name": "PLAYBACK_SPEED_MAXIMUM",
+                                    "field": true,
+                                    "modifiers": [
+                                      "final",
+                                      "public",
+                                      "static"
+                                    ],
+                                    "owner": "app.revanced.extension.youtube.patches.playback.speed.CustomPlaybackSpeedPatch",
+                                    "constant": 8.0,
+                                    "effects": [
+                                      "state.read"
+                                    ]
+                                  }
+                                ],
+                                "effects": []
+                              },
+                              "effects": []
+                            },
+                            "effects": []
+                          },
+                          {
+                            "kind": "VARIABLE",
+                            "id": "n_1645_1689_VARIABLE",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1645,
+                              "line": 43,
+                              "end": 1689
+                            },
+                            "type": "long",
+                            "symbol": "local_1645_now",
+                            "name": "now",
+                            "declared_type": "long",
+                            "modifiers": [
+                              "final"
+                            ],
+                            "value": {
+                              "kind": "METHOD_INVOCATION",
+                              "id": "n_1662_1688_METHOD_INVOCATION",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 1662,
+                                "line": 43,
+                                "end": 1688
+                              },
+                              "type": "long",
+                              "target": "java.lang.System#currentTimeMillis()",
+                              "owner": "java.lang.System",
+                              "name": "currentTimeMillis",
+                              "static": true,
+                              "parameter_types": [],
+                              "arguments": [],
+                              "effects": [
+                                "clock.wall.read"
+                              ]
+                            },
+                            "effects": []
+                          },
+                          {
+                            "kind": "EXPRESSION_STATEMENT",
+                            "id": "n_1706_1733_EXPRESSION_STATEMENT",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1706,
+                              "line": 44,
+                              "end": 1733
+                            },
+                            "value": {
+                              "kind": "ASSIGNMENT",
+                              "id": "n_1706_1732_ASSIGNMENT",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 1706,
+                                "line": 44,
+                                "end": 1732
+                              },
+                              "type": "long",
+                              "target": {
+                                "kind": "IDENTIFIER",
+                                "id": "n_1706_1726_IDENTIFIER",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 1706,
+                                  "line": 44,
+                                  "end": 1726
+                                },
+                                "type": "long",
+                                "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#lastTimeSpeedChanged",
+                                "name": "lastTimeSpeedChanged",
+                                "field": true,
+                                "modifiers": [
+                                  "private",
+                                  "static"
+                                ],
+                                "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                                "effects": [
+                                  "state.read"
+                                ]
+                              },
+                              "value": {
+                                "kind": "IDENTIFIER",
+                                "id": "n_1729_1732_IDENTIFIER",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 1729,
+                                  "line": 44,
+                                  "end": 1732
+                                },
+                                "type": "long",
+                                "symbol": "local_1645_now",
+                                "name": "now",
+                                "field": false,
+                                "modifiers": [
+                                  "final"
+                                ],
+                                "effects": []
+                              },
+                              "effects": [
+                                "state.write"
+                              ]
+                            },
+                            "effects": []
+                          },
+                          {
+                            "kind": "VARIABLE",
+                            "id": "n_1751_1798_VARIABLE",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1751,
+                              "line": 46,
+                              "end": 1798
+                            },
+                            "type": "float",
+                            "symbol": "local_1751_finalPlaybackSpeed",
+                            "name": "finalPlaybackSpeed",
+                            "declared_type": "float",
+                            "modifiers": [
+                              "final"
+                            ],
+                            "value": {
+                              "kind": "IDENTIFIER",
+                              "id": "n_1784_1797_IDENTIFIER",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 1784,
+                                "line": 46,
+                                "end": 1797
+                              },
+                              "type": "float",
+                              "symbol": "local_1020_playbackSpeed",
+                              "name": "playbackSpeed",
+                              "field": false,
+                              "modifiers": [],
+                              "effects": []
+                            },
+                            "effects": []
+                          },
+                          {
+                            "kind": "EXPRESSION_STATEMENT",
+                            "id": "n_1815_2710_EXPRESSION_STATEMENT",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 1815,
+                              "line": 47,
+                              "end": 2710
+                            },
+                            "value": {
+                              "kind": "METHOD_INVOCATION",
+                              "id": "n_1815_2709_METHOD_INVOCATION",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 1815,
+                                "line": 47,
+                                "end": 2709
+                              },
+                              "type": "void",
+                              "target": "app.revanced.extension.shared.Utils#runOnMainThreadDelayed(java.lang.Runnable,long)",
+                              "owner": "app.revanced.extension.shared.Utils",
+                              "name": "runOnMainThreadDelayed",
+                              "static": true,
+                              "parameter_types": [
+                                "java.lang.Runnable",
+                                "long"
+                              ],
+                              "arguments": [
+                                {
+                                  "kind": "LAMBDA_EXPRESSION",
+                                  "id": "n_1844_2682_LAMBDA_EXPRESSION",
+                                  "origin": {
+                                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                    "start": 1844,
+                                    "line": 47,
+                                    "end": 2682
+                                  },
+                                  "type": "java.lang.Runnable",
+                                  "parameters": [],
+                                  "body": {
+                                    "kind": "BLOCK",
+                                    "id": "n_1850_2682_BLOCK",
+                                    "origin": {
+                                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                      "start": 1850,
+                                      "line": 47,
+                                      "end": 2682
+                                    },
+                                    "statements": [
+                                      {
+                                        "kind": "IF",
+                                        "id": "n_1872_2057_IF",
+                                        "origin": {
+                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                          "start": 1872,
+                                          "line": 48,
+                                          "end": 2057
+                                        },
+                                        "condition": {
+                                          "kind": "PARENTHESIZED",
+                                          "id": "n_1875_1904_PARENTHESIZED",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 1875,
+                                            "line": 48,
+                                            "end": 1904
+                                          },
+                                          "type": "boolean",
+                                          "value": {
+                                            "kind": "NOT_EQUAL_TO",
+                                            "id": "n_1876_1903_NOT_EQUAL_TO",
+                                            "origin": {
+                                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                              "start": 1876,
+                                              "line": 48,
+                                              "end": 1903
+                                            },
+                                            "type": "boolean",
+                                            "left": {
+                                              "kind": "IDENTIFIER",
+                                              "id": "n_1876_1896_IDENTIFIER",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 1876,
+                                                "line": 48,
+                                                "end": 1896
+                                              },
+                                              "type": "long",
+                                              "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#lastTimeSpeedChanged",
+                                              "name": "lastTimeSpeedChanged",
+                                              "field": true,
+                                              "modifiers": [
+                                                "private",
+                                                "static"
+                                              ],
+                                              "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                                              "effects": [
+                                                "state.read"
+                                              ]
+                                            },
+                                            "right": {
+                                              "kind": "IDENTIFIER",
+                                              "id": "n_1900_1903_IDENTIFIER",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 1900,
+                                                "line": 48,
+                                                "end": 1903
+                                              },
+                                              "type": "long",
+                                              "symbol": "local_1645_now",
+                                              "name": "now",
+                                              "field": false,
+                                              "modifiers": [
+                                                "final"
+                                              ],
+                                              "effects": []
+                                            },
+                                            "effects": []
+                                          },
+                                          "effects": []
+                                        },
+                                        "then": {
+                                          "kind": "BLOCK",
+                                          "id": "n_1905_2057_BLOCK",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 1905,
+                                            "line": 48,
+                                            "end": 2057
+                                          },
+                                          "statements": [
+                                            {
+                                              "kind": "RETURN",
+                                              "id": "n_2028_2035_RETURN",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2028,
+                                                "line": 50,
+                                                "end": 2035
+                                              },
+                                              "value": null,
+                                              "effects": []
+                                            }
+                                          ],
+                                          "effects": []
+                                        },
+                                        "else": null,
+                                        "effects": []
+                                      },
+                                      {
+                                        "kind": "IF",
+                                        "id": "n_2079_2380_IF",
+                                        "origin": {
+                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                          "start": 2079,
+                                          "line": 53,
+                                          "end": 2380
+                                        },
+                                        "condition": {
+                                          "kind": "PARENTHESIZED",
+                                          "id": "n_2082_2143_PARENTHESIZED",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 2082,
+                                            "line": 53,
+                                            "end": 2143
+                                          },
+                                          "type": "boolean",
+                                          "value": {
+                                            "kind": "EQUAL_TO",
+                                            "id": "n_2083_2142_EQUAL_TO",
+                                            "origin": {
+                                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                              "start": 2083,
+                                              "line": 53,
+                                              "end": 2142
+                                            },
+                                            "type": "boolean",
+                                            "left": {
+                                              "kind": "METHOD_INVOCATION",
+                                              "id": "n_2083_2120_METHOD_INVOCATION",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2083,
+                                                "line": 53,
+                                                "end": 2120
+                                              },
+                                              "type": "float",
+                                              "target": "app.revanced.extension.youtube.settings.Settings.FloatSetting#get()",
+                                              "owner": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                                              "name": "get",
+                                              "static": false,
+                                              "parameter_types": [],
+                                              "receiver": {
+                                                "kind": "MEMBER_SELECT",
+                                                "id": "n_2083_2114_MEMBER_SELECT",
+                                                "origin": {
+                                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                  "start": 2083,
+                                                  "line": 53,
+                                                  "end": 2114
+                                                },
+                                                "type": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                                                "symbol": "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT",
+                                                "name": "PLAYBACK_SPEED_DEFAULT",
+                                                "field": true,
+                                                "modifiers": [
+                                                  "final",
+                                                  "public",
+                                                  "static"
+                                                ],
+                                                "owner": "app.revanced.extension.youtube.settings.Settings",
+                                                "effects": [
+                                                  "state.read"
+                                                ]
+                                              },
+                                              "arguments": [],
+                                              "effects": [
+                                                "preferences.read"
+                                              ]
+                                            },
+                                            "right": {
+                                              "kind": "IDENTIFIER",
+                                              "id": "n_2124_2142_IDENTIFIER",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2124,
+                                                "line": 53,
+                                                "end": 2142
+                                              },
+                                              "type": "float",
+                                              "symbol": "local_1751_finalPlaybackSpeed",
+                                              "name": "finalPlaybackSpeed",
+                                              "field": false,
+                                              "modifiers": [
+                                                "final"
+                                              ],
+                                              "effects": []
+                                            },
+                                            "effects": []
+                                          },
+                                          "effects": []
+                                        },
+                                        "then": {
+                                          "kind": "BLOCK",
+                                          "id": "n_2144_2380_BLOCK",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 2144,
+                                            "line": 53,
+                                            "end": 2380
+                                          },
+                                          "statements": [
+                                            {
+                                              "kind": "RETURN",
+                                              "id": "n_2351_2358_RETURN",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2351,
+                                                "line": 56,
+                                                "end": 2358
+                                              },
+                                              "value": null,
+                                              "effects": []
+                                            }
+                                          ],
+                                          "effects": []
+                                        },
+                                        "else": null,
+                                        "effects": []
+                                      },
+                                      {
+                                        "kind": "EXPRESSION_STATEMENT",
+                                        "id": "n_2401_2458_EXPRESSION_STATEMENT",
+                                        "origin": {
+                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                          "start": 2401,
+                                          "line": 58,
+                                          "end": 2458
+                                        },
+                                        "value": {
+                                          "kind": "METHOD_INVOCATION",
+                                          "id": "n_2401_2457_METHOD_INVOCATION",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 2401,
+                                            "line": 58,
+                                            "end": 2457
+                                          },
+                                          "type": "void",
+                                          "target": "app.revanced.extension.youtube.settings.Settings.FloatSetting#save(float)",
+                                          "owner": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                                          "name": "save",
+                                          "static": false,
+                                          "parameter_types": [
+                                            "float"
+                                          ],
+                                          "receiver": {
+                                            "kind": "MEMBER_SELECT",
+                                            "id": "n_2401_2432_MEMBER_SELECT",
+                                            "origin": {
+                                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                              "start": 2401,
+                                              "line": 58,
+                                              "end": 2432
+                                            },
+                                            "type": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                                            "symbol": "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT",
+                                            "name": "PLAYBACK_SPEED_DEFAULT",
+                                            "field": true,
+                                            "modifiers": [
+                                              "final",
+                                              "public",
+                                              "static"
+                                            ],
+                                            "owner": "app.revanced.extension.youtube.settings.Settings",
+                                            "effects": [
+                                              "state.read"
+                                            ]
+                                          },
+                                          "arguments": [
+                                            {
+                                              "kind": "IDENTIFIER",
+                                              "id": "n_2438_2456_IDENTIFIER",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2438,
+                                                "line": 58,
+                                                "end": 2456
+                                              },
+                                              "type": "float",
+                                              "symbol": "local_1751_finalPlaybackSpeed",
+                                              "name": "finalPlaybackSpeed",
+                                              "field": false,
+                                              "modifiers": [
+                                                "final"
+                                              ],
+                                              "effects": []
+                                            }
+                                          ],
+                                          "effects": [
+                                            "preferences.write"
+                                          ]
+                                        },
+                                        "effects": []
+                                      },
+                                      {
+                                        "kind": "IF",
+                                        "id": "n_2480_2664_IF",
+                                        "origin": {
+                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                          "start": 2480,
+                                          "line": 60,
+                                          "end": 2664
+                                        },
+                                        "condition": {
+                                          "kind": "PARENTHESIZED",
+                                          "id": "n_2483_2543_PARENTHESIZED",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 2483,
+                                            "line": 60,
+                                            "end": 2543
+                                          },
+                                          "type": "boolean",
+                                          "value": {
+                                            "kind": "METHOD_INVOCATION",
+                                            "id": "n_2484_2542_METHOD_INVOCATION",
+                                            "origin": {
+                                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                              "start": 2484,
+                                              "line": 60,
+                                              "end": 2542
+                                            },
+                                            "type": "boolean",
+                                            "target": "app.revanced.extension.youtube.settings.Settings.BooleanSetting#get()",
+                                            "owner": "app.revanced.extension.youtube.settings.Settings.BooleanSetting",
+                                            "name": "get",
+                                            "static": false,
+                                            "parameter_types": [],
+                                            "receiver": {
+                                              "kind": "MEMBER_SELECT",
+                                              "id": "n_2484_2536_MEMBER_SELECT",
+                                              "origin": {
+                                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                "start": 2484,
+                                                "line": 60,
+                                                "end": 2536
+                                              },
+                                              "type": "app.revanced.extension.youtube.settings.Settings.BooleanSetting",
+                                              "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_TOAST",
+                                              "name": "REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_TOAST",
+                                              "field": true,
+                                              "modifiers": [
+                                                "final",
+                                                "public",
+                                                "static"
+                                              ],
+                                              "owner": "app.revanced.extension.youtube.settings.Settings",
+                                              "effects": [
+                                                "state.read"
+                                              ]
+                                            },
+                                            "arguments": [],
+                                            "effects": [
+                                              "preferences.read"
+                                            ]
+                                          },
+                                          "effects": []
+                                        },
+                                        "then": {
+                                          "kind": "EXPRESSION_STATEMENT",
+                                          "id": "n_2568_2664_EXPRESSION_STATEMENT",
+                                          "origin": {
+                                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                            "start": 2568,
+                                            "line": 61,
+                                            "end": 2664
+                                          },
+                                          "value": {
+                                            "kind": "METHOD_INVOCATION",
+                                            "id": "n_2568_2663_METHOD_INVOCATION",
+                                            "origin": {
+                                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                              "start": 2568,
+                                              "line": 61,
+                                              "end": 2663
+                                            },
+                                            "type": "void",
+                                            "target": "app.revanced.extension.shared.Utils#showToastShort(java.lang.String)",
+                                            "owner": "app.revanced.extension.shared.Utils",
+                                            "name": "showToastShort",
+                                            "static": true,
+                                            "parameter_types": [
+                                              "java.lang.String"
+                                            ],
+                                            "arguments": [
+                                              {
+                                                "kind": "METHOD_INVOCATION",
+                                                "id": "n_2589_2662_METHOD_INVOCATION",
+                                                "origin": {
+                                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                  "start": 2589,
+                                                  "line": 61,
+                                                  "end": 2662
+                                                },
+                                                "type": "java.lang.String",
+                                                "target": "app.revanced.extension.shared.StringRef#str(java.lang.String,java.lang.Object[])",
+                                                "owner": "app.revanced.extension.shared.StringRef",
+                                                "name": "str",
+                                                "static": true,
+                                                "parameter_types": [
+                                                  "java.lang.String",
+                                                  "java.lang.Object[]"
+                                                ],
+                                                "arguments": [
+                                                  {
+                                                    "kind": "STRING_LITERAL",
+                                                    "id": "n_2593_2633_STRING_LITERAL",
+                                                    "origin": {
+                                                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                      "start": 2593,
+                                                      "line": 61,
+                                                      "end": 2633
+                                                    },
+                                                    "type": "java.lang.String",
+                                                    "value": "revanced_remember_playback_speed_toast",
+                                                    "effects": []
+                                                  },
+                                                  {
+                                                    "kind": "PARENTHESIZED",
+                                                    "id": "n_2635_2661_PARENTHESIZED",
+                                                    "origin": {
+                                                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                      "start": 2635,
+                                                      "line": 61,
+                                                      "end": 2661
+                                                    },
+                                                    "type": "java.lang.String",
+                                                    "value": {
+                                                      "kind": "PLUS",
+                                                      "id": "n_2636_2660_PLUS",
+                                                      "origin": {
+                                                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                        "start": 2636,
+                                                        "line": 61,
+                                                        "end": 2660
+                                                      },
+                                                      "type": "java.lang.String",
+                                                      "left": {
+                                                        "kind": "IDENTIFIER",
+                                                        "id": "n_2636_2654_IDENTIFIER",
+                                                        "origin": {
+                                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                          "start": 2636,
+                                                          "line": 61,
+                                                          "end": 2654
+                                                        },
+                                                        "type": "float",
+                                                        "symbol": "local_1751_finalPlaybackSpeed",
+                                                        "name": "finalPlaybackSpeed",
+                                                        "field": false,
+                                                        "modifiers": [
+                                                          "final"
+                                                        ],
+                                                        "effects": []
+                                                      },
+                                                      "right": {
+                                                        "kind": "STRING_LITERAL",
+                                                        "id": "n_2657_2660_STRING_LITERAL",
+                                                        "origin": {
+                                                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                                          "start": 2657,
+                                                          "line": 61,
+                                                          "end": 2660
+                                                        },
+                                                        "type": "java.lang.String",
+                                                        "value": "x",
+                                                        "effects": []
+                                                      },
+                                                      "effects": []
+                                                    },
+                                                    "effects": []
+                                                  }
+                                                ],
+                                                "effects": [
+                                                  "locale.format"
+                                                ]
+                                              }
+                                            ],
+                                            "effects": [
+                                              "ui.toast"
+                                            ]
+                                          },
+                                          "effects": []
+                                        },
+                                        "else": null,
+                                        "effects": []
+                                      }
+                                    ],
+                                    "effects": []
+                                  },
+                                  "captures": [
+                                    {
+                                      "type": "long",
+                                      "symbol": "local_1645_now",
+                                      "name": "now"
+                                    },
+                                    {
+                                      "type": "float",
+                                      "symbol": "local_1751_finalPlaybackSpeed",
+                                      "name": "finalPlaybackSpeed"
+                                    }
+                                  ],
+                                  "effects": [
+                                    "closure.capture"
+                                  ]
+                                },
+                                {
+                                  "kind": "IDENTIFIER",
+                                  "id": "n_2684_2708_IDENTIFIER",
+                                  "origin": {
+                                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                    "start": 2684,
+                                    "line": 62,
+                                    "end": 2708
+                                  },
+                                  "type": "long",
+                                  "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#TOAST_DELAY_MILLISECONDS",
+                                  "name": "TOAST_DELAY_MILLISECONDS",
+                                  "field": true,
+                                  "modifiers": [
+                                    "final",
+                                    "private",
+                                    "static"
+                                  ],
+                                  "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                                  "constant": "750",
+                                  "effects": [
+                                    "state.read"
+                                  ]
+                                }
+                              ],
+                              "effects": [
+                                "queue.main.enqueue"
+                              ]
+                            },
+                            "effects": []
+                          }
+                        ],
+                        "effects": []
+                      },
+                      "else": null,
+                      "effects": []
+                    }
+                  ],
+                  "effects": []
+                },
+                "catches": [
+                  {
+                    "kind": "CATCH",
+                    "id": "n_2735_2849_CATCH",
+                    "origin": {
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                      "start": 2735,
+                      "line": 64,
+                      "end": 2849
+                    },
+                    "parameter": {
+                      "kind": "VARIABLE",
+                      "id": "n_2742_2754_VARIABLE",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 2742,
+                        "line": 64,
+                        "end": 2754
+                      },
+                      "type": "java.lang.Exception",
+                      "symbol": "local_2742_ex",
+                      "name": "ex",
+                      "declared_type": "java.lang.Exception",
+                      "modifiers": [],
+                      "value": null,
+                      "effects": []
+                    },
+                    "body": {
+                      "kind": "BLOCK",
+                      "id": "n_2756_2849_BLOCK",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 2756,
+                        "line": 64,
+                        "end": 2849
+                      },
+                      "statements": [
+                        {
+                          "kind": "EXPRESSION_STATEMENT",
+                          "id": "n_2770_2839_EXPRESSION_STATEMENT",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 2770,
+                            "line": 65,
+                            "end": 2839
+                          },
+                          "value": {
+                            "kind": "METHOD_INVOCATION",
+                            "id": "n_2770_2838_METHOD_INVOCATION",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 2770,
+                              "line": 65,
+                              "end": 2838
+                            },
+                            "type": "void",
+                            "target": "app.revanced.extension.shared.Logger#printException(app.revanced.extension.shared.Logger.LogMessage,java.lang.Exception)",
+                            "owner": "app.revanced.extension.shared.Logger",
+                            "name": "printException",
+                            "static": true,
+                            "parameter_types": [
+                              "app.revanced.extension.shared.Logger.LogMessage",
+                              "java.lang.Exception"
+                            ],
+                            "arguments": [
+                              {
+                                "kind": "LAMBDA_EXPRESSION",
+                                "id": "n_2792_2833_LAMBDA_EXPRESSION",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 2792,
+                                  "line": 65,
+                                  "end": 2833
+                                },
+                                "type": "app.revanced.extension.shared.Logger.LogMessage",
+                                "parameters": [],
+                                "body": {
+                                  "kind": "STRING_LITERAL",
+                                  "id": "n_2798_2833_STRING_LITERAL",
+                                  "origin": {
+                                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                    "start": 2798,
+                                    "line": 65,
+                                    "end": 2833
+                                  },
+                                  "type": "java.lang.String",
+                                  "value": "userSelectedPlaybackSpeed failure",
+                                  "effects": []
+                                },
+                                "captures": [],
+                                "effects": [
+                                  "closure.capture"
+                                ]
+                              },
+                              {
+                                "kind": "IDENTIFIER",
+                                "id": "n_2835_2837_IDENTIFIER",
+                                "origin": {
+                                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                  "start": 2835,
+                                  "line": 65,
+                                  "end": 2837
+                                },
+                                "type": "java.lang.Exception",
+                                "symbol": "local_2742_ex",
+                                "name": "ex",
+                                "field": false,
+                                "modifiers": [],
+                                "effects": []
+                              }
+                            ],
+                            "effects": [
+                              "diagnostic.exception"
+                            ]
+                          },
+                          "effects": []
+                        }
+                      ],
+                      "effects": []
+                    },
+                    "effects": []
+                  }
+                ],
+                "finally": null,
+                "effects": [
+                  "exception.region"
+                ]
+              }
+            ],
+            "effects": []
+          },
+          "effects": [
+            "clock.wall.read",
+            "closure.capture",
+            "diagnostic.exception",
+            "exception.region",
+            "locale.format",
+            "preferences.read",
+            "preferences.write",
+            "queue.main.enqueue",
+            "state.read",
+            "state.write",
+            "ui.toast"
+          ]
+        },
+        {
+          "kind": "METHOD",
+          "id": "n_3036_3357_METHOD",
+          "origin": {
+            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+            "start": 3036,
+            "line": 74,
+            "end": 3357
+          },
+          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#getPlaybackSpeedOverride()",
+          "name": "getPlaybackSpeedOverride",
+          "result": "float",
+          "constructor": false,
+          "modifiers": [
+            "public",
+            "static"
+          ],
+          "parameters": [],
+          "body": {
+            "kind": "BLOCK",
+            "id": "n_3083_3357_BLOCK",
+            "origin": {
+              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+              "start": 3083,
+              "line": 74,
+              "end": 3357
+            },
+            "statements": [
+              {
+                "kind": "IF",
+                "id": "n_3093_3328_IF",
+                "origin": {
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                  "start": 3093,
+                  "line": 75,
+                  "end": 3328
+                },
+                "condition": {
+                  "kind": "PARENTHESIZED",
+                  "id": "n_3096_3113_PARENTHESIZED",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 3096,
+                    "line": 75,
+                    "end": 3113
+                  },
+                  "type": "boolean",
+                  "value": {
+                    "kind": "IDENTIFIER",
+                    "id": "n_3097_3112_IDENTIFIER",
+                    "origin": {
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                      "start": 3097,
+                      "line": 75,
+                      "end": 3112
+                    },
+                    "type": "boolean",
+                    "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted",
+                    "name": "newVideoStarted",
+                    "field": true,
+                    "modifiers": [
+                      "private",
+                      "static",
+                      "volatile"
+                    ],
+                    "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                    "effects": [
+                      "state.volatile.read"
+                    ]
+                  },
+                  "effects": []
+                },
+                "then": {
+                  "kind": "BLOCK",
+                  "id": "n_3114_3328_BLOCK",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 3114,
+                    "line": 75,
+                    "end": 3328
+                  },
+                  "statements": [
+                    {
+                      "kind": "EXPRESSION_STATEMENT",
+                      "id": "n_3128_3152_EXPRESSION_STATEMENT",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 3128,
+                        "line": 76,
+                        "end": 3152
+                      },
+                      "value": {
+                        "kind": "ASSIGNMENT",
+                        "id": "n_3128_3151_ASSIGNMENT",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 3128,
+                          "line": 76,
+                          "end": 3151
+                        },
+                        "type": "boolean",
+                        "target": {
+                          "kind": "IDENTIFIER",
+                          "id": "n_3128_3143_IDENTIFIER",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 3128,
+                            "line": 76,
+                            "end": 3143
+                          },
+                          "type": "boolean",
+                          "symbol": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch#newVideoStarted",
+                          "name": "newVideoStarted",
+                          "field": true,
+                          "modifiers": [
+                            "private",
+                            "static",
+                            "volatile"
+                          ],
+                          "owner": "app.revanced.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch",
+                          "effects": [
+                            "state.volatile.read"
+                          ]
+                        },
+                        "value": {
+                          "kind": "BOOLEAN_LITERAL",
+                          "id": "n_3146_3151_BOOLEAN_LITERAL",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 3146,
+                            "line": 76,
+                            "end": 3151
+                          },
+                          "type": "boolean",
+                          "value": false,
+                          "effects": []
+                        },
+                        "effects": [
+                          "state.volatile.write"
+                        ]
+                      },
+                      "effects": []
+                    },
+                    {
+                      "kind": "VARIABLE",
+                      "id": "n_3166_3231_VARIABLE",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 3166,
+                        "line": 78,
+                        "end": 3231
+                      },
+                      "type": "float",
+                      "symbol": "local_3166_defaultSpeed",
+                      "name": "defaultSpeed",
+                      "declared_type": "float",
+                      "modifiers": [
+                        "final"
+                      ],
+                      "value": {
+                        "kind": "METHOD_INVOCATION",
+                        "id": "n_3193_3230_METHOD_INVOCATION",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 3193,
+                          "line": 78,
+                          "end": 3230
+                        },
+                        "type": "float",
+                        "target": "app.revanced.extension.youtube.settings.Settings.FloatSetting#get()",
+                        "owner": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                        "name": "get",
+                        "static": false,
+                        "parameter_types": [],
+                        "receiver": {
+                          "kind": "MEMBER_SELECT",
+                          "id": "n_3193_3224_MEMBER_SELECT",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 3193,
+                            "line": 78,
+                            "end": 3224
+                          },
+                          "type": "app.revanced.extension.youtube.settings.Settings.FloatSetting",
+                          "symbol": "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT",
+                          "name": "PLAYBACK_SPEED_DEFAULT",
+                          "field": true,
+                          "modifiers": [
+                            "final",
+                            "public",
+                            "static"
+                          ],
+                          "owner": "app.revanced.extension.youtube.settings.Settings",
+                          "effects": [
+                            "state.read"
+                          ]
+                        },
+                        "arguments": [],
+                        "effects": [
+                          "preferences.read"
+                        ]
+                      },
+                      "effects": []
+                    },
+                    {
+                      "kind": "IF",
+                      "id": "n_3244_3318_IF",
+                      "origin": {
+                        "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                        "start": 3244,
+                        "line": 79,
+                        "end": 3318
+                      },
+                      "condition": {
+                        "kind": "PARENTHESIZED",
+                        "id": "n_3247_3265_PARENTHESIZED",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 3247,
+                          "line": 79,
+                          "end": 3265
+                        },
+                        "type": "boolean",
+                        "value": {
+                          "kind": "GREATER_THAN",
+                          "id": "n_3248_3264_GREATER_THAN",
+                          "origin": {
+                            "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                            "start": 3248,
+                            "line": 79,
+                            "end": 3264
+                          },
+                          "type": "boolean",
+                          "left": {
+                            "kind": "IDENTIFIER",
+                            "id": "n_3248_3260_IDENTIFIER",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 3248,
+                              "line": 79,
+                              "end": 3260
+                            },
+                            "type": "float",
+                            "symbol": "local_3166_defaultSpeed",
+                            "name": "defaultSpeed",
+                            "field": false,
+                            "modifiers": [
+                              "final"
+                            ],
+                            "effects": []
+                          },
+                          "right": {
+                            "kind": "INT_LITERAL",
+                            "id": "n_3263_3264_INT_LITERAL",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 3263,
+                              "line": 79,
+                              "end": 3264
+                            },
+                            "type": "int",
+                            "value": 0,
+                            "effects": []
+                          },
+                          "effects": []
+                        },
+                        "effects": []
+                      },
+                      "then": {
+                        "kind": "BLOCK",
+                        "id": "n_3266_3318_BLOCK",
+                        "origin": {
+                          "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                          "start": 3266,
+                          "line": 79,
+                          "end": 3318
+                        },
+                        "statements": [
+                          {
+                            "kind": "RETURN",
+                            "id": "n_3284_3304_RETURN",
+                            "origin": {
+                              "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                              "start": 3284,
+                              "line": 80,
+                              "end": 3304
+                            },
+                            "value": {
+                              "kind": "IDENTIFIER",
+                              "id": "n_3291_3303_IDENTIFIER",
+                              "origin": {
+                                "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                                "start": 3291,
+                                "line": 80,
+                                "end": 3303
+                              },
+                              "type": "float",
+                              "symbol": "local_3166_defaultSpeed",
+                              "name": "defaultSpeed",
+                              "field": false,
+                              "modifiers": [
+                                "final"
+                              ],
+                              "effects": []
+                            },
+                            "effects": []
+                          }
+                        ],
+                        "effects": []
+                      },
+                      "else": null,
+                      "effects": []
+                    }
+                  ],
+                  "effects": []
+                },
+                "else": null,
+                "effects": []
+              },
+              {
+                "kind": "RETURN",
+                "id": "n_3338_3351_RETURN",
+                "origin": {
+                  "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                  "start": 3338,
+                  "line": 84,
+                  "end": 3351
+                },
+                "value": {
+                  "kind": "UNARY_MINUS",
+                  "id": "n_3345_3350_UNARY_MINUS",
+                  "origin": {
+                    "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                    "start": 3345,
+                    "line": 84,
+                    "end": 3350
+                  },
+                  "type": "float",
+                  "value": {
+                    "kind": "FLOAT_LITERAL",
+                    "id": "n_3346_3350_FLOAT_LITERAL",
+                    "origin": {
+                      "source": "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java",
+                      "start": 3346,
+                      "line": 84,
+                      "end": 3350
+                    },
+                    "type": "float",
+                    "value": 2.0,
+                    "effects": []
+                  },
+                  "effects": []
+                },
+                "effects": []
+              }
+            ],
+            "effects": []
+          },
+          "effects": [
+            "preferences.read",
+            "state.read",
+            "state.volatile.read",
+            "state.volatile.write"
+          ]
+        }
+      ]
+    }
+  ],
+  "types_attributed": true,
+  "schema": "editable-code.patch.regions.v2",
+  "external_fields": {
+    "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT": {
+      "symbol": "app.revanced.extension.youtube.settings.Settings#PLAYBACK_SPEED_DEFAULT",
+      "key": "revanced_playback_speed_default",
+      "type": "FloatSetting",
+      "default": -2.0
+    },
+    "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED": {
+      "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED",
+      "key": "revanced_remember_playback_speed_last_selected",
+      "type": "BooleanSetting",
+      "default": false
+    },
+    "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_TOAST": {
+      "symbol": "app.revanced.extension.youtube.settings.Settings#REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_TOAST",
+      "key": "revanced_remember_playback_speed_last_selected_toast",
+      "type": "BooleanSetting",
+      "default": true
+    }
+  },
+  "sources": {
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java": "e0b35196516ed21169254cc43aa5c78c551360601c117ff9dcd7b9d6348688bf"
+  },
+  "effect_semantics": "Java left-to-right evaluation and ordered structured regions; callback bodies execute on invocation, not allocation"
+}

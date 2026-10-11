@@ -1,0 +1,68 @@
+{
+  "schema": "stateful-translator.generation.v1",
+  "input_sha256": {
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\RememberPlaybackSpeedPatch.java": "e0b35196516ed21169254cc43aa5c78c551360601c117ff9dcd7b9d6348688bf",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\settings\\Settings.java": "0c7e027ee976649cfbd21ec8743d2d97a0df330cfce2e792c397e8840a5125e6",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\youtube\\src\\main\\java\\app\\revanced\\extension\\youtube\\patches\\playback\\speed\\CustomPlaybackSpeedPatch.java": "6d85d512bed38ef3f7582b42bf1025001d29471b046222f99408aca728177468",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\revanced-patches-main\\extensions\\shared\\library\\src\\main\\java\\app\\revanced\\extension\\shared\\Utils.java": "fb98c0f4068e0de8eef47f868614c67ad08e432cb73181c548aeb4d979f44103",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\contracts.py": "d1b76f72a9d2f67b64a8e5e7ca3f9b05a3bf755c91e7d974b4ec0dadbecccf23",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\driver.py": "4ebff2be82e3704257aa356fab051fd620400ea62ef3b24957f0e62d76fb6180",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\regions.py": "a307c80fc2dbded88e58a7ac676f03b90262f66c30cdf9ded60235bcc7aedd28",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\survey.py": "42a939b88b85579cc46a641df15c6ff303fbbe87e519e8b16d9d734cf9106805",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\ExportPatch.java": "051dccf0fd0211717cf522732529fba1e23d26bb87c91ab1fba7578e0a764813",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\jadx-gui-1.5.6-with-jre-win\\lib\\jadx-gui-1.5.6-all.jar": "966d314282d95ff7c72f597bb9c744999856666a3b856575e3c035a9c12a0b65",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Box.java": "a6c7ad1a416a148029bbaf89beec80755d3355fc021c5b8e78761d3dd99ed037",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\ObjectProbe.java": "3426c04511249cfad6fb85fa5b0835eadf42c06cebe9e15cd067676c4494b5e4",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\Simulator.java": "fd72e9ef9b52d8e2f9170f5f3c6b15c546e8e827001f7009bc60476c515f1ecd",
+    "C:\\Users\\Zuonik\\Documents\\Reverse Engineer Projects\\ReVanced\\stateful-translator\\fixtures\\TraceHarness.java": "0bebace37b7aebd4e67f41de12e2a70d8992420af14f223df14f3ecab41cb1e8"
+  },
+  "module_sha256": "defc8be4ead921d2d77fc53c647f6532c4af626cfb46189449b9b7f751c99d13",
+  "graph_sha256": "e9e750996ca71c5fe0eb0ef8f8f8db192c845c1aecce559d71cef4b945814503",
+  "admission": {
+    "classes": 1,
+    "methods": 3,
+    "fields": 3,
+    "unresolved_frontier": []
+  },
+  "callbacks": [
+    {
+      "id": "n_744_767_LAMBDA_EXPRESSION",
+      "captures": []
+    },
+    {
+      "id": "n_1844_2682_LAMBDA_EXPRESSION",
+      "captures": [
+        {
+          "type": "long",
+          "symbol": "local_1645_now",
+          "name": "now"
+        },
+        {
+          "type": "float",
+          "symbol": "local_1751_finalPlaybackSpeed",
+          "name": "finalPlaybackSpeed"
+        }
+      ]
+    },
+    {
+      "id": "n_2792_2833_LAMBDA_EXPRESSION",
+      "captures": []
+    }
+  ],
+  "original_clock_seam": {
+    "from_call": "System.currentTimeMillis()",
+    "to_call": "rv.translated.PlatformClock.wallMillis()",
+    "replacements": 1
+  },
+  "jvm_trace_cases": 20,
+  "jvm_trace_sha256": "c802f23d44a20d07beafc142ad71f307f17667d3ed286f53ea44e53d3af8d8b9",
+  "jvm_traces_equal": true,
+  "policy_generated_from_ir": true,
+  "handwritten_ios_policy_used": false,
+  "dependency_closure": "Selected class plus explicitly modeled operation/library boundaries",
+  "object_probe_generated": true,
+  "device_verified": false,
+  "native_compiled": false,
+  "dialect": "Attributed typed structured regions; not full SSA or arbitrary Java",
+  "provider_scope": "Deterministic settings, clock, scheduling, lazy logs, localization and toast seams; not Android SDK emulation"
+}

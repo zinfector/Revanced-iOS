@@ -1,0 +1,83 @@
+{
+  "java.lang.Math#min(float,float)": {
+    "effects": [],
+    "family": "java.ieee.min"
+  },
+  "java.lang.System#currentTimeMillis()": {
+    "effects": [
+      "clock.wall.read"
+    ],
+    "family": "clock.wall_millis",
+    "emit_call": "rv.translated.PlatformClock.wallMillis"
+  },
+  "app.revanced.extension.shared.Logger#printDebug(app.revanced.extension.shared.Logger.LogMessage)": {
+    "effects": [
+      "diagnostic.lazy"
+    ],
+    "family": "diagnostics"
+  },
+  "app.revanced.extension.shared.Logger#printException(app.revanced.extension.shared.Logger.LogMessage,java.lang.Exception)": {
+    "effects": [
+      "diagnostic.exception"
+    ],
+    "family": "diagnostics"
+  },
+  "app.revanced.extension.shared.Utils#runOnMainThreadDelayed(java.lang.Runnable,long)": {
+    "effects": [
+      "queue.main.enqueue"
+    ],
+    "family": "scheduler",
+    "delay_unit": "milliseconds",
+    "inline": false,
+    "callback_errors": "log Exception"
+  },
+  "app.revanced.extension.shared.Utils#showToastShort(java.lang.String)": {
+    "effects": [
+      "ui.toast"
+    ],
+    "family": "presentation",
+    "affinity": "main"
+  },
+  "app.revanced.extension.shared.StringRef#str(java.lang.String,java.lang.Object[])": {
+    "effects": [
+      "locale.format"
+    ],
+    "family": "localization"
+  },
+  "app.revanced.extension.youtube.settings.Settings.BooleanSetting#get()": {
+    "effects": [
+      "preferences.read"
+    ],
+    "family": "preferences.bool"
+  },
+  "app.revanced.extension.youtube.settings.Settings.FloatSetting#get()": {
+    "effects": [
+      "preferences.read"
+    ],
+    "family": "preferences.float"
+  },
+  "app.revanced.extension.youtube.settings.Settings.FloatSetting#save(float)": {
+    "effects": [
+      "preferences.write"
+    ],
+    "family": "preferences.float"
+  },
+  "java.lang.Object#<init>()": {
+    "effects": [
+      "object.allocate"
+    ],
+    "family": "java.object"
+  },
+  "java.lang.Runnable#run()": {
+    "effects": [
+      "callback.invoke"
+    ],
+    "family": "java.callback"
+  },
+  "java.lang.IllegalStateException#<init>(java.lang.String)": {
+    "effects": [
+      "object.allocate"
+    ],
+    "family": "java.exception"
+  }
+}
