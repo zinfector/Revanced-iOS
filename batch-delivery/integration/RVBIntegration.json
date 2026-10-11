@@ -1030,6 +1030,18 @@
       "classify": []
     }
   },
+  "view_effects": {
+    "YTInfoCardButton": "hide_info_cards",
+    "YTInfoCardTeaserContainerView": "hide_info_cards",
+    "YTInfoCardDarkTeaserContainerView": "hide_info_cards",
+    "YTCreatorEndscreenView": "hide_end_cards",
+    "YTEndscreenElementView": "hide_end_cards",
+    "YTSimpleEndscreenElementView": "hide_end_cards",
+    "YTPlaylistEndscreenElementView": "hide_end_cards",
+    "YTAutonavPreviewView": "hide_autoplay_preview",
+    "YTAutonavBackgroundView": "hide_autoplay_preview",
+    "YTAutonavEndscreenView": "hide_autoplay_preview"
+  },
   "settings": [
     {
       "native": "video_ads",
@@ -1170,9 +1182,9 @@
     "return_dislikes": true,
     "sponsorblock": true,
     "remember_speed": true,
-    "hide_info_cards": false,
-    "hide_end_cards": false,
-    "hide_autoplay_preview": false,
+    "hide_info_cards": true,
+    "hide_end_cards": true,
+    "hide_autoplay_preview": true,
     "disable_popup_panels": false,
     "disable_shorts_resume": true,
     "background_playback": true,
@@ -1252,9 +1264,25 @@
       "title": "Disable returning to Shorts"
     },
     {
+      "key": "hide_info_cards",
+      "title": "Hide info cards"
+    },
+    {
+      "key": "hide_end_cards",
+      "title": "Hide end cards"
+    },
+    {
+      "key": "hide_autoplay_preview",
+      "title": "Hide autoplay preview"
+    },
+    {
       "key": "diagnostics",
       "title": "USB diagnostics"
     }
+  ],
+  "unbound_generated_features": [
+    "disable_popup_panels",
+    "disable_auto_captions"
   ],
   "legacy_ios_code_used": false,
   "device_verified": false

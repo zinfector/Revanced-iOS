@@ -70,9 +70,12 @@ def catalog():
     defaults={n:True for n in pairs};defaults.update(background_playback=True,picture_in_picture=True,hide_shorts=True,custom_speed_menu=True,diagnostics=False,default_speed=1.0,custom_speeds=[.25,.5,.75,1,1.25,1.5,1.75,2,2.5,3,4],sponsor_min_duration=0,sponsor_categories=['sponsor','selfpromo','interaction','intro','outro'],sponsor_behaviors={'sponsor':'skip-once','selfpromo':'manual-skip','interaction':'manual-skip','intro':'skip','outro':'skip'})
     titles={'video_ads':'Block video ads','feed_ads':'Hide feed ads','background_playback':'Background playback','picture_in_picture':'Picture in Picture','sponsorblock':'SponsorBlock','return_dislikes':'Return YouTube Dislike','custom_speed_menu':'Translated speed menu','remember_speed':'Remember playback speed','hide_shorts':'Hide Shorts feed items','disable_shorts_resume':'Disable returning to Shorts','hide_info_cards':'Hide info cards','hide_end_cards':'Hide end cards','hide_autoplay_preview':'Hide autoplay preview','disable_popup_panels':'Disable popup panels','diagnostics':'USB diagnostics'}
     # Only bound features are exposed. Extra generated classes remain available for later placements.
-    for unavailable in ('hide_info_cards','hide_end_cards','hide_autoplay_preview','disable_popup_panels'):defaults[unavailable]=False
-    menu=[dict(key=k,title=v) for k,v in titles.items() if k not in ('hide_info_cards','hide_end_cards','hide_autoplay_preview','disable_popup_panels')]
-    return dict(schema=1,version='0.4.7-translated',app_version=app['version'],app_uuid=app['uuid'],original_executable_sha256=app['executable_sha256'],original_archive_sha256=app['archive_sha256'],hooks=hooks,messages=messages,settings=settings,categories=categories,defaults=defaults,menu=menu,legacy_ios_code_used=False,device_verified=False)
+    defaults['disable_popup_panels']=False
+    menu=[dict(key=k,title=v) for k,v in titles.items() if k!='disable_popup_panels']
+    view_effects={name:key for key,names in {'hide_info_cards':['YTInfoCardButton','YTInfoCardTeaserContainerView','YTInfoCardDarkTeaserContainerView'],'hide_end_cards':['YTCreatorEndscreenView','YTEndscreenElementView','YTSimpleEndscreenElementView','YTPlaylistEndscreenElementView'],'hide_autoplay_preview':['YTAutonavPreviewView','YTAutonavBackgroundView','YTAutonavEndscreenView']}.items() for name in names}
+    inventory={x['text'] for x in json.loads((PROJECT/'analysis/evidence/objc_classname.json').read_text())}
+    if set(view_effects)-inventory:raise ValueError('Unknown native view classes')
+    return dict(schema=1,version='0.4.7-translated',app_version=app['version'],app_uuid=app['uuid'],original_executable_sha256=app['executable_sha256'],original_archive_sha256=app['archive_sha256'],hooks=hooks,messages=messages,view_effects=view_effects,settings=settings,categories=categories,defaults=defaults,menu=menu,unbound_generated_features=['disable_popup_panels','disable_auto_captions'],legacy_ios_code_used=False,device_verified=False)
 
 def stage(worktree,generation):
     prepare(worktree,generation)

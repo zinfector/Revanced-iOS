@@ -47,7 +47,7 @@ void RVBAppConfigure(NSUserDefaults *p,RVBAppRead read,RVBAppInvoke invoke,RVBAp
  #if TARGET_OS_IOS
  RVBConfigureUIKit(^UIViewController *{return presenter();},^UIView *{return overlay();});
  #endif
- RVBConfigure(p,^(NSString *k,id f){return box(read(k),f);},^(NSString *op,IOSObjectArray *args){
+ RVBConfigure(p,^id(NSString *k,id f){return box(read(k),f);},^id(NSString *op,IOSObjectArray *args){
   id v=invoke(op,array(args));
   if([op isEqual:@"player.seek_ms"]||[op isEqual:@"network.connected"])return JavaLangBoolean_valueOfWithBoolean_([v boolValue]);
   if([op isEqual:@"resource.id"]||[op isEqual:@"resource.integer"])return JavaLangInteger_valueOfWithInt_([v intValue]);
