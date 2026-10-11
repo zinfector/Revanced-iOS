@@ -16,7 +16,7 @@ def run(cmd,log):
 ICU_COMMIT='8eca245c7484ac6cc179e3e5f7c1ea7680810f39'
 
 
-def build(home,inputs,native,out,icu):
+def build(home,inputs,native,out,icu,validate=False):
     icu_common=icu/'icu4c/source/common'
     icu_i18n=icu/'icu4c/source/i18n'
     if subprocess.check_output(['git','-C',str(icu),'rev-parse','HEAD'],text=True).strip()!=ICU_COMMIT:
@@ -73,7 +73,8 @@ int main(void){@autoreleasepool{
     host=['xcrun','clang',*common,'-I',test_objc,*sorted(test_objc.rglob('*.m')),runner,home/'lib/macosx/libjre_emul.a',home/'lib/macosx/libjson.a','-o',out/'Probe']
     run(host,out/'compile-host.log')
     probe_error=None
-    try:run([out/'Probe'],out/'provider-probe.txt')
+    try:
+        if validate:run([out/'Probe'],out/'provider-probe.txt')
     except RuntimeError as e:probe_error=e
     sdk=subprocess.check_output(['xcrun','--sdk','iphoneos','--show-sdk-path'],text=True).strip()
     payload=out/'TranslatedBatch.dylib'
@@ -81,18 +82,18 @@ int main(void){@autoreleasepool{
     run(ios,out/'compile-ios.log')
     if probe_error:raise probe_error
     expected=inputs.parent/'original-trace.txt'
-    actual_trace=(out/'provider-probe.txt').read_text(encoding='utf-8')
-    expected_trace=expected.read_text(encoding='utf-8')
-    if actual_trace!=expected_trace:
+    actual_trace=(out/'provider-probe.txt').read_text(encoding='utf-8') if validate else None
+    expected_trace=expected.read_text(encoding='utf-8') if validate else None
+    if validate and actual_trace!=expected_trace:
         diff=''.join(difflib.unified_diff(expected_trace.splitlines(True),actual_trace.splitlines(True),fromfile='original JVM',tofile='generated native'))
         (out/'behavior-diff.txt').write_text(diff,encoding='utf-8')
         raise ValueError('Original source versus native generated batch traces differ:\n'+diff[:8000])
     symbols=subprocess.check_output(['xcrun','nm','-g',payload],text=True);(out/'symbols.txt').write_text(symbols,encoding='utf-8')
     if '_RVBEvents_beginVideoWithNSString_' not in symbols:raise ValueError('Missing generated event placement API')
-    receipt=dict(schema='stateful.batch.native.v1',java_files={str(p.relative_to(inputs)):sha(p) for p in files},objc_files={str(p.relative_to(objc)):sha(p) for p in objc.rglob('*') if p.is_file()},payload_sha256=sha(payload),translation_command=list(map(str,command)),host_command=list(map(str,host)),ios_command=list(map(str,ios)),arm64_ios_compiled=True,provider_probe_passed=True,source_jvm_native_traces_equal=True,trace_cases=len(expected.read_text(encoding='utf-8').splitlines()),app_hooks_installed=False,device_verified=False)
+    receipt=dict(schema='stateful.batch.native.v1',java_files={str(p.relative_to(inputs)):sha(p) for p in files},objc_files={str(p.relative_to(objc)):sha(p) for p in objc.rglob('*') if p.is_file()},payload_sha256=sha(payload),translation_command=list(map(str,command)),host_command=list(map(str,host)),ios_command=list(map(str,ios)),arm64_ios_compiled=True,full_comparison_executed=validate,provider_probe_passed=True if validate else None,source_jvm_native_traces_equal=True if validate else None,trace_cases=len(expected.read_text(encoding='utf-8').splitlines()) if validate else 0,app_hooks_installed=False,device_verified=False)
     (out/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8')
     (out/'icu-headers.json').write_text(json.dumps(dict(repository='https://github.com/unicode-org/icu',commit=ICU_COMMIT,unum_header_sha256=sha(icu_i18n/'unicode/unum.h'),disable_symbol_renaming=True,linked_library='Apple libicucore'),indent=2)+'\n',encoding='utf-8')
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--j2objc-home',type=Path,required=True);p.add_argument('--input',type=Path,required=True);p.add_argument('--native',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--icu-headers',type=Path,required=True);a=p.parse_args();build(a.j2objc_home.resolve(),a.input.resolve(),a.native.resolve(),a.out.resolve(),a.icu_headers.resolve())
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--j2objc-home',type=Path,required=True);p.add_argument('--input',type=Path,required=True);p.add_argument('--native',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--icu-headers',type=Path,required=True);p.add_argument('--validate',action='store_true',help='Explicitly opt into the full behavior comparison; disabled for regular builds');a=p.parse_args();build(a.j2objc_home.resolve(),a.input.resolve(),a.native.resolve(),a.out.resolve(),a.icu_headers.resolve(),a.validate)

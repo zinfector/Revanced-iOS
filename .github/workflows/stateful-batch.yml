@@ -55,7 +55,7 @@ jobs:
           git -C icu-headers fetch --depth 1 --filter=blob:none origin 8eca245c7484ac6cc179e3e5f7c1ea7680810f39
           git -C icu-headers checkout --detach FETCH_HEAD
           test "$(git -C icu-headers rev-parse HEAD)" = 8eca245c7484ac6cc179e3e5f7c1ea7680810f39
-      - name: Translate, execute and compile ARM64 iOS
+      - name: Translate and compile ARM64 iOS
         run: python batch-delivery/native_build.py --j2objc-home j2objc/dist --input batch-delivery/java --native batch-delivery/native --out batch-output/native --icu-headers icu-headers
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()

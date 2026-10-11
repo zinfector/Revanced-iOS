@@ -13,6 +13,7 @@
 #include "java/lang/IllegalStateException.h"
 #include "java/lang/UnsupportedOperationException.h"
 #include "rv/batch/NativeOperations.h"
+#include "javax/net/ssl/HttpsURLConnection.h"
 #include <dispatch/dispatch.h>
 #include <string.h>
 
@@ -24,6 +25,9 @@ static void fail(NSString *s){@throw [[JavaLangIllegalStateException alloc] init
 BOOL RVBReady(void){return prefs && operation && resources && roleRead;}
 void RVBConfigure(NSUserDefaults *p,RVBRoleRead r,RVBOperation o,RVBResource s){
  if(!NSThread.isMainThread||!p||!r||!o||!s||RVBReady())fail(@"Configure the batch once on main, before source initialization");
+ // URL discovers HTTPS support dynamically. Keep its runtime class linked even
+ // though the actual transport is the Foundation operation adapter.
+ (void)JavaxNetSslHttpsURLConnection_class_();
  prefs=p;roleRead=[r copy];operation=[o copy];resources=[s copy];RVBNativeOperations_install();
 }
 static void ready(void){if(!RVBReady())fail(@"Batch operations are not configured");}
