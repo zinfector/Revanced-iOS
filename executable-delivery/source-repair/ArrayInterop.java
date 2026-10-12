@@ -32,6 +32,37 @@ static BOOL RVEArrayGetterABI(Method method) {
   BOOL valid=ret && !strcmp(ret,"@") && selfType && !strcmp(selfType,"@") && selType && !strcmp(selType,":");
   free(ret);free(selfType);free(selType);return valid;
 }
+static BOOL RVEOwnedArrayReferentSubclass(Class cls, IOSClass *actual) {
+  // Pinned IOSReference.m creates this class on the heap: dladdr(cls) cannot
+  // establish its origin. Admit its exact construction shape and owned IMPs,
+  // not its name alone. Keep its release/dealloc reference bookkeeping intact.
+  Class parent=class_getSuperclass(cls);
+  if(!parent || class_getImageName(cls) || !RVEArrayOwns((__bridge const void *)parent)
+     || class_getInstanceSize(cls)!=class_getInstanceSize(parent))return NO;
+  BOOL arrayParent=NO;
+  for(Class c=parent;c;c=class_getSuperclass(c))if(c==[IOSArray class]){arrayParent=YES;break;}
+  if(!arrayParent)return NO;
+  NSString *name=[NSString stringWithFormat:@"%s_ReferentSubclass",class_getName(parent)];
+  if(strcmp(class_getName(cls),[name UTF8String]))return NO;
+  unsigned int ivarCount=0,methodCount=0;
+  Ivar *ivars=class_copyIvarList(cls,&ivarCount);free(ivars);
+  Method *methods=class_copyMethodList(cls,&methodCount);
+  BOOL valid=!ivarCount && methodCount==3;
+  BOOL getter=NO,release=NO,dealloc=NO;
+  for(unsigned int i=0;i<methodCount;i++){
+    SEL selector=method_getName(methods[i]);
+    if(sel_isEqual(selector,@selector(java_getClass))){getter=YES;valid=valid && RVEArrayGetterABI(methods[i]);}
+    else if(sel_isEqual(selector,sel_registerName("release")))release=YES;
+    else if(sel_isEqual(selector,sel_registerName("dealloc")))dealloc=YES;
+    else valid=NO;
+    valid=valid && RVEArrayOwns((const void *)method_getImplementation(methods[i]));
+  }
+  free(methods);
+  Method parentGetter=class_getInstanceMethod(parent,@selector(java_getClass));
+  return valid && getter && release && dealloc && RVEArrayGetterABI(parentGetter)
+    && RVEArrayOwns((const void *)method_getImplementation(parentGetter))
+    && actual==IOSClass_fromClass(parent);
+}
 static void RVEEnsureArrayMetadata(id object) {
   if(!object || ![object isKindOfClass:[IOSArray class]])
     @throw create_JavaLangIllegalStateException_initWithNSString_(@"Array boundary received a non-IOSArray");
@@ -59,10 +90,12 @@ static void RVEEnsureArrayMetadata(id object) {
       @throw create_JavaLangIllegalStateException_initWithNSString_(@"Pinned array-class factory is inconsistent");
     }
     if(consistent)return;
-    // Mutate only a class owned by this payload, with its pinned superclass and
-    // component-class runtime in the same image. Never override NSObject/JRE
-    // types owned by the app or another embedded runtime.
-    if(!RVEArrayOwns((__bridge const void *)cls) || !RVEArrayOwns((__bridge const void *)[IOSArray class])
+    BOOL ownedReferent=RVEOwnedArrayReferentSubclass(cls,actual);
+    event[@"ownedReferentSubclass"]=@(ownedReferent);
+    // A pinned, dynamically allocated reference subclass has no image address;
+    // its parent, layout, own method set and implementation owners prove origin.
+    // All other foreign classes remain refused.
+    if((!RVEArrayOwns((__bridge const void *)cls) && !ownedReferent) || !RVEArrayOwns((__bridge const void *)[IOSArray class])
        || !RVEArrayOwns((__bridge const void *)arrayClass)
        || !RVEArrayOwns((__bridge const void *)object_getClass(component)) || !RVEArrayOwns((const void *)previous)) {
       event[@"phase"]=@"foreign_runtime_ownership";
@@ -80,7 +113,7 @@ static void RVEEnsureArrayMetadata(id object) {
       event[@"phase"]=@"repair_failed";
       @throw create_JavaLangIllegalStateException_initWithNSString_(@"Native array metadata repair failed");
     }
-    event[@"phase"]=@"canonical_array_getter_installed";event[@"repaired"]=@YES;
+    event[@"phase"]=ownedReferent ? @"referent_array_getter_installed" : @"canonical_array_getter_installed";event[@"repaired"]=@YES;
   }
 }
 ]-*/
