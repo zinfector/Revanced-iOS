@@ -5,7 +5,9 @@
 // copy-on-write instead of parsing message descriptions or changing entitlement.
 static atomic_uint RVQueueMenus,RVQueueItems,RVQueueOffers,RVQueueRewrites;
 static atomic_uint RVQueueMissing,RVQueueAmbiguous,RVQueueFailures,RVQueueHandlers;
+static atomic_uint RVQueueOptionalOffers;
 static _Thread_local NSUInteger RVQueueRewriteDepth;
+static _Thread_local NSUInteger RVQueueActionDepth;
 
 static BOOL RVQueueClass(id value,NSString *name) {
     Class cls=NSClassFromString(name);return cls && [value isKindOfClass:cls];
@@ -51,6 +53,18 @@ static NSUInteger RVQueueFlags(id command) {
     NSUInteger budget=128;
     NSHashTable *seen=[NSHashTable hashTableWithOptions:NSPointerFunctionsObjectPointerPersonality];
     return RVQueueCommandFlags(command,8,&budget,seen);
+}
+static id RVQueueTapAction(id message,id action) {
+    id params=RVObject(message,"params");
+    if (![params isKindOfClass:NSString.class] || ![params length] || !action || RVQueueActionDepth) return action;
+    id result=action;RVQueueActionDepth++;
+    @try {
+        // The native handler refreshes with params before separately dispatching
+        // onTapAction. Remove only a complete acquisition-only optional action.
+        if (RVQueueFlags(action)==2) { atomic_fetch_add(&RVQueueOptionalOffers,1);result=nil; }
+    } @catch (__unused NSException *exception) { result=action; }
+    @finally { RVQueueActionDepth--; }
+    return result;
 }
 static id RVQueueItem(id wrapper,NSString **setter) {
     if (!RVQueueClass(wrapper,@"YTIMenuItemSupportedRenderers")) return nil;
@@ -116,7 +130,8 @@ static NSDictionary *RVQueueReport(void) {
         @"queue_items_examined":@(atomic_load(&RVQueueItems)),@"upsell_items_found":@(atomic_load(&RVQueueOffers)),
         @"upsell_items_replaced":@(atomic_load(&RVQueueRewrites)),@"missing_queue_sibling":@(atomic_load(&RVQueueMissing)),
         @"ambiguous_queue_sibling":@(atomic_load(&RVQueueAmbiguous)),@"rewrite_failures":@(atomic_load(&RVQueueFailures)),
-        @"native_queue_handlers_reached":@(atomic_load(&RVQueueHandlers)),@"device_verified":@NO};
+        @"native_queue_handlers_reached":@(atomic_load(&RVQueueHandlers)),
+        @"optional_upsell_actions_filtered":@(atomic_load(&RVQueueOptionalOffers)),@"device_verified":@NO};
 }
 static void RVInstallQueue(void) {
     RVHook(@"YTColdConfig",@"iosEnableQueuePhase4",@"B@:",NO,^id(IMP original,SEL sel) {
@@ -129,6 +144,9 @@ static void RVInstallQueue(void) {
     });
     RVHook(@"YTIMenuRenderer",@"itemsArray",@"@@:",NO,^id(IMP original,SEL sel) {
         return ^id(id menu) { return RVQueueMenu(((id(*)(id,SEL))original)(menu,sel)); };
+    });
+    RVHook(@"YTIGetWatchNextQueueAddCommand",@"onTapAction",@"@@:",NO,^id(IMP original,SEL sel) {
+        return ^id(id message) { return RVQueueTapAction(message,((id(*)(id,SEL))original)(message,sel)); };
     });
     for (NSString *name in @[@"YTQueueAddMenuItemCommandHandlerImpl",@"YTGetWatchNextQueueAddCommandHandlerImpl"])
         RVHook(name,@"executeWithCommand:entry:fromView:sender:",@"v@:@@@@",NO,^id(IMP original,SEL sel) {

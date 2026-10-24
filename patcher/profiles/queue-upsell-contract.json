@@ -16,6 +16,7 @@
   "upsell_detection": "Present typed command extensions containing YPCOffersEndpoint, YPCGetOfflineUpsellEndpoint or exact SPunlimited browseId",
   "queue_detection": "Present typed GetWatchNextQueueAddCommand with nonempty string params, including nested active/no-active playback command branches",
   "replacement": "Unambiguous serialized queue endpoint for same next/last role within the same menu",
+  "optional_action": "YTIGetWatchNextQueueAddCommand.onTapAction returns nil only for a completely classified acquisition-only action with nonempty queue params; native params refresh is retained",
   "mutation": "Copy wrapper and item, set copied serviceEndpoint, clear copied secondaryIcon; preserve original message graph and visibility conditions",
   "limits": {"menu_items":128,"depth":8,"command_nodes":128,"extensions_or_commands_per_node":32,"serialized_candidate_bytes":65536},
   "diagnostics": "Copy diagnostic report -> queue: found/replaced/missing/ambiguous/failures/native handler counters; no raw commands, params or account data",

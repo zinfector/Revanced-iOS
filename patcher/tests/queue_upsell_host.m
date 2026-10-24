@@ -109,7 +109,10 @@ static YTICommand *Queue(NSString *identity) {
     YTIGetWatchNextQueueAddCommand *payload=[YTIGetWatchNextQueueAddCommand new];
     payload.params=@"opaque-real-queue-params";return Typed(payload,identity);
 }
-static YTICommand *Offer(void) { return Typed([YTIYPCOffersEndpoint new],@"premium-offer"); }
+static YTICommand *Offer(void) {
+    GPBMock *browse=[GPBMock new];browse.browseId=@"SPunlimited";
+    return Typed(browse,@"premium-browse-offer");
+}
 static YTIMenuItemSupportedRenderers *Item(int icon,YTICommand *endpoint,BOOL conditional) {
     MockItem *item=[MockItem new];item.icon=[MockIcon new];item.icon.iconType=icon;
     item.serviceEndpoint=endpoint;item.secondaryIcon=@"premium-badge";
@@ -154,6 +157,7 @@ static void MissingAmbiguousAndDuplicate(void) {
     assert(result!=duplicates && [[Unwrap(result[0]).serviceEndpoint data] isEqual:first.data]);
 }
 static void PresenceAndBounds(void) {
+    assert(RVQueueFlags(Typed([YTIYPCOffersEndpoint new],@"typed-offer"))==2);
     YTIGetWatchNextQueueAddCommand *empty=[YTIGetWatchNextQueueAddCommand new];
     assert(RVQueueFlags(Typed(empty,@"absent"))==0);
     empty.params=@"";assert(RVQueueFlags(Typed(empty,@"empty"))==0);
@@ -192,6 +196,19 @@ static void PresenceAndBounds(void) {
     RVCompatible=NO;assert(RVQueueMenu(menu)==menu);RVCompatible=YES;
     RVQueueRewriteDepth=1;assert(RVQueueMenu(menu)==menu);RVQueueRewriteDepth=0;
 }
+static void OptionalAcquisitionAction(void) {
+    YTIGetWatchNextQueueAddCommand *message=[YTIGetWatchNextQueueAddCommand new];
+    id offer=Offer(),feedback=Typed([GPBMock new],@"ordinary-feedback");
+    assert(RVQueueTapAction(message,offer)==offer);
+    message.params=@"real-queue-params";
+    assert(RVQueueTapAction(message,offer)==nil);
+    assert(RVQueueTapAction(message,feedback)==feedback);
+    id queue=Queue(@"queued-native-command");
+    assert(RVQueueTapAction(message,queue)==queue);
+    YTICommand *mixed=[YTICommand new];mixed.commandsArray=@[queue,offer];
+    assert(RVQueueFlags(mixed)==3 && RVQueueTapAction(message,mixed)==mixed);
+    assert(RVQueueTapAction(message,nil)==nil);
+}
 
 @interface HookParent : NSObject
 - (id)probe;
@@ -220,10 +237,10 @@ static void InheritedHook(void) {
 int main(void) {
     @autoreleasepool {
         assert(RVCan([GPBMock new],"hasCommand",@"B@:"));
-        PairedAndCopyOnWrite();MissingAmbiguousAndDuplicate();PresenceAndBounds();InheritedHook();
+        PairedAndCopyOnWrite();MissingAmbiguousAndDuplicate();PresenceAndBounds();OptionalAcquisitionAction();InheritedHook();
         assert(atomic_load(&RVQueueRewrites)>=3 && atomic_load(&RVQueueFailures)==0);
         NSDictionary *report=@{@"ok":@YES,@"suite":@"queue-upsell-foundation-host",
-            @"test_groups":@4,@"rewrites":@(atomic_load(&RVQueueRewrites)),
+            @"test_groups":@5,@"rewrites":@(atomic_load(&RVQueueRewrites)),
             @"native_failures":@(atomic_load(&RVQueueFailures)),@"device_validation":@NO};
         NSData *json=[NSJSONSerialization dataWithJSONObject:report options:0 error:NULL];
         assert(json!=nil);puts([[NSString alloc] initWithData:json encoding:NSUTF8StringEncoding].UTF8String);
