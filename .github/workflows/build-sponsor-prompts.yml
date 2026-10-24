@@ -1,8 +1,8 @@
-name: Build DeArrow text nodes with Xcode
+name: Build queue phase 4 with Xcode
 
 on:
   push:
-    branches: [fix/dearrow-text-nodes-0.3.62]
+    branches: [feat/queue-phase4-0.3.63]
 
 permissions:
   contents: read

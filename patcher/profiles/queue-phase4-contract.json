@@ -1,0 +1,23 @@
+{
+  "version": "0.3.63",
+  "base_release": "0.3.62",
+  "base_compile_commit": "021047448832ebdf30b33fe8fc324d81f4a5d8f3",
+  "base_cloud_run": "https://github.com/zinfector/Revanced-iOS/actions/runs/37880825134",
+  "base_ipa_sha256": "46b3ff20f439053ed24e877487f0e4c95b188afec678cde08b1acc4f6aa78567",
+  "target_version": "21.39.4",
+  "target_uuid": "1f61665a5d4a35668b77da821e1d6c17",
+  "class": "YTColdConfig",
+  "selector": "iosEnableQueuePhase4",
+  "kind": "-",
+  "encoding": "B16@0:8",
+  "normalized_encoding": "B@:",
+  "imp": "0x10174dfb0",
+  "experiment_id": 45378509,
+  "replacement_return": true,
+  "installation": "RVStart constructor, after target/config identity validation and before other hook installers",
+  "source": "RVQueue.inc",
+  "evidence": "Static decompilation of matching saved Ghidra program; class/method metadata decoded from matching original executable",
+  "runtime_validated": false,
+  "server_entitlement_modified": false,
+  "limitation": "Client queue handling only. Menu commands, Watch Next params, response queueMode and queueContextParams remain supplied by YouTube. Non-Premium functionality is unverified."
+}

@@ -15,7 +15,7 @@
 #import <Network/Network.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
-#define RV_PORT_VERSION @"0.3.62"
+#define RV_PORT_VERSION @"0.3.63"
 #include "RVFeatures.h"
 #include "../build/RVBuildIdentity.h"
 #include "RVIntervals.h"
@@ -81,6 +81,7 @@ static id RVSetting(NSString *key) {
 }
 static BOOL RVEnabled(NSString *key) { return RVCompatible && [RVSetting(key) boolValue]; }
 #include "RVRuntime.inc"
+#include "RVQueue.inc"
 // The player's native clock observes its active video's event center directly.
 // Resolve the same core controller rather than associating a second session with
 // the player facade (whose seek method takes a double, not YTSingleVideoTime).
@@ -435,7 +436,7 @@ __attribute__((constructor)) static void RVStart(void) {
         RVConfig=[config isKindOfClass:[NSDictionary class]] ? config : @{};
         RVCompatible=RVCheckIdentity() && [RVConfig[@"schema"] intValue]==1;
         RVLog(RVCompatible ? @"YouTube 21.39.4 profile accepted" : @"App identity/config mismatch: hooks disabled");
-        if (RVCompatible) { RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
+        if (RVCompatible) { RVInstallQueue();RVInstallVoteIdentity();RVInstallVoteModel();RVInstallAuthentication();RVInstallMiniplayer();RVInstallSettingsBridge();RVObserveNetwork();RVInstallAds();RVInstallFeed();RVInstallPlayer();RVInstallExtras();RVShortsInstall();RVSPInstall(); }
         dispatch_async(dispatch_get_main_queue(),^{
             static RVSettingsEntrance *entrance;entrance=[RVSettingsEntrance new];
             RVUSBResumeSavedDiagnostics();
