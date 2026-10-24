@@ -167,6 +167,13 @@ int main(void) {
         YTIRequestMdxDeviceDiscoveryCommand *multiple=(id)[next.extensionValues allValues][0];
         NSArray *one=multiple.requestPollingStrategiesArray;multiple.requestPollingStrategiesArray=@[one[0],one[0]];
         assert(!RVQueueMDXOperation(next));multiple.requestPollingStrategiesArray=one;
+        YTIRequestMdxDeviceDiscoveryCommand *invalidPayload=(id)[RVLocalCommand(1,@"NextVideo01").extensionValues allValues][0];
+        YTICommand *ambiguous=[YTICommand new];ambiguous.extensionsCurrentlySet=@[@"invalid",@"valid"];
+        ambiguous.extensionValues=@{@"invalid":invalidPayload,@"valid":multiple};
+        assert(!RVQueueMDXOperation(ambiguous));
+        ambiguous.extensionsCurrentlySet=@[@"queue",@"other"];
+        ambiguous.extensionValues=@{@"queue":multiple,@"other":[YTIYPCOffersEndpoint new]};
+        assert(!RVQueueMDXOperation(ambiguous));
         // An adapter failure must not publish a queue operation or mutate either model.
         RVFixturePanelUnavailable=YES;assert(!RVQueueLocalHandle(next,nil));RVFixturePanelUnavailable=NO;
         assert([RVQueueLocalItems isEqual:before]);
@@ -192,6 +199,12 @@ int main(void) {
             assert([first isEqual:@"original"]);completions++;
         }]);
         assert(completions==2 && router.calls==1);
+        // Account changes, including incognito/nil transitions, discard local state.
+        RVQueueLocalAccountBound=NO;RVQueueLocalBind(controller,@"fixture-account-A");
+        assert(RVQueueLocalItems.count>0);
+        RVQueueLocalBind(controller,nil);assert(RVQueueLocalItems==nil);
+        RVQueueLocalItems=[NSMutableArray arrayWithObject:RVQueueMakeVideo(@"Current0001",nil)];
+        RVQueueLocalBind(controller,@"fixture-account-B");assert(RVQueueLocalItems==nil);
         puts("{\"ok\":true,\"suite\":\"queue-local-native-bridge\",\"test_groups\":6,\"device_validation\":false}");
     }
     return 0;

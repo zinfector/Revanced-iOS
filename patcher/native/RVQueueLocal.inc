@@ -9,12 +9,14 @@
 static NSMutableArray *RVQueueLocalItems;
 static __weak id RVQueueLocalController,RVQueueLocalPanelController,RVQueueLocalWatch;
 static id RVQueueLocalAccount;
+static BOOL RVQueueLocalAccountBound;
 static NSString *RVQueueLocalFailure;
 static atomic_uint RVQueueMDXSeen,RVQueueMDXHandled,RVQueueNativeInserted,RVQueuePanels;
 static _Thread_local NSUInteger RVQueueLocalDepth;
 static void RVQueueLocalBind(id controller,id account) {
-    if (RVQueueLocalAccount && account && ![RVQueueLocalAccount isEqual:account]) RVQueueLocalItems=nil;
-    RVQueueLocalController=controller;RVQueueLocalAccount=account;
+    if (!controller) return;
+    if (RVQueueLocalAccountBound && RVQueueLocalAccount!=account && ![RVQueueLocalAccount isEqual:account]) RVQueueLocalItems=nil;
+    RVQueueLocalController=controller;RVQueueLocalAccount=account;RVQueueLocalAccountBound=YES;
 }
 
 static BOOL RVQueueValidVideo(id value) {
@@ -111,13 +113,18 @@ static NSDictionary *RVQueueMDXOperation(id command) {
     if (!RVQueueClass(command,@"YTICommand") || !RVCan(command,"getExtension:",@"@@:@")) return nil;
     NSArray *extensions=RVObject(command,"extensionsCurrentlySet");
     if (![extensions isKindOfClass:NSArray.class] || extensions.count>32) return nil;
-    NSDictionary *result=nil;
+    NSDictionary *result=nil;BOOL seenMDX=NO;
     for (id extension in extensions) {
         id payload=((id(*)(id,SEL,id))objc_msgSend)(command,sel_registerName("getExtension:"),extension);
-        if (!RVQueueClass(payload,@"YTIRequestMdxDeviceDiscoveryCommand")) continue;
+        if (!RVQueueClass(payload,@"YTIRequestMdxDeviceDiscoveryCommand")) {
+            if (!RVQueueClass(payload,@"YTINavigationEndpointInteractionLoggingExtension")
+                && !RVQueueClass(payload,@"YTIServiceEndpointClientScreenExtension")) return nil;
+            continue;
+        }
+        if (seenMDX) return nil;seenMDX=YES;
         NSArray *strategies=RVObject(payload,"requestPollingStrategiesArray");
         // Exactly one queue strategy was captured for each next/last action.
-        if (![strategies isKindOfClass:NSArray.class] || strategies.count!=1 || result) return nil;
+        if (![strategies isKindOfClass:NSArray.class] || strategies.count!=1) return nil;
         id strategy=strategies[0];
         if (!RVQueueClass(strategy,@"YTIMdxDeviceDiscoveryPollingStrategy") || !RVCan(strategy,"discoveryStrategy",@"i@:")
             || RVInt(strategy,"discoveryStrategy")!=4) return nil;
@@ -196,7 +203,7 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"native_panel_bound":@(RVQueueLocalPanelController!=nil),@"last_blocker":RVQueueLocalFailure ?: @"none"};
 }
 static void RVQueueLocalSync(id controller) {
-    if (controller!=RVQueueLocalController || RVQueueLocalDepth || !RVQueueLocalItems.count) return;
+    if (!NSThread.isMainThread || controller!=RVQueueLocalController || RVQueueLocalDepth || !RVQueueLocalItems.count) return;
     NSArray *items=RVObject(controller,"playbackQueueItems");
     if (![items isKindOfClass:NSArray.class] || items.count>500) return;
     NSMutableArray *updated=[NSMutableArray array];
