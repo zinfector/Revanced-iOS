@@ -59,7 +59,7 @@ static NSDictionary *RVDiagnosticsSnapshot(NSString *topic) {
         data=@{@"effective_config":RVEffectivePreferences(),@"hooks":hooks ?: @[],@"authentication":RVAuthenticationReport(),
             @"sponsorblock":RVSponsorReport(),@"sponsorblock_prompts":RVSPReport(),@"shorts_layout":RVShortsReport(),
             @"return_youtube_dislike":RVNativeDislikeReport(),@"ryd_checkpoints":RVDislikeCheckpointReport(),
-            @"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport()};
+            @"playback_speed":RVSpeedReport(),@"adblock":RVAdReport(),@"dearrow":RVDAUIReport(),@"queue":RVQueueReport()};
     }
     if (!data) return nil;
     NSMutableDictionary *report=[data mutableCopy];

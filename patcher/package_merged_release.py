@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.63'
+VERSION = '0.3.64'
 
 
 def digest(path):
@@ -28,6 +28,9 @@ def main():
                for path in sorted((ROOT/'native').rglob('*')) if path.is_file()}
     if sources != native['source_files']:
         raise RuntimeError('Native sources differ from the cloud build')
+    queue_checks = json.loads((ROOT/'build/queue-upsell-host.json').read_text(encoding='utf-8'))
+    if queue_checks.get('ok') is not True:
+        raise RuntimeError('Queue menu host checks did not pass')
     # Existing user instruction: no archive self-check, regression or smoke tests.
     # The production patcher still validates original IPA, profile, config and dylib.
     patcher.verify = lambda output: None
@@ -48,16 +51,17 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'queue-phase4',
+    receipt = {'version': VERSION, 'release_flavor': 'queue-upsell-routing',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
-               'packages': packages, 'tests_run': False, 'archive_self_check_run': False,
+               'packages': packages, 'tests_run': True, 'queue_host_checks': queue_checks,
+               'regression_tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Based on release 0.3.62. Install an ABI-checked YTColdConfig iosEnableQueuePhase4 getter override during native initialization, before watch and playlist controllers cache flags. Enable the identified client queue path only; no server entitlement or working non-Premium queue unlock is claimed. Apple production build and packaging; device validation pending.',
-               'queue_contract': json.loads((ROOT/'profiles/queue-phase4-contract.json').read_text(encoding='utf-8'))}
+               'scope': 'Based on 0.3.63. Replace only queue Premium acquisition service endpoints with unambiguous same-role queue-command siblings before native menu actions are built; typed GPB extension inspection, bounded traversal and copy-on-write. Preserve titles and conditional visibility. Include queue routing diagnostics. Native queue commands continue through the original handlers. Server response and device behavior remain unverified.',
+               'queue_contract': json.loads((ROOT/'profiles/queue-upsell-contract.json').read_text(encoding='utf-8'))}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
-    print(json.dumps({'version': VERSION, 'packages': len(packages), 'tests_run': False}))
+    print(json.dumps({'version': VERSION, 'packages': len(packages), 'queue_host_checks': queue_checks}))
 
 
 if __name__ == '__main__':

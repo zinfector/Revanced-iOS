@@ -1,0 +1,25 @@
+{
+  "version": "0.3.64",
+  "base_release": "0.3.63",
+  "base_commit": "2a54c0734a30ac7337749a527525dfba3cb88f75",
+  "user_observation": "Queue phase 4 flag enabled in 0.3.63; selecting Play next/last still opens Premium upsell.",
+  "target": "YouTube iOS 21.39.4 ARM64",
+  "target_uuid": "1f61665a5d4a35668b77da821e1d6c17",
+  "entry": {
+    "class": "YTMenuController",
+    "selector": "actionsForRenderers:fromView:entry:shouldLogItems:firstResponder:",
+    "encoding": "@52@0:8@16@24@32B40@44",
+    "imp": "0x101860c30"
+  },
+  "tap_block": "0x101861b88 dispatches item.serviceEndpoint unchanged",
+  "queue_icon_values": {"next": 251, "last": [63, 895]},
+  "upsell_detection": "Present typed command extensions containing YPCOffersEndpoint, YPCGetOfflineUpsellEndpoint or exact SPunlimited browseId",
+  "queue_detection": "Present typed GetWatchNextQueueAddCommand with nonempty string params, including nested active/no-active playback command branches",
+  "replacement": "Unambiguous serialized queue endpoint for same next/last role within the same menu",
+  "mutation": "Copy wrapper and item, set copied serviceEndpoint, clear copied secondaryIcon; preserve original message graph and visibility conditions",
+  "limits": {"menu_items":128,"depth":8,"command_nodes":128,"extensions_or_commands_per_node":32,"serialized_candidate_bytes":65536},
+  "diagnostics": "Copy diagnostic report -> queue: found/replaced/missing/ambiguous/failures/native handler counters; no raw commands, params or account data",
+  "reference": "https://github.com/itzzace/ytkace/blob/1afd955cd695c1d07d2722579d6b0abda8dc9ecd/Tweak/Features/Queue/QueueHooks.mm",
+  "reference_limit": "Reference also implements a local queue. This patch reuses native queue handlers and does not establish server authorization.",
+  "device_validated": false
+}

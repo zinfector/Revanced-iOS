@@ -1,8 +1,8 @@
-name: Build queue phase 4 with Xcode
+name: Build queue upsell routing with Xcode
 
 on:
   push:
-    branches: [feat/queue-phase4-0.3.63]
+    branches: [fix/queue-upsell-0.3.64]
 
 permissions:
   contents: read
@@ -25,6 +25,10 @@ jobs:
           python-version: '3.14'
       - name: Build ARM64 iOS payload with established Xcode toolchain
         run: python build.py
+      - name: Check queue menu routing and copy isolation on host
+        run: |
+          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_upsell_host.m -o build/queue-upsell-host
+          build/queue-upsell-host > build/queue-upsell-host.json
       - name: Record compiler and cloud build provenance
         run: |
           python - <<'PY'
@@ -36,7 +40,8 @@ jobs:
               'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
               'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
               'clang': subprocess.check_output(['xcrun', '--sdk', 'iphoneos', 'clang', '--version'], text=True).strip(),
-              'tests_run': False,
+              'tests_run': True,
+              'test_scope': 'queue menu routing host fixtures; no device test or full regression suite',
           }
           Path('build/cloud-build.json').write_text(json.dumps(provenance, indent=2)+'\n')
           PY
@@ -50,5 +55,6 @@ jobs:
             patcher/build/build-manifest.json
             patcher/build/build.log
             patcher/build/cloud-build.json
+            patcher/build/queue-upsell-host.json
           if-no-files-found: error
           retention-days: 7
