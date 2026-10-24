@@ -125,15 +125,18 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
     @finally { RVQueueRewriteDepth--; }
     return result;
 }
+#include "RVQueueLocal.inc"
 static NSDictionary *RVQueueReport(void) {
-    return @{@"revision":@"paired-queue-upsell-1",@"menus_examined":@(atomic_load(&RVQueueMenus)),
+    NSMutableDictionary *report=[@{@"revision":@"mdx-local-queue-2",@"menus_examined":@(atomic_load(&RVQueueMenus)),
         @"queue_items_examined":@(atomic_load(&RVQueueItems)),@"upsell_items_found":@(atomic_load(&RVQueueOffers)),
         @"upsell_items_replaced":@(atomic_load(&RVQueueRewrites)),@"missing_queue_sibling":@(atomic_load(&RVQueueMissing)),
         @"ambiguous_queue_sibling":@(atomic_load(&RVQueueAmbiguous)),@"rewrite_failures":@(atomic_load(&RVQueueFailures)),
         @"native_queue_handlers_reached":@(atomic_load(&RVQueueHandlers)),
-        @"optional_upsell_actions_filtered":@(atomic_load(&RVQueueOptionalOffers)),@"device_verified":@NO};
+        @"optional_upsell_actions_filtered":@(atomic_load(&RVQueueOptionalOffers)),@"device_verified":@NO} mutableCopy];
+    [report addEntriesFromDictionary:RVQueueLocalReport()];return report;
 }
 static void RVInstallQueue(void) {
+    RVInstallQueueLocal();
     RVHook(@"YTColdConfig",@"iosEnableQueuePhase4",@"B@:",NO,^id(IMP original,SEL sel) {
         return ^BOOL(id object) { return YES; };
     });

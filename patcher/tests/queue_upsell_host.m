@@ -8,8 +8,10 @@
 #include <stdatomic.h>
 #include <math.h>
 #include <stdio.h>
+#include <limits.h>
 
 static BOOL RVCompatible=YES;
+static id RVCurrentPlayback;
 static void RVLog(NSString *message) { (void)message; }
 #include "../native/RVRuntime.inc"
 

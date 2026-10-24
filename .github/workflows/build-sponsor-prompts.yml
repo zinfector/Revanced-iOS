@@ -1,8 +1,8 @@
-name: Build queue upsell routing with Xcode
+name: Build MDX local queue with Xcode
 
 on:
   push:
-    branches: [fix/queue-upsell-0.3.64]
+    branches: [fix/queue-mdx-0.3.65]
 
 permissions:
   contents: read
@@ -29,6 +29,10 @@ jobs:
         run: |
           xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_upsell_host.m -o build/queue-upsell-host
           build/queue-upsell-host > build/queue-upsell-host.json
+          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_params_host.m -o build/queue-params-host
+          build/queue-params-host > build/queue-params-host.json
+          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_local_host.m -o build/queue-local-host
+          build/queue-local-host > build/queue-local-host.json
       - name: Record compiler and cloud build provenance
         run: |
           python - <<'PY'
@@ -41,7 +45,7 @@ jobs:
               'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
               'clang': subprocess.check_output(['xcrun', '--sdk', 'iphoneos', 'clang', '--version'], text=True).strip(),
               'tests_run': True,
-              'test_scope': 'queue menu routing host fixtures; no device test or full regression suite',
+              'test_scope': 'queue routing, captured MDX token schema and native bridge host fixtures; no patched device test or full regression suite',
           }
           Path('build/cloud-build.json').write_text(json.dumps(provenance, indent=2)+'\n')
           PY
@@ -56,5 +60,7 @@ jobs:
             patcher/build/build.log
             patcher/build/cloud-build.json
             patcher/build/queue-upsell-host.json
+            patcher/build/queue-params-host.json
+            patcher/build/queue-local-host.json
           if-no-files-found: error
           retention-days: 7

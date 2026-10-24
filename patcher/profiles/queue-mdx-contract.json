@@ -1,0 +1,40 @@
+{
+  "version": "0.3.65",
+  "base_release": "0.3.64",
+  "base_commit": "c3e81953e8f81fded592b1d563e1d37e044652f5",
+  "target": "YouTube iOS 21.39.4 ARM64",
+  "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
+  "runtime_observation": {
+    "installed_version": "0.3.64",
+    "all_queue_hooks_installed": true,
+    "menus_examined": 44,
+    "queue_items_examined": 176,
+    "upsell_items_found": 0,
+    "upsell_items_replaced": 0,
+    "native_queue_handlers_reached": 0,
+    "next_and_last_endpoint_extension": "YTIRequestMdxDeviceDiscoveryCommand",
+    "discovery_strategy": 4,
+    "next_operation": 2,
+    "last_operation": 3,
+    "raw_tokens_retained_in_repository": false
+  },
+  "decoder": {
+    "schema": "3 { 1: operation, 2 { 1 { 1: eleven-character video ID, 3: 1 } } }",
+    "operation_values": [2, 3],
+    "encoded_bytes_limit": 16384,
+    "decoded_bytes_limit": 4096,
+    "field_budget": 64,
+    "rejects": ["unknown fields", "duplicate fields", "incorrect wire types", "truncated fields", "noncanonical varints", "invalid video IDs", "other operations or variants"]
+  },
+  "routing": "Intercept exact queue-shaped MDX commands before remote discovery at the native routers and discovery handler; use native YTQueueItem, insertion and playlist panels.",
+  "preservation": "Other discovery shapes and active remote queues use the original route. Real server playlists retain their original response panel. Prior paired-queue endpoint patch remains included.",
+  "diagnostics": "MDX recognized/handled counts, confirmed native insertions, local model size, panel returns, bound native controllers, last blocker. No IDs or tokens in reports.",
+  "native_evidence": {
+    "discovery_handler": "0x100f562b8",
+    "request_descriptor": "0x105100e48",
+    "queue_insert": "0x101746028",
+    "queue_item_factory": "0x101748f9c"
+  },
+  "reference": "https://github.com/itzzace/ytkace/blob/1afd955cd695c1d07d2722579d6b0abda8dc9ecd/Tweak/Features/Queue/QueueHooks.mm",
+  "device_validated": false
+}
