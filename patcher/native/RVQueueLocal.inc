@@ -1,23 +1,15 @@
 // SPDX-License-Identifier: MIT
-// Local queue for the MDX next/last commands captured from 21.39.4. Playback,
-// insertion notifications, playlist cells and transitions remain native.
-// Native panel integration corroborated by the MIT YTKACE reference retained
-// in profiles/queue-reference-license.txt. No remote-discovery request is made
-// for a recognized local operation; unrelated discovery commands are untouched.
+// Route the captured MDX next/last operations to YouTube's native queue owner.
+// No parallel item array: ordering, selection, removal and deduplication belong
+// to YTQueueController.handleQueueModification: (21.39.4: 0x101748360).
 #include "RVQueueParams.inc"
 #include <limits.h>
-static NSMutableArray *RVQueueLocalItems;
 static __weak id RVQueueLocalController,RVQueueLocalPanelController,RVQueueLocalWatch;
 static id RVQueueLocalAccount;
-static BOOL RVQueueLocalAccountBound;
-static NSString *RVQueueLocalFailure;
-static atomic_uint RVQueueMDXSeen,RVQueueMDXHandled,RVQueueNativeInserted,RVQueuePanels;
-static _Thread_local NSUInteger RVQueueLocalDepth;
-static void RVQueueLocalBind(id controller,id account) {
-    if (!controller) return;
-    if (RVQueueLocalAccountBound && RVQueueLocalAccount!=account && ![RVQueueLocalAccount isEqual:account]) RVQueueLocalItems=nil;
-    RVQueueLocalController=controller;RVQueueLocalAccount=account;RVQueueLocalAccountBound=YES;
-}
+static BOOL RVQueueLocalAccountBound,RVQueueNativeOwned;
+static NSString *RVQueueNativeSourcePlaylist,*RVQueueLocalFailure;
+static _Thread_local NSUInteger RVQueueLocalDepth,RVQueueNativeResponseDepth;
+static atomic_uint RVQueueMDXSeen,RVQueueMDXHandled,RVQueueNativeConfirmed,RVQueueNativeUnconfirmed;
 
 static BOOL RVQueueValidVideo(id value) {
     if (![value isKindOfClass:NSString.class] || [value length]!=11) return NO;
@@ -27,12 +19,35 @@ static BOOL RVQueueValidVideo(id value) {
 static BOOL RVQueueNumber(id object,const char *setter,NSUInteger value) {
     SEL sel=sel_registerName(setter);
     if (RVCan(object,setter,@"v@:i") && value<=INT_MAX) { ((void(*)(id,SEL,int))objc_msgSend)(object,sel,(int)value);return YES; }
+    if (RVCan(object,setter,@"v@:I") && value<=UINT_MAX) { ((void(*)(id,SEL,unsigned int))objc_msgSend)(object,sel,(unsigned int)value);return YES; }
     if (RVCan(object,setter,@"v@:Q")) { ((void(*)(id,SEL,NSUInteger))objc_msgSend)(object,sel,value);return YES; }
-    if (RVCan(object,setter,@"v@:q") && value<=NSIntegerMax) { ((void(*)(id,SEL,NSInteger))objc_msgSend)(object,sel,(NSInteger)value);return YES; }
+    if (RVCan(object,setter,@"v@:q") && value<=NSIntegerMax) { ((void(*)(id,SEL,NSInteger))objc_msgSend)(object,sel,value);return YES; }
     return NO;
 }
 static void RVQueueVoid(id object,const char *selector) {
     if (RVCan(object,selector,@"v@:")) ((void(*)(id,SEL))objc_msgSend)(object,sel_registerName(selector));
+}
+static NSUInteger RVQueueCount(void) {
+    if (!RVCan(RVQueueLocalController,"queueCount",@"Q@:")) return 0;
+    return ((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("queueCount"));
+}
+static NSArray *RVQueueNativeItems(void) {
+    id items=RVObject(RVQueueLocalController,"playbackQueueItems");
+    return [items isKindOfClass:NSArray.class] && [items count]<=500 ? items : nil;
+}
+static BOOL RVQueueNativeActive(void) { return RVQueueNativeOwned && RVQueueLocalController && RVQueueNativeItems().count>0; }
+static void RVQueueLocalBind(id controller,id account) {
+    if (!controller) return;
+    if ((RVQueueLocalController && RVQueueLocalController!=controller)
+        || (RVQueueLocalAccountBound && RVQueueLocalAccount!=account && ![RVQueueLocalAccount isEqual:account])) {
+        RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil;
+    }
+    RVQueueLocalController=controller;RVQueueLocalAccount=account;RVQueueLocalAccountBound=YES;
+}
+static NSString *RVQueueLocalCurrent(void) {
+    id video=RVObject(RVCurrentPlayback,"contentVideoID");
+    if (!RVQueueValidVideo(video)) video=RVObject(RVQueueLocalController,"nowPlayingVideoID");
+    return RVQueueValidVideo(video) ? video : nil;
 }
 static id RVQueueFormatted(NSString *text) {
     id cls=NSClassFromString(@"YTIFormattedString");
@@ -53,67 +68,59 @@ static id RVQueueMakeVideo(NSString *video,id entry) {
     RVQueueSet(renderer,@"setTitle:",title);if (thumbnail) RVQueueSet(renderer,@"setThumbnail:",thumbnail);
     return renderer;
 }
-static NSString *RVQueueLocalCurrent(void) {
-    id current=RVObject(RVCurrentPlayback,"contentVideoID");
-    if (!RVQueueValidVideo(current)) current=RVObject(RVQueueLocalController,"nowPlayingVideoID");
-    return RVQueueValidVideo(current) ? current : nil;
-}
-static NSUInteger RVQueueLocalIndex(NSString *video) {
-    if (!video) return NSNotFound;
-    for (NSUInteger index=0;index<RVQueueLocalItems.count;index++)
-        if ([RVObject(RVQueueLocalItems[index],"videoId") isEqual:video]) return index;
+static NSUInteger RVQueueNativeIndex(NSString *video) {
+    if (!video) return NSNotFound;NSArray *items=RVQueueNativeItems();
+    for (NSUInteger index=0;index<items.count;index++)
+        if ([RVObject(RVObject(items[index],"videoRenderer"),"videoId") isEqual:video]) return index;
     return NSNotFound;
 }
-static void RVQueueLocalSeed(void) {
-    if (!RVQueueLocalItems) RVQueueLocalItems=[NSMutableArray array];
-    if (RVQueueLocalItems.count) return;
-    NSArray *items=RVObject(RVQueueLocalController,"playbackQueueItems");
-    if ([items isKindOfClass:NSArray.class] && items.count<=500) {
-        for (id item in items) {
-            id renderer=RVObject(item,"videoRenderer");
-            if (RVQueueValidVideo(RVObject(renderer,"videoId")) && [renderer conformsToProtocol:@protocol(NSCopying)])
-                [RVQueueLocalItems addObject:[renderer copy]];
-        }
-    }
-    NSString *current=RVQueueLocalCurrent();
-    if (current && RVQueueLocalIndex(current)==NSNotFound) {
-        id renderer=RVQueueMakeVideo(current,nil);if (renderer) [RVQueueLocalItems insertObject:renderer atIndex:0];
-    }
-}
-static id RVQueueLocalPanel(NSString *current) {
-    if (!RVQueueLocalItems.count || RVQueueLocalItems.count>500) return nil;
+static id RVQueueNativePanelForVideo(NSString *current) {
+    if (!RVQueueNativeActive()) return nil;
+    NSArray *items=[RVQueueNativeItems() copy];
     id panel=[NSClassFromString(@"YTIPlaylistPanelRenderer") new];
     NSMutableArray *contents=RVObject(panel,"contentsArray");
     if (![contents isKindOfClass:NSMutableArray.class]) return nil;
-    NSUInteger selected=RVQueueLocalIndex(current);if (selected==NSNotFound) selected=0;
-    for (NSUInteger index=0;index<RVQueueLocalItems.count;index++) {
-        id wrapper=[NSClassFromString(@"YTIPlaylistPanelRenderer_PlaylistPanelVideoSupportedRenderers") new];
-        id video=[RVQueueLocalItems[index] copy];
+    NSUInteger selected=RVQueueNativeIndex(current);
+    if (selected==NSNotFound && RVCan(RVQueueLocalController,"nowPlayingIndex",@"Q@:"))
+        selected=((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("nowPlayingIndex"));
+    if (selected>=items.count) selected=0;
+    for (NSUInteger index=0;index<items.count;index++) {
+        id original=RVObject(items[index],"videoRenderer");
+        if (!RVQueueValidVideo(RVObject(original,"videoId")) || ![original conformsToProtocol:@protocol(NSCopying)]) return nil;
+        id video=[original copy];
         if (RVCan(video,"setSelected:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(video,sel_registerName("setSelected:"),index==selected);
         RVQueueSet(video,@"setIndexText:",RVQueueFormatted([NSString stringWithFormat:@"%lu",(unsigned long)index+1]));
+        id wrapper=[NSClassFromString(@"YTIPlaylistPanelRenderer_PlaylistPanelVideoSupportedRenderers") new];
         if (!RVQueueSet(wrapper,@"setPlaylistPanelVideoRenderer:",video)) return nil;
         [contents addObject:wrapper];
     }
-    if (!RVQueueSet(panel,@"setPlaylistId:",@"RVPortQueue") || !RVQueueNumber(panel,"setTotalVideos:",contents.count)
+    if (!RVQueueSet(panel,@"setPlaylistId:",@"RVPortQueue") || !RVQueueNumber(panel,"setTotalVideos:",items.count)
         || !RVQueueNumber(panel,"setCurrentIndex:",selected) || !RVQueueNumber(panel,"setLocalCurrentIndex:",selected)) return nil;
     RVQueueSet(panel,@"setTitle:",@"Queue");RVQueueSet(panel,@"setTitleText:",RVQueueFormatted(@"Queue"));
+    // Native section move/remove callbacks below own local editing; no server
+    // edit request is sent with this synthetic playlist identifier.
     if (RVCan(panel,"setIsEditable:",@"v@:B")) ((void(*)(id,SEL,BOOL))objc_msgSend)(panel,sel_registerName("setIsEditable:"),YES);
     return panel;
 }
-static void RVQueueLocalRefreshPanel(void) {
-    if (!RVCan(RVQueueLocalController,"queueCount",@"Q@:")
-        || ((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("queueCount"))!=RVQueueLocalItems.count) return;
-    id panel=RVQueueLocalPanel(RVQueueLocalCurrent());
-    if (!panel || !RVQueueSet(RVQueueLocalPanelController,@"setPlaylistPanelRenderer:",panel)) return;
-    RVQueueVoid(RVQueueLocalPanelController,"refreshPlaylistCollectionViewController");
-    RVQueueVoid(RVQueueLocalPanelController,"updateViewForCurrentVideo");
-    RVQueueVoid(RVQueueLocalWatch,"showPlaylistMiniBarIfNeeded");
+static BOOL RVQueueNativeAcceptResponse(id response) {
+    if (!RVQueueNativeActive() || !RVQueueClass(response,@"YTIWatchNextResponse")) return NO;
+    id existing=RVObject(response,"singleColumnPlaylistPanelRenderer");
+    NSString *playlist=RVObject(existing,"playlistId");
+    if ([playlist isKindOfClass:NSString.class] && playlist.length && ![playlist isEqual:@"RVPortQueue"]
+        && ![playlist isEqual:RVQueueNativeSourcePlaylist]) return NO;
+    id endpoint=RVObject(response,"currentVideoEndpoint");
+    NSString *video=RVObject(RVObject(endpoint,"watchEndpoint"),"videoId");
+    if (!RVQueueValidVideo(video)) video=RVQueueLocalCurrent();
+    return !video || RVQueueNativeIndex(video)!=NSNotFound;
 }
+
+#include "RVQueuePresentation.inc"
+
 static NSDictionary *RVQueueMDXOperation(id command) {
     if (!RVQueueClass(command,@"YTICommand") || !RVCan(command,"getExtension:",@"@@:@")) return nil;
     NSArray *extensions=RVObject(command,"extensionsCurrentlySet");
     if (![extensions isKindOfClass:NSArray.class] || extensions.count>32) return nil;
-    NSDictionary *result=nil;BOOL seenMDX=NO;
+    NSDictionary *result=nil;BOOL seen=NO;
     for (id extension in extensions) {
         id payload=((id(*)(id,SEL,id))objc_msgSend)(command,sel_registerName("getExtension:"),extension);
         if (!RVQueueClass(payload,@"YTIRequestMdxDeviceDiscoveryCommand")) {
@@ -121,9 +128,8 @@ static NSDictionary *RVQueueMDXOperation(id command) {
                 && !RVQueueClass(payload,@"YTIServiceEndpointClientScreenExtension")) return nil;
             continue;
         }
-        if (seenMDX) return nil;seenMDX=YES;
+        if (seen) return nil;seen=YES;
         NSArray *strategies=RVObject(payload,"requestPollingStrategiesArray");
-        // Exactly one queue strategy was captured for each next/last action.
         if (![strategies isKindOfClass:NSArray.class] || strategies.count!=1) return nil;
         id strategy=strategies[0];
         if (!RVQueueClass(strategy,@"YTIMdxDeviceDiscoveryPollingStrategy") || !RVCan(strategy,"discoveryStrategy",@"i@:")
@@ -135,86 +141,73 @@ static NSDictionary *RVQueueMDXOperation(id command) {
 static BOOL RVQueueLocalHandle(id command,id entry) {
     if (!RVCompatible || !NSThread.isMainThread || RVQueueLocalDepth) return NO;
     NSDictionary *operation=RVQueueMDXOperation(command);if (!operation) return NO;
-    atomic_fetch_add(&RVQueueMDXSeen,1);RVQueueLocalDepth++;
-    BOOL handled=NO;NSArray *beforeModel=[RVQueueLocalItems copy];
-    @try {
-        // A casting session keeps the original discovery semantics.
-        if (RVBool(RVQueueLocalController,"isMDXRemoteQueue")) { RVQueueLocalFailure=@"casting_queue";return NO; }
-        RVQueueLocalSeed();
-        if (RVQueueLocalItems.count>=500) { RVQueueLocalFailure=@"queue_limit";return NO; }
-        id video=RVQueueMakeVideo(operation[@"video_id"],entry);
-        if (!video) { RVQueueLocalFailure=@"renderer_adapter_unavailable";return NO; }
-        NSUInteger current=RVQueueLocalIndex(RVQueueLocalCurrent());
-        NSUInteger index=[operation[@"play_next"] boolValue] && current!=NSNotFound ? current+1 : RVQueueLocalItems.count;
-        [RVQueueLocalItems insertObject:video atIndex:index];
-        id panel=RVQueueLocalPanel(RVQueueLocalCurrent());
-        if (!panel) { RVQueueLocalFailure=@"panel_adapter_unavailable";return NO; }
-        // From here the validated local operation is committed. Even if a
-        // native observer throws, never replay it through remote discovery.
-        handled=YES;atomic_fetch_add(&RVQueueMDXHandled,1);
-        // Use native notifications and queue ownership, not a parallel player.
-        id cls=NSClassFromString(@"YTQueueItem");
-        if (RVCan(cls,"queueItemWithPlaylistPanelVideoRenderer:",@"@@:@")
-            && RVCan(RVQueueLocalController,"insertQueueItems:atIndex:",@"v@:@Q")
-            && RVCan(RVQueueLocalController,"queueCount",@"Q@:")) {
-            NSUInteger before=((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("queueCount"));
-            BOOL hydrate=before==0 && RVQueueValidVideo(RVQueueLocalCurrent()) && RVQueueLocalItems.count>1;
-            NSArray *renderers=hydrate ? RVQueueLocalItems : @[video];
-            NSUInteger insertion=hydrate ? 0 : index;
-            if (before+renderers.count==RVQueueLocalItems.count && insertion<=before) {
-                NSMutableArray *nativeItems=[NSMutableArray array];
-                for (id renderer in renderers) {
-                    id item=((id(*)(id,SEL,id))objc_msgSend)(cls,sel_registerName("queueItemWithPlaylistPanelVideoRenderer:"),renderer);
-                    if (item) [nativeItems addObject:item];
-                }
-                if (nativeItems.count==renderers.count) {
-                    RVQueueVoid(RVQueueLocalController,"recordUserQueueModification");
-                    ((void(*)(id,SEL,id,NSUInteger))objc_msgSend)(RVQueueLocalController,sel_registerName("insertQueueItems:atIndex:"),nativeItems,insertion);
-                    NSUInteger after=((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("queueCount"));
-                    if (after==before+nativeItems.count) {
-                        atomic_fetch_add(&RVQueueNativeInserted,1);
-                        if (hydrate) RVQueueNumber(RVQueueLocalController,"setNowPlayingIndex:",RVQueueLocalIndex(RVQueueLocalCurrent()));
-                    }
-                }
-            }
-        }
-        RVQueueLocalRefreshPanel();RVQueueLocalFailure=nil;
-    } @catch (__unused NSException *exception) { RVQueueLocalFailure=@"native_queue_exception"; }
-    @finally { if (!handled) RVQueueLocalItems=beforeModel ? [beforeModel mutableCopy] : nil;RVQueueLocalDepth--; }
-    return handled;
-}
-static id RVQueueLocalParsedPanel(id original,id response) {
-    if (!RVCompatible || !NSThread.isMainThread || !RVQueueLocalItems.count) return original;
-    // Respect a real server playlist. Inject only a missing/local queue panel.
-    NSString *playlist=RVObject(original,"playlistId");
-    if ([playlist isKindOfClass:NSString.class] && playlist.length && ![playlist isEqual:@"RVPortQueue"]) return original;
-    NSString *current=RVObject(RVObject(RVObject(response,"currentVideoEndpoint"),"watchEndpoint"),"videoId");
-    if (!RVQueueValidVideo(current)) current=RVQueueLocalCurrent();
-    if (current && RVQueueLocalIndex(current)==NSNotFound) {
-        id video=RVQueueMakeVideo(current,nil);if (video && RVQueueLocalItems.count<500) [RVQueueLocalItems insertObject:video atIndex:0];
+    atomic_fetch_add(&RVQueueMDXSeen,1);
+    if (!RVQueueLocalController) { RVQueueLocalFailure=@"native_queue_unavailable";return NO; }
+    if (RVBool(RVQueueLocalController,"isMDXRemoteQueue")) { RVQueueLocalFailure=@"casting_queue";return NO; }
+    id itemClass=NSClassFromString(@"YTQueueItem"),dataClass=NSClassFromString(@"YTQueueModificationNotificationData");
+    const char *factory="addToQueueNotificationWithQueueItems:atInsertPosition:predecessorSetVideoID:responseForLogging:";
+    if (!RVCan(RVQueueLocalController,"handleQueueModification:",@"v@:@") || !RVCan(RVQueueLocalController,"queueCount",@"Q@:")
+        || !RVCan(itemClass,"queueItemWithPlaylistPanelVideoRenderer:",@"@@:@") || !RVCan(dataClass,factory,@"@@:@i@@")) {
+        RVQueueLocalFailure=@"native_mutation_adapter_unavailable";return NO;
     }
-    id panel=RVQueueLocalPanel(current);if (panel) atomic_fetch_add(&RVQueuePanels,1);
-    return panel ?: original;
+    NSUInteger before=RVQueueCount();if (before>=500) { RVQueueLocalFailure=@"queue_limit";return NO; }
+    NSString *current=RVQueueLocalCurrent();
+    if (before && [operation[@"play_next"] boolValue] && (!RVCan(RVQueueLocalController,"nowPlayingIndex",@"Q@:")
+        || ((NSUInteger(*)(id,SEL))objc_msgSend)(RVQueueLocalController,sel_registerName("nowPlayingIndex"))>=before)) {
+        RVQueueLocalFailure=@"native_current_index_unavailable";return NO;
+    }
+    RVQueueLocalDepth++;BOOL invoked=NO,previousOwned=RVQueueNativeOwned;NSUInteger expected=before+1;
+    @try {
+        id video=RVQueueMakeVideo(operation[@"video_id"],entry);
+        id item=video ? ((id(*)(id,SEL,id))objc_msgSend)(itemClass,sel_registerName("queueItemWithPlaylistPanelVideoRenderer:"),video) : nil;
+        if (!item) { RVQueueLocalFailure=@"native_item_unavailable";return NO; }
+        int position=[operation[@"play_next"] boolValue] ? 1 : 2;
+        if (!before && !current) position=2; // An empty queue has the same next/last insertion point.
+        id data=((id(*)(id,SEL,id,int,id,id))objc_msgSend)(dataClass,sel_registerName(factory),@[item],position,nil,nil);
+        if (!data) { RVQueueLocalFailure=@"native_notification_unavailable";return NO; }
+        if (!before && current) {
+            if (!RVCan(RVQueueLocalController,"insertQueueItems:atIndex:",@"v@:@Q")
+                || !RVCan(RVQueueLocalController,"setNowPlayingIndex:",@"v@:Q")) { RVQueueLocalFailure=@"native_seed_adapter_unavailable";return NO; }
+            id seedVideo=RVQueueMakeVideo(current,nil);
+            id seed=seedVideo ? ((id(*)(id,SEL,id))objc_msgSend)(itemClass,sel_registerName("queueItemWithPlaylistPanelVideoRenderer:"),seedVideo) : nil;
+            if (!seed) { RVQueueLocalFailure=@"native_seed_item_unavailable";return NO; }
+            if (!previousOwned) RVQueueNativeSourcePlaylist=[RVObject(RVObject(RVQueueLocalController,"playlistPanel"),"playlistId") copy];
+            RVQueueNativeOwned=YES;invoked=YES;
+            ((void(*)(id,SEL,id,NSUInteger))objc_msgSend)(RVQueueLocalController,sel_registerName("insertQueueItems:atIndex:"),@[seed],0);
+            if (RVQueueCount()!=1) { RVQueueLocalFailure=@"native_seed_not_inserted";atomic_fetch_add(&RVQueueNativeUnconfirmed,1);return YES; }
+            RVQueueNumber(RVQueueLocalController,"setNowPlayingIndex:",0);expected++;
+        }
+        if (!previousOwned) RVQueueNativeSourcePlaylist=[RVObject(RVObject(RVQueueLocalController,"playlistPanel"),"playlistId") copy];
+        RVQueueNativeOwned=YES;invoked=YES;
+        // Native registration uses NSNotification.object == typed data. Invoke
+        // the active controller directly; do not broadcast to other accounts.
+        NSNotification *notification=[NSNotification notificationWithName:@"YTQueueModificationNotification" object:data];
+        ((void(*)(id,SEL,id))objc_msgSend)(RVQueueLocalController,sel_registerName("handleQueueModification:"),notification);
+        if (RVQueueCount()==expected && RVQueueNativeIndex(operation[@"video_id"])!=NSNotFound) {
+            atomic_fetch_add(&RVQueueNativeConfirmed,1);RVQueueLocalFailure=nil;
+        } else { atomic_fetch_add(&RVQueueNativeUnconfirmed,1);RVQueueLocalFailure=@"native_mutation_not_confirmed"; }
+        atomic_fetch_add(&RVQueueMDXHandled,1);
+        RVQueueNativeRefreshPresentation();
+    } @catch (__unused NSException *exception) {
+        RVQueueLocalFailure=@"native_queue_exception";
+        if (invoked) atomic_fetch_add(&RVQueueNativeUnconfirmed,1);
+    } @finally { if (!invoked) RVQueueNativeOwned=previousOwned;RVQueueLocalDepth--; }
+    return invoked; // Never replay a possibly committed native operation.
 }
 static NSDictionary *RVQueueLocalReport(void) {
-    return @{@"mdx_queue_operations_recognized":@(atomic_load(&RVQueueMDXSeen)),@"mdx_queue_operations_handled":@(atomic_load(&RVQueueMDXHandled)),
-        @"native_insertions_confirmed":@(atomic_load(&RVQueueNativeInserted)),@"local_model_count":@(RVQueueLocalItems.count),
-        @"local_panels_returned":@(atomic_load(&RVQueuePanels)),@"native_queue_bound":@(RVQueueLocalController!=nil),
-        @"native_panel_bound":@(RVQueueLocalPanelController!=nil),@"last_blocker":RVQueueLocalFailure ?: @"none"};
+    NSMutableDictionary *report=[@{@"queue_owner":@"YTQueueController",@"parallel_queue_model":@NO,
+        @"mdx_queue_operations_recognized":@(atomic_load(&RVQueueMDXSeen)),@"mdx_queue_operations_handled":@(atomic_load(&RVQueueMDXHandled)),
+        @"native_mutations_confirmed":@(atomic_load(&RVQueueNativeConfirmed)),@"native_mutations_unconfirmed":@(atomic_load(&RVQueueNativeUnconfirmed)),
+        @"native_queue_count":@(RVQueueCount()),@"native_queue_owned":@(RVQueueNativeOwned),
+        @"native_queue_bound":@(RVQueueLocalController!=nil),@"native_panel_bound":@(RVQueueLocalPanelController!=nil),
+        @"last_blocker":RVQueueLocalFailure ?: @"none"} mutableCopy];
+    [report addEntriesFromDictionary:RVQueuePresentationReport()];return report;
 }
-static void RVQueueLocalSync(id controller) {
-    if (!NSThread.isMainThread || controller!=RVQueueLocalController || RVQueueLocalDepth || !RVQueueLocalItems.count) return;
-    NSArray *items=RVObject(controller,"playbackQueueItems");
-    if (![items isKindOfClass:NSArray.class] || items.count>500) return;
-    NSMutableArray *updated=[NSMutableArray array];
-    for (id item in items) {
-        id renderer=RVObject(item,"videoRenderer");
-        if (!RVQueueValidVideo(RVObject(renderer,"videoId")) || ![renderer conformsToProtocol:@protocol(NSCopying)]) return;
-        [updated addObject:[renderer copy]];
-    }
-    RVQueueLocalItems=updated;
+static BOOL RVQueueNativeSection(id section) {
+    return RVQueueNativeActive() && [RVObject(RVObject(section,"entry"),"playlistId") isEqual:@"RVPortQueue"];
 }
 static void RVInstallQueueLocal(void) {
+    RVInstallQueuePresentation();
     RVHook(@"MDXRequestDeviceDiscoveryCommandHandlerImpl",@"executeWithCommand:entry:fromView:sender:",@"v@:@@@@",NO,^id(IMP original,SEL sel) {
         return ^(id handler,id command,id entry,id view,id sender) {
             if (!RVQueueLocalHandle(command,entry)) ((void(*)(id,SEL,id,id,id,id))original)(handler,sel,command,entry,view,sender);
@@ -229,7 +222,6 @@ static void RVInstallQueueLocal(void) {
         RVHook(name,@"handleCommand:entry:fromView:sender:completionBlock:",@"B@:@@@@@?",NO,^id(IMP original,SEL sel) {
             return ^BOOL(id router,id command,id entry,id view,id sender,id completion) {
                 if (!RVQueueLocalHandle(command,entry)) return ((BOOL(*)(id,SEL,id,id,id,id,id))original)(router,sel,command,entry,view,sender,completion);
-                // Same two-object completion ABI used by the native queue handler.
                 if (completion) ((void(^)(id,id))completion)(nil,nil);return YES;
             };
         });
@@ -237,38 +229,37 @@ static void RVInstallQueueLocal(void) {
     RVHook(@"YTQueueController",@"initWithAccountID:parentResponder:",@"@@:@@",NO,^id(IMP original,SEL sel) {
         return ^id(id object,id account,id responder) { id result=((id(*)(id,SEL,id,id))original)(object,sel,account,responder);RVQueueLocalBind(result,account);return result; };
     });
+    RVHook(@"YTQueueController",@"initWithAccountID:restorableQueueState:parentResponder:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
+        return ^id(id object,id account,id state,id responder) { id result=((id(*)(id,SEL,id,id,id))original)(object,sel,account,state,responder);RVQueueLocalBind(result,account);return result; };
+    });
     RVHook(@"YTPlaylistPanelController",@"initWithAccountID:parentResponder:queueController:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
         return ^id(id object,id account,id responder,id controller) { id result=((id(*)(id,SEL,id,id,id))original)(object,sel,account,responder,controller);RVQueueLocalPanelController=result;RVQueueLocalBind(controller,account);return result; };
     });
     RVHook(@"YTPlaylistPanelController",@"initWithAccountID:parentResponder:",@"@@:@@",NO,^id(IMP original,SEL sel) {
         return ^id(id object,id account,id responder) { id result=((id(*)(id,SEL,id,id))original)(object,sel,account,responder);RVQueueLocalPanelController=result;return result; };
     });
-    RVHook(@"YTDefaultQueueWatchNextResponseParser",@"playlistPanelRendererFromWatchNextResponse:",@"@@:@",NO,^id(IMP original,SEL sel) {
-        return ^id(id object,id response) { return RVQueueLocalParsedPanel(((id(*)(id,SEL,id))original)(object,sel,response),response); };
-    });
-    RVHook(@"YTIWatchNextResponse",@"yt_playlistPanelRenderer",@"@@:",NO,^id(IMP original,SEL sel) {
-        return ^id(id response) { return RVQueueLocalParsedPanel(((id(*)(id,SEL))original)(response,sel),response); };
-    });
-    RVHook(@"YTWatchController",@"prepareWithWatchNextResponse:",@"v@:@",NO,^id(IMP original,SEL sel) {
-        return ^(id watch,id response) { RVQueueLocalWatch=watch;((void(*)(id,SEL,id))original)(watch,sel,response); };
-    });
-    for (NSString *name in @[@"isQueue",@"hasQueueContents"])
-        RVHook(@"YTPlaylistPanelController",name,@"B@:",NO,^id(IMP original,SEL sel) {
-            return ^BOOL(id object) {
-                if ([RVObject(RVObject(object,"playlistPanelRenderer"),"playlistId") isEqual:@"RVPortQueue"] && RVQueueLocalItems.count) return YES;
-                return ((BOOL(*)(id,SEL))original)(object,sel);
-            };
-        });
-    RVHook(@"YTQueueController",@"moveItemAtIndexPath:toIndexPath:userTriggered:",@"v@:@@B",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id from,id to,BOOL triggered) { ((void(*)(id,SEL,id,id,BOOL))original)(object,sel,from,to,triggered);RVQueueLocalSync(object); };
-    });
-    RVHook(@"YTQueueController",@"removeItemAtIndexPath:userTriggered:",@"v@:@B",NO,^id(IMP original,SEL sel) {
-        return ^(id object,id path,BOOL triggered) { ((void(*)(id,SEL,id,BOOL))original)(object,sel,path,triggered);RVQueueLocalSync(object); };
-    });
-    RVHook(@"YTQueueController",@"removeQueueItemAtIndex:",@"v@:Q",NO,^id(IMP original,SEL sel) {
-        return ^(id object,NSUInteger index) { ((void(*)(id,SEL,NSUInteger))original)(object,sel,index);RVQueueLocalSync(object); };
-    });
     RVHook(@"YTQueueController",@"clearQueue",@"v@:",NO,^id(IMP original,SEL sel) {
-        return ^(id object) { ((void(*)(id,SEL))original)(object,sel);if (object==RVQueueLocalController && !RVQueueLocalDepth) RVQueueLocalItems=nil; };
+        return ^(id object) { ((void(*)(id,SEL))original)(object,sel);if (object==RVQueueLocalController && !RVQueueLocalDepth && !RVQueueNativeResponseDepth) { RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil; } };
+    });
+    // These section callbacks normally submit a remote playlist edit as well
+    // as the local mutation. Local queue rows route directly to their owner.
+    RVHook(@"YTPlaylistPanelSectionController",@"didMoveEntryAtIndex:toIndexPath:",@"v@:Q@",NO,^id(IMP original,SEL sel) {
+        return ^(id section,NSUInteger from,NSIndexPath *to) {
+            if (!RVQueueNativeSection(section)) { ((void(*)(id,SEL,NSUInteger,id))original)(section,sel,from,to);return; }
+            if (to.length!=2 || from>=RVQueueCount() || [to indexAtPosition:1]>=RVQueueCount()
+                || !RVCan(RVQueueLocalController,"moveItemAtIndexPath:toIndexPath:userTriggered:",@"v@:@@B")) return;
+            NSUInteger indices[]={0,from};NSIndexPath *source=[NSIndexPath indexPathWithIndexes:indices length:2];
+            ((void(*)(id,SEL,id,id,BOOL))objc_msgSend)(RVQueueLocalController,sel_registerName("moveItemAtIndexPath:toIndexPath:userTriggered:"),source,to,YES);
+            RVQueueNativeRefreshPresentation();
+        };
+    });
+    RVHook(@"YTPlaylistPanelSectionController",@"didRemoveEntryAtIndexPath:",@"v@:@",NO,^id(IMP original,SEL sel) {
+        return ^(id section,NSIndexPath *path) {
+            if (!RVQueueNativeSection(section)) { ((void(*)(id,SEL,id))original)(section,sel,path);return; }
+            if (path.length!=2 || [path indexAtPosition:1]>=RVQueueCount()
+                || !RVCan(RVQueueLocalController,"removeItemAtIndexPath:userTriggered:",@"v@:@B")) return;
+            ((void(*)(id,SEL,id,BOOL))objc_msgSend)(RVQueueLocalController,sel_registerName("removeItemAtIndexPath:userTriggered:"),path,YES);
+            RVQueueNativeRefreshPresentation();
+        };
     });
 }

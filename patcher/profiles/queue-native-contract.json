@@ -1,0 +1,29 @@
+{
+  "version": "0.3.66",
+  "base_release": "0.3.65",
+  "base_commit": "0920273dd5c9fc3f27a97b63cf5c5968377ed1ee",
+  "target": "YouTube iOS 21.39.4 ARM64",
+  "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
+  "queue_owner": "YTQueueController",
+  "parallel_item_array": false,
+  "routing": "Exact captured next/last MDX schema uses typed notification data passed directly to active handleQueueModification:, positions 1 and 2. No broadcast to other account controllers.",
+  "native_evidence": {
+    "mutation_handler": "0x101748360",
+    "notification_factory": "0x10174d8bc",
+    "queue_item_factory": "0x101748f9c",
+    "response_presence_guard": "0x1042f7390",
+    "response_factory": "0x1042f754c",
+    "engagement_factory": "0x10172fd00"
+  },
+  "presentation": "Copied phone Watch Next branch with actual playlist wrapper oneof 50631000 and finite queueMode 4. Renderer snapshots read only native playbackQueueItems. Native engagement registration refresh avoids loading a panel solely to refresh paused playback.",
+  "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
+  "preservation": "Unknown MDX shapes, active casting queues and unrelated playlist/video responses retain original behavior. No account entitlement value is changed.",
+  "limits": {
+    "maximum_queue_items": 500,
+    "phone_response_branch_only": true
+  },
+  "raw_tokens_committed": false,
+  "tests_run": false,
+  "tests_skipped_reason": "Explicit user instruction",
+  "device_validated": false
+}

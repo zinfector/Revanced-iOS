@@ -1,8 +1,8 @@
-name: Build MDX local queue with Xcode
+name: Build native queue with Xcode
 
 on:
   push:
-    branches: [fix/queue-mdx-0.3.65]
+    branches: [fix/native-queue-0.3.66]
 
 permissions:
   contents: read
@@ -25,14 +25,6 @@ jobs:
           python-version: '3.14'
       - name: Build ARM64 iOS payload with established Xcode toolchain
         run: python build.py
-      - name: Check queue menu routing and copy isolation on host
-        run: |
-          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_upsell_host.m -o build/queue-upsell-host
-          build/queue-upsell-host > build/queue-upsell-host.json
-          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_params_host.m -o build/queue-params-host
-          build/queue-params-host > build/queue-params-host.json
-          xcrun clang -fobjc-arc -fblocks -std=gnu11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function -framework Foundation tests/queue_local_host.m -o build/queue-local-host
-          build/queue-local-host > build/queue-local-host.json
       - name: Record compiler and cloud build provenance
         run: |
           python - <<'PY'
@@ -44,8 +36,8 @@ jobs:
               'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
               'xcode': subprocess.check_output(['xcodebuild', '-version'], text=True).strip(),
               'clang': subprocess.check_output(['xcrun', '--sdk', 'iphoneos', 'clang', '--version'], text=True).strip(),
-              'tests_run': True,
-              'test_scope': 'queue routing, captured MDX token schema and native bridge host fixtures; no patched device test or full regression suite',
+              'tests_run': False,
+              'test_scope': 'Tests skipped at explicit user request',
           }
           Path('build/cloud-build.json').write_text(json.dumps(provenance, indent=2)+'\n')
           PY
@@ -59,8 +51,5 @@ jobs:
             patcher/build/build-manifest.json
             patcher/build/build.log
             patcher/build/cloud-build.json
-            patcher/build/queue-upsell-host.json
-            patcher/build/queue-params-host.json
-            patcher/build/queue-local-host.json
           if-no-files-found: error
           retention-days: 7

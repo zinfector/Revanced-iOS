@@ -127,7 +127,7 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
 }
 #include "RVQueueLocal.inc"
 static NSDictionary *RVQueueReport(void) {
-    NSMutableDictionary *report=[@{@"revision":@"mdx-local-queue-2",@"menus_examined":@(atomic_load(&RVQueueMenus)),
+    NSMutableDictionary *report=[@{@"revision":@"native-queue-owner-3",@"menus_examined":@(atomic_load(&RVQueueMenus)),
         @"queue_items_examined":@(atomic_load(&RVQueueItems)),@"upsell_items_found":@(atomic_load(&RVQueueOffers)),
         @"upsell_items_replaced":@(atomic_load(&RVQueueRewrites)),@"missing_queue_sibling":@(atomic_load(&RVQueueMissing)),
         @"ambiguous_queue_sibling":@(atomic_load(&RVQueueAmbiguous)),@"rewrite_failures":@(atomic_load(&RVQueueFailures)),
