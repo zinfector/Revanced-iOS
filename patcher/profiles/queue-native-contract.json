@@ -1,12 +1,12 @@
 {
-  "version": "0.3.68",
-  "base_release": "0.3.67",
-  "base_commit": "7776d5a4bfa9e527d65744cb13eba2c70eb3441c",
+  "version": "0.3.69",
+  "base_release": "0.3.68",
+  "base_commit": "e3d630e63ad29070cb0a0c5bd8f0a5b4e3e33783",
   "target": "YouTube iOS 21.39.4 ARM64",
   "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
   "queue_owner": "YTQueueController",
   "parallel_item_array": false,
-  "routing": "Bind queue operations to source video and native icon/recognized Elements row. Execute YTQueueController directly before acquisition dispatch, independent of hidden MDX alternatives or paired offer siblings. Preserve source entries in native Elements contexts; replace whole queue action or row, not just its outer callback.",
+  "routing": "Resolve the source/current native watch and its playlistPanelController.queueController at action time. For a missing owner or empty idle queue, send a native miniplayer Watch transition, retain one pending user action for at most ten seconds, wait for the matching stable Watch response, then seed the first video once. Subsequent actions retain the native insertion path observed working in .68.",
   "native_evidence": {
     "mutation_handler": "0x101748360",
     "notification_factory": "0x10174d8bc",
@@ -17,20 +17,25 @@
     "elements_row_add": "0x10183147c",
     "elements_command_bridge": "0x100572a98",
     "elements_context_set_command": "0x100572ebc",
-    "native_start_playback": "0x1017421c0"
+    "native_start_playback": "0x1017421c0",
+    "miniplayer_transition_handler": "0x10166b43c",
+    "watch_panel_getter": "0x10136797c",
+    "panel_queue_getter": "0x101733050"
   },
   "presentation": "Capture the native playlist panel update and capture Watch responses again after controller initialization; snapshot only native queue items into the existing engagement panel.",
   "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
   "preservation": "Unknown MDX shapes, active casting queues and unrelated playlist/video responses retain original behavior. No account entitlement value is changed.",
   "limits": {
     "maximum_queue_items": 500,
-    "phone_response_branch_only": true
+    "phone_response_branch_only": true,
+    "pending_actions": 1,
+    "pending_timeout_seconds": 10
   },
   "raw_tokens_committed": false,
   "tests_run": false,
   "tests_skipped_reason": "Explicit user instruction",
   "device_validated": false,
-  "live_baseline": "Earlier delivered .67 did not resolve user-reported queue popup; no authenticated current-build call stack was available for .68.",
-  "observed_limit": "Static implementation only; current device popup command and installed patched behavior are not observed. Elements text matching is limited to the listed English accessibility labels and individual listOption rows; singleContentElement whole menus remain native.",
+  "live_baseline": "Authenticated installed .68 source fingerprint matched delivery. First queue tap failed native_queue_unavailable; after a video was loaded, two actions produced two confirmed native mutations, native queue count three, two native panel refreshes and no blocker.",
+  "observed_limit": "The .68 loaded-video route was observed through runtime counters. New .69 native Watch bootstrap has not been installed or observed; no tests run.",
   "source_identity": "Use selected source renderer video ID; never substitute current playback video for a missing target."
 }

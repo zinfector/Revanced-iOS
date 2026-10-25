@@ -12,6 +12,7 @@ static _Thread_local NSUInteger RVQueueLocalDepth,RVQueueNativeResponseDepth;
 static atomic_uint RVQueueMDXSeen,RVQueueMDXHandled,RVQueueNativeConfirmed,RVQueueNativeUnconfirmed;
 static atomic_uint RVQueueDecodePayloads,RVQueueDecodeSuccess,RVQueueDecodeStage;
 static atomic_uint RVQueueMenuTokens,RVQueueMenuActions,RVQueueMenuActionTaps,RVQueueMenuActionFailures,RVQueueOffMain;
+static void RVQueueFinishPending(void);
 
 static BOOL RVQueueValidVideo(id value) {
     if (![value isKindOfClass:NSString.class] || [value length]!=11) return NO;
@@ -46,6 +47,31 @@ static void RVQueueLocalBind(id controller,id account) {
     }
     RVQueueLocalController=controller;RVQueueLocalAccount=account;RVQueueLocalAccountBound=YES;
 }
+static id RVQueueWatchFromResponder(id responder) {
+    for (NSUInteger depth=0;responder && depth<8;depth++) {
+        if (RVQueueClass(responder,@"YTWatchController")) return responder;
+        id parent=RVObject(responder,"parentResponder");if (parent==responder) break;responder=parent;
+    }
+    return nil;
+}
+static id RVQueueResolveNativeOwner(id responder) {
+    if (!NSThread.isMainThread) return nil;
+    id watch=RVQueueWatchFromResponder(responder) ?: RVQueueWatchFromResponder(RVCurrentPlayer)
+        ?: RVQueueWatchFromResponder(RVCurrentPlayback) ?: RVQueueWatchFromResponder(RVCurrentWatch);
+    if (!watch && RVQueueLocalWatch && RVObject(RVQueueLocalWatch,"playlistPanelController")==RVQueueLocalPanelController
+        && RVObject(RVQueueLocalPanelController,"queueController")==RVQueueLocalController) watch=RVQueueLocalWatch;
+    id panel=RVObject(watch,"playlistPanelController"),controller=RVObject(panel,"queueController");
+    if (!RVQueueClass(panel,@"YTPlaylistPanelController") || !RVQueueClass(controller,@"YTQueueController")) return nil;
+    id account=RVObject(controller,"accountID");
+    if (!account && controller==RVQueueLocalController) account=RVQueueLocalAccount;
+    if (!account) {
+        Ivar field=class_getInstanceVariable([controller class],"_accountID");
+        const char *type=field ? ivar_getTypeEncoding(field) : NULL;
+        if (type && type[0]=='@') account=object_getIvar(controller,field);
+    }
+    RVQueueLocalBind(controller,account);RVQueueLocalPanelController=panel;RVQueueLocalWatch=watch;
+    return controller; // Caller retains the actual native owner's queue during use.
+}
 static NSString *RVQueueLocalCurrent(void) {
     id video=RVObject(RVCurrentPlayback,"contentVideoID");
     if (!RVQueueValidVideo(video)) video=RVObject(RVQueueLocalController,"nowPlayingVideoID");
@@ -56,12 +82,15 @@ static id RVQueueFormatted(NSString *text) {
     if (!RVCan(cls,"formattedStringWithString:",@"@@:@")) return nil;
     return ((id(*)(id,SEL,id))objc_msgSend)(cls,sel_registerName("formattedStringWithString:"),text);
 }
-static id RVQueueMakeVideo(NSString *video,id entry) {
+static id RVQueueWatchCommand(NSString *video) {
     if (!RVQueueValidVideo(video)) return nil;
-    id renderer=[NSClassFromString(@"YTIPlaylistPanelVideoRenderer") new];
     id watch=[NSClassFromString(@"YTIWatchEndpoint") new],command=[NSClassFromString(@"YTICommand") new];
-    if (!RVQueueSet(watch,@"setVideoId:",video) || !RVQueueSet(command,@"setWatchEndpoint:",watch)
-        || !RVQueueSet(renderer,@"setVideoId:",video) || !RVQueueSet(renderer,@"setNavigationEndpoint:",command)) return nil;
+    return RVQueueSet(watch,@"setVideoId:",video) && RVQueueSet(command,@"setWatchEndpoint:",watch) ? command : nil;
+}
+static id RVQueueMakeVideo(NSString *video,id entry) {
+    id command=RVQueueWatchCommand(video);if (!command) return nil;
+    id renderer=[NSClassFromString(@"YTIPlaylistPanelVideoRenderer") new];
+    if (!RVQueueSet(renderer,@"setVideoId:",video) || !RVQueueSet(renderer,@"setNavigationEndpoint:",command)) return nil;
     RVQueueSet(renderer,@"setPlaylistSetVideoId:",video);
     id title=nil,thumbnail=nil;
     if ([RVObject(entry,"videoId") isEqual:video]) { title=RVObject(entry,"title");thumbnail=RVObject(entry,"thumbnail"); }
@@ -143,11 +172,12 @@ static NSDictionary *RVQueueMDXOperation(id command) {
     }
     return result;
 }
-static BOOL RVQueueNativePerform(NSDictionary *operation,id entry) {
+static BOOL RVQueueNativePerform(NSDictionary *operation,id entry,id responder) {
     if (!RVCompatible || !NSThread.isMainThread || RVQueueLocalDepth) return NO;
     if (!RVQueueValidVideo(operation[@"video_id"]) || ![operation[@"play_next"] isKindOfClass:NSNumber.class]) return NO;
     atomic_fetch_add(&RVQueueMDXSeen,1);
-    if (!RVQueueLocalController) { RVQueueLocalFailure=@"native_queue_unavailable";return NO; }
+    __attribute__((objc_precise_lifetime)) id nativeOwner=RVQueueResolveNativeOwner(responder);
+    if (!nativeOwner) { RVQueueLocalFailure=@"native_queue_unavailable";return NO; }
     if (RVBool(RVQueueLocalController,"isMDXRemoteQueue")) { RVQueueLocalFailure=@"casting_queue";return NO; }
     id itemClass=NSClassFromString(@"YTQueueItem"),dataClass=NSClassFromString(@"YTQueueModificationNotificationData");
     const char *factory="addToQueueNotificationWithQueueItems:atInsertPosition:predecessorSetVideoID:responseForLogging:";
@@ -212,10 +242,11 @@ static BOOL RVQueueLocalHandle(id command,id entry) {
         atomic_fetch_add(&RVQueueOffMain,1);
         return NO;
     }
-    return RVQueueNativePerform(operation,entry);
+    return RVQueueNativePerform(operation,entry,nil);
 }
+#include "RVQueueLifecycle.inc"
 #include "RVQueueActions.inc"
-static id RVQueueDirectMenuAction(id action,id renderer,id entry) {
+static id RVQueueDirectMenuAction(id action,id renderer,id entry,id responder) {
     if (!RVCompatible || !NSThread.isMainThread || !RVQueueRole(renderer)
         || RVBool(RVQueueLocalController,"isMDXRemoteQueue")) return action;
     NSDictionary *operation=RVQueueActionOperation(renderer,entry);
@@ -225,7 +256,7 @@ static id RVQueueDirectMenuAction(id action,id renderer,id entry) {
         || !RVQueueClass(action,@"YTActionSheetAction") || !RVCan(action,"setHandler:",@"v@:@?")
         || !RVCan(action,"handler",@"@?@:")) { atomic_fetch_add(&RVQueueMenuActionFailures,1);return action; }
     id source=RVQueueMenuSourceEntry ?: entry;
-    void (^handler)(void)=^{ RVQueueRunAction(operation,source); };
+    void (^handler)(void)=^{ RVQueueRunAction(operation,source,responder); };
     // Replace the native action's callback before the sheet consumes it. This
     // is upstream of responder dispatch, routing and any later acquisition UI.
     ((void(*)(id,SEL,id))objc_msgSend)(action,sel_registerName("setHandler:"),handler);
@@ -244,6 +275,8 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"queue_menu_action_taps":@(atomic_load(&RVQueueMenuActionTaps)),@"queue_menu_action_failures":@(atomic_load(&RVQueueMenuActionFailures)),
         @"queue_source_actions_wired":@(atomic_load(&RVQueueSourceActions)),@"queue_elements_actions_replaced":@(atomic_load(&RVQueueElementsActions)),
         @"queue_source_video_missing":@(atomic_load(&RVQueueSourceMissing)),
+        @"native_bootstrap_requests":@(atomic_load(&RVQueueBootstrapRequests)),@"native_bootstrap_completed":@(atomic_load(&RVQueueBootstrapCompleted)),
+        @"native_bootstrap_failures":@(atomic_load(&RVQueueBootstrapFailures)),@"native_bootstrap_pending":@(RVQueuePendingOperation!=nil),
         @"last_blocker":RVQueueLocalFailure ?: @"none"} mutableCopy];
     [report addEntriesFromDictionary:RVQueuePresentationReport()];return report;
 }
@@ -256,19 +289,19 @@ static void RVInstallQueueLocal(void) {
     RVHook(@"YTActionSheetAction",@"actionWithElementRenderer:firstResponder:hasInkSplash:sourceEntry:",@"@@:@@B@",YES,^id(IMP original,SEL selector) {
         return ^id(id cls,id renderer,id responder,BOOL splash,id entry) {
             id action=((id(*)(id,SEL,id,id,BOOL,id))original)(cls,selector,renderer,responder,splash,entry);
-            return RVQueueElementsAction(action,entry);
+            return RVQueueElementsAction(action,entry,responder);
         };
     });
     RVHook(@"YTMenuController",@"menuItemWithServiceItemRenderer:entry:firstResponder:",@"@@:@@@",NO,^id(IMP original,SEL selector) {
         return ^id(id controller,id renderer,id entry,id responder) {
             id action=((id(*)(id,SEL,id,id,id))original)(controller,selector,renderer,entry,responder);
-            return RVQueueDirectMenuAction(action,renderer,entry);
+            return RVQueueDirectMenuAction(action,renderer,entry,responder);
         };
     });
     RVHook(@"YTMenuController",@"menuItemWithNavigationItemRenderer:fromView:entry:firstResponder:",@"@@:@@@@",NO,^id(IMP original,SEL selector) {
         return ^id(id controller,id renderer,id view,id entry,id responder) {
             id action=((id(*)(id,SEL,id,id,id,id))original)(controller,selector,renderer,view,entry,responder);
-            return RVQueueDirectMenuAction(action,renderer,entry);
+            return RVQueueDirectMenuAction(action,renderer,entry,responder);
         };
     });
     RVHook(@"MDXRequestDeviceDiscoveryCommandHandlerImpl",@"executeWithCommand:entry:fromView:sender:",@"v@:@@@@",NO,^id(IMP original,SEL sel) {

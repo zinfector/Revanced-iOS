@@ -99,8 +99,9 @@ static BOOL RVQueuePresentationHasResponse(void) {
 }
 static void RVQueuePresentationCapture(id consumer,id response) {
     if (!RVCompatible || !NSThread.isMainThread || RVQueueNativeResponseDepth
-        || !RVQueueLocalController || !RVQueueClass(response,@"YTIWatchNextResponse")) return;
+        || !RVQueueClass(response,@"YTIWatchNextResponse")) return;
     id watch=RVQueueClass(consumer,@"YTWatchController") ? consumer : RVObject(consumer,"parentResponder");
+    if (RVQueueClass(watch,@"YTWatchController")) RVQueueResolveNativeOwner(watch);
     if (RVQueueClass(watch,@"YTWatchController") && RVQueueLocalPanelController
         && RVObject(watch,"playlistPanelController")==RVQueueLocalPanelController
         && RVObject(RVQueueLocalPanelController,"queueController")==RVQueueLocalController)
@@ -109,6 +110,9 @@ static void RVQueuePresentationCapture(id consumer,id response) {
         && consumer!=RVObject(RVQueueLocalWatch,"watchViewController")) return;
     RVQueuePresentationLastResponse=response;RVQueuePresentationAdaptedResponse=nil;
     RVQueuePresentationOwner=RVQueueLocalController;
+    // Always leave the native initialization/update stack before completing a
+    // first queue action; its watch/panel/queue relationships are now captured.
+    dispatch_async(dispatch_get_main_queue(),^{ RVQueueFinishPending(); });
 }
 static id RVQueuePresentationEngagementRenderer(void) {
     if (!RVQueuePresentationHasResponse() || RVQueuePresentationFactoryDepth) return nil;

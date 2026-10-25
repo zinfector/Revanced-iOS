@@ -2,6 +2,7 @@
 // Bind a visible queue action to its source video before any acquisition command
 // is dispatched. Hidden MDX alternatives are no longer an admission requirement.
 static id RVQueueMenuSourceEntry;
+static id RVQueueMenuSourceResponder;
 static NSUInteger RVQueueElementsSheetDepth;
 static const void *RVQueueElementsSourceKey=&RVQueueElementsSourceKey;
 static atomic_uint RVQueueSourceActions,RVQueueElementsActions,RVQueueSourceMissing;
@@ -36,19 +37,21 @@ static NSDictionary *RVQueueActionOperation(id renderer,id entry) {
     NSDictionary *operation=RVQueueMDXOperation(command);
     return operation && [operation[@"play_next"] boolValue]==[role isEqual:@1] ? operation : nil;
 }
-static void RVQueueRunAction(NSDictionary *operation,id entry) {
+static void RVQueueRunAction(NSDictionary *operation,id entry,id responder) {
     void (^perform)(void)=^{
         atomic_fetch_add(&RVQueueMenuActionTaps,1);
-        if (!RVQueueNativePerform(operation,entry)) {
+        if (RVQueuePendingOperation) { RVQueueShowMessage(@"The queue is opening. Please try again in a moment.",responder);return; }
+        id owner=RVQueueResolveNativeOwner(responder);
+        if (RVQueueValidVideo(operation[@"video_id"]) && (!owner || (!RVQueueCount() && !RVQueueLocalCurrent()))) {
+            if (RVQueueStartNativeWatch(operation,entry,responder)) return;
+            atomic_fetch_add(&RVQueueMenuActionFailures,1);RVQueueShowMessage(@"Unable to open the queue. Please try again.",responder);return;
+        }
+        if (!RVQueueNativePerform(operation,entry,responder)) {
             atomic_fetch_add(&RVQueueMenuActionFailures,1);
             // The replacement owns this user action. Replaying the original
             // endpoint here would reopen acquisition instead of enqueueing.
-            Class events=NSClassFromString(@"YTToastResponderEvent");
-            if (RVCan(events,"eventWithMessage:firstResponder:",@"@@:@@")) {
-                NSString *message=RVQueueValidVideo(operation[@"video_id"]) ? @"Queue unavailable. Open a video and try again." : @"Unable to identify this video for the queue.";
-                id event=((id(*)(id,SEL,id,id))objc_msgSend)(events,sel_registerName("eventWithMessage:firstResponder:"),message,RVQueueLocalWatch ?: RVCurrentPlayer);
-                RVQueueVoid(event,"send");
-            }
+            NSString *message=RVQueueValidVideo(operation[@"video_id"]) ? @"Unable to update the queue. Please try again." : @"Unable to identify this video for the queue.";
+            RVQueueShowMessage(message,responder);
         }
     };
     if (NSThread.isMainThread) perform();else dispatch_async(dispatch_get_main_queue(),perform);
@@ -77,7 +80,7 @@ static NSNumber *RVQueueButtonRole(id button,NSUInteger depth,NSUInteger *budget
     }
     return nil;
 }
-static id RVQueueElementsAction(id action,id entry) {
+static id RVQueueElementsAction(id action,id entry,id responder) {
     if (!RVCompatible || !NSThread.isMainThread || RVBool(RVQueueLocalController,"isMDXRemoteQueue")) return action;
     NSUInteger budget=48;NSString *title=nil;
     NSNumber *role=RVQueueButtonRole(RVObject(action,"button"),5,&budget,&title);
@@ -90,7 +93,7 @@ static id RVQueueElementsAction(id action,id entry) {
     if (!RVCan(cls,factory,@"@@:@@@@?")) return action;
     NSDictionary *operation=video ? @{@"video_id":video,@"play_next":@([role isEqual:@1])} : @{};
     id source=RVQueueMenuSourceEntry ?: entry;
-    void (^handler)(void)=^{ RVQueueRunAction(operation,source); };
+    void (^handler)(void)=^{ RVQueueRunAction(operation,source,responder); };
     // The original Elements button dispatches its embedded command, even though
     // the outer action callback is a no-op. Replace the whole native action.
     id replacement=((id(*)(id,SEL,id,id,id,id))objc_msgSend)(cls,sel_registerName(factory),title,nil,RVObject(action,"iconImage"),handler);
@@ -131,7 +134,8 @@ static id RVQueueElementsRowAction(id view) {
     Class cls=NSClassFromString(@"YTActionSheetAction");const char *factory="actionWithTitle:subtitle:iconImage:handler:";
     if (!RVCan(cls,factory,@"@@:@@@@?")) return nil;
     NSDictionary *operation=video ? @{@"video_id":video,@"play_next":@([role isEqual:@1])} : @{};id source=RVQueueMenuSourceEntry;
-    void (^handler)(void)=^{ RVQueueRunAction(operation,source); };
+    id responder=RVQueueMenuSourceResponder;
+    void (^handler)(void)=^{ RVQueueRunAction(operation,source,responder); };
     id action=((id(*)(id,SEL,id,id,id,id))objc_msgSend)(cls,sel_registerName(factory),title,nil,nil,handler);
     if (action) atomic_fetch_add(&RVQueueElementsActions,1);return action;
 }
@@ -157,15 +161,16 @@ static void RVInstallQueueElementsRows(void) {
     RVHook(@"YTElementsActionSheetController",@"showActionSheetWithCommand:commandContext:handler:",@"v@:@@@?",YES,^id(IMP original,SEL selector) {
         return ^(id controller,id command,id context,id handler) {
             if (!NSThread.isMainThread) { ((void(*)(id,SEL,id,id,id))original)(controller,selector,command,context,handler);return; }
-            id previous=RVQueueMenuSourceEntry;NSUInteger previousDepth=RVQueueElementsSheetDepth;
+            id previous=RVQueueMenuSourceEntry,previousResponder=RVQueueMenuSourceResponder;NSUInteger previousDepth=RVQueueElementsSheetDepth;
             RVQueueMenuSourceEntry=RVQueueElementsContextEntry(context);
+            RVQueueMenuSourceResponder=RVObject(RVObject(context,"context"),"parentResponder");
             // singleContentElement can contain an entire menu. A row-label
             // match must never replace that whole container with one action.
             id rows=RVObject(command,"listOptionArray");
             RVQueueElementsSheetDepth=!RVBool(command,"hasSingleContentElement")
                 && [rows isKindOfClass:NSArray.class] && [rows count]>0 ? 1 : 0;
             @try { ((void(*)(id,SEL,id,id,id))original)(controller,selector,command,context,handler); }
-            @finally { RVQueueElementsSheetDepth=previousDepth;RVQueueMenuSourceEntry=previous; }
+            @finally { RVQueueElementsSheetDepth=previousDepth;RVQueueMenuSourceEntry=previous;RVQueueMenuSourceResponder=previousResponder; }
         };
     });
     // 21.39.4 FUN_10183147c adds each listOption ELMView through this method.

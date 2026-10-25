@@ -1,8 +1,8 @@
-name: Build native queue and speed actions with Xcode
+name: Build native queue startup with Xcode
 
 on:
   push:
-    branches: [fix/native-feature-actions-0.3.68]
+    branches: [fix/native-queue-binding-0.3.69]
 
 permissions:
   contents: read
