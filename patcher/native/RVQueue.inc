@@ -8,6 +8,7 @@ static atomic_uint RVQueueMissing,RVQueueAmbiguous,RVQueueFailures,RVQueueHandle
 static atomic_uint RVQueueOptionalOffers;
 static _Thread_local NSUInteger RVQueueRewriteDepth;
 static _Thread_local NSUInteger RVQueueActionDepth;
+static NSDictionary *RVQueueMDXOperation(id command);
 
 static BOOL RVQueueClass(id value,NSString *name) {
     Class cls=NSClassFromString(name);return cls && [value isKindOfClass:cls];
@@ -74,6 +75,12 @@ static id RVQueueItem(id wrapper,NSString **setter) {
     if (RVQueuePresent(wrapper,@"menuServiceItemRenderer")) {
         *setter=@"setMenuServiceItemRenderer:";return RVObject(wrapper,"menuServiceItemRenderer");
     }
+    if (RVQueuePresent(wrapper,@"menuConditionalNavigationItemRenderer")) {
+        *setter=@"setMenuConditionalNavigationItemRenderer:";return RVObject(wrapper,"menuConditionalNavigationItemRenderer");
+    }
+    if (RVQueuePresent(wrapper,@"menuNavigationItemRenderer")) {
+        *setter=@"setMenuNavigationItemRenderer:";return RVObject(wrapper,"menuNavigationItemRenderer");
+    }
     return nil;
 }
 static NSNumber *RVQueueRole(id item) {
@@ -94,9 +101,12 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
             NSString *setter=nil;id item=RVQueueItem(renderers[index],&setter);NSNumber *role=RVQueueRole(item);
             if (!role) continue;atomic_fetch_add(&RVQueueItems,1);
             id endpoint=RVObject(item,"serviceEndpoint");
+            if (!endpoint) endpoint=RVObject(item,"navigationEndpoint");
             if (!RVQueueClass(endpoint,@"YTICommand")) continue;
             NSUInteger flags=RVQueueFlags(endpoint);
-            if (flags==1) {
+            NSDictionary *mdx=RVQueueMDXOperation(endpoint);
+            BOOL matchingMDX=mdx && [mdx[@"play_next"] boolValue]==[role isEqual:@1];
+            if (flags==1 || matchingMDX) {
                 id bytes=RVObject(endpoint,"data");
                 if (![bytes isKindOfClass:NSData.class] || [bytes length]>65536) continue;
                 if (identities[role] && ![identities[role] isEqual:bytes]) [ambiguous addObject:role];
@@ -115,7 +125,8 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
             id wrapper=renderers[[offer[@"index"] unsignedIntegerValue]],item=offer[@"item"];
             if (![wrapper conformsToProtocol:@protocol(NSCopying)] || ![item conformsToProtocol:@protocol(NSCopying)]) continue;
             id copy=[item copy],owner=[wrapper copy];
-            if (!RVQueueSet(copy,@"setServiceEndpoint:",endpoint) || !RVQueueSet(owner,offer[@"setter"],copy)) continue;
+            NSString *endpointSetter=[offer[@"setter"] containsString:@"Navigation"] ? @"setNavigationEndpoint:" : @"setServiceEndpoint:";
+            if (!RVQueueSet(copy,endpointSetter,endpoint) || !RVQueueSet(owner,offer[@"setter"],copy)) continue;
             RVQueueSet(copy,@"setSecondaryIcon:",nil);
             if (!rewritten) rewritten=[renderers mutableCopy];
             rewritten[[offer[@"index"] unsignedIntegerValue]]=owner;atomic_fetch_add(&RVQueueRewrites,1);
@@ -127,7 +138,7 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
 }
 #include "RVQueueLocal.inc"
 static NSDictionary *RVQueueReport(void) {
-    NSMutableDictionary *report=[@{@"revision":@"native-queue-owner-3",@"menus_examined":@(atomic_load(&RVQueueMenus)),
+    NSMutableDictionary *report=[@{@"revision":@"direct-menu-queue-4",@"menus_examined":@(atomic_load(&RVQueueMenus)),
         @"queue_items_examined":@(atomic_load(&RVQueueItems)),@"upsell_items_found":@(atomic_load(&RVQueueOffers)),
         @"upsell_items_replaced":@(atomic_load(&RVQueueRewrites)),@"missing_queue_sibling":@(atomic_load(&RVQueueMissing)),
         @"ambiguous_queue_sibling":@(atomic_load(&RVQueueAmbiguous)),@"rewrite_failures":@(atomic_load(&RVQueueFailures)),

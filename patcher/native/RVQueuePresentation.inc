@@ -100,11 +100,12 @@ static BOOL RVQueuePresentationHasResponse(void) {
 static void RVQueuePresentationCapture(id consumer,id response) {
     if (!RVCompatible || !NSThread.isMainThread || RVQueueNativeResponseDepth
         || !RVQueueLocalController || !RVQueueClass(response,@"YTIWatchNextResponse")) return;
-    if (RVQueueClass(consumer,@"YTWatchController") && RVQueueLocalPanelController
-        && RVObject(consumer,"playlistPanelController")==RVQueueLocalPanelController
+    id watch=RVQueueClass(consumer,@"YTWatchController") ? consumer : RVObject(consumer,"parentResponder");
+    if (RVQueueClass(watch,@"YTWatchController") && RVQueueLocalPanelController
+        && RVObject(watch,"playlistPanelController")==RVQueueLocalPanelController
         && RVObject(RVQueueLocalPanelController,"queueController")==RVQueueLocalController)
-        RVQueueLocalWatch=consumer;
-    if (consumer!=RVQueueLocalWatch
+        RVQueueLocalWatch=watch;
+    if (consumer!=RVQueueLocalPanelController && consumer!=RVQueueLocalWatch
         && consumer!=RVObject(RVQueueLocalWatch,"watchViewController")) return;
     RVQueuePresentationLastResponse=response;RVQueuePresentationAdaptedResponse=nil;
     RVQueuePresentationOwner=RVQueueLocalController;
@@ -169,19 +170,25 @@ static void RVInstallQueuePresentation(void) {
     NSArray *consumers=@[
         @[@"YTWatchController",@"prepareWithWatchNextResponse:"],
         @[@"YTWatchViewController",@"updateWithWatchNextResponse:"],
+        @[@"YTPlaylistPanelController",@"updateWithWatchNextResponse:"],
         @[@"YTPlayerViewController",@"setWatchNextResponse:"]];
     for (NSArray *consumer in consumers) {
         BOOL installed=RVHook(consumer[0],consumer[1],@"v@:@",NO,^id(IMP original,SEL selector) {
             return ^(id object,id response) {
                 RVQueuePresentationCapture(object,response);
-                BOOL ownedConsumer=object==RVQueueLocalWatch
+                BOOL ownedConsumer=object==RVQueueLocalPanelController || object==RVQueueLocalWatch
                     || object==RVObject(RVQueueLocalWatch,"watchViewController");
                 id adapted=ownedConsumer ? RVQueueNativeInjectResponse(response) : response;
                 BOOL scoped=adapted!=response;
                 if (scoped && RVQueuePresentationHasResponse()) RVQueuePresentationAdaptedResponse=adapted;
                 if (scoped) RVQueueNativeResponseDepth++;
                 @try { ((void(*)(id,SEL,id))original)(object,selector,adapted); }
-                @finally { if (scoped) RVQueueNativeResponseDepth--; }
+                @finally {
+                    if (scoped) RVQueueNativeResponseDepth--;
+                    // Watch setup can construct the panel inside the original
+                    // call. Capture again after those relationships exist.
+                    RVQueuePresentationCapture(object,response);
+                }
             };
         });
         if (installed) atomic_fetch_add(&RVQueuePresentationHooks,1);
