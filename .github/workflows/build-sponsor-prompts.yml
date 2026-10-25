@@ -1,8 +1,8 @@
-name: Build native queue startup with Xcode
+name: Build queue discovery bypass with Xcode
 
 on:
   push:
-    branches: [fix/native-queue-binding-0.3.69]
+    branches: [fix/queue-discovery-bypass-0.3.70]
 
 permissions:
   contents: read

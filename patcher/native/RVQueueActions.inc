@@ -6,6 +6,8 @@ static id RVQueueMenuSourceResponder;
 static NSUInteger RVQueueElementsSheetDepth;
 static const void *RVQueueElementsSourceKey=&RVQueueElementsSourceKey;
 static atomic_uint RVQueueSourceActions,RVQueueElementsActions,RVQueueSourceMissing;
+static BOOL RVQueueMetadataBusy;
+static NSUInteger RVQueueMetadataGeneration;
 
 static NSString *RVQueueVideoFromEntry(id entry,NSUInteger depth,NSUInteger *budget,NSHashTable *seen) {
     if (!entry || !depth || !*budget || [seen containsObject:entry]) return nil;
@@ -31,16 +33,16 @@ static NSString *RVQueueSourceVideo(id entry) {
 }
 static NSDictionary *RVQueueActionOperation(id renderer,id entry) {
     NSNumber *role=RVQueueRole(renderer);if (!role) return nil;
-    NSString *video=RVQueueSourceVideo(entry);
-    if (video) return @{@"video_id":video,@"play_next":@([role isEqual:@1])};
+    // The captured token identifies the selected target before any acquisition
+    // request. Prefer it over an unrelated video in a parent/source binding.
     id command=RVObject(renderer,"serviceEndpoint") ?: RVObject(renderer,"navigationEndpoint");
     NSDictionary *operation=RVQueueMDXOperation(command);
-    return operation && [operation[@"play_next"] boolValue]==[role isEqual:@1] ? operation : nil;
+    if (operation && [operation[@"play_next"] boolValue]==[role isEqual:@1]) return operation;
+    NSString *video=RVQueueSourceVideo(entry);
+    if (video) return @{@"video_id":video,@"play_next":@([role isEqual:@1])};
+    return nil;
 }
-static void RVQueueRunAction(NSDictionary *operation,id entry,id responder) {
-    void (^perform)(void)=^{
-        atomic_fetch_add(&RVQueueMenuActionTaps,1);
-        if (RVQueuePendingOperation) { RVQueueShowMessage(@"The queue is opening. Please try again in a moment.",responder);return; }
+static void RVQueuePerformPreparedAction(NSDictionary *operation,id entry,id responder) {
         id owner=RVQueueResolveNativeOwner(responder);
         if (RVQueueValidVideo(operation[@"video_id"]) && (!owner || (!RVQueueCount() && !RVQueueLocalCurrent()))) {
             if (RVQueueStartNativeWatch(operation,entry,responder)) return;
@@ -53,6 +55,37 @@ static void RVQueueRunAction(NSDictionary *operation,id entry,id responder) {
             NSString *message=RVQueueValidVideo(operation[@"video_id"]) ? @"Unable to update the queue. Please try again." : @"Unable to identify this video for the queue.";
             RVQueueShowMessage(message,responder);
         }
+}
+static void RVQueueRunAction(NSDictionary *operation,id entry,id responder) {
+    void (^perform)(void)=^{
+        atomic_fetch_add(&RVQueueMenuActionTaps,1);
+        id first=responder ?: RVQueueLocalWatch ?: RVCurrentPlayer ?: RVCurrentWatch;
+        if (RVQueuePendingOperation || RVQueueMetadataBusy) { RVQueueShowMessage(@"The queue is opening. Please try again in a moment.",first);return; }
+        NSString *video=operation[@"video_id"];
+        if (!RVQueueValidVideo(video)) { atomic_fetch_add(&RVQueueMenuActionFailures,1);RVQueueShowMessage(@"Unable to identify this video for the queue.",first);return; }
+        id owner=RVQueueResolveNativeOwner(first);
+        if (RVBool(owner,"isMDXRemoteQueue")) { RVQueueShowMessage(@"Disconnect casting to use the local queue.",first);return; }
+        id source=RVQueueMetadataSource(video,entry);
+        if (RVQueueMetadataReady(source)) { RVQueuePerformPreparedAction(operation,source,first);return; }
+        RVQueueMetadataBusy=YES;NSUInteger generation=++RVQueueMetadataGeneration;
+        id account=RVQueueLocalAccount;__weak id expectedOwner=owner;
+        void (^finish)(id)=^(id loaded) {
+            if (!RVQueueMetadataBusy || generation!=RVQueueMetadataGeneration) return;
+            RVQueueMetadataBusy=NO;
+            id currentOwner=RVQueueResolveNativeOwner(first);
+            BOOL sameAccount=account==RVQueueLocalAccount || [account isEqual:RVQueueLocalAccount];
+            if ((owner && (!expectedOwner || currentOwner!=expectedOwner)) || !sameAccount) {
+                RVQueueLocalFailure=@"native_metadata_context_changed";atomic_fetch_add(&RVQueueMenuActionFailures,1);return;
+            }
+            if (!loaded) {
+                RVQueueLocalFailure=@"native_video_metadata_unavailable";atomic_fetch_add(&RVQueueMenuActionFailures,1);
+                RVQueueShowMessage(@"Unable to load video details for the queue. Please try again.",first);return;
+            }
+            RVQueuePerformPreparedAction(operation,loaded,first);
+        };
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,12*NSEC_PER_SEC),dispatch_get_main_queue(),^{ finish(nil); });
+        @try { if (!RVQueueFetchMetadata(video,finish)) finish(nil); }
+        @catch (__unused NSException *exception) { finish(nil); }
     };
     if (NSThread.isMainThread) perform();else dispatch_async(dispatch_get_main_queue(),perform);
 }

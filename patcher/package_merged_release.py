@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.69'
+VERSION = '0.3.70'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'native-queue-bootstrap',
+    receipt = {'version': VERSION, 'release_flavor': 'queue-discovery-bypass',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'tests_skipped_reason': 'Explicit user instruction',
                'regression_tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Based on 0.3.68, whose loaded-video native insertion and playlist refresh were observed on device. Resolve the actual Watch-owned panel/queue at tap time; when no queue owner or no loaded video exists, construct a native miniplayer transition, wait for a matching stable Watch response, and seed the initial video once. Preserve .68 speed and queue action routing. Tests skipped at user request; new cold-start path device behavior unverified.',
+               'scope': 'Based on 0.3.69. Consume recognized local queue discovery commands before GetActiveDevices, including startup/metadata failures and the native discovery-manager entry. Preserve active casting and unknown discovery operations. Reuse native metadata renderers or obtain videoDetails through a dedicated native Player service that does not forward response actions. Keep native Watch bootstrap, queue insertion and playlist presentation. Tests skipped at user request; new patched-device behavior unverified.',
                'queue_contract': json.loads((ROOT/'profiles/queue-native-contract.json').read_text(encoding='utf-8'))}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages)}))

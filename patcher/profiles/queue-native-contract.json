@@ -1,12 +1,12 @@
 {
-  "version": "0.3.69",
-  "base_release": "0.3.68",
-  "base_commit": "e3d630e63ad29070cb0a0c5bd8f0a5b4e3e33783",
+  "version": "0.3.70",
+  "base_release": "0.3.69",
+  "base_commit": "bd3f689e24b2aa8ba8a52837e602ab605e52223a",
   "target": "YouTube iOS 21.39.4 ARM64",
   "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
   "queue_owner": "YTQueueController",
   "parallel_item_array": false,
-  "routing": "Resolve the source/current native watch and its playlistPanelController.queueController at action time. For a missing owner or empty idle queue, send a native miniplayer Watch transition, retain one pending user action for at most ten seconds, wait for the matching stable Watch response, then seed the first video once. Subsequent actions retain the native insertion path observed working in .68.",
+  "routing": "Recognize the captured strict local next/last token before GetActiveDevices. Consume the recognized action on all local outcomes and route it through native metadata loading, existing-owner insertion, or first-Watch startup. Recognized failures never delegate to the original discovery request.",
   "native_evidence": {
     "mutation_handler": "0x101748360",
     "notification_factory": "0x10174d8bc",
@@ -20,7 +20,13 @@
     "native_start_playback": "0x1017421c0",
     "miniplayer_transition_handler": "0x10166b43c",
     "watch_panel_getter": "0x10136797c",
-    "panel_queue_getter": "0x101733050"
+    "panel_queue_getter": "0x101733050",
+    "discovery_manager": "0x103687918",
+    "discovery_request": "0x100f51cb0",
+    "premium_response_dispatch": "0x100f51ea0",
+    "metadata_player_request": "0x101033ec0",
+    "metadata_player_callback": "0x101034058",
+    "metadata_actions": "0x101034a10"
   },
   "presentation": "Capture the native playlist panel update and capture Watch responses again after controller initialization; snapshot only native queue items into the existing engagement panel.",
   "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
@@ -29,13 +35,16 @@
     "maximum_queue_items": 500,
     "phone_response_branch_only": true,
     "pending_actions": 1,
-    "pending_timeout_seconds": 10
+    "pending_timeout_seconds": 10,
+    "metadata_pending_actions": 1,
+    "metadata_timeout_seconds": 12
   },
   "raw_tokens_committed": false,
   "tests_run": false,
   "tests_skipped_reason": "Explicit user instruction",
   "device_validated": false,
   "live_baseline": "Authenticated installed .68 source fingerprint matched delivery. First queue tap failed native_queue_unavailable; after a video was loaded, two actions produced two confirmed native mutations, native queue count three, two native panel refreshes and no blocker.",
-  "observed_limit": "The .68 loaded-video route was observed through runtime counters. New .69 native Watch bootstrap has not been installed or observed; no tests run.",
-  "source_identity": "Use selected source renderer video ID; never substitute current playback video for a missing target."
+  "observed_limit": "Both original requests on installed .69 were replayed through native MDX and returned onResponseReceivedCommand browseEndpoint SPunlimited /premium. New .70 routing and metadata path have not been observed on device.",
+  "source_identity": "Prefer the exact original MDX token video ID and next/last enum. Metadata must match that target.",
+  "metadata": "Copy matching full playlist renderers or map typed feed/current-player fields. Missing source metadata uses a dedicated YTPlayerService subclass for YTIVideoDetails; only that subclass ignores handleActionsFromPlayerResponse. Require title and thumbnail before inserting."
 }
