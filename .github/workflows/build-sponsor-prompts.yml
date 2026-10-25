@@ -1,8 +1,8 @@
-name: Build direct queue menu with Xcode
+name: Build native queue and speed actions with Xcode
 
 on:
   push:
-    branches: [fix/queue-menu-action-0.3.67]
+    branches: [fix/native-feature-actions-0.3.68]
 
 permissions:
   contents: read

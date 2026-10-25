@@ -138,7 +138,7 @@ static NSArray *RVQueueMenu(NSArray *renderers) {
 }
 #include "RVQueueLocal.inc"
 static NSDictionary *RVQueueReport(void) {
-    NSMutableDictionary *report=[@{@"revision":@"direct-menu-queue-4",@"menus_examined":@(atomic_load(&RVQueueMenus)),
+    NSMutableDictionary *report=[@{@"revision":@"native-source-queue-5",@"menus_examined":@(atomic_load(&RVQueueMenus)),
         @"queue_items_examined":@(atomic_load(&RVQueueItems)),@"upsell_items_found":@(atomic_load(&RVQueueOffers)),
         @"upsell_items_replaced":@(atomic_load(&RVQueueRewrites)),@"missing_queue_sibling":@(atomic_load(&RVQueueMissing)),
         @"ambiguous_queue_sibling":@(atomic_load(&RVQueueAmbiguous)),@"rewrite_failures":@(atomic_load(&RVQueueFailures)),
@@ -153,7 +153,10 @@ static void RVInstallQueue(void) {
     });
     RVHook(@"YTMenuController",@"actionsForRenderers:fromView:entry:shouldLogItems:firstResponder:",@"@@:@@@B@",NO,^id(IMP original,SEL sel) {
         return ^id(id controller,id renderers,id view,id entry,BOOL log,id responder) {
-            return ((id(*)(id,SEL,id,id,id,BOOL,id))original)(controller,sel,RVQueueMenu(renderers),view,entry,log,responder);
+            if (!NSThread.isMainThread) return ((id(*)(id,SEL,id,id,id,BOOL,id))original)(controller,sel,renderers,view,entry,log,responder);
+            id previous=RVQueueMenuSourceEntry;RVQueueMenuSourceEntry=entry;
+            @try { return ((id(*)(id,SEL,id,id,id,BOOL,id))original)(controller,sel,RVQueueMenu(renderers),view,entry,log,responder); }
+            @finally { RVQueueMenuSourceEntry=previous; }
         };
     });
     RVHook(@"YTIMenuRenderer",@"itemsArray",@"@@:",NO,^id(IMP original,SEL sel) {

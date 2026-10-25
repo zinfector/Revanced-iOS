@@ -1,19 +1,23 @@
 {
-  "version": "0.3.67",
-  "base_release": "0.3.66",
-  "base_commit": "4fad3d384877de37fd98b5ea26f96cf9435e2eee",
+  "version": "0.3.68",
+  "base_release": "0.3.67",
+  "base_commit": "7776d5a4bfa9e527d65744cb13eba2c70eb3441c",
   "target": "YouTube iOS 21.39.4 ARM64",
   "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
   "queue_owner": "YTQueueController",
   "parallel_item_array": false,
-  "routing": "Native menu action handler executes the decoded operation directly on main, upstream of responder dispatch and upsell routing. Existing router/MDX interception is retained, with background router calls delegated; the direct menu callback performs mutations on main. Paired MDX endpoints are candidates for service and navigation acquisition entries.",
+  "routing": "Bind queue operations to source video and native icon/recognized Elements row. Execute YTQueueController directly before acquisition dispatch, independent of hidden MDX alternatives or paired offer siblings. Preserve source entries in native Elements contexts; replace whole queue action or row, not just its outer callback.",
   "native_evidence": {
     "mutation_handler": "0x101748360",
     "notification_factory": "0x10174d8bc",
     "queue_item_factory": "0x101748f9c",
     "response_presence_guard": "0x1042f7390",
     "response_factory": "0x1042f754c",
-    "engagement_factory": "0x10172fd00"
+    "engagement_factory": "0x10172fd00",
+    "elements_row_add": "0x10183147c",
+    "elements_command_bridge": "0x100572a98",
+    "elements_context_set_command": "0x100572ebc",
+    "native_start_playback": "0x1017421c0"
   },
   "presentation": "Capture the native playlist panel update and capture Watch responses again after controller initialization; snapshot only native queue items into the existing engagement panel.",
   "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
@@ -26,6 +30,7 @@
   "tests_run": false,
   "tests_skipped_reason": "Explicit user instruction",
   "device_validated": false,
-  "live_baseline": "Installed 0.3.66 source hash matches delivery; profile and hooks active, 44 queue menu entries, zero recognized queue operations, panel/controller bound but Watch response unbound. Live next/last MDX payloads retain the strict 23-byte schema and strategy 4.",
-  "observed_limit": "No call stack established which downstream responder chooses the acquisition UI. New direct action removes that dependency; new build device behavior unverified."
+  "live_baseline": "Earlier delivered .67 did not resolve user-reported queue popup; no authenticated current-build call stack was available for .68.",
+  "observed_limit": "Static implementation only; current device popup command and installed patched behavior are not observed. Elements text matching is limited to the listed English accessibility labels and individual listOption rows; singleContentElement whole menus remain native.",
+  "source_identity": "Use selected source renderer video ID; never substitute current playback video for a missing target."
 }

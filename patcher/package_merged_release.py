@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.67'
+VERSION = '0.3.68'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'queue-direct-menu',
+    receipt = {'version': VERSION, 'release_flavor': 'native-feature-actions',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'tests_skipped_reason': 'Explicit user instruction',
                'regression_tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Based on 0.3.66. Execute decoded queue operations from native menu action handlers before responder dispatch; accept paired service/navigation MDX queue endpoints, run the direct menu callback on main, and capture native panel responses after setup. Tests skipped at user request; device behavior unverified.',
+               'scope': 'Based on 0.3.67. Route source-bound legacy and recognized Elements queue rows to YTQueueController without requiring MDX tokens or matching siblings. Preserve source entries across Elements command contexts; bootstrap idle native queue playback. Rebuild typed 3x options with native factories and redirect speed upsell panel commands to native speed menus, including serialized WatchNext parent models. Tests skipped at user request; device behavior unverified.',
                'queue_contract': json.loads((ROOT/'profiles/queue-native-contract.json').read_text(encoding='utf-8'))}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages)}))

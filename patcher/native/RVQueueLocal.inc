@@ -193,6 +193,12 @@ static BOOL RVQueueNativePerform(NSDictionary *operation,id entry) {
         } else { atomic_fetch_add(&RVQueueNativeUnconfirmed,1);RVQueueLocalFailure=@"native_mutation_not_confirmed"; }
         atomic_fetch_add(&RVQueueMDXHandled,1);
         RVQueueNativeRefreshPresentation();
+        // Queue insertion is deliberately separate from playback. Bootstrap
+        // only an empty, idle queue through the native playback entry point;
+        // adding alongside a loaded/paused video must not restart that video.
+        if (!before && !current && RVQueueNativeIndex(operation[@"video_id"])!=NSNotFound
+            && RVCan(RVQueueLocalController,"playItemAtIndex:",@"v@:Q"))
+            ((void(*)(id,SEL,NSUInteger))objc_msgSend)(RVQueueLocalController,sel_registerName("playItemAtIndex:"),0);
     } @catch (__unused NSException *exception) {
         RVQueueLocalFailure=@"native_queue_exception";
         if (invoked) atomic_fetch_add(&RVQueueNativeUnconfirmed,1);
@@ -208,28 +214,22 @@ static BOOL RVQueueLocalHandle(id command,id entry) {
     }
     return RVQueueNativePerform(operation,entry);
 }
+#include "RVQueueActions.inc"
 static id RVQueueDirectMenuAction(id action,id renderer,id entry) {
     if (!RVCompatible || !NSThread.isMainThread || !RVQueueRole(renderer)
-        || !RVQueueLocalController || RVBool(RVQueueLocalController,"isMDXRemoteQueue")) return action;
-    id command=RVObject(renderer,"serviceEndpoint");
-    if (!command) command=RVObject(renderer,"navigationEndpoint");
-    NSDictionary *operation=RVQueueMDXOperation(command);if (!operation) return action;
+        || RVBool(RVQueueLocalController,"isMDXRemoteQueue")) return action;
+    NSDictionary *operation=RVQueueActionOperation(renderer,entry);
+    if (!operation) { atomic_fetch_add(&RVQueueSourceMissing,1);operation=@{}; }
     atomic_fetch_add(&RVQueueMenuTokens,1);
-    if ([operation[@"play_next"] boolValue]!=[RVQueueRole(renderer) isEqual:@1]
+    if ((operation.count && [operation[@"play_next"] boolValue]!=[RVQueueRole(renderer) isEqual:@1])
         || !RVQueueClass(action,@"YTActionSheetAction") || !RVCan(action,"setHandler:",@"v@:@?")
         || !RVCan(action,"handler",@"@?@:")) { atomic_fetch_add(&RVQueueMenuActionFailures,1);return action; }
-    void (^nativeHandler)(void)=((id(*)(id,SEL))objc_msgSend)(action,sel_registerName("handler"));
-    void (^handler)(void)=^{
-        void (^perform)(void)=^{
-            if (!RVCompatible || RVBool(RVQueueLocalController,"isMDXRemoteQueue")) { if (nativeHandler) nativeHandler();return; }
-            atomic_fetch_add(&RVQueueMenuActionTaps,1);
-            if (!RVQueueNativePerform(operation,entry)) atomic_fetch_add(&RVQueueMenuActionFailures,1);
-        };
-        if (NSThread.isMainThread) perform();else dispatch_async(dispatch_get_main_queue(),perform);
-    };
+    id source=RVQueueMenuSourceEntry ?: entry;
+    void (^handler)(void)=^{ RVQueueRunAction(operation,source); };
     // Replace the native action's callback before the sheet consumes it. This
     // is upstream of responder dispatch, routing and any later acquisition UI.
     ((void(*)(id,SEL,id))objc_msgSend)(action,sel_registerName("setHandler:"),handler);
+    atomic_fetch_add(&RVQueueSourceActions,1);
     atomic_fetch_add(&RVQueueMenuActions,1);return action;
 }
 static NSDictionary *RVQueueLocalReport(void) {
@@ -242,6 +242,8 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"mdx_decoder_last_stage":@(atomic_load(&RVQueueDecodeStage)),@"queue_commands_off_main_delegated":@(atomic_load(&RVQueueOffMain)),
         @"queue_menu_tokens_decoded":@(atomic_load(&RVQueueMenuTokens)),@"queue_menu_actions_wired":@(atomic_load(&RVQueueMenuActions)),
         @"queue_menu_action_taps":@(atomic_load(&RVQueueMenuActionTaps)),@"queue_menu_action_failures":@(atomic_load(&RVQueueMenuActionFailures)),
+        @"queue_source_actions_wired":@(atomic_load(&RVQueueSourceActions)),@"queue_elements_actions_replaced":@(atomic_load(&RVQueueElementsActions)),
+        @"queue_source_video_missing":@(atomic_load(&RVQueueSourceMissing)),
         @"last_blocker":RVQueueLocalFailure ?: @"none"} mutableCopy];
     [report addEntriesFromDictionary:RVQueuePresentationReport()];return report;
 }
@@ -250,6 +252,13 @@ static BOOL RVQueueNativeSection(id section) {
 }
 static void RVInstallQueueLocal(void) {
     RVInstallQueuePresentation();
+    RVInstallQueueElementsRows();
+    RVHook(@"YTActionSheetAction",@"actionWithElementRenderer:firstResponder:hasInkSplash:sourceEntry:",@"@@:@@B@",YES,^id(IMP original,SEL selector) {
+        return ^id(id cls,id renderer,id responder,BOOL splash,id entry) {
+            id action=((id(*)(id,SEL,id,id,BOOL,id))original)(cls,selector,renderer,responder,splash,entry);
+            return RVQueueElementsAction(action,entry);
+        };
+    });
     RVHook(@"YTMenuController",@"menuItemWithServiceItemRenderer:entry:firstResponder:",@"@@:@@@",NO,^id(IMP original,SEL selector) {
         return ^id(id controller,id renderer,id entry,id responder) {
             id action=((id(*)(id,SEL,id,id,id))original)(controller,selector,renderer,entry,responder);
