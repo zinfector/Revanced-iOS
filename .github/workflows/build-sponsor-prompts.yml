@@ -1,8 +1,8 @@
-name: Build queue discovery bypass with Xcode
+name: Build queue metadata context fix with Xcode
 
 on:
   push:
-    branches: [fix/queue-discovery-bypass-0.3.70]
+    branches: [fix/queue-metadata-context-0.3.71]
 
 permissions:
   contents: read

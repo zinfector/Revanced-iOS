@@ -1,7 +1,7 @@
 {
-  "version": "0.3.70",
-  "base_release": "0.3.69",
-  "base_commit": "bd3f689e24b2aa8ba8a52837e602ab605e52223a",
+  "version": "0.3.71",
+  "base_release": "0.3.70",
+  "base_commit": "d8aaa47f96d1089c318e33a0aa337de901d6a6c2",
   "target": "YouTube iOS 21.39.4 ARM64",
   "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
   "queue_owner": "YTQueueController",
@@ -26,7 +26,9 @@
     "premium_response_dispatch": "0x100f51ea0",
     "metadata_player_request": "0x101033ec0",
     "metadata_player_callback": "0x101034058",
-    "metadata_actions": "0x101034a10"
+    "metadata_actions": "0x101034a10",
+    "metadata_proto_builder": "0x101033190",
+    "metadata_request_wrapper": "0x1010336e4"
   },
   "presentation": "Capture the native playlist panel update and capture Watch responses again after controller initialization; snapshot only native queue items into the existing engagement panel.",
   "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
@@ -44,7 +46,7 @@
   "tests_skipped_reason": "Explicit user instruction",
   "device_validated": false,
   "live_baseline": "Authenticated installed .68 source fingerprint matched delivery. First queue tap failed native_queue_unavailable; after a video was loaded, two actions produced two confirmed native mutations, native queue count three, two native panel refreshes and no blocker.",
-  "observed_limit": "Both original requests on installed .69 were replayed through native MDX and returned onResponseReceivedCommand browseEndpoint SPunlimited /premium. New .70 routing and metadata path have not been observed on device.",
+  "observed_limit": "Installed .70 sends a 13-byte Player proto containing only videoId; its metadata error callback returns com.google.HTTPStatus 400. The service does not populate missing context. The .71 change has not been observed on device.",
   "source_identity": "Prefer the exact original MDX token video ID and next/last enum. Metadata must match that target.",
-  "metadata": "Copy matching full playlist renderers or map typed feed/current-player fields. Missing source metadata uses a dedicated YTPlayerService subclass for YTIVideoDetails; only that subclass ignores handleActionsFromPlayerResponse. Require title and thumbnail before inserting."
+  "metadata": "Copy matching native metadata rows or use dedicated Player service. Build the proto with that service native YTPlayerRequestFactory, including active client/account context. Require matching videoId and present client context before sending. Record construction failures and native error code/type. Suppress response actions only for metadata instance; require title and thumbnail for insertion."
 }

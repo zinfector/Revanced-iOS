@@ -283,6 +283,9 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"queue_discovery_boundary_skipped":@(atomic_load(&RVQueueDiscoveryBoundarySkipped)),
         @"queue_metadata_requests":@(atomic_load(&RVQueueMetadataRequests)),@"queue_metadata_loaded":@(atomic_load(&RVQueueMetadataLoaded)),
         @"queue_metadata_failures":@(atomic_load(&RVQueueMetadataFailures)),@"queue_metadata_pending":@(RVQueueMetadataBusy),
+        @"queue_metadata_request_build_failures":@(atomic_load(&RVQueueMetadataRequestBuildFailures)),
+        @"queue_metadata_last_error_code":@(atomic_load(&RVQueueMetadataLastErrorCode)),
+        @"queue_metadata_last_error_http":@(atomic_load(&RVQueueMetadataLastErrorHTTP)),
         @"last_blocker":RVQueueLocalFailure ?: @"none"} mutableCopy];
     [report addEntriesFromDictionary:RVQueuePresentationReport()];return report;
 }

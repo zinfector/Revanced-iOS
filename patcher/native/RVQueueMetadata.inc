@@ -2,6 +2,9 @@
 // Queue rows consume actual native models. Opaque Elements sources use the
 // native Player service for videoDetails, without dispatching response actions.
 static atomic_uint RVQueueMetadataRequests,RVQueueMetadataLoaded,RVQueueMetadataFailures;
+static atomic_uint RVQueueMetadataRequestBuildFailures;
+static atomic_long RVQueueMetadataLastErrorCode;
+static _Atomic(BOOL) RVQueueMetadataLastErrorHTTP;
 static id RVQueueMetadataFind(NSString *video,id source,NSUInteger depth,NSUInteger *budget,NSHashTable *seen) {
     if (!source || !depth || !*budget || [seen containsObject:source]) return nil;
     --*budget;[seen addObject:source];
@@ -94,10 +97,32 @@ static id RVQueueMetadataService(void) {
     });
     return cls ? [cls new] : nil;
 }
+static id RVQueueMetadataRequest(id service,NSString *video) {
+    Class base=NSClassFromString(@"YTPlayerService");
+    if (!base || ![service isKindOfClass:base]) return nil;
+    // The service's sending method expects an already decorated proto. Reuse
+    // its native factory, which supplies the current client/account context.
+    // Do not construct a videoId-only YTIPlayerRequest: the server rejects it.
+    Ivar field=class_getInstanceVariable(base,"_requestFactory");
+    const char *type=field ? ivar_getTypeEncoding(field) : NULL;
+    if (!type || strcmp(type,"@\"<YTPlayerRequestFactory>\"")!=0) return nil;
+    id factory=object_getIvar(service,field);
+    const char *selector="innerTubeRequestForPlayerWithVideoID:playlistID:playlistIndex:playbackContext:forOffline:loggingContext:playerParams:proofOfOriginToken:";
+    if (!RVCan(factory,selector,@"@@:@@Q@B@@@")) return nil;
+    id request=((id(*)(id,SEL,id,id,NSUInteger,id,BOOL,id,id,id))objc_msgSend)
+        (factory,sel_registerName(selector),video,nil,0,nil,NO,nil,nil,nil);
+    if (!RVQueueClass(request,@"YTIPlayerRequest") || ![RVObject(request,"videoId") isEqual:video]
+        || !RVQueuePresent(request,@"context")) return nil;
+    id context=RVObject(request,"context");
+    return RVQueuePresent(context,@"client") && RVQueueClass(RVObject(context,"client"),@"YTIClientInfo") ? request : nil;
+}
 static BOOL RVQueueFetchMetadata(NSString *video,void (^completion)(id)) {
-    id service=RVQueueMetadataService(),request=[NSClassFromString(@"YTIPlayerRequest") new];
+    atomic_store(&RVQueueMetadataLastErrorCode,0);atomic_store(&RVQueueMetadataLastErrorHTTP,NO);
+    id service=RVQueueMetadataService(),request=RVQueueMetadataRequest(service,video);
     const char *selector="makePlayerRequest:responseBlock:errorBlock:";
-    if (!service || !RVQueueSet(request,@"setVideoId:",video) || !RVCan(service,selector,@"v@:@@?@?")) return NO;
+    if (!request || !RVCan(service,selector,@"v@:@@?@?")) {
+        atomic_fetch_add(&RVQueueMetadataRequestBuildFailures,1);return NO;
+    }
     atomic_fetch_add(&RVQueueMetadataRequests,1);
     void (^finish)(id)=^(id response) {
         dispatch_async(dispatch_get_main_queue(),^{
@@ -111,7 +136,12 @@ static BOOL RVQueueFetchMetadata(NSString *video,void (^completion)(id)) {
         });
     };
     void (^success)(id,id)=^(id response,id cacheContext) { finish(response); };
-    void (^failure)(id)=^(id error) { finish(nil); };
+    void (^failure)(id)=^(id error) {
+        NSError *nativeError=[error isKindOfClass:NSError.class] ? error : nil;
+        atomic_store(&RVQueueMetadataLastErrorCode,nativeError.code);
+        atomic_store(&RVQueueMetadataLastErrorHTTP,[nativeError.domain isEqual:@"com.google.HTTPStatus"]);
+        finish(nil);
+    };
     ((void(*)(id,SEL,id,id,id))objc_msgSend)(service,sel_registerName(selector),request,success,failure);
     return YES;
 }
