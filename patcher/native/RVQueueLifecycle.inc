@@ -5,6 +5,7 @@ static NSDictionary *RVQueuePendingOperation;
 static id RVQueuePendingEntry;
 static id RVQueuePendingPreviousResponse;
 static __weak id RVQueuePendingResponder;
+static __weak id RVQueuePendingLayer;
 static NSUInteger RVQueuePendingGeneration;
 static NSTimeInterval RVQueuePendingDeadline;
 static BOOL RVQueuePendingTickScheduled;
@@ -17,7 +18,58 @@ static void RVQueueShowMessage(NSString *message,id responder) {
     RVQueueVoid(event,"send");
 }
 static void RVQueueClearPending(void) {
-    RVQueuePendingOperation=nil;RVQueuePendingEntry=nil;RVQueuePendingPreviousResponse=nil;RVQueuePendingResponder=nil;RVQueuePendingDeadline=0;RVQueuePendingTickScheduled=NO;RVQueuePendingGeneration++;
+    RVQueuePendingOperation=nil;RVQueuePendingEntry=nil;RVQueuePendingPreviousResponse=nil;RVQueuePendingResponder=nil;RVQueuePendingLayer=nil;RVQueuePendingDeadline=0;RVQueuePendingTickScheduled=NO;RVQueuePendingGeneration++;
+}
+static void RVQueueCancelMetadata(void) {
+    if (RVQueueMetadataBusy) atomic_fetch_add(&RVQueueMetadataCancelled,1);
+    RVQueueMetadataBusy=NO;RVQueueMetadataGeneration++;
+}
+static void RVQueueInvalidatePresentation(void) {
+    RVQueuePresentationLastResponse=nil;RVQueuePresentationAdaptedResponse=nil;RVQueuePresentationOwner=nil;
+}
+static void RVQueueOwnerChanged(BOOL accountChanged) {
+    if (!NSThread.isMainThread) return;
+    RVQueueCancelMetadata();RVQueueInvalidatePresentation();RVQueueLocalWatch=nil;RVQueueLocalPanelController=nil;
+    // Cold startup may legitimately replace an empty native owner. Keep its
+    // pending target check; an account switch cancels that action as well.
+    if (accountChanged && RVQueuePendingOperation) { atomic_fetch_add(&RVQueueBootstrapCancelled,1);RVQueueClearPending(); }
+}
+static void RVQueueResetSession(BOOL preserveBootstrap) {
+    RVQueueCancelMetadata();RVQueueInvalidatePresentation();
+    if (!preserveBootstrap) {
+        if (RVQueuePendingOperation) atomic_fetch_add(&RVQueueBootstrapCancelled,1);
+        RVQueueClearPending();
+    }
+    RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil;RVQueueLocalFailure=nil;
+    RVQueueLocalWatch=nil;RVQueueLocalPanelController=nil;RVQueueLocalController=nil;
+    RVQueueLocalAccount=nil;RVQueueLocalAccountBound=NO;atomic_fetch_add(&RVQueueSessionResets,1);
+}
+static BOOL RVQueueLayerTracksSession(id layer) {
+    if (!RVCompatible || !NSThread.isMainThread) return NO;
+    id watch=RVObject(layer,"currentWatchController");
+    return RVQueuePendingLayer==layer || (RVQueueLocalWatch && RVObject(RVQueueLocalWatch,"parentResponder")==layer)
+        || (watch && RVQueueLocalController && RVObject(RVObject(watch,"playlistPanelController"),"queueController")==RVQueueLocalController);
+}
+static void RVInstallQueueLifecycle(void) {
+    RVHook(@"YTWatchLayerViewController",@"clearWatchController",@"v@:",NO,^id(IMP original,SEL selector) {
+        return ^(id layer) {
+            if (RVQueueLayerTracksSession(layer)) {
+                // Native acquisition may clear an old Watch as part of this
+                // bootstrap. The real dismissal hook below cancels user close.
+                BOOL preserve=RVQueuePendingOperation!=nil;
+                if (preserve) RVQueuePendingLayer=layer;
+                RVQueueResetSession(preserve);
+            }
+            ((void(*)(id,SEL))original)(layer,selector);
+        };
+    });
+    RVHook(@"YTWatchLayerViewController",@"didDismissMiniBar",@"v@:",NO,^id(IMP original,SEL selector) {
+        return ^(id layer) {
+            BOOL tracked=RVQueueLayerTracksSession(layer);
+            ((void(*)(id,SEL))original)(layer,selector);
+            if (tracked) RVQueueResetSession(NO);
+        };
+    });
 }
 static void RVQueuePendingFailure(NSString *reason) {
     id responder=RVQueuePendingResponder;RVQueueClearPending();RVQueueLocalFailure=reason;
@@ -39,7 +91,7 @@ static void RVQueueFinishPending(void) {
     NSString *target=RVQueuePendingOperation[@"video_id"];
     id endpoint=RVObject(RVQueuePresentationLastResponse,"currentVideoEndpoint");
     NSString *current=RVObject(RVObject(endpoint,"watchEndpoint"),"videoId");
-    if (!RVQueueValidVideo(current)) current=RVObject(RVCurrentPlayback,"contentVideoID");
+    if (!RVQueueValidVideo(current)) current=RVQueueLocalCurrent();
     if (!RVQueueValidVideo(current)) { RVQueueSchedulePending();return; }
     if (![target isEqual:current]) {
         if (RVQueuePresentationLastResponse==RVQueuePendingPreviousResponse) { RVQueueSchedulePending();return; }
@@ -92,13 +144,17 @@ static BOOL RVQueueStartNativeWatch(NSDictionary *operation,id entry,id responde
     }
     transition=((id(*)(id,SEL,id,int))objc_msgSend)(transition,sel_registerName("initWithNavEndpoint:watchEndpointSource:"),command,0);
     if (!transition || !RVCan(transition,"setBeginPlaybackOnMinibar:",@"v@:B")
+        || !RVCan(transition,"setPrefersPlaybackLayoutStateCollapsed:",@"v@:B")
         || !RVCan(transition,"setPausePlaybackWhenVideoActivates:",@"v@:B")) return NO;
-    // Match YTShowMiniplayerCommandHandlerImpl (21.39.4 0x10166b43c).
-    ((void(*)(id,SEL,BOOL))objc_msgSend)(transition,sel_registerName("setBeginPlaybackOnMinibar:"),YES);
-    ((void(*)(id,SEL,BOOL))objc_msgSend)(transition,sel_registerName("setPausePlaybackWhenVideoActivates:"),YES);
+    // Native collapsed playback acquires a player (21.39.4 0x10134b210).
+    // Begin-on-minibar instead selects ready-to-resume/deferred acquisition.
+    ((void(*)(id,SEL,BOOL))objc_msgSend)(transition,sel_registerName("setBeginPlaybackOnMinibar:"),NO);
+    ((void(*)(id,SEL,BOOL))objc_msgSend)(transition,sel_registerName("setPrefersPlaybackLayoutStateCollapsed:"),YES);
+    ((void(*)(id,SEL,BOOL))objc_msgSend)(transition,sel_registerName("setPausePlaybackWhenVideoActivates:"),NO);
     id event=((id(*)(id,SEL,id,id,id))objc_msgSend)(events,sel_registerName("eventWithTransition:fromView:firstResponder:"),transition,nil,responder);
     if (!RVCan(event,"send",@"v@:")) return NO;
     RVQueuePendingOperation=[operation copy];RVQueuePendingEntry=entry;RVQueuePendingResponder=responder;
+    RVQueuePendingLayer=nil;
     RVQueuePendingPreviousResponse=RVQueuePresentationLastResponse;
     RVQueuePendingDeadline=NSProcessInfo.processInfo.systemUptime+10;RVQueuePendingGeneration++;
     RVQueueLocalFailure=@"native_watch_bootstrap_pending";atomic_fetch_add(&RVQueueBootstrapRequests,1);

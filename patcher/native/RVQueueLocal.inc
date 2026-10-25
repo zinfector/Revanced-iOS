@@ -13,8 +13,12 @@ static atomic_uint RVQueueMDXSeen,RVQueueMDXHandled,RVQueueNativeConfirmed,RVQue
 static atomic_uint RVQueueDecodePayloads,RVQueueDecodeSuccess,RVQueueDecodeStage;
 static atomic_uint RVQueueMenuTokens,RVQueueMenuActions,RVQueueMenuActionTaps,RVQueueMenuActionFailures,RVQueueOffMain;
 static atomic_uint RVQueueDiscoverySkipped,RVQueueDiscoveryBoundarySkipped;
+static BOOL RVQueueMetadataBusy;
+static NSUInteger RVQueueMetadataGeneration;
+static atomic_uint RVQueueMetadataCancelled,RVQueueSessionResets,RVQueueBootstrapCancelled;
 static void RVQueueFinishPending(void);
 static void RVQueueRunAction(NSDictionary *operation,id entry,id responder);
+static void RVQueueOwnerChanged(BOOL accountChanged);
 
 static BOOL RVQueueValidVideo(id value) {
     if (![value isKindOfClass:NSString.class] || [value length]!=11) return NO;
@@ -43,9 +47,10 @@ static NSArray *RVQueueNativeItems(void) {
 static BOOL RVQueueNativeActive(void) { return RVQueueNativeOwned && RVQueueLocalController && RVQueueNativeItems().count>0; }
 static void RVQueueLocalBind(id controller,id account) {
     if (!controller) return;
-    if ((RVQueueLocalController && RVQueueLocalController!=controller)
-        || (RVQueueLocalAccountBound && RVQueueLocalAccount!=account && ![RVQueueLocalAccount isEqual:account])) {
+    BOOL accountChanged=RVQueueLocalAccountBound && RVQueueLocalAccount!=account && ![RVQueueLocalAccount isEqual:account];
+    if ((RVQueueLocalAccountBound && RVQueueLocalController!=controller) || accountChanged) {
         RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil;
+        RVQueueOwnerChanged(accountChanged);
     }
     RVQueueLocalController=controller;RVQueueLocalAccount=account;RVQueueLocalAccountBound=YES;
 }
@@ -58,12 +63,19 @@ static id RVQueueWatchFromResponder(id responder) {
 }
 static id RVQueueResolveNativeOwner(id responder) {
     if (!NSThread.isMainThread) return nil;
-    id watch=RVQueueWatchFromResponder(responder) ?: RVQueueWatchFromResponder(RVCurrentPlayer)
-        ?: RVQueueWatchFromResponder(RVCurrentPlayback) ?: RVQueueWatchFromResponder(RVCurrentWatch);
-    if (!watch && RVQueueLocalWatch && RVObject(RVQueueLocalWatch,"playlistPanelController")==RVQueueLocalPanelController
-        && RVObject(RVQueueLocalPanelController,"queueController")==RVQueueLocalController) watch=RVQueueLocalWatch;
-    id panel=RVObject(watch,"playlistPanelController"),controller=RVObject(panel,"queueController");
-    if (!RVQueueClass(panel,@"YTPlaylistPanelController") || !RVQueueClass(controller,@"YTQueueController")) return nil;
+    id watch=nil,panel=nil,controller=nil;
+    for (id candidate in @[RVQueueWatchFromResponder(responder) ?: NSNull.null,
+        RVQueueWatchFromResponder(RVCurrentPlayer) ?: NSNull.null,
+        RVQueueWatchFromResponder(RVCurrentPlayback) ?: NSNull.null,
+        RVQueueWatchFromResponder(RVCurrentWatch) ?: NSNull.null,RVQueueLocalWatch ?: NSNull.null]) {
+        if (!RVQueueClass(candidate,@"YTWatchController")) continue;
+        id layer=RVObject(candidate,"parentResponder");
+        if (RVQueueClass(layer,@"YTWatchLayerViewController") && RVObject(layer,"currentWatchController")!=candidate) continue;
+        id candidatePanel=RVObject(candidate,"playlistPanelController"),candidateQueue=RVObject(candidatePanel,"queueController");
+        if (!RVQueueClass(candidatePanel,@"YTPlaylistPanelController") || !RVQueueClass(candidateQueue,@"YTQueueController")) continue;
+        watch=candidate;panel=candidatePanel;controller=candidateQueue;break;
+    }
+    if (!controller) return nil;
     id account=RVObject(controller,"accountID");
     if (!account && controller==RVQueueLocalController) account=RVQueueLocalAccount;
     if (!account) {
@@ -75,7 +87,14 @@ static id RVQueueResolveNativeOwner(id responder) {
     return controller; // Caller retains the actual native owner's queue during use.
 }
 static NSString *RVQueueLocalCurrent(void) {
-    id video=RVObject(RVCurrentPlayback,"contentVideoID");
+    id watch=RVQueueLocalWatch;
+    if (!watch || RVObject(watch,"playlistPanelController")!=RVQueueLocalPanelController
+        || RVObject(RVQueueLocalPanelController,"queueController")!=RVQueueLocalController) return nil;
+    id layer=RVObject(watch,"parentResponder");
+    if (RVQueueClass(layer,@"YTWatchLayerViewController") && RVObject(layer,"currentWatchController")!=watch) return nil;
+    // Feed/inline playback globals can outlive a closed Watch or name another
+    // video. Resolve current content through the same native Watch owner.
+    id video=RVObject(RVObject(watch,"watchPlaybackController"),"contentVideoID");
     if (!RVQueueValidVideo(video)) video=RVObject(RVQueueLocalController,"nowPlayingVideoID");
     return RVQueueValidVideo(video) ? video : nil;
 }
@@ -279,6 +298,7 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"queue_source_video_missing":@(atomic_load(&RVQueueSourceMissing)),
         @"native_bootstrap_requests":@(atomic_load(&RVQueueBootstrapRequests)),@"native_bootstrap_completed":@(atomic_load(&RVQueueBootstrapCompleted)),
         @"native_bootstrap_failures":@(atomic_load(&RVQueueBootstrapFailures)),@"native_bootstrap_pending":@(RVQueuePendingOperation!=nil),
+        @"native_bootstrap_mode":@"collapsed_acquire_player",
         @"queue_discovery_requests_skipped":@(atomic_load(&RVQueueDiscoverySkipped)),
         @"queue_discovery_boundary_skipped":@(atomic_load(&RVQueueDiscoveryBoundarySkipped)),
         @"queue_metadata_requests":@(atomic_load(&RVQueueMetadataRequests)),@"queue_metadata_loaded":@(atomic_load(&RVQueueMetadataLoaded)),
@@ -286,6 +306,9 @@ static NSDictionary *RVQueueLocalReport(void) {
         @"queue_metadata_request_build_failures":@(atomic_load(&RVQueueMetadataRequestBuildFailures)),
         @"queue_metadata_last_error_code":@(atomic_load(&RVQueueMetadataLastErrorCode)),
         @"queue_metadata_last_error_http":@(atomic_load(&RVQueueMetadataLastErrorHTTP)),
+        @"queue_metadata_cancelled":@(atomic_load(&RVQueueMetadataCancelled)),
+        @"native_session_resets":@(atomic_load(&RVQueueSessionResets)),
+        @"native_bootstrap_cancelled":@(atomic_load(&RVQueueBootstrapCancelled)),
         @"last_blocker":RVQueueLocalFailure ?: @"none"} mutableCopy];
     [report addEntriesFromDictionary:RVQueuePresentationReport()];return report;
 }
@@ -295,6 +318,7 @@ static BOOL RVQueueNativeSection(id section) {
 static void RVInstallQueueLocal(void) {
     RVInstallQueuePresentation();
     RVInstallQueueElementsRows();
+    RVInstallQueueLifecycle();
     RVHook(@"MDXScreenDiscoveryManager",@"requestScreenDiscoveryForPollingStrategies:",@"v@:@",NO,^id(IMP original,SEL sel) {
         return ^(id manager,id strategies) {
             NSDictionary *operation=RVCompatible && !RVQueueLocalDepth ? RVQueueStrategiesOperation(strategies) : nil;
@@ -349,13 +373,21 @@ static void RVInstallQueueLocal(void) {
         return ^id(id object,id account,id state,id responder) { id result=((id(*)(id,SEL,id,id,id))original)(object,sel,account,state,responder);RVQueueLocalBind(result,account);return result; };
     });
     RVHook(@"YTPlaylistPanelController",@"initWithAccountID:parentResponder:queueController:",@"@@:@@@",NO,^id(IMP original,SEL sel) {
-        return ^id(id object,id account,id responder,id controller) { id result=((id(*)(id,SEL,id,id,id))original)(object,sel,account,responder,controller);RVQueueLocalPanelController=result;RVQueueLocalBind(controller,account);return result; };
+        return ^id(id object,id account,id responder,id controller) { id result=((id(*)(id,SEL,id,id,id))original)(object,sel,account,responder,controller);RVQueueLocalBind(controller,account);RVQueueLocalPanelController=result;return result; };
     });
     RVHook(@"YTPlaylistPanelController",@"initWithAccountID:parentResponder:",@"@@:@@",NO,^id(IMP original,SEL sel) {
         return ^id(id object,id account,id responder) { id result=((id(*)(id,SEL,id,id))original)(object,sel,account,responder);RVQueueLocalPanelController=result;return result; };
     });
     RVHook(@"YTQueueController",@"clearQueue",@"v@:",NO,^id(IMP original,SEL sel) {
-        return ^(id object) { ((void(*)(id,SEL))original)(object,sel);if (object==RVQueueLocalController && !RVQueueLocalDepth && !RVQueueNativeResponseDepth) { RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil; } };
+        return ^(id object) {
+            ((void(*)(id,SEL))original)(object,sel);
+            if (object==RVQueueLocalController && !RVQueueLocalDepth && !RVQueueNativeResponseDepth) {
+                RVQueueNativeOwned=NO;RVQueueNativeSourcePlaylist=nil;
+                // An explicit clear must not be undone by a late metadata
+                // callback. Retain this live Watch's response for re-seeding.
+                RVQueueCancelMetadata();
+            }
+        };
     });
     // These section callbacks normally submit a remote playlist edit as well
     // as the local mutation. Local queue rows route directly to their owner.

@@ -1,7 +1,7 @@
 {
-  "version": "0.3.71",
-  "base_release": "0.3.70",
-  "base_commit": "d8aaa47f96d1089c318e33a0aa337de901d6a6c2",
+  "version": "0.3.72",
+  "base_release": "0.3.71",
+  "base_commit": "0596f6ffbedf72e9253041bd102eaa5b51f78f7f",
   "target": "YouTube iOS 21.39.4 ARM64",
   "target_uuid": "1f61665a-5d4a-3566-8b77-da821e1d6c17",
   "queue_owner": "YTQueueController",
@@ -28,7 +28,13 @@
     "metadata_player_callback": "0x101034058",
     "metadata_actions": "0x101034a10",
     "metadata_proto_builder": "0x101033190",
-    "metadata_request_wrapper": "0x1010336e4"
+    "metadata_request_wrapper": "0x1010336e4",
+    "collapsed_start_branch": "0x10134b210",
+    "native_player_acquisition": "0x10134f2e8",
+    "native_player_handoff": "0x10134b8b8",
+    "native_clear_watch": "0x101352c60",
+    "native_minibar_dismissed": "0x10134f16c",
+    "watch_content_video_id": "0x10136ea4c"
   },
   "presentation": "Capture the native playlist panel update and capture Watch responses again after controller initialization; snapshot only native queue items into the existing engagement panel.",
   "local_edits": "Owned RVPortQueue section move/remove callbacks invoke native queue methods, avoiding remote playlist edits.",
@@ -46,7 +52,10 @@
   "tests_skipped_reason": "Explicit user instruction",
   "device_validated": false,
   "live_baseline": "Authenticated installed .68 source fingerprint matched delivery. First queue tap failed native_queue_unavailable; after a video was loaded, two actions produced two confirmed native mutations, native queue count three, two native panel refreshes and no blocker.",
-  "observed_limit": "Installed .70 sends a 13-byte Player proto containing only videoId; its metadata error callback returns com.google.HTTPStatus 400. The service does not populate missing context. The .71 change has not been observed on device.",
+  "observed_limit": "Installed .71 showed activation state 2 with no player and no Watch response until tapping the miniplayer. After close, a fresh owner and successful metadata request again timed out at native_watch_bootstrap_timeout. The .72 implementation has not been observed on device.",
   "source_identity": "Prefer the exact original MDX token video ID and next/last enum. Metadata must match that target.",
-  "metadata": "Copy matching native metadata rows or use dedicated Player service. Build the proto with that service native YTPlayerRequestFactory, including active client/account context. Require matching videoId and present client context before sending. Record construction failures and native error code/type. Suppress response actions only for metadata instance; require title and thumbnail for insertion."
+  "metadata": "Copy matching native metadata rows or use dedicated Player service. Build the proto with that service native YTPlayerRequestFactory, including active client/account context. Require matching videoId and present client context before sending. Record construction failures and native error code/type. Suppress response actions only for metadata instance; require title and thumbnail for insertion.",
+  "startup": "Immediate native collapsed playback: beginPlaybackOnMinibar false, prefersPlaybackLayoutStateCollapsed true, pausePlaybackWhenVideoActivates false. Native branch acquires the player and handles any inline-player release. Pending seeding still waits for a matching Watch response and coherent owner.",
+  "lifecycle": "Watch clear/dismiss invalidates adapter presentation, ownership and metadata generations. Native startup handoff preserves pending bootstrap; actual minibar dismissal cancels it. Owner replacement invalidates cached presentation and metadata; account changes cancel bootstrap too. Explicit native queue clear cancels metadata but retains the active Watch response for reseeding.",
+  "current_video": "Read contentVideoID from the coherent WatchPlaybackController; reject Watch-layer candidates that are not its currentWatchController. Feed/inline player globals do not establish the current Watch video."
 }

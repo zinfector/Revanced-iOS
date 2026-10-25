@@ -6,8 +6,6 @@ static id RVQueueMenuSourceResponder;
 static NSUInteger RVQueueElementsSheetDepth;
 static const void *RVQueueElementsSourceKey=&RVQueueElementsSourceKey;
 static atomic_uint RVQueueSourceActions,RVQueueElementsActions,RVQueueSourceMissing;
-static BOOL RVQueueMetadataBusy;
-static NSUInteger RVQueueMetadataGeneration;
 
 static NSString *RVQueueVideoFromEntry(id entry,NSUInteger depth,NSUInteger *budget,NSHashTable *seen) {
     if (!entry || !depth || !*budget || [seen containsObject:entry]) return nil;

@@ -6,7 +6,7 @@ import patcher
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parents[4]
-VERSION = '0.3.71'
+VERSION = '0.3.72'
 
 
 def digest(path):
@@ -48,14 +48,14 @@ def main():
                          'sha256': digest(output), 'config_sha256': digest(config_path),
                          'marker': marker})
         print('Created '+output.name, flush=True)
-    receipt = {'version': VERSION, 'release_flavor': 'queue-metadata-context',
+    receipt = {'version': VERSION, 'release_flavor': 'queue-miniplayer-start',
                'source_commit': cloud['head_sha'], 'cloud_build': cloud, 'native_build': native,
                'packages': packages, 'tests_run': False, 'tests_skipped_reason': 'Explicit user instruction',
                'regression_tests_run': False, 'archive_self_check_run': False,
                'gui_smoke_test_run': False, 'static_hook_check_run': False,
                'device_validated': False, 'signing_required': True,
                'merge': json.loads((ROOT/'profiles/merged-speed-shorts-source.json').read_text(encoding='utf-8')),
-               'scope': 'Based on 0.3.70. Replace its videoId-only metadata proto with the dedicated Player service native request factory, including current client/account context. Require populated client context before sending. Report request-construction failures and native error code/type. Keep existing queue routing and metadata row mapping. Tests skipped at user request; new patched-device behavior unverified.',
+               'scope': 'Based on 0.3.71. Cold queue actions use immediate native collapsed playback with player acquisition instead of the deferred ready-to-resume miniplayer. Close and owner/account replacement invalidate presentation and pending metadata; genuine dismissal also cancels bootstrap while native startup handoff preserves its target check. Resolve current video through the coherent Watch owner. Keep native queue insertion and the metadata request factory. Tests skipped at user request; new patched-device behavior unverified.',
                'queue_contract': json.loads((ROOT/'profiles/queue-native-contract.json').read_text(encoding='utf-8'))}
     (ROOT/f'build/package-manifest-{VERSION}.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'version': VERSION, 'packages': len(packages)}))

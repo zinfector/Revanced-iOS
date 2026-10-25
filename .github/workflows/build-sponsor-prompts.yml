@@ -1,8 +1,8 @@
-name: Build queue metadata context fix with Xcode
+name: Build native collapsed queue startup with Xcode
 
 on:
   push:
-    branches: [fix/queue-metadata-context-0.3.71]
+    branches: [fix/queue-miniplayer-start-0.3.72]
 
 permissions:
   contents: read
